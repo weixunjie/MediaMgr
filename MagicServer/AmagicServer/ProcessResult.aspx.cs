@@ -42,18 +42,19 @@ namespace AmagicServer
             string authToken;
             string txToken;
             string query;
-     
-            // authToken = "DGFlMUaVIzRUcxGLezfWIzKpn-JRojNRaSogvpeEzYQ_n5UyLwVy1PGgemm";
-            authToken = "XKuewxkCAnj6V2ohVcwh7hjr3e5Y7RG-sLgJ50GWTLDwbGN75dTCAlHkAYO";
 
-           // txToken = "8UA550014D777742D";//;Request.QueryString["tx"];
-            txToken = Request.QueryString["tx"];
+            authToken = "DGFlMUaVIzRUcxGLezfWIzKpn-JRojNRaSogvpeEzYQ_n5UyLwVy1PGgemm";
+           // authToken = "XKuewxkCAnj6V2ohVcwh7hjr3e5Y7RG-sLgJ50GWTLDwbGN75dTCAlHkAYO";
+
+          //  txToken = "2PN098802P8374540";
+            txToken =Request.QueryString["tx"];
+            //txToken = Request.QueryString["tx"];
 
             string sn = Request.QueryString["cm"];
 
 
-            //   HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("http://www.paypal.com/cgi-bin/webscr");
-            HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("https://www.sandbox.paypal.com/cgi-bin/webscr");
+            HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("https://www.paypal.com/cgi-bin/webscr");
+           // HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("https://www.sandbox.paypal.com/cgi-bin/webscr");
             myHttpWebRequest.Method = "POST";
             myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
       
@@ -82,9 +83,9 @@ namespace AmagicServer
                 string receivedEmail = GetFieldValue(strResponse, "receiver_email").Trim();
                 string totaoAmount=GetFieldValue(strResponse, "mc_gross").Trim() ;
 
-                string plainSN = sn;// EncryUtils.DESDeCode(sn);
+                string plainSN = sn;
 
-                if (!string.IsNullOrEmpty(plainSN) && totaoAmount == "0.10" && receivedEmail == "gm1tran2l%40gmail.com")
+                if (!string.IsNullOrEmpty(plainSN) && totaoAmount == "0.10" && receivedEmail == "tran2l%402lltd.com")
                 {
 
                     if (!deviceInfoBLL.CheckDeviceByPhoneSN(plainSN))
@@ -99,9 +100,9 @@ namespace AmagicServer
                             di.PaypalInfo = "";
                             di.PaymentId = txToken;
                             di.State = "";
-                            di.PayPayDate = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd hh:mm:ss");
-                            di.ProductType = "Sandbox";
-                            di.RecordDate = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd hh:mm:ss");
+                            di.PayPayDate = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss");
+                            di.ProductType = "live";
+                            di.RecordDate = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss");
                             if (deviceInfoBLL.AddDevice(di) > 0)
                             {
                                 Response.Write("\n Paid Succefully, Please Validate The Result In Andy Magic App.");

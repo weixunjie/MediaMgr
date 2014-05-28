@@ -185,6 +185,7 @@
     <Content Include="Images\orderedList9.png" />
     <Content Include="MagicBusiness.aspx" />
     <Content Include="packages.config" />
+    <Content Include="AlreadyPaied.aspx" />
     <Content Include="WebPay.aspx" />
     <None Include="Properties\PublishProfiles\ftp.pubxml" />
     <None Include="Properties\PublishProfiles\test.pubxml" />
@@ -293,6 +294,13 @@
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="AlreadyPaied.aspx.cs">
+      <DependentUpon>AlreadyPaied.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AlreadyPaied.aspx.designer.cs">
+      <DependentUpon>AlreadyPaied.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebPay.aspx.cs">
       <DependentUpon>WebPay.aspx</DependentUpon>

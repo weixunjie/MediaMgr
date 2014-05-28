@@ -18,9 +18,7 @@ namespace AmagicServer
         private PayPalBLL payPalBLL = new PayPalBLL();
         protected void Page_Load(object sender, EventArgs e)
         {
-            payPalBLL.ValidatePaidPay(ConfigurationManager.AppSettings["PayPalClientId"].ToString().TrimEnd(),
-                                     ConfigurationManager.AppSettings["PayPalClientSecret"].ToString().TrimEnd(), "f");
-
+          
             if (Request["SendPayStatus"] != null)
             {
                 string reqSendPaySatus = Request["SendPayStatus"].ToString();
