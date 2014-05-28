@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmagicServer", "AmagicServer\AmagicServer.csproj", "{BED43D24-D1A6-48A0-A1B4-DF7F38D3E541}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmagicServer.DataModels", "2ltech.AmagicServer.DataModels\AmagicServer.DataModels.csproj", "{801B0BAF-C3D8-4097-8276-128A0FFE03CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmagicServer.BLL", "2ltech.AmagicServer.BLL\AmagicServer.BLL.csproj", "{0D97E11B-D444-4D3C-8746-A7ECD883969C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BED43D24-D1A6-48A0-A1B4-DF7F38D3E541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED43D24-D1A6-48A0-A1B4-DF7F38D3E541}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED43D24-D1A6-48A0-A1B4-DF7F38D3E541}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED43D24-D1A6-48A0-A1B4-DF7F38D3E541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801B0BAF-C3D8-4097-8276-128A0FFE03CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801B0BAF-C3D8-4097-8276-128A0FFE03CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801B0BAF-C3D8-4097-8276-128A0FFE03CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801B0BAF-C3D8-4097-8276-128A0FFE03CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D97E11B-D444-4D3C-8746-A7ECD883969C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D97E11B-D444-4D3C-8746-A7ECD883969C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D97E11B-D444-4D3C-8746-A7ECD883969C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D97E11B-D444-4D3C-8746-A7ECD883969C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

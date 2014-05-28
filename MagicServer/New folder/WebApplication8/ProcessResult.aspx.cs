@@ -12,6 +12,24 @@ namespace WebApplication8
 {
     public partial class ProcessResult : System.Web.UI.Page
     {
+
+        private string GetFieldValue(string strResponse, string fieldName)
+        {
+            int indexAmout = strResponse.IndexOf(fieldName + "=");
+            StringBuilder sbValue = new StringBuilder();
+            if (indexAmout >= 0)
+            {
+                indexAmout = indexAmout+fieldName.Length + 1;
+                while (!string.IsNullOrWhiteSpace(strResponse.Substring(indexAmout, 1)))
+                {
+                    sbValue.Append(strResponse.Substring(indexAmout, 1));
+                    indexAmout++;
+                }
+            }
+
+            return sbValue.ToString();
+
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -21,14 +39,15 @@ namespace WebApplication8
             string txToken;
             string query;
             //定义您的身份标记,这里改成您的身份标记
+            // authToken = "DGFlMUaVIzRUcxGLezfWIzKpn-JRojNRaSogvpeEzYQ_n5UyLwVy1PGgemm";
             authToken = "XKuewxkCAnj6V2ohVcwh7hjr3e5Y7RG-sLgJ50GWTLDwbGN75dTCAlHkAYO";
             //获取PayPal 交易流水号
-            txToken = Request.QueryString["tx"];
+            txToken = "3C106142617375249";// Request.QueryString["tx"];
             string sn = Request.QueryString["cm"];
             string jj = Request.QueryString["wei"];
             // Set the 'Method' property of the 'Webrequest' to 'POST'.
+            //   HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("http://www.paypal.com/cgi-bin/webscr");
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("https://www.sandbox.paypal.com/cgi-bin/webscr");
-            //HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("http://www.paypal.com/cgi-bin/webscr");
             myHttpWebRequest.Method = "POST";
             myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
             //设置请求参数
@@ -50,11 +69,35 @@ namespace WebApplication8
             string isSuccess = strResponse.Substring(0, 7);
             Response.Write(isSuccess);
             //显示返回的字符串，
-            // Response.Write(strResponse);
+            Response.Write(strResponse);
 
             if (isSuccess == "SUCCESS")
             {
                 Response.Write("RESPONSE SUCESS\n ");//此处需要判断网站订单是否已经处理
+
+                int indexAmout = strResponse.IndexOf("mc_gross=");
+
+                StringBuilder sbAmount = new StringBuilder();
+                if (indexAmout >= 0)
+                {
+                    indexAmout = "mc_gross=".Length;
+                    while (!string.IsNullOrWhiteSpace(strResponse.Substring(indexAmout, 1)))
+                    {
+                        sbAmount.Append(strResponse.Substring(indexAmout, 1));
+
+                        indexAmout++;
+                    }
+                }
+
+                string receivedEmail = GetFieldValue(strResponse, "receiver_email").Trim();
+                string totaoAmount=GetFieldValue(strResponse, "mc_gross").Trim() ;
+
+
+                if (totaoAmount == "0.10" && receivedEmail == "gm1tran2l%40gmail.com")
+                {
+                    Response.Write("Good Check SUCESS\n ");//此处需要判断网站订单是否已经处理
+                }
+
                 //Response.Write("item_number：" + Request.QueryString["receiver_email"].ToString() + "\n");
             }
             else
