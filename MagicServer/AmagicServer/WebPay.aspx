@@ -6,7 +6,9 @@
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta name="viewport" content="width=device-width; initial-scale=1; minimum-scale=1.0; maximum-scale=2.0" />
 <meta name="MobileOptimized" content="240" />
-
+<head>
+    <title>安迪魔术(Andy Magic)</title>
+</head>
 <body>
     <h3>Buy Andy Magic Full Version</h3>
     <h3>购买安迪魔术完整版本</h3>
@@ -16,8 +18,8 @@
         <input type="hidden" name="cmd" value="_xclick">
         <%--     <input type="hidden" name="business" value="tran2l@2lltd.com">--%>
         <input type="hidden" name="business" value="gm1tran2l@gmail.com">
-        <input type="hidden" name="item_name" value="001">
-        <input type="hidden" name="item_number" value="990">
+        <input type="hidden" name="item_name" value="Andy Magic Full Version">
+        <input type="hidden" name="item_number" value="001">
         <input type="hidden" name="currency_code" value="HKD">
         <input type="hidden" name="amount" value="0.1">
 

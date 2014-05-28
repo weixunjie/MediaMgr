@@ -84,6 +84,25 @@ namespace AmagicServer.BLL
                 }
             }
 
+            _dbUitls.ClosoConnection();
+            return false;
+            //CREATE table DeviceInfo(deviceid int identity(1,1),PhoneSN varchar(100),PaypalStatus varchar(20),RecordDate datetime, ActiveFlag int)
+        }
+
+
+        public bool CheckDeviceByPaymentId(string PaymentId)
+        {
+
+            using (SqlDataReader reader = _dbUitls.GetSqlRedaer("select  * from DeviceInfo where PaymentId='" + PaymentId + "'"))
+            {
+                if (reader != null && reader.Read())
+                {
+                    _dbUitls.ClosoConnection();
+                    return true;
+                }
+            }
+
+            _dbUitls.ClosoConnection();
             return false;
             //CREATE table DeviceInfo(deviceid int identity(1,1),PhoneSN varchar(100),PaypalStatus varchar(20),RecordDate datetime, ActiveFlag int)
         }

@@ -46,6 +46,7 @@ namespace AmagicServer
             // authToken = "DGFlMUaVIzRUcxGLezfWIzKpn-JRojNRaSogvpeEzYQ_n5UyLwVy1PGgemm";
             authToken = "XKuewxkCAnj6V2ohVcwh7hjr3e5Y7RG-sLgJ50GWTLDwbGN75dTCAlHkAYO";
 
+           // txToken = "8UA550014D777742D";//;Request.QueryString["tx"];
             txToken = Request.QueryString["tx"];
 
             string sn = Request.QueryString["cm"];
@@ -72,7 +73,7 @@ namespace AmagicServer
             stIn.Close();
   
             string isSuccess = strResponse.Substring(0, 7);
-            Response.Write(isSuccess);
+           // Response.Write(isSuccess);
       
           //  Response.Write(strResponse);
 
@@ -86,23 +87,38 @@ namespace AmagicServer
                 if (!string.IsNullOrEmpty(plainSN) && totaoAmount == "0.10" && receivedEmail == "gm1tran2l%40gmail.com")
                 {
 
-                    DeviceInfo di = new DeviceInfo();
-                    di.ActiveFlag = "1";
-                    di.DeviceId = plainSN;
-                    di.PaypalStatus = "P";
-                    di.PhoneSN = plainSN;
-                    di.PaypalInfo = "";
-                    di.PaymentId = txToken;
-                    di.State = "";
-                    di.PayPayDate = DateTime.Now.ToString("yyyy-MM-dd");
-                    di.ProductType = "SandBox";
-                    di.RecordDate = DateTime.Now.ToString("yyyy-MM-dd");
-                    if (deviceInfoBLL.AddDevice(di) > 0)
+                    if (!deviceInfoBLL.CheckDeviceByPhoneSN(plainSN))
+                    {
+                        if (!deviceInfoBLL.CheckDeviceByPaymentId(txToken))
+                        {
+                            DeviceInfo di = new DeviceInfo();
+                            di.ActiveFlag = "1";
+                            di.DeviceId = plainSN;
+                            di.PaypalStatus = "P";
+                            di.PhoneSN = plainSN;
+                            di.PaypalInfo = "";
+                            di.PaymentId = txToken;
+                            di.State = "";
+                            di.PayPayDate = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd hh:mm:ss");
+                            di.ProductType = "Sandbox";
+                            di.RecordDate = DateTime.Now.AddHours(8).ToString("yyyy-MM-dd hh:mm:ss");
+                            if (deviceInfoBLL.AddDevice(di) > 0)
+                            {
+                                Response.Write("\n Paid Succefully, Please Validate The Result In Andy Magic App.");
+                                Response.Write(System.Environment.NewLine + "<br/> 支付成功，请在安迪魔术应用中验证并使用完整版。");
+                            }
+                        }
+                        else
+                        {
+                            Response.Write("\n Paid Fail.");
+                            Response.Write("\n 支付失败。 <br/>"); 
+                        }
+                    }
+                    else
                     {
                         Response.Write("\n Paid Succefully, Please Validate The Result In Andy Magic App.");
                         Response.Write(System.Environment.NewLine + "<br/> 支付成功，请在安迪魔术应用中验证并使用完整版。");
-                    }
-                    
+                    }                    
                 }        
             }
             else
