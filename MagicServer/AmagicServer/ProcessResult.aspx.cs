@@ -28,6 +28,7 @@ namespace AmagicServer
                     sbValue.Append(strResponse.Substring(indexAmout, 1));
                     indexAmout++;
                 }
+
             }
 
             return sbValue.ToString();
