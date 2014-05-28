@@ -35,10 +35,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/28/2014 16:37:13</publishTime>
     </File>
     <File Include="bin/2ltech.AmagicServer.DataModels.dll">
-      <publishTime>01/05/2014 10:48:16</publishTime>
+      <publishTime>05/01/2014 10:48:16</publishTime>
     </File>
     <File Include="bin/AmagicServer.dll">
-      <publishTime>05/28/2014 16:37:14</publishTime>
+      <publishTime>05/28/2014 16:49:23</publishTime>
     </File>
     <File Include="bin/AspNet.ScriptManager.jQuery.dll">
       <publishTime>04/15/2014 14:30:02</publishTime>
@@ -260,7 +260,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/28/2014 16:20:20</publishTime>
     </File>
     <File Include="favicon.ico">
-      <publishTime>01/05/2014 10:44:48</publishTime>
+      <publishTime>05/01/2014 10:44:48</publishTime>
     </File>
     <File Include="Global.asax">
       <publishTime>04/15/2014 14:29:45</publishTime>
@@ -338,7 +338,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/15/2014 14:29:59</publishTime>
     </File>
     <File Include="Site.Master">
-      <publishTime>01/05/2014 10:46:25</publishTime>
+      <publishTime>05/01/2014 10:46:25</publishTime>
     </File>
     <File Include="Web.config">
       <publishTime>05/28/2014 14:43:57</publishTime>

@@ -111,7 +111,7 @@ namespace AmagicServer
                         else
                         {
                             Response.Write("\n Paid Fail.");
-                            Response.Write("\n 支付失败。 <br/>"); 
+                            Response.Write(System.Environment.NewLine + "<br/> 支付失败。 <br/>"); 
                         }
                     }
                     else
@@ -124,7 +124,7 @@ namespace AmagicServer
             else
             {
                 Response.Write("\n Paid Fail.");
-                Response.Write("\n 支付失败。 <br/>");
+                Response.Write(System.Environment.NewLine + "<br/> 支付失败。 <br/>"); 
             }
         }
     }
