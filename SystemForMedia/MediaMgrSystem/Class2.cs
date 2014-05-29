@@ -14,9 +14,7 @@ namespace MediaMgrSystem
     {
         public static void SetCommand(int cd, IHubConnectionContext cs)
         {
-
-
-
+            
             VideoOperCommand vo = new VideoOperCommand();
             vo.arg = new VideoOperArg();
             vo.arg.broadcastFlag = "1";

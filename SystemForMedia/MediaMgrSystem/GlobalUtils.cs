@@ -11,7 +11,7 @@ namespace MediaMgrSystem
 {
     public static class GlobalUtils
     {
-        static List<SingalConnectedClient> andiordClients = new List<SingalConnectedClient>();
+       public static List<SingalConnectedClient> andiordClients = new List<SingalConnectedClient>();
 
         private static string GetApplicationNameByType(SingalRClientConnectionType type)
         {

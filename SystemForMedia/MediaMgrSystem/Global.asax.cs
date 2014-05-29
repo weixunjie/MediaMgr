@@ -10,6 +10,7 @@ using Microsoft.AspNet.SignalR;
 
 using System.Timers;
 using Microsoft.AspNet.SignalR.Hubs;
+using MediaMgrSystem.DataModels;
 
 namespace MediaMgrSystem
 {
@@ -49,7 +50,14 @@ namespace MediaMgrSystem
             lock (lockObjet)
             {
                 IHubConnectionContext a = GlobalHost.ConnectionManager.GetHubContext("Test").Clients;
-                              
+
+                if (GlobalUtils.andiordClients != null)
+                {
+                    //foreach (SingalConnectedClient sc in GlobalUtils.andiordClients)
+                    //{
+                    //    System.Diagnostics.Debug.WriteLine(sc.ConnectionId + "-" + sc.ConnectionIdentify + '-' + sc.ConnectionType.ToString());
+                    //}
+                }
                              
                 string[] str = System.Configuration.ConfigurationManager.AppSettings["RunningTime"].ToString().Split(',');
 
