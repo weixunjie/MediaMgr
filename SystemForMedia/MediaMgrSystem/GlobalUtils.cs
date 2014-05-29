@@ -139,9 +139,7 @@ namespace MediaMgrSystem
         public static string GetVideoServerConnectionIds()
         {
 
-            string result = string.Empty;
-
-            
+            string result = string.Empty;            
 
             if (andiordClients != null)
                 {
@@ -153,9 +151,7 @@ namespace MediaMgrSystem
                         }
                     }
                 
-            }
-
-      
+            }      
 
             return result;
             ////string result = string.Empty;
