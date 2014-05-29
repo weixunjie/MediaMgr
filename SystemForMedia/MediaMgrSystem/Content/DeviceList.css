@@ -1,0 +1,33 @@
+﻿
+h1 {
+    font-size: 16pt;
+}
+
+h2 {
+    font-size: 13pt;
+}
+
+.deviceULStyle {
+    background-color: red;
+    margin: 0px;
+    list-style-type: none;
+}
+
+    .deviceULStyle li {
+        float: left;
+        display: block;
+            width: 80px;  
+            height: 80px;  
+        margin-right: 10px;
+        margin-top: 10px;
+
+    }
+
+
+
+.placeHolder div {
+    width: 80px;
+    height: 80px;
+    background-color: white !important;
+    border: dashed 1px blue !important;
+}

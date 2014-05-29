@@ -1,0 +1,117 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="MediaMgrSystem.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>校园播放系统管理</title>
+
+    <asp:ContentPlaceHolder ID="HeadMain" runat="server" />
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+
+    <script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.js"></script>
+
+    <script type="text/javascript" src="Scripts/jquery-ui-1.10.4.custom.js"></script>
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+</head>
+<body>
+
+
+    <div class='container'>
+
+        <div class='navbar navbar-inverse  '>
+
+            <div class='navbar-inner nav-collapse ' style="height: auto;">
+                
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a class="navbar-brand" runat="server">Application</a>
+                     
+
+                    <li>
+                            <li>
+                           <img src="Images/ic_image_device.png" style="width:40px; margin-top:5px; margin-bottom:5px; height:30px"  />
+                     
+
+                    <li>
+                        
+                </ul>
+
+                <ul class="nav navbar-nav " style="float: right">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Page One</a></li>
+                    <li><a href="#">Page Two</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <%--  <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header"  >
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" runat="server">Application</a>
+            </div>
+            
+
+            <div class="navbar-collapse collapse  navbar-right">
+               
+                  <ul class="nav navbar-nav  navbar-right ">
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+                    <li><a runat="server" href="~/">主页</a></li>
+
+                    <% if (Session["UserName"] == null)
+                       { %>
+                    <li><a runat="server" href="~/Account/Login">登录</a></li>
+
+                    <% }
+                       else
+                       { %>
+                    <li><a runat="server" title="Manage your account">欢迎使用, 管理员-Admin</a></li>
+                    <li><a runat="server" href="~/Account/LoginO">退出登录</a></li>
+
+
+                    <% }  %>
+
+
+                </ul>
+
+
+                <ul class="nav navbar-nav navbar-right">
+                   
+
+                 
+                </ul>
+
+            </div>
+        </div>
+    </div>--%>
+    <div class="container body-content">
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        </asp:ContentPlaceHolder>
+
+
+    </div>
+
+</body>
+</html>
