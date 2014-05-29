@@ -7,7 +7,9 @@ using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
 using Microsoft.AspNet.SignalR;
+
 using System.Timers;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace MediaMgrSystem
 {
@@ -18,11 +20,17 @@ namespace MediaMgrSystem
         {
             // RouteTable.Routes.MapHubs();
 
-
             // Code that runs on application startup
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalHost.HubPipeline.AddModule(new AntiClickModule());
+            //GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0);
+
+
+
+       
+
+             
 
             System.Timers.Timer timer = new System.Timers.Timer(1000);
 
@@ -37,11 +45,12 @@ namespace MediaMgrSystem
 
         public void setTime(Object sender, ElapsedEventArgs e)
         {
+            
             lock (lockObjet)
             {
-                var a = GlobalHost.ConnectionManager.GetHubContext("Test").Clients;
-
-
+                IHubConnectionContext a = GlobalHost.ConnectionManager.GetHubContext("Test").Clients;
+                              
+                             
                 string[] str = System.Configuration.ConfigurationManager.AppSettings["RunningTime"].ToString().Split(',');
 
                 string dtNow = DateTime.Now.ToString("HH:mm:ss");
@@ -68,15 +77,13 @@ namespace MediaMgrSystem
                             System.Diagnostics.Debug.WriteLine("Schedule Execute At:" + exTime + "  Config Time:" + str[i]);
 
                             Class2.SetCommand(1, a);
-                            // a.sendResponseMessage(str[i], exTime);
+                       
                             Application.UnLock();
                             return;
                         }
                     }
 
                 }
-
-
 
             }
         }

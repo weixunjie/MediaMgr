@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public enum CommandTypeEnum
+    public enum SingalRClientConnectionType
     {
-        PLAYVEDIO = 111,
-        STOPVEDIO = 112,
-        VIDEOSVRREG = 130,
-
-
+        PC,
+        ANDROID,
+        VEDIOSERVER,
+        ENCODERDEVICE
     }
 }

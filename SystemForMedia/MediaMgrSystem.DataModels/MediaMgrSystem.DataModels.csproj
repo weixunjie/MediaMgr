@@ -40,6 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandTypeEnum.cs" />
+    <Compile Include="VideoServerRegModel.cs" />
+    <Compile Include="SingalRClientConnectionType.cs" />
+    <Compile Include="SingalConnectedClient.cs" />
     <Compile Include="VideoOperArg.cs" />
     <Compile Include="VideoServerOperArg.cs" />
     <Compile Include="VideoServerOperCommand.cs" />

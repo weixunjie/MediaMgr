@@ -16,24 +16,14 @@ namespace MediaMgrSystem
     public class BusinessHub : Hub
     {
 
-        public void Hello(string name)
-        {
-            //這邊會傳入name參數
-            //呼叫所有連線狀態中頁面上的 javascript function => hello
-            //透過server端呼叫client的javascript function
-
-            //  string message = "歡迎使用者" + name + "加入聊天室";
-            //  Clients.All.hello(message);
-        }
-
         public void sendVideoControlPauseMessage(string commandType)
         {
             Class2.SetCommand(2, Clients);
         }
         public void SendVideoControlMessage(string commandType)
         {
-            
-            Class2.SetCommand(1,Clients);
+
+            Class2.SetCommand(1, Clients);
 
             // SendResponseMessage("sf");
 
@@ -42,31 +32,25 @@ namespace MediaMgrSystem
         public void SendScheduleTaskControl(string exTime, string stime)
         {
 
-            Class2.SetCommand(1,Clients);
+            Class2.SetCommand(1, Clients);
 
             System.Diagnostics.Debug.WriteLine("WINDOWS SERVICE Schedule Execute At:" + exTime + "  Config Time:" + stime);
 
-            // System.Diagnostics.Debug.WriteLine("Schedule Execute From WINDOWS SERVICE At:" + commandType + "  Config Time:" + ipAddress);
-
-            //StreamWriter sw = new StreamWriter(@"c:\logbb.txt", false);
-
-
-            //sw.WriteLine("");
-
-            //sw.Close();
-            //DeviceControlCommand dc = new DeviceControlCommand();
-            //dc.broadcastFlag = "1";
-            //dc.deviceIP = ipAddress;
-            //dc.guidId = Guid.NewGuid().ToString();// DateTime.Now.ToString("HH:mm:ss.fff");
-            //dc.commandType = commandType;//"TURNONOFF";
-
-
-            //Clients.All.sendAllMessge(Newtonsoft.Json.JsonConvert.SerializeObject(dc));
-
 
         }
-      
 
+
+
+        public void SendMessageToMgrServer(string data)
+        {
+            VideoServerRegModel regModel = Newtonsoft.Json.JsonConvert.DeserializeObject<VideoServerRegModel>(data);
+
+            if (regModel.commandType == CommandTypeEnum.VIDEOSVRREG)
+            {
+               GlobalUtils.UpdateConnectionByConnectionId(regModel.ConnectionId, SingalRClientConnectionType.VEDIOSERVER);
+            }
+
+        }
 
         public void SendResponseMessage(string result)
         {

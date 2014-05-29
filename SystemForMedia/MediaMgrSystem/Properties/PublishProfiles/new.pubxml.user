@@ -34,16 +34,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/21/2014 16:58:29</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.dll">
-      <publishTime>05/27/2014 22:59:49</publishTime>
+      <publishTime>05/29/2014 14:16:53</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.pdb">
-      <publishTime>05/27/2014 22:59:49</publishTime>
+      <publishTime>05/29/2014 14:16:53</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>05/27/2014 23:21:31</publishTime>
+      <publishTime>05/29/2014 16:08:45</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>05/27/2014 23:21:31</publishTime>
+      <publishTime>05/29/2014 16:08:44</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
       <publishTime>04/21/2014 16:58:26</publishTime>
@@ -154,7 +154,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/13/2014 14:14:48</publishTime>
     </File>
     <File Include="DeviceList.ascx">
-      <publishTime>05/15/2014 21:57:42</publishTime>
+      <publishTime>05/29/2014 15:32:23</publishTime>
     </File>
     <File Include="favicon.ico">
       <publishTime>04/21/2014 16:58:17</publishTime>
@@ -316,7 +316,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/21/2014 16:58:26</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/27/2014 22:59:55</publishTime>
+      <publishTime>05/29/2014 15:46:13</publishTime>
     </File>
   </ItemGroup>
 </Project>

@@ -32,36 +32,64 @@
     var opGuidIds = new Array()
     var opSleepTimers = new Array();
     var opSleepGuidIds = new Array()
-
+    var strclientIdentify;
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();%>
 
-        //-------------------------------Singalr 
-        var chat = $.connection.Test;
+        var parameters = new Array();
 
-        chat.client.sendResponseMessage = function (result, ipAddress) {
+        var parameterClientIdentify= new Array();
+
+        var parameterClientType = new Array();
+        //-------------------------------Singalr 
+   
+        strclientIdentify=guid();
+
+        parameterClientIdentify.push("clientIdentify");
+        parameterClientIdentify.push(strclientIdentify);
+
+        parameterClientType.push("clientType");
+        parameterClientType.push("PC");
+
+        parameters.push(parameterClientIdentify);
+        parameters.push(parameterClientType);
+
+
        
+        //var connection = $.connection('Test', "ff=ff&fff=bb");
+        
+      
+
+        debugger;
+        var chat = $.connection.Test;
+      
+        chat.client.sendAllMessge = function (result) {
+                       
+
+            $("#divLogs").append("God"+result);
+        }
+
+
+        
+        chat.client.sendResponseMessage = function (result, ipAddress) {
+
             var exstingIndex = -1;
 
-            //for (var i = 0; i < opDevices.length; i++) {
-            //    if (opDevices[i] == ipAddress) {
-            //        exstingIndex = i
-            //    }
-            //}
+            $("#divLogs").append(ipAddress + ":" + commandType);
+        }
 
-            //if (exstingIndex >= 0) {
+        chat.client.sendResponseMessage = function (result, ipAddress) {
 
-            //    if (commandType == "1") {
+            var exstingIndex = -1;
 
-            //        opDevices.splice(exstingIndex, 1);
-            //        opGuidIds.splice(exstingIndex, 1);
-
-            $("#divLogs").append(ipAddress +":"+ commandType);
+            $("#divLogs").append(ipAddress + ":" + commandType);
 
             //    }
             //}
         }
+
+
 
         chat.client.someoneConnected = function (result) {
 
@@ -86,6 +114,7 @@
             //}
         }
 
+        $.connection.qs = "ssf=ff&33=ff";
         $.connection.hub.start();
 
         ///-------------------------------------------
@@ -124,8 +153,8 @@
                 var guidId = guid();
                 chat.server.sendVideoControlMessage("PC");
 
-              //  opGuidIds.push(guidId);
-               // processControlTimeOut(guidId);
+                //  opGuidIds.push(guidId);
+                // processControlTimeOut(guidId);
             });
 
             $("#GroupMenulistPauseVideo").click(function (e) {
@@ -133,12 +162,8 @@
                 var guidId = guid();
                 chat.server.sendVideoControlPauseMessage("PC");
 
-                //  opGuidIds.push(guidId);
-                // processControlTimeOut(guidId);
             });
 
-            
-            
 
         }
 
@@ -278,7 +303,7 @@
     string deviceLists = string.Empty; for (int i = 0; i < 2; i++) { deviceLists = deviceLists + "#deviceList" + i.ToString() + ","; }; deviceLists = deviceLists.TrimEnd(','); %>
 
 
-        
+
         $("<%=deviceLists%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
 
         function saveOrder() {
@@ -349,7 +374,7 @@
 
                                 <div class="row" style="margin-left: 0px">
                                     <div class="col-md-4">
-                                        <p  style="text-align: center">
+                                        <p style="text-align: center">
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="Images/ic_image_device.png" style="width: 50px; height: 50px" />
                                         </p>
                                         <p id="ptext" style="text-align: center">

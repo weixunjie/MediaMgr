@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR.Hubs;
+﻿using MediaMgrSystem.DataModels;
+using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ namespace MediaMgrSystem
 {
 
 
-
     public class AntiClickModule : HubPipelineModule
-    {
+    {        
+        
 
         long weee = DateTime.Now.Ticks;
         public AntiClickModule()
@@ -25,14 +26,52 @@ namespace MediaMgrSystem
 
         private static DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-
+       
         protected override void OnAfterConnect(IHub hub)
         {
             DateTime dt = DateTime.UtcNow;
+            
+            SingalConnectedClient sc = new SingalConnectedClient();
+            SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.PC;
+            sc.ConnectionId = hub.Context.ConnectionId;
+
+            string type = string.Empty;
+
+            string strIdentify = string.Empty;
+            if (hub.Context.QueryString["clientType"] != null)
+            {
+                type = hub.Context.QueryString["clientType"].ToString().ToUpper();
+
+                if (type == "ANDRIOD")
+                {
+                    singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
+                }
+                else if (type == "VIDEOSERVER")
+                {
+                    singalRClientConnectionType = SingalRClientConnectionType.VEDIOSERVER;
+                }
+
+                else if (type == "ENCODER")
+                {
+                    singalRClientConnectionType = SingalRClientConnectionType.ENCODERDEVICE;
+                }
+            }
+
+            if (hub.Context.QueryString["clientIdentify"] != null)
+            {
+                strIdentify = hub.Context.QueryString["clientIdentify"].ToString();               
+            }
+
+            sc.ConnectionType = singalRClientConnectionType;
+
+            sc.ConnectionIdentify=strIdentify;
+            
+            GlobalUtils.AddConnection(sc);
 
             System.Diagnostics.Debug.WriteLine("Someone Connected: Connected Id" + hub.Context.ConnectionId);
 
             
+
 
             //String message = "SYNCTIME{0}";
             //TimeSpan ts = new TimeSpan(dt.Ticks);
@@ -45,6 +84,9 @@ namespace MediaMgrSystem
             DateTime dt = DateTime.UtcNow;
 
             System.Diagnostics.Debug.WriteLine("Someone DISConnected: Connected Id" + hub.Context.ConnectionId);
+
+            
+            GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId,"fd");
             //String message = "SYNCTIME{0}";
             //TimeSpan ts = new TimeSpan(dt.Ticks);
             //message = string.Format(message, (long)((dt - Jan1st1970).TotalMilliseconds));
@@ -69,7 +111,7 @@ namespace MediaMgrSystem
             if (context.Args != null && context.Args.Count > 0 && context.Args[0].ToString() == "PC")
             {
                 HttpContext.Current.Application["connectionId"] = context.Hub.Context.ConnectionId;
-            }            
+            }
 
             return true;
         }

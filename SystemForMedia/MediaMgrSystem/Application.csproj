@@ -253,7 +253,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="BusinessHub.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="AntiClickModule.cs" />
+    <Compile Include="GlobalUtils.cs" />
     <Compile Include="Class2.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
