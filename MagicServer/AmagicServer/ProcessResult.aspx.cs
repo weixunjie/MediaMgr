@@ -85,7 +85,7 @@ namespace AmagicServer
 
                 string plainSN = sn;
 
-                if (!string.IsNullOrEmpty(plainSN) && totaoAmount == "0.10" && receivedEmail == "tran2l%402lltd.com")
+                if (!string.IsNullOrEmpty(plainSN) && totaoAmount == "15.00" && receivedEmail == "tran2l%402lltd.com")
                 {
 
                     if (!deviceInfoBLL.CheckDeviceByPhoneSN(plainSN))

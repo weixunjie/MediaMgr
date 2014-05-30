@@ -15,9 +15,9 @@ namespace AmagicServer
     {
         private DeviceInfoBLL deviceInfoBLL = new DeviceInfoBLL();
         protected void Page_Load(object sender, EventArgs e)
-        {
+        {          
              if (deviceInfoBLL.CheckDeviceByPhoneSN(Request["snNumber"].ToString()))
-             {        
+             {
                  Response.Redirect("AlreadyPaied.aspx");
              }
 

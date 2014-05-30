@@ -42,7 +42,7 @@ namespace WebApplication8
             // authToken = "DGFlMUaVIzRUcxGLezfWIzKpn-JRojNRaSogvpeEzYQ_n5UyLwVy1PGgemm";
             authToken = "XKuewxkCAnj6V2ohVcwh7hjr3e5Y7RG-sLgJ50GWTLDwbGN75dTCAlHkAYO";
             //获取PayPal 交易流水号
-            txToken = "3C106142617375249";// Request.QueryString["tx"];
+            txToken = Request.QueryString["tx"];
             string sn = Request.QueryString["cm"];
             string jj = Request.QueryString["wei"];
             // Set the 'Method' property of the 'Webrequest' to 'POST'.

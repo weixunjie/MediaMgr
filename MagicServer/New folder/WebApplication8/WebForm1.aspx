@@ -19,7 +19,7 @@
         <input type="hidden" name="item_name" value="001">
         <input type="hidden" name="item_number" value="990">
         <input type="hidden" name="currency_code" value="HKD">
-        <input type="hidden" name="amount" value="0.1">
+        <input type="hidden" name="amount" value="15">
 
         <input type="hidden" name="custom" value="<% = Request["snNumber"].ToString() %>">
         <input type="hidden" name="notify_url" value="http://2lltdapp1.azurewebsites.net/processresult.aspx" />
