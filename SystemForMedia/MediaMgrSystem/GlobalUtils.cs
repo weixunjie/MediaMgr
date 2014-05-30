@@ -11,7 +11,7 @@ namespace MediaMgrSystem
 {
     public static class GlobalUtils
     {
-       public static List<SingalConnectedClient> andiordClients = new List<SingalConnectedClient>();
+        public static List<SingalConnectedClient> andiordClients = new List<SingalConnectedClient>();
 
         private static string GetApplicationNameByType(SingalRClientConnectionType type)
         {
@@ -67,15 +67,16 @@ namespace MediaMgrSystem
                     }
                 }
 
-            
+
             }
 
             return true;
         }
+
         public static bool RemoveConnectionByConnectionId(string connectionId, string appName)
         {
 
-            
+
             if (andiordClients != null)
             {
                 int removeIndex = -1;
@@ -91,7 +92,7 @@ namespace MediaMgrSystem
                 if (removeIndex >= 0)
                 {
                     andiordClients.RemoveAt(removeIndex);
-                 
+
 
                 }
             }
@@ -139,19 +140,19 @@ namespace MediaMgrSystem
         public static string GetVideoServerConnectionIds()
         {
 
-            string result = string.Empty;            
+            string result = string.Empty;
 
             if (andiordClients != null)
+            {
+                for (int i = 0; i < andiordClients.Count; i++)
                 {
-                    for (int i = 0; i < andiordClients.Count; i++)
+                    if (andiordClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
                     {
-                        if (andiordClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
-                        {
-                            result = andiordClients[i].ConnectionId;                    
-                        }
+                        result = andiordClients[i].ConnectionId;
                     }
-                
-            }      
+                }
+
+            }
 
             return result;
             ////string result = string.Empty;
@@ -227,6 +228,28 @@ namespace MediaMgrSystem
             }
 
             HttpContext.Current.Application.UnLock();
+            return results;
+
+        }
+
+        public static List<string> GetAllAndriodsDeviceConnectionIds()
+        {
+
+            List<string> results = new List<string>();
+
+
+            if (andiordClients != null)
+            {
+                for (int i = 0; i < andiordClients.Count; i++)
+                {
+                    if (andiordClients[i].ConnectionType == SingalRClientConnectionType.ANDROID)
+                    {
+                        results.Add(andiordClients[i].ConnectionId);
+                    }
+                }
+            }
+
+
             return results;
 
         }

@@ -11,6 +11,7 @@ using Microsoft.AspNet.SignalR;
 using System.Timers;
 using Microsoft.AspNet.SignalR.Hubs;
 using MediaMgrSystem.DataModels;
+using System.IO;
 
 namespace MediaMgrSystem
 {
@@ -25,14 +26,9 @@ namespace MediaMgrSystem
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalHost.HubPipeline.AddModule(new AntiClickModule());
-            //GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0);
 
-
-
-       
-
+            GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0,0,6);
              
-
             System.Timers.Timer timer = new System.Timers.Timer(1000);
 
 
@@ -43,6 +39,8 @@ namespace MediaMgrSystem
             timer.Elapsed += new System.Timers.ElapsedEventHandler(this.setTime);
 
         }
+
+        
 
         public void setTime(Object sender, ElapsedEventArgs e)
         {
@@ -58,8 +56,15 @@ namespace MediaMgrSystem
                     //    System.Diagnostics.Debug.WriteLine(sc.ConnectionId + "-" + sc.ConnectionIdentify + '-' + sc.ConnectionType.ToString());
                     //}
                 }
-                             
-                string[] str = System.Configuration.ConfigurationManager.AppSettings["RunningTime"].ToString().Split(',');
+
+                string lineStr = string.Empty;
+                StreamReader sr = new StreamReader(@"c:\schedule.txt");
+
+                lineStr = sr.ReadLine();
+
+                sr.Close();
+
+                string[] str = lineStr.Split(',');
 
                 string dtNow = DateTime.Now.ToString("HH:mm:ss");
 

@@ -32,7 +32,7 @@ namespace MediaMgrSystem
             DateTime dt = DateTime.UtcNow;
             
             SingalConnectedClient sc = new SingalConnectedClient();
-            SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.PC;
+            SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
             sc.ConnectionId = hub.Context.ConnectionId;
 
             string type = string.Empty;

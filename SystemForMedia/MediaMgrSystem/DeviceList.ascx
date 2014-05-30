@@ -39,12 +39,12 @@
 
         var parameters = new Array();
 
-        var parameterClientIdentify= new Array();
+        var parameterClientIdentify = new Array();
 
         var parameterClientType = new Array();
         //-------------------------------Singalr 
-   
-        strclientIdentify=guid();
+
+        strclientIdentify = guid();
 
         parameterClientIdentify.push("clientIdentify");
         parameterClientIdentify.push(strclientIdentify);
@@ -56,22 +56,22 @@
         parameters.push(parameterClientType);
 
 
-       
+
         //var connection = $.connection('Test', "ff=ff&fff=bb");
-        
-      
 
-        debugger;
+
+
+
         var chat = $.connection.Test;
-      
-        chat.client.sendAllMessge = function (result) {
-                       
 
-            $("#divLogs").append("God"+result);
+        chat.client.sendAllMessge = function (result) {
+
+
+            $("#divLogs").append("God" + result);
         }
 
 
-        
+
         chat.client.sendResponseMessage = function (result, ipAddress) {
 
             var exstingIndex = -1;
@@ -114,7 +114,6 @@
             //}
         }
 
-        $.connection.qs = "ssf=ff&33=ff";
         $.connection.hub.start();
 
         ///-------------------------------------------
@@ -144,6 +143,7 @@
                 is_in = false;
             });
 
+
             $(document).click(function () {
                 if (!is_in) $("#GroupMenubox").hide();
             });
@@ -153,8 +153,6 @@
                 var guidId = guid();
                 chat.server.sendVideoControlMessage("PC");
 
-                //  opGuidIds.push(guidId);
-                // processControlTimeOut(guidId);
             });
 
             $("#GroupMenulistPauseVideo").click(function (e) {

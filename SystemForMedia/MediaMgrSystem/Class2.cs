@@ -14,7 +14,7 @@ namespace MediaMgrSystem
     {
         public static void SetCommand(int cd, IHubConnectionContext cs)
         {
-            
+
             VideoOperCommand vo = new VideoOperCommand();
             vo.arg = new VideoOperArg();
             vo.arg.broadcastFlag = "1";
@@ -65,28 +65,38 @@ namespace MediaMgrSystem
 
             voc.arg.udpBroadcastAddress = vo.arg.udpBroadcastAddress;
 
-            System.Diagnostics.Debug.WriteLine("Begin Send to Client " + DateTime.Now.ToString("HH:mm:ss.fff"));
+
+            List<String> ids = GlobalUtils.GetAllAndriodsDeviceConnectionIds();
+
+
+            System.Diagnostics.Debug.WriteLine("Begin Get connection Ids  " + DateTime.Now.ToString("HH:mm:ss.fff"));
 
 
 
 
             string videoServerId = GlobalUtils.GetVideoServerConnectionIds();
 
+            System.Diagnostics.Debug.WriteLine("End Get connection Ids  " + DateTime.Now.ToString("HH:mm:ss.fff") + ids.Count);
 
-            if (!string.IsNullOrWhiteSpace(videoServerId))
-            {
-                cs.AllExcept(videoServerId).sendAllMessge(Newtonsoft.Json.JsonConvert.SerializeObject(vo));
-
-                System.Diagnostics.Debug.WriteLine("End Send to Client " + DateTime.Now.ToString("HH:mm:ss.fff"));
-
-                System.Diagnostics.Debug.WriteLine("Begin Send to Server " + DateTime.Now.ToString("HH:mm:ss.fff"));
-                String str = Newtonsoft.Json.JsonConvert.SerializeObject(voc);
+            // if (!string.IsNullOrWhiteSpace(videoServerId))
+            //{
 
 
-                cs.Client(videoServerId).sendMessageToClient(str);
 
-                System.Diagnostics.Debug.WriteLine("End Send to Server " + DateTime.Now.ToString("HH:mm:ss.fff"));
-            }
+            System.Diagnostics.Debug.WriteLine("Begin Send To Client  " + DateTime.Now.ToString("HH:mm:ss.fff"));
+
+            cs.Clients(ids).sendAllMessge("111");
+
+            System.Diagnostics.Debug.WriteLine("End Send to Client " + DateTime.Now.ToString("HH:mm:ss.fff"));
+
+           // System.Diagnostics.Debug.WriteLine("Begin Send to Server " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            String str = Newtonsoft.Json.JsonConvert.SerializeObject(voc);
+
+
+            // cs.Client(videoServerId).sendMessageToClient(str);
+
+            //System.Diagnostics.Debug.WriteLine("End Send to Server " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            // }
             //System.Diagnostics.Debug.WriteLine("Send to Server Done Json Serizalation" + DateTime.Now.ToString("HH:mm:ss.fff"));
 
             //System.Net.HttpWebRequest httpWebRequest = (HttpWebRequest)System.Net.WebRequest.Create(System.Configuration.ConfigurationManager.AppSettings["VideoUrl"].ToString() + "?PushTask=" + str);
