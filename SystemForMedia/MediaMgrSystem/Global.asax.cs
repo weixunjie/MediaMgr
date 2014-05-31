@@ -28,15 +28,19 @@ namespace MediaMgrSystem
             GlobalHost.HubPipeline.AddModule(new AntiClickModule());
 
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0,0,6);
+
+            GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 0,1200);
+
+
              
-            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            //System.Timers.Timer timer = new System.Timers.Timer(1000);
 
 
-            timer.AutoReset = true;
+            //timer.AutoReset = true;
 
-            timer.Enabled = true;
+            //timer.Enabled = true;
 
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.setTime);
+            //timer.Elapsed += new System.Timers.ElapsedEventHandler(this.setTime);
 
         }
 

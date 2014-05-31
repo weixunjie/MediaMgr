@@ -76,7 +76,7 @@ namespace MediaMgrSystem
 
             string videoServerId = GlobalUtils.GetVideoServerConnectionIds();
 
-            System.Diagnostics.Debug.WriteLine("End Get connection Ids  " + DateTime.Now.ToString("HH:mm:ss.fff") + ids.Count);
+            System.Diagnostics.Debug.WriteLine("End Get connection Ids  " + DateTime.Now.ToString("HH:mm:ss.fff") +"Client Count:"+ ids.Count);
 
             // if (!string.IsNullOrWhiteSpace(videoServerId))
             //{

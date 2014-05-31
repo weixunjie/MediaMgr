@@ -51,6 +51,15 @@ namespace MediaMgrSystem
             }
 
         }
+        public void SendTimeToServer(string aa)
+        {
+            StreamWriter sw = new StreamWriter(@"c:\logForTrack.txt", true);
+            sw.WriteLine(aa);
+            sw.Close();
+
+            System.Diagnostics.Debug.WriteLine(aa);
+ 
+        }
 
         public void SendResponseMessage(string result)
         {
@@ -73,6 +82,7 @@ namespace MediaMgrSystem
 
         public void SendPlayResponeMessage(string ipAddress)
         {
+            
             System.Diagnostics.Debug.WriteLine("IP " + ipAddress + " Play Time:" + DateTime.Now.ToString("HH:mm:ss.fff"));
 
         }

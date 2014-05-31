@@ -40,10 +40,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/30/2014 11:23:51</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>05/30/2014 13:36:48</publishTime>
+      <publishTime>05/31/2014 11:22:43</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>05/30/2014 13:36:48</publishTime>
+      <publishTime>05/31/2014 11:22:43</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
       <publishTime>05/30/2014 10:51:18</publishTime>
@@ -97,7 +97,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/30/2014 10:53:04</publishTime>
     </File>
     <File Include="bin/Microsoft.QualityTools.Testing.Fakes.dll">
-      <publishTime>05/10/2013 02:38:22</publishTime>
+      <publishTime>10/05/2013 02:38:22</publishTime>
     </File>
     <File Include="bin/Microsoft.ScriptManager.MSAjax.dll">
       <publishTime>05/30/2014 10:51:30</publishTime>
