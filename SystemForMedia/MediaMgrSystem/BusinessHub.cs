@@ -6,15 +6,18 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Newtonsoft.Json;
 using MediaMgrSystem.DataModels;
-using System.IO;
+
 using System.Net;
 using System.Text;
 using System.Threading;
+using Microsoft.AspNet.SignalR.Infrastructure;
 namespace MediaMgrSystem
 {
     [HubName("Test")]
     public class BusinessHub : Hub
     {
+        public IDependencyResolver Resolver { get; private set; }
+        private object aa=new object ();
 
         public void sendVideoControlPauseMessage(string commandType)
         {
@@ -23,9 +26,23 @@ namespace MediaMgrSystem
         public void SendVideoControlMessage(string commandType)
         {
 
-            Class2.SetCommand(1, Clients);
 
-            // SendResponseMessage("sf");
+
+            System.Diagnostics.Debug.WriteLine("Begin Send First Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
+            Class2.SetCommand(1, Clients);
+            System.Diagnostics.Debug.WriteLine("End Send First Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
+       //  var   aa= GlobalHost.TraceManager;
+
+             Thread.Sleep(4000);
+
+
+             System.Diagnostics.Debug.WriteLine("Begin Send 2nd Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
+             Class2.SetCommand(2, Clients);
+             System.Diagnostics.Debug.WriteLine("End Send 2nd Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
+          
+
+         //   IPerformanceCounterManager 
+        //     SendResponseMessage("sf");
 
         }
 
@@ -53,11 +70,14 @@ namespace MediaMgrSystem
         }
         public void SendTimeToServer(string aa)
         {
-            StreamWriter sw = new StreamWriter(@"c:\logForTrack.txt", true);
-            sw.WriteLine(aa);
-            sw.Close();
+            //StreamWriter sw = new StreamWriter(@"c:\logForTrack.txt", true);
+            //sw.WriteLine(aa);
+            //sw.Close();
+            lock(aa)
+            {
 
             System.Diagnostics.Debug.WriteLine(aa);
+            }
  
         }
 
@@ -98,60 +118,36 @@ namespace MediaMgrSystem
 
             double ts = dtClient.Subtract(dtServer).TotalMilliseconds;
 
-            appendClient(time);
-
-            WriteFileLine("IpAddress-" + IpAddress + " Server Sent Time: " + serverSendTime + "  Client Recieved Time: " + time);
-
+           
 
         }
 
-        private void WriteFileLine(string line)
-        {
-            StreamWriter sw = new StreamWriter(@"c:\log.txt", true);
-            sw.WriteLine(line);
 
-            sw.Close();
+    
 
+        //private List<string> getAllTime()
+        //{
+        //    List<string> rsult = new List<string>();
+        //    StreamReader sw = new StreamReader(@"c:\logbb.txt", false);
+        //    while (!sw.EndOfStream)
+        //    {
 
+        //        string aa = sw.ReadLine();
 
-        }
+        //        if (!string.IsNullOrEmpty(aa))
+        //        {
+        //            rsult.Add(aa);
+        //        }
+        //    }
+        //    sw.Close();
 
-        private void appendClient(string time)
-        {
-            StreamWriter sw = new StreamWriter(@"c:\logbb.txt", true);
-
-
-            sw.WriteLine(time);
-
-            sw.Close();
-
-
-        }
-
-        private List<string> getAllTime()
-        {
-            List<string> rsult = new List<string>();
-            StreamReader sw = new StreamReader(@"c:\logbb.txt", false);
-            while (!sw.EndOfStream)
-            {
-
-                string aa = sw.ReadLine();
-
-                if (!string.IsNullOrEmpty(aa))
-                {
-                    rsult.Add(aa);
-                }
-            }
-            sw.Close();
-
-            return rsult;
+        //    return rsult;
 
 
-        }
+        //}
 
         public void SendSyncTimeResponse(string IpAddress, string time)
         {
-            WriteFileLine("Now-" + IpAddress + " is " + time);
 
         }
 

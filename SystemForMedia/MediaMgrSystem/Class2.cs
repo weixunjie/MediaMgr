@@ -2,7 +2,7 @@
 using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Generic;
-using System.IO;
+
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -34,7 +34,7 @@ namespace MediaMgrSystem
             vo.arg.bitRate = "1";
             vo.arg.mediaType = 1;
             vo.arg.udpBroadcastAddress = "udp://229.0.0.1:1234";
-
+            vo.arg.mediaType = 1;
             vo.arg.streamName = Guid.NewGuid().ToString();
 
             //if (cd == 2)
@@ -73,24 +73,82 @@ namespace MediaMgrSystem
 
 
 
+            //string videoServerId = GlobalUtils.GetVideoServerConnectionIds();
 
-            string videoServerId = GlobalUtils.GetVideoServerConnectionIds();
-
-            System.Diagnostics.Debug.WriteLine("End Get connection Ids  " + DateTime.Now.ToString("HH:mm:ss.fff") +"Client Count:"+ ids.Count);
+            System.Diagnostics.Debug.WriteLine("End Get connection Ids  " + DateTime.Now.ToString("HH:mm:ss.fff") + "Client Count:" + ids.Count);
 
             // if (!string.IsNullOrWhiteSpace(videoServerId))
-            //{
-
-
+            // {
+            String videoUrlStr = Newtonsoft.Json.JsonConvert.SerializeObject(voc);
+            String clentstr = Newtonsoft.Json.JsonConvert.SerializeObject(vo);
 
             System.Diagnostics.Debug.WriteLine("Begin Send To Client  " + DateTime.Now.ToString("HH:mm:ss.fff"));
 
-            cs.Clients(ids).sendAllMessge("111");
+            if (cd == 1)
+            {
+                cs.All.sendAllMessge("111");
+            }
+            else
+            {
+                cs.All.sendAllMessge("222");
+            }
+
+            //     if (cd == 2)
+            //     {
+
+
+            //         System.Diagnostics.Debug.WriteLine("Begin Send To Client  " + DateTime.Now.ToString("HH:mm:ss.fff"));
+
+            //         cs.All.sendAllMessge(voc);
+
+            //         //if (cd == 1)
+            //         //{
+            //         //    cs.Clients(ids).sendAllMessge(voc);
+            //         //}
+            //         //else
+            //         // {
+
+            //         ////  cs.AllExcept(videoServerId).sendAllMessge(clentstr);
+
+            //         //Thread.Sleep(3000);
+
+            //         //cs.Client(videoServerId).sendMessageToClient(videoUrlStr);  
+
+
+            //         //   cs.All.sendMessageToClient(videoUrlStr);
+            //         // cs.Client(videoServerId).sendMessageToClient(videoUrlStr);
+
+            //     }
+            //     else
+            //     {
+
+            //         System.Diagnostics.Debug.WriteLine("Begin Send To Client  " + DateTime.Now.ToString("HH:mm:ss.fff"));
+
+            //         cs.Client(videoServerId).sendMessageToClient(videoUrlStr);  
+
+
+            //         cs.AllExcept(videoServerId).sendAllMessge(voc);
+
+            //         //if (cd == 1)
+            //         //{
+            //         //    cs.Clients(ids).sendAllMessge(voc);
+            //         //}
+            //         //else
+            //         // {
+            //         //   cs.All.sendMessageToClient(clentstr);
+            //         // cs.AllExcept(videoServerId).sendAllMessge(clentstr);
+            //     }
+            //// }
+
 
             System.Diagnostics.Debug.WriteLine("End Send to Client " + DateTime.Now.ToString("HH:mm:ss.fff"));
 
-           // System.Diagnostics.Debug.WriteLine("Begin Send to Server " + DateTime.Now.ToString("HH:mm:ss.fff"));
-            String str = Newtonsoft.Json.JsonConvert.SerializeObject(voc);
+
+
+
+
+            // System.Diagnostics.Debug.WriteLine("Begin Send to Server " + DateTime.Now.ToString("HH:mm:ss.fff"));
+
 
 
             // cs.Client(videoServerId).sendMessageToClient(str);

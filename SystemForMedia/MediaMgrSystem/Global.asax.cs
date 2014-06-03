@@ -11,7 +11,7 @@ using Microsoft.AspNet.SignalR;
 using System.Timers;
 using Microsoft.AspNet.SignalR.Hubs;
 using MediaMgrSystem.DataModels;
-using System.IO;
+
 
 namespace MediaMgrSystem
 {
@@ -27,10 +27,14 @@ namespace MediaMgrSystem
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalHost.HubPipeline.AddModule(new AntiClickModule());
 
-            GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0,0,6);
+             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0,0,6);
 
-            GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 0,1200);
 
+            //GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 0,1200);
+
+
+         //   GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
+      
 
              
             //System.Timers.Timer timer = new System.Timers.Timer(1000);
@@ -46,64 +50,64 @@ namespace MediaMgrSystem
 
         
 
-        public void setTime(Object sender, ElapsedEventArgs e)
-        {
+        //public void setTime(Object sender, ElapsedEventArgs e)
+        //{
             
-            lock (lockObjet)
-            {
-                IHubConnectionContext a = GlobalHost.ConnectionManager.GetHubContext("Test").Clients;
+        //    lock (lockObjet)
+        //    {
+        //        IHubConnectionContext a = GlobalHost.ConnectionManager.GetHubContext("Test").Clients;
 
-                if (GlobalUtils.andiordClients != null)
-                {
-                    //foreach (SingalConnectedClient sc in GlobalUtils.andiordClients)
-                    //{
-                    //    System.Diagnostics.Debug.WriteLine(sc.ConnectionId + "-" + sc.ConnectionIdentify + '-' + sc.ConnectionType.ToString());
-                    //}
-                }
+        //        if (GlobalUtils.andiordClients != null)
+        //        {
+        //            //foreach (SingalConnectedClient sc in GlobalUtils.andiordClients)
+        //            //{
+        //            //    System.Diagnostics.Debug.WriteLine(sc.ConnectionId + "-" + sc.ConnectionIdentify + '-' + sc.ConnectionType.ToString());
+        //            //}
+        //        }
 
-                string lineStr = string.Empty;
-                StreamReader sr = new StreamReader(@"c:\schedule.txt");
+        //        string lineStr = string.Empty;
+        //        StreamReader sr = new StreamReader(@"c:\schedule.txt");
 
-                lineStr = sr.ReadLine();
+        //        lineStr = sr.ReadLine();
 
-                sr.Close();
+        //        sr.Close();
 
-                string[] str = lineStr.Split(',');
+        //        string[] str = lineStr.Split(',');
 
-                string dtNow = DateTime.Now.ToString("HH:mm:ss");
+        //        string dtNow = DateTime.Now.ToString("HH:mm:ss");
 
 
-                List<string> result = new List<string>();
-                if (Application["LastRunningMins"] != null)
-                {
-                    result = (List<string>)Application["LastRunningMins"];
-                }
+        //        List<string> result = new List<string>();
+        //        if (Application["LastRunningMins"] != null)
+        //        {
+        //            result = (List<string>)Application["LastRunningMins"];
+        //        }
 
-                for (int i = 0; i < str.Length; i++)
-                {
-                    TimeSpan tes = DateTime.Parse(dtNow).Subtract(DateTime.Parse(str[i])).Duration();
-                    if (tes.TotalSeconds <= 5)
-                    {
-                        if (!result.Contains(str[i]))
-                        {
-                            Application.Lock();
-                            result.Add(str[i]);
-                            Application["LastRunningMins"] = result;
+        //        for (int i = 0; i < str.Length; i++)
+        //        {
+        //            TimeSpan tes = DateTime.Parse(dtNow).Subtract(DateTime.Parse(str[i])).Duration();
+        //            if (tes.TotalSeconds <= 5)
+        //            {
+        //                if (!result.Contains(str[i]))
+        //                {
+        //                    Application.Lock();
+        //                    result.Add(str[i]);
+        //                    Application["LastRunningMins"] = result;
 
-                            string exTime = DateTime.Now.ToString("HH:mm:ss");
-                            System.Diagnostics.Debug.WriteLine("Schedule Execute At:" + exTime + "  Config Time:" + str[i]);
+        //                    string exTime = DateTime.Now.ToString("HH:mm:ss");
+        //                    System.Diagnostics.Debug.WriteLine("Schedule Execute At:" + exTime + "  Config Time:" + str[i]);
 
-                            Class2.SetCommand(1, a);
+        //                    Class2.SetCommand(1, a);
                        
-                            Application.UnLock();
-                            return;
-                        }
-                    }
+        //                    Application.UnLock();
+        //                    return;
+        //                }
+        //            }
 
-                }
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
     }
 }

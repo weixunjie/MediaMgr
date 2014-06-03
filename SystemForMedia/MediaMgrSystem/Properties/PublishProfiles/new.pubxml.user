@@ -10,313 +10,313 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="Account/Login.aspx">
-      <publishTime>05/30/2014 10:47:29</publishTime>
+      <publishTime>05/29/2014 18:40:18</publishTime>
     </File>
     <File Include="Account/LoginOut.aspx">
-      <publishTime>05/30/2014 10:47:29</publishTime>
+      <publishTime>05/29/2014 18:40:18</publishTime>
     </File>
     <File Include="bin/Antlr3.Runtime.dll">
-      <publishTime>05/30/2014 10:47:51</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="bin/Antlr3.Runtime.pdb">
-      <publishTime>05/30/2014 10:47:51</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="bin/AspNet.ScriptManager.bootstrap.dll">
-      <publishTime>05/30/2014 10:47:51</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="bin/AspNet.ScriptManager.jQuery.dll">
-      <publishTime>05/30/2014 10:47:51</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
-      <publishTime>05/30/2014 10:51:13</publishTime>
+      <publishTime>05/29/2014 18:40:35</publishTime>
     </File>
     <File Include="bin/EntityFramework.SqlServer.dll">
-      <publishTime>05/30/2014 10:51:13</publishTime>
+      <publishTime>05/29/2014 18:40:34</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.dll">
-      <publishTime>05/30/2014 11:23:51</publishTime>
+      <publishTime>06/02/2014 10:26:57</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.pdb">
-      <publishTime>05/30/2014 11:23:51</publishTime>
+      <publishTime>06/02/2014 10:26:57</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>05/31/2014 11:22:43</publishTime>
+      <publishTime>06/02/2014 16:57:47</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>05/31/2014 11:22:43</publishTime>
+      <publishTime>06/02/2014 16:57:47</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
-      <publishTime>05/30/2014 10:51:18</publishTime>
+      <publishTime>05/29/2014 18:40:35</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
-      <publishTime>05/30/2014 10:51:20</publishTime>
+      <publishTime>05/29/2014 18:40:35</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.EntityFramework.dll">
-      <publishTime>05/30/2014 10:51:22</publishTime>
+      <publishTime>05/29/2014 18:40:35</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Owin.dll">
-      <publishTime>05/30/2014 10:51:23</publishTime>
+      <publishTime>05/29/2014 18:40:35</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.SignalR.Core.dll">
-      <publishTime>05/30/2014 10:51:50</publishTime>
+      <publishTime>05/29/2014 18:40:37</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.SignalR.Core.Fakes.fakesconfig">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:43:15</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.SignalR.SystemWeb.dll">
-      <publishTime>05/30/2014 10:51:56</publishTime>
+      <publishTime>05/29/2014 18:40:37</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Web.Optimization.WebForms.dll">
-      <publishTime>05/30/2014 10:51:59</publishTime>
+      <publishTime>05/29/2014 18:40:37</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.dll">
-      <publishTime>05/30/2014 10:52:20</publishTime>
+      <publishTime>05/29/2014 18:40:38</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
-      <publishTime>05/30/2014 10:52:46</publishTime>
+      <publishTime>05/29/2014 18:40:39</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.Cookies.dll">
-      <publishTime>05/30/2014 10:52:55</publishTime>
+      <publishTime>05/29/2014 18:40:40</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.dll">
-      <publishTime>05/30/2014 10:52:54</publishTime>
+      <publishTime>05/29/2014 18:40:40</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.Facebook.dll">
-      <publishTime>05/30/2014 10:52:56</publishTime>
+      <publishTime>05/29/2014 18:40:41</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.Google.dll">
-      <publishTime>05/30/2014 10:52:57</publishTime>
+      <publishTime>05/29/2014 18:40:41</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.MicrosoftAccount.dll">
-      <publishTime>05/30/2014 10:52:58</publishTime>
+      <publishTime>05/29/2014 18:40:41</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
-      <publishTime>05/30/2014 10:53:01</publishTime>
+      <publishTime>05/29/2014 18:40:41</publishTime>
     </File>
     <File Include="bin/Microsoft.Owin.Security.Twitter.dll">
-      <publishTime>05/30/2014 10:53:04</publishTime>
+      <publishTime>05/29/2014 18:40:42</publishTime>
     </File>
     <File Include="bin/Microsoft.QualityTools.Testing.Fakes.dll">
       <publishTime>10/05/2013 02:38:22</publishTime>
     </File>
     <File Include="bin/Microsoft.ScriptManager.MSAjax.dll">
-      <publishTime>05/30/2014 10:51:30</publishTime>
+      <publishTime>05/29/2014 18:40:36</publishTime>
     </File>
     <File Include="bin/Microsoft.ScriptManager.WebForms.dll">
-      <publishTime>05/30/2014 10:51:32</publishTime>
+      <publishTime>05/29/2014 18:40:36</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
-      <publishTime>05/30/2014 10:53:09</publishTime>
+      <publishTime>05/29/2014 18:40:45</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>05/29/2014 18:40:54</publishTime>
     </File>
     <File Include="bin/Owin.dll">
-      <publishTime>05/30/2014 10:54:31</publishTime>
+      <publishTime>05/29/2014 18:40:59</publishTime>
     </File>
     <File Include="bin/System.Web.Optimization.dll">
-      <publishTime>05/30/2014 10:51:58</publishTime>
+      <publishTime>05/29/2014 18:40:37</publishTime>
     </File>
     <File Include="bin/System.Web.Providers.dll">
-      <publishTime>05/30/2014 10:51:26</publishTime>
+      <publishTime>05/29/2014 18:40:36</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
-      <publishTime>05/30/2014 10:54:47</publishTime>
+      <publishTime>05/29/2014 18:41:00</publishTime>
     </File>
     <File Include="Bundle.config">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="ClassDiagram1.cd">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Content/bootstrap.css">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Content/bootstrap.min.css">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Content/DeviceList.css">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Content/jquery-ui-1.10.4.custom.css">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Content/jquery-ui-1.10.4.custom.min.css">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Content/mainWin.css">
       <publishTime>04/24/2014 13:55:17</publishTime>
     </File>
     <File Include="Content/Site.css">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="Default.aspx">
-      <publishTime>05/30/2014 10:47:31</publishTime>
+      <publishTime>05/29/2014 18:40:19</publishTime>
     </File>
     <File Include="DeviceList.ascx">
-      <publishTime>05/30/2014 11:20:41</publishTime>
+      <publishTime>06/02/2014 09:45:01</publishTime>
     </File>
     <File Include="favicon.ico">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.eot">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.svg">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.ttf">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.woff">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="Global.asax">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:40:20</publishTime>
     </File>
     <File Include="Images/ic_image_channel.png">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:40:20</publishTime>
     </File>
     <File Include="Images/ic_image_device.png">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:40:20</publishTime>
     </File>
     <File Include="Images/ic_image_menu.png">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:40:20</publishTime>
     </File>
     <File Include="MgrModel/GroupMgrDetail.aspx">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:40:20</publishTime>
     </File>
     <File Include="MgrModel/GroupMgrList.aspx">
-      <publishTime>05/30/2014 10:47:41</publishTime>
+      <publishTime>05/29/2014 18:40:20</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/bootstrap.min.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery-1.10.2.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery-1.10.2.min.map">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery-ui-1.10.4.custom.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery-ui-1.10.4.custom.min.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery.dragsort-0.5.1.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery.dragsort-0.5.1.min.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery.min.js">
       <publishTime>04/24/2014 15:52:56</publishTime>
     </File>
     <File Include="Scripts/jquery.signalR-2.0.3.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery.signalR-2.0.3.min.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/jquery.timer.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/modernizr-2.6.2.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/respond.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/respond.min.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/utils.js">
-      <publishTime>05/30/2014 10:47:46</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/DetailsView.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/Focus.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/GridView.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/Menu.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MenuStandards.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjax.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxApplicationServices.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxComponentModel.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxCore.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxGlobalization.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxHistory.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxNetwork.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxSerialization.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxTimer.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxWebForms.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/MSAjax/MicrosoftAjaxWebServices.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/SmartNav.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/TreeView.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/WebForms.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/WebParts.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/WebForms/WebUIValidation.js">
-      <publishTime>05/30/2014 10:47:42</publishTime>
+      <publishTime>05/29/2014 18:40:21</publishTime>
     </File>
     <File Include="Scripts/_references.js">
       <publishTime>04/24/2014 16:26:31</publishTime>
     </File>
     <File Include="Site.Master">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="Site.Mobile.Master">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="ViewSwitcher.ascx">
-      <publishTime>05/30/2014 10:47:47</publishTime>
+      <publishTime>05/29/2014 18:40:22</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/30/2014 14:23:12</publishTime>
+      <publishTime>06/02/2014 17:14:14</publishTime>
     </File>
   </ItemGroup>
 </Project>

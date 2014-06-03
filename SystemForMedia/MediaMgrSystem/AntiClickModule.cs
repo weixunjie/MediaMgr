@@ -96,14 +96,16 @@ namespace MediaMgrSystem
         {
             TimeSpan a = new TimeSpan(DateTime.Now.Ticks);
             TimeSpan b = new TimeSpan(weee);
-            double aa = a.Subtract(b).Duration().TotalMilliseconds;
-
-            base.OnAfterOutgoing(context);
+         //   double aa = a.Subtract(b).Duration().TotalMilliseconds;
+            System.Diagnostics.Debug.WriteLine("after send:" + (a.TotalMilliseconds - b.TotalMilliseconds).ToString());
         }
 
         protected override bool OnBeforeOutgoing(IHubOutgoingInvokerContext context)
         {
+
             weee = DateTime.Now.Ticks;
+            TimeSpan b = new TimeSpan(weee);
+            System.Diagnostics.Debug.WriteLine("Before send"+b.TotalMilliseconds.ToString());
             return base.OnBeforeOutgoing(context);
         }
         protected override bool OnBeforeIncoming(IHubIncomingInvokerContext context)
