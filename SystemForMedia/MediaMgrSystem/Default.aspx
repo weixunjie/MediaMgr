@@ -2,51 +2,73 @@
     CodeBehind="Default.aspx.cs" Inherits="MediaMgrSystem._Default" %>
 
 
-<%@ Register Src="DeviceList.ascx" TagName="DeviceList" TagPrefix="uc1" %>
+
+
+<%@ Register Src="DeviceList.ascx" TagName="DeviceList" TagPrefix="deviceList" %>
+<%@ Register Src="ChannelList.ascx" TagName="ChannelList" TagPrefix="channelList" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadMain" runat="Server">
+
+    <script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="Scripts/jquery.timer.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.js"></script>
+    <script type="text/javascript" src="Scripts/jquery.dragsort-0.5.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="Scripts/utils.js"></script>
+
+
+
+    <script src="Scripts/jquery-1.6.4.min.js"></script>
+
+    <script src="Scripts/jquery.signalR-2.0.3.min.js"></script>
+
+
+    <script src="signalr/hubs"></script>
+
+    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom.min.css" type="text/css" />
+
+    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom.css" type="text/css" />
+
+    <link rel="stylesheet" href="Content/DeviceList.css" type="text/css" />
+
+
+        <link rel="stylesheet" href="Content/bootstrap.css" type="text/css" />
+
+    <link rel="stylesheet" href="Content/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom" type="text/css" />
+    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom" type="text/css" />
+
+
+    <script type="text/javascript">
+
+        var currentOperDeviceDevice;
+        var currentOperGroupDevice;
+        var opDevices = new Array()
+        var opGuidIds = new Array()
+        var opSleepTimers = new Array();
+        var opSleepGuidIds = new Array()
+        var strclientIdentify;
+        var chat;
+        $(document).ready(function () {
+
+            chat = $.connection.Test;
+            $.connection.hub.start();
+
+        });
+
+    </script>
+
+
+
 </asp:Content>
-<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">   
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
 
-    <div style="width: 250px; height: 160%; float: left">
+    
+    <div style="width: 250px; height: 160%; float: left">    
 
-        <%  int channelIndex = 1;
-            for (int i = 0; i < 3; i++)
-            { %>
-
-        <div style="float: left; height: 160px">
-            <div style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
-
-                <img src="Images/ic_image_channel.png" width="90" height="99" />
-
-            </div>
-
-
-            <div style="clear: both;">
-            </div>
-            <div style="height: 10px; margin-top: 10px; text-align: center; font-size: 15pt">
-                通道<%= (channelIndex).ToString()  %>
-                <% channelIndex++; %>
-            </div>
-
-        </div>
-
-
-        <div style="float: right; height: 160px">
-            <div style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
-
-                <img src="Images/ic_image_channel.png" width="90" height="99" />
-
-            </div>s
-
-            <div style="clear: both;">
-            </div>
-            <div id="testdiv" style="height: 10px; margin-top: 10px; text-align: center; font-size: 15pt">通道<%= (channelIndex).ToString()  %> <% channelIndex++; %></div>
-
-        </div>
-
+        <channelList:ChannelList ID="cList" runat="server" />
         <%--  <div style="width: 100px; position: relative; height: 100px; line-height: 100px; vertical-align: central; text-align: center; float: left; padding: 4px 4px 4px 4px"
                 class="jumbotron">
                 通道<%= (channelIndex).ToString()  %>
@@ -65,12 +87,12 @@
                 </div>
             </div>--%>
 
-        <% } %>
+        <%-- <% } %>--%>
     </div>
 
     <div style="margin-left: 390px">
 
-        <uc1:DeviceList ID="DeviceList1" runat="server" />
+        <deviceList:DeviceList ID="DeviceList1" runat="server" />
 
     </div>
 

@@ -165,6 +165,7 @@
     <Content Include="Content\jquery-ui-1.10.4.custom.min.css" />
     <Content Include="Content\DeviceList.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="ChannelList.ascx" />
     <Content Include="DeviceList.ascx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Images\ic_image_channel.png" />
@@ -254,6 +255,13 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="BusinessHub.cs" />
     <Compile Include="AntiClickModule.cs" />
+    <Compile Include="ChannelList.ascx.cs">
+      <DependentUpon>ChannelList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ChannelList.ascx.designer.cs">
+      <DependentUpon>ChannelList.ascx</DependentUpon>
+    </Compile>
     <Compile Include="GlobalUtils.cs" />
     <Compile Include="Class2.cs" />
     <Compile Include="Default.aspx.cs">
@@ -318,6 +326,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MediaMgrSystem.DataAccessLayer\MediaMgrSystem.DataAccessLayer.csproj">
+      <Project>{91f930a0-ee7e-4732-9fef-9e556785b8f0}</Project>
+      <Name>MediaMgrSystem.DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MediaMgrSystem.DataModels\MediaMgrSystem.DataModels.csproj">
       <Project>{7ed0d11f-9b2a-4ab6-981f-ac0917f3ee05}</Project>
       <Name>MediaMgrSystem.DataModels</Name>

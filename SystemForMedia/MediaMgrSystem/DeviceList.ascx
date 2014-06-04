@@ -32,7 +32,8 @@
     var opGuidIds = new Array()
     var opSleepTimers = new Array();
     var opSleepGuidIds = new Array()
-    var strclientIdentify;
+
+
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();%>
@@ -56,66 +57,14 @@
         parameters.push(parameterClientType);
 
 
+        //chat.client.sendAllMessge = function (result) {
 
-        //var connection = $.connection('Test', "ff=ff&fff=bb");
-
-
-
-       
-
-        var chat = $.connection.Test;
-
-        chat.client.sendAllMessge = function (result) {
-
-
-            $("#divLogs").append("God" + result);
-        }
+        //    $("#divLogs").append("God" + result);
+        //}
 
 
 
-        chat.client.sendResponseMessage = function (result, ipAddress) {
 
-            var exstingIndex = -1;
-
-            $("#divLogs").append(ipAddress + ":" + commandType);
-        }
-
-        chat.client.sendResponseMessage = function (result, ipAddress) {
-
-            var exstingIndex = -1;
-
-            $("#divLogs").append(ipAddress + ":" + commandType);
-
-            //    }
-            //}
-        }
-
-
-
-        chat.client.someoneConnected = function (result) {
-
-            var exstingIndex = -1;
-
-            //for (var i = 0; i < opDevices.length; i++) {
-            //    if (opDevices[i] == ipAddress) {
-            //        exstingIndex = i
-            //    }
-            //}
-
-            //if (exstingIndex >= 0) {
-
-            //    if (commandType == "1") {
-
-            //        opDevices.splice(exstingIndex, 1);
-            //        opGuidIds.splice(exstingIndex, 1);
-
-            $("#divLogs").append(result);
-
-            //    }
-            //}
-        }
-
-        $.connection.hub.start();
 
         ///-------------------------------------------
 
@@ -162,8 +111,6 @@
                 chat.server.sendVideoControlPauseMessage("PC");
 
             });
-
-
         }
 
         $.showGroupmenu();
@@ -186,7 +133,6 @@
                 var y = $(this).offset().top + $(this).height() + 2;
 
                 $("#DeviceMenubox").show().css("left", x).css("top", y);
-
 
 
                 //  currentSelectedDevice = e.currentTarget.name;;
@@ -306,8 +252,10 @@
         $("<%=deviceLists%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
 
         function saveOrder() {
-            //var data = $("#list1 li").map(function () { return $(this).children().html(); }).get();
-            //$("input[name=list1SortOrder]").val(data.join("|"));
+
+            debugger;
+            var data = $("#deviceList1 li").map(function () { return $(this).data("itemid") }).get();
+            $("input[name=list1SortOrder]").val(data.join("|"));
         };
 
     });
@@ -324,7 +272,6 @@
 <div>
 
 
-    <div id="divLogs" style="width: 300px; height: 200px" class="pull-left">asdf</div>
 
     <% 
         int deviceIndex = 0;
@@ -369,7 +316,7 @@
                 for (int k = 0; k < dGroups[l].Devices.Count; k++) %>
                             <%    {
                             %>
-                            <li>
+                            <li data-itemid="<%=dGroups[l].Devices[k].DeviceName %>">
 
                                 <div class="row" style="margin-left: 0px">
                                     <div class="col-md-4">
@@ -397,6 +344,8 @@
     </table>
 
     <% } %>
+
+
 
     <div id="wei" class="modal hide">
         <div class="modal-header">
@@ -461,6 +410,10 @@
 
     <!-- save sort order here which can be retrieved on server on postback -->
 
+    <div id="divLogs" style="width: 300px; height: 200px" class="pull-left">asdf</div>
     <div style="clear: both;">
     </div>
+
+
+
 </div>

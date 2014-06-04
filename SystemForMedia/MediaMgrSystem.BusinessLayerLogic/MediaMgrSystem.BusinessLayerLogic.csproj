@@ -39,8 +39,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="EncoderBLL.cs" />
+    <Compile Include="ChannelBLL.cs" />
+    <Compile Include="GroupBLL.cs" />
+    <Compile Include="DeviceBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MediaMgrSystem.DataAccessLayer\MediaMgrSystem.DataAccessLayer.csproj">
+      <Project>{91f930a0-ee7e-4732-9fef-9e556785b8f0}</Project>
+      <Name>MediaMgrSystem.DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MediaMgrSystem.DataModels\MediaMgrSystem.DataModels.csproj">
+      <Project>{7ed0d11f-9b2a-4ab6-981f-ac0917f3ee05}</Project>
+      <Name>MediaMgrSystem.DataModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

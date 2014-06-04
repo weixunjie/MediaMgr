@@ -39,23 +39,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandTypeEnum.cs" />
-    <Compile Include="VideoServerRegModel.cs" />
-    <Compile Include="SingalRClientConnectionType.cs" />
-    <Compile Include="SingalConnectedClient.cs" />
-    <Compile Include="VideoOperArg.cs" />
-    <Compile Include="VideoServerOperArg.cs" />
-    <Compile Include="VideoServerOperCommand.cs" />
-    <Compile Include="VideoResponse.cs" />
-    <Compile Include="ComuResponseBase.cs" />
-    <Compile Include="ComunicationBase.cs" />
-    <Compile Include="ScheduleTask.cs" />
-    <Compile Include="ScheduleRequest.cs" />
-    <Compile Include="DeviceRequest.cs" />
-    <Compile Include="VideoOperCommand.cs" />
-    <Compile Include="DeviceInfo.cs" />
-    <Compile Include="GroupInfo.cs" />
-    <Compile Include="JsonString.cs" />
+    <Compile Include="DataModel\ScheduleInfo.cs" />
+    <Compile Include="DataModel\ChannelInfo.cs" />
+    <Compile Include="DataModel\EncoderInfo.cs" />
+    <Compile Include="JsonModel\CommandTypeEnum.cs" />
+    <Compile Include="JsonModel\VideoServerRegModel.cs" />
+    <Compile Include="JsonModel\SingalRClientConnectionType.cs" />
+    <Compile Include="JsonModel\SingalConnectedClient.cs" />
+    <Compile Include="JsonModel\VideoOperArg.cs" />
+    <Compile Include="JsonModel\VideoServerOperArg.cs" />
+    <Compile Include="JsonModel\VideoServerOperCommand.cs" />
+    <Compile Include="JsonModel\VideoResponse.cs" />
+    <Compile Include="JsonModel\ComuResponseBase.cs" />
+    <Compile Include="JsonModel\ComunicationBase.cs" />
+    <Compile Include="JsonModel\ScheduleTask.cs" />
+    <Compile Include="JsonModel\ScheduleRequest.cs" />
+    <Compile Include="JsonModel\DeviceRequest.cs" />
+    <Compile Include="JsonModel\VideoOperCommand.cs" />
+    <Compile Include="DataModel\DeviceInfo.cs" />
+    <Compile Include="DataModel\GroupInfo.cs" />
+    <Compile Include="JsonModel\JsonString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

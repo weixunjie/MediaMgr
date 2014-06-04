@@ -1,4 +1,5 @@
-﻿using MediaMgrSystem.DataModels;
+﻿using MediaMgrSystem.DataAccessLayer;
+using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,9 @@ namespace MediaMgrSystem
 {
     public static class GlobalUtils
     {
+
+        public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
+
         public static List<SingalConnectedClient> andiordClients = new List<SingalConnectedClient>();
 
         private static string GetApplicationNameByType(SingalRClientConnectionType type)

@@ -13,6 +13,15 @@ namespace MediaMgrSystem {
     public partial class _Default {
         
         /// <summary>
+        /// cList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MediaMgrSystem.ChannelList cList;
+        
+        /// <summary>
         /// DeviceList1 control.
         /// </summary>
         /// <remarks>

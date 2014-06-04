@@ -24,7 +24,7 @@ namespace MediaMgrSystem
 
             // Code that runs on application startup
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+        //    BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalHost.HubPipeline.AddModule(new AntiClickModule());
 
              GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0,0,6);

@@ -1,10 +1,10 @@
 ﻿using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Web.Services;
 using System.Web.UI;
@@ -76,11 +76,18 @@ namespace MediaMgrSystem
             JsonString js = new JsonString();
             js.StrValue = GuidId;
 
-
             List<JsonString> strs = new List<JsonString>();
             strs.Add(js);
             return Newtonsoft.Json.JsonConvert.SerializeObject(strs);
 
+
+        }
+
+        [WebMethod]
+        public static string GetScheduleByChannelId(string cid)
+        {
+            Thread.Sleep(2000);
+            return "1";
 
         }
       

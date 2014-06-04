@@ -8,5 +8,6 @@ namespace MediaMgrSystem.DataAccessLayer
 {
     public class Class1
     {
+
     }
 }

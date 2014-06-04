@@ -9,16 +9,13 @@
     <title>校园播放系统管理</title>
 
     <asp:ContentPlaceHolder ID="HeadMain" runat="server" />
-    <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/bundles/modernizr") %>
-    </asp:PlaceHolder>
 
 
     <script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="Scripts/bootstrap.js"></script>
 
     <script type="text/javascript" src="Scripts/jquery-ui-1.10.4.custom.js"></script>
-    <webopt:BundleReference runat="server" Path="~/Content/css" />
+
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
 </head>
