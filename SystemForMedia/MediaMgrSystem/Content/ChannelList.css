@@ -1,0 +1,22 @@
+﻿
+
+.channelControlButtonLI {
+    
+    margin-right:10px;
+    width:60px;display:inline;list-style-type:none;
+}
+
+
+.channelControlButtonImage {
+    
+    width:60px;
+    height:60px;
+}
+
+
+.channelProgrameListOperButton {
+    
+    height:40px;
+    width:50px;
+    margin-bottom:5px;
+}

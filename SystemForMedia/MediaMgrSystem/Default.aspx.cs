@@ -86,10 +86,19 @@ namespace MediaMgrSystem
         [WebMethod]
         public static string GetScheduleByChannelId(string cid)
         {
-            Thread.Sleep(2000);
+         //   Thread.Sleep(2000);
             return "1";
 
         }
+
+        [WebMethod]
+        public static string SaveSchedule(string cid ,string sid)
+        {
+            //   Thread.Sleep(2000);
+            return "1";
+
+        }
+      
       
         
 
