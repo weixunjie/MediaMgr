@@ -1,4 +1,5 @@
-﻿using MediaMgrSystem.DataModels;
+﻿using FFMPEGWrapper;
+using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,12 @@ namespace MediaMgrSystem
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            //  string output = FFMPEG.Execute("c:\ffmpeg.exe");
+
+
+            FFMPEG.FFMPEGExecutableFilePath = @"c:\FFMPEG.exe";
+
+            VideoFile videoFile = new VideoFile(@"c:\hamster.flv");
 
             //INIFile ab = new INIFile(@"F:\test");
             //string iniFile = @"F:\test\test.ini";

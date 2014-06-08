@@ -151,6 +151,11 @@
 
         $.showDevicemenu();
 
+        $("#btnBatchGroupOper").click(function (e) {
+            $('#dialogForBatchOperGroup').modal('show');
+        });
+
+
         //------------------------------------
 
 
@@ -253,12 +258,13 @@
 
         function saveOrder() {
 
-            debugger;
             var data = $("#deviceList1 li").map(function () { return $(this).data("itemid") }).get();
             $("input[name=list1SortOrder]").val(data.join("|"));
         };
 
     });
+
+
 
 
 
@@ -347,6 +353,67 @@
 
 
 
+
+
+    <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 5px;">
+
+        <thead>
+            <tr>
+
+                <th>
+                    <div class="row" style="margin-left: 0px">
+
+                        <div class="pull-left">分组信息</div>
+                        <div class="pull-right"><a class="btn  btn-success" id="btnBatchGroupOper" data-content="">批量操作</a></div>
+
+                    </div>
+
+                </th>
+
+            </tr>
+        </thead>
+
+        <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
+
+        <tbody>
+
+            <tr>
+                <td>
+                    <div style="height: 90px">
+                        <ul id="deviceGroupList" class="deviceULStyle">
+                            <%          
+         
+                                for (int k = 0; k < dGroups.Count; k++) %>
+                            <%    {
+                            %>
+                            <li data-itemid="<%=dGroups[k].GroupId %>">
+
+                                <div class="row" style="margin-left: 0px">
+                                    <div class="col-md-4">
+                                        <p style="text-align: center">
+                                            <img id="deviceGroup<% =k.ToString() %>" src="Images/ic_image_device.png" style="width: 50px; height: 50px" />
+                                        </p>
+                                        <p id="ptext" style="text-align: center">
+                                            <% =dGroups[k].GroupName %>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </li>
+
+
+                            <%  }
+                            %>
+                        </ul>
+
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
     <div id="wei" class="modal hide">
         <div class="modal-header">
             <a class="close" onclick=" $('#wei').modal('hide');" title="关闭小窗口">&times;</a><h3>Modal标题</h3>
@@ -381,11 +448,90 @@
     <%--    <div id="dia8log" title="Basic dialog" style="background-color: red">
 
      
-
     </div>--%>
 
 
 
+    <div id="dialogForBatchOperGroup" style="width: auto" class="modal hide">
+        <div class="modal-header">
+            <a class="close" onclick=" $('#dialogForBatchOperGroup').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">分组</h3>
+        </div>
+        <div class="modal-body">
+            <div style="float: left; height: 200px; width: 160px; margin-right: 10px">
+
+                <h4 style="text-align: left; margin-top: 0px">可选节目</h4>
+
+                <select size="4" multiple="multiple" style="height: 160px; width: 150px;" id="lbAvaiableGroups">
+                    
+                    <option value="1">后台登录</option>
+
+                    <option value="2">密码修改</option>
+
+                    <option value="3">新闻添加</option>
+
+                    <option value="4">新闻编辑</option>
+
+                    <option value="5">新闻删除</option>
+
+                    <option value="6">新闻发布</option>
+
+                </select>
+            </div>
+
+
+            <div style="float: left; height: 220px; width: 220px;">
+                <h4 style="text-align: left; margin-top: 0px">操作</h4>
+
+                <div>
+                    <div class="batchOperationLableStyle">
+                        <p>
+                            通道选择
+                        </p>
+                    </div>
+                    <select id="ddBatchSelectChannel">
+                        <option value="1">11</option>
+                        <option value="2">22</option>
+                        <option value="3">33</option>
+                        <option value="4">44</option>
+                        <option value="5">55</option>
+                        <option value="6">66</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="batchOperationLableStyle">
+                        <p>
+                            视频源选择:
+                        </p>
+                    </div>
+                    <select id="ddBatchSelectVideoSorce" name="selectTest">
+                        <option value="1">11</option>
+                        <option value="2">22</option>
+                        <option value="3">33</option>
+                        <option value="4">44</option>
+                        <option value="5">55</option>
+                        <option value="6">66</option>
+                    </select>
+                </div>
+
+                <div style="vertical-align: middle">
+
+
+                    <input type="checkbox" id="ckcBatchOpenVideoSource" style="float: left; vertical-align: middle" />
+                    <label for="ckcBatchOpenVideoSource">打开视频源</label>
+                    <br />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <a class="btn primary">确认</a>
+        </div>
+    </div>
+
+    
 
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="DeviceMenubox">
@@ -394,7 +540,6 @@
         <li><a class="btn" id="DeviceMenulistPauseVideo" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">暂停播放</a></li>
 
     </ul>
-
 
 
 
@@ -416,4 +561,5 @@
 
 
 
+</div>
 </div>

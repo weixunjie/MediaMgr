@@ -18,10 +18,10 @@
         %>
 
 
-        chat.client.sendAllMessge = function (result) {
+        //chat.client.sendAllMessge = function (result) {
 
 
-        }
+        //}
 
         var isChooseSchedule = false;
         $("#btnChooseSchedule").click(function (e) {
@@ -61,7 +61,6 @@
 
 
         $("<% =schdueleIds%>").click(function (e) {
-
 
 
             var currentOperScheduel = e.currentTarget.id.replace("btnSchedule", "");
@@ -128,6 +127,45 @@
         }
 
         $.showChannelMenu();
+
+
+        ///-------------------------pgrame 
+
+        $("#btnToRight").click(function () {
+            if ($("#lbAvaiableProgram option:selected").length > 0) {
+                $("#lbSelectedProgram").append("<option value='" + $("#lbAvaiableProgram option:selected").val() + "'>" + $("#lbAvaiableProgram option:selected").text() + "</option>");
+                $("#lbAvaiableProgram option:selected").remove();
+            }
+
+        })
+
+        $("#btnAllToRight").click(function () {
+            var leftvalue = "";
+            $("#lbAvaiableProgram option").each(function () {
+                leftvalue += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
+                $(this).remove();
+            })
+            $("#lbSelectedProgram").append(leftvalue);
+        })
+
+        $("#btnToLeft").click(function () {
+            //  debugger;
+            if ($("#lbSelectedProgram option:selected").length > 0) {
+                $("#lbAvaiableProgram").append("<option value='" + $("#lbSelectedProgram option:selected").val() + "'>" + $("#lbSelectedProgram option:selected").text() + "</option>");
+                $("#lbSelectedProgram option:selected").remove();
+            }
+        })
+
+        $("#btnAllToLeft").click(function () {
+            var rightvalue = "";
+            $("#lbSelectedProgram option").each(function () {
+
+                rightvalue += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
+                $(this).remove();
+            })
+            $("#lbAvaiableProgram").append(rightvalue);
+        })
+
 
 
     });
@@ -200,7 +238,7 @@
 
     
 
-   <ul style=" clear:left; float:left; wi text-align:center;list-style-type:none;">
+   <ul style=" clear:left;  margin-left:0px; text-align:center;list-style-type:none;">
 
        <li  class="channelControlButtonLI" >           
 
@@ -225,14 +263,16 @@
 
    </ul>
 
-
- <div id="dialogForChooseProgram"   style="width:460px"  class="modal hide">
+ <div id="dialogForChooseProgram"   style="width:auto"  class="modal hide">
         <div class="modal-header">
             <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭">&times;</a><h3>节目选择</h3>
         </div>
         <div class="modal-body">
-                    
-            <select size="4" name="lbAvaiableProgram" multiple="multiple" id="lb_list" style=" float:left; height: 200px; width: 150px;">
+           <div  style=" float:left; height: 200px; width: 150px;">
+
+               <h4 style="text-align:left;margin-top:0px ">可选节目</h4>
+
+            <select size="4"multiple="multiple" style=" height: 190px; width: 150px;" id="lbAvaiableProgram">
 
 
                 <option value="1">后台登录</option>
@@ -250,36 +290,37 @@
 
             </select>
 
-            <div style=" float:left;height:200px; margin-top:15px;  margin-left:10px; margin-right:10px">
+               </div>
+            <div style=" float:left;height:200px; width:52px ;margin-top:52px;  margin-left:10px; margin-right:10px">
                
                 <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  >确认</a>
+                 <a class="btn primary"  id="btnToRight" style="width:30px"  >></a>
                </div>
                                               
                  <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  >确认</a>
+                 <a class="btn primary"  id="btnAllToRight" style="width:30px"  >>></a>
                </div>
 
+
+                <div  class="channelProgrameListOperButton" >
+                 <a class="btn primary" id="btnToLeft" style="width:30px"   ><</a>
+               </div>
 
                  <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  >确认</a>
+                 <a class="btn primary" id="btnAllToLeft" style="width:30px"  ><<</a>
                </div>
-
-
-                 <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  >确认</a>
-               </div>
-
+                   
                 </div>
            
 
                 
-
+            <div style=" float:left;height: 200px; width: 150px;" >
+             <h4 style="text-align:left; margin-top:0px ">已选节目</h4>
         
-            <select size="4" multiple="multiple" id="lbSelected" style=" float:left;height: 200px; width: 150px;">
+            <select size="4"style=" height: 190px; width: 150px;" multiple="multiple" id="lbSelectedProgram" >
             </select>
 
-             
+             </div>
          
         </div>
         <div class="modal-footer">

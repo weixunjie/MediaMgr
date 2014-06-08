@@ -40,12 +40,57 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.TextBox GroupName;
         
         /// <summary>
-        /// GroupId control.
+        /// lbAvaibleDevice control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox GroupId;
+        protected global::System.Web.UI.WebControls.ListBox lbAvaibleDevice;
+        
+        /// <summary>
+        /// btnToRight control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnToRight;
+        
+        /// <summary>
+        /// btnAllToRight control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAllToRight;
+        
+        /// <summary>
+        /// btnToLeft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnToLeft;
+        
+        /// <summary>
+        /// btnAllToLeft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAllToLeft;
+        
+        /// <summary>
+        /// lbSelectedDevice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox lbSelectedDevice;
     }
 }

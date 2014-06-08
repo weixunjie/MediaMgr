@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="Content/ChannelList.css" type="text/css" />
 
 
-        <link rel="stylesheet" href="Content/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap.css" type="text/css" />
 
     <link rel="stylesheet" href="Content/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom" type="text/css" />
@@ -66,8 +66,8 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
 
-    
-    <div style="width: 250px; height: 160%; float: left; text-align:center">    
+
+    <div style="width: 250px; height: 160%; float: left; text-align: center">
 
         <channelList:ChannelList ID="cList" runat="server" />
         <%--  <div style="width: 100px; position: relative; height: 100px; line-height: 100px; vertical-align: central; text-align: center; float: left; padding: 4px 4px 4px 4px"
