@@ -102,3 +102,67 @@ ALTER DATABASE [MediaMgrSystem] SET DB_CHAINING OFF
 GO
 
 
+
+
+USE [MediaMgrSystem]
+GO
+
+/****** Object:  Table [dbo].[DeviceInfo]    Script Date: 06/09/2014 18:01:24 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[DeviceInfo](
+	[DeviceId] [bigint] IDENTITY(1,1) NOT NULL,
+	[DeviceName] [nvarchar](250) NULL,
+	[GroupId] [nvarchar](10) NULL,
+	[IPAddress] [nvarchar](50) NULL
+) ON [PRIMARY]
+
+GO
+
+
+USE [MediaMgrSystem]
+GO
+
+/****** Object:  Table [dbo].[GroupInfo]    Script Date: 06/09/2014 18:01:53 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[GroupInfo](
+	[GroupID] [bigint] IDENTITY(1,1) NOT NULL,
+	[GroupName] [nvarchar](250) NOT NULL
+) ON [PRIMARY]
+
+GO
+
+
+
+USE [MediaMgrSystem]
+GO
+
+/****** Object:  Table [dbo].[ProgramInfo]    Script Date: 06/09/2014 18:02:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ProgramInfo](
+	[ProgramId] [bigint] IDENTITY(1,1) NOT NULL,
+	[ProgramName] [nvarchar](250) NULL,
+	[MappingFiles] [nvarchar](950) NULL,
+	[FilesBitRate] [nvarchar](950) NULL
+) ON [PRIMARY]
+
+GO
+
+
+
+
+
