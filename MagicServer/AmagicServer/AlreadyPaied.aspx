@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AlreadyPaied.aspx.cs" Inherits="AmagicServer.AlreadyPaied" %>
 
-
 <!DOCTYPE html>
 
 <meta http-equiv="Content-Type" content="application/vnd.wap.xhtml+xml;charset=utf-8" />
@@ -14,6 +13,6 @@
     <h3>This phone was paied before.</h3>
     <h3>该手机已经网上支付。</h3>
 
-
+   
 </body>
 
