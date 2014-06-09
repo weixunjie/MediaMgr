@@ -31,13 +31,22 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.Literal FailureText;
         
         /// <summary>
-        /// GroupName control.
+        /// TbGroupName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox GroupName;
+        protected global::System.Web.UI.WebControls.TextBox TbGroupName;
+        
+        /// <summary>
+        /// TbHiddenId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TbHiddenId;
         
         /// <summary>
         /// lbAvaibleDevice control.

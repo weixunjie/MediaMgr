@@ -41,9 +41,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FFMPEGWrapper">
-      <HintPath>Dlls\FFMPEGWrapper.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.0.3\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -175,6 +172,8 @@
     <Content Include="Images\ic_image_channel.png" />
     <Content Include="Images\ic_image_device.png" />
     <Content Include="Images\ic_image_menu.png" />
+    <Content Include="MgrModel\ProgramMgrDetail.aspx" />
+    <Content Include="MgrModel\ProgramMgrList.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -285,12 +284,26 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MgrModel\ProgramMgrDetail.aspx.cs">
+      <DependentUpon>ProgramMgrDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\ProgramMgrDetail.aspx.designer.cs">
+      <DependentUpon>ProgramMgrDetail.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MgrModel\GroupMgrDetail.aspx.cs">
       <DependentUpon>GroupMgrDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="MgrModel\GroupMgrDetail.aspx.designer.cs">
       <DependentUpon>GroupMgrDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\ProgramMgrList.aspx.cs">
+      <DependentUpon>ProgramMgrList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\ProgramMgrList.aspx.designer.cs">
+      <DependentUpon>ProgramMgrList.aspx</DependentUpon>
     </Compile>
     <Compile Include="MgrModel\GroupMgrList.aspx.cs">
       <DependentUpon>GroupMgrList.aspx</DependentUpon>
@@ -330,6 +343,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MediaMgrSystem.BusinessLayerLogic\MediaMgrSystem.BusinessLayerLogic.csproj">
+      <Project>{2c66131e-9a65-43e0-8c63-7263207383c7}</Project>
+      <Name>MediaMgrSystem.BusinessLayerLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MediaMgrSystem.DataAccessLayer\MediaMgrSystem.DataAccessLayer.csproj">
       <Project>{91f930a0-ee7e-4732-9fef-9e556785b8f0}</Project>
       <Name>MediaMgrSystem.DataAccessLayer</Name>

@@ -28,9 +28,9 @@ namespace MediaMgrSystem.DataAccessLayer
         /// 构造函数
         /// </summary>
         /// <param name="connectstring">数据库连接字符串</param>
-        public DbUtils(string connectstring)
+        public DbUtils(string cStr)
         {
-            this.ConnectionString = connectionString;
+            this.ConnectionString = cStr;
         }
 
         /// <summary>   
@@ -66,6 +66,7 @@ namespace MediaMgrSystem.DataAccessLayer
             {
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
+
                     command.CommandType = commandType;//设置command的CommandType为指定的CommandType   
                     //如果同时传入了参数，则添加这些参数   
                     if (parameters != null)

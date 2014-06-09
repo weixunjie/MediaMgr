@@ -56,6 +56,9 @@
 
                 <ul class="nav navbar-nav " style="float: right">
                     <li><a href="<%=ResolveUrl("~/Default.aspx") %>">主页</a></li>
+
+                    <li><a href="<%=ResolveUrl("~/MgrModel/ProgramMgrList.aspx") %>">节目管理 </a></li>
+
                     <li><a href="<%=ResolveUrl("~/MgrModel/GroupMgrList.aspx") %>">分组管理 </a></li>
                     <li><a href="#">Page Two</a></li>
                 </ul>

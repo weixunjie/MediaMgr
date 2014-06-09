@@ -20,7 +20,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public List<DeviceInfo> GetAllDevicesByGroup(string groupId)
         {
 
-            String sqlStr = "SELECT * FROM DEVICEINFO from GROUPID=" + groupId;
+            String sqlStr = "SELECT * FROM DEVICEINFO WHERE GROUPID='" + groupId + "'";
 
             return GetDeviceList(sqlStr);
 
@@ -37,7 +37,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int RemoveDevice(string deviceId)
         {
-            String sqlStr = "DELETE FROM DEVICEINFO where DEVICEID=" + deviceId;
+            String sqlStr = "DELETE FROM DEVICEINFO WHERE DEVICEID=" + deviceId;
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
