@@ -10,35 +10,35 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadMain" runat="Server">
 
+
+
     <script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
-    <script type="text/javascript" src="Scripts/jquery.timer.js"></script>
     <script type="text/javascript" src="Scripts/bootstrap.js"></script>
-    <script type="text/javascript" src="Scripts/jquery.dragsort-0.5.1.min.js"></script>
+
     <script type="text/javascript" src="Scripts/jquery-ui-1.10.4.custom.js"></script>
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+
+    <script type="text/javascript" src="Scripts/jquery.dragsort-0.5.1.min.js"></script>
     <script type="text/javascript" src="Scripts/utils.js"></script>
 
+    <%--        <script type="text/javascript" src="Scripts/json2.js"></script>--%>
 
 
-    <script src="Scripts/jquery-1.6.4.min.js"></script>
+ 
+
+
 
     <script src="Scripts/jquery.signalR-2.0.3.min.js"></script>
 
-
     <script src="signalr/hubs"></script>
 
-    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom.min.css" type="text/css" />
-
-    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom.css" type="text/css" />
-
-    <link rel="stylesheet" href="Content/DeviceList.css" type="text/css" />
-    <link rel="stylesheet" href="Content/ChannelList.css" type="text/css" />
 
 
-    <link rel="stylesheet" href="Content/bootstrap.css" type="text/css" />
 
-    <link rel="stylesheet" href="Content/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom" type="text/css" />
-    <link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom" type="text/css" />
+
 
 
     <script type="text/javascript">

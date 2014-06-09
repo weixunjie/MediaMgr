@@ -183,6 +183,7 @@
     <Content Include="Scripts\jquery.dragsort-0.5.1.min.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.min.js" />
+    <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\utils.js" />
     <Content Include="Scripts\jquery.timer.js" />
     <Content Include="MgrModel\GroupMgrDetail.aspx" />

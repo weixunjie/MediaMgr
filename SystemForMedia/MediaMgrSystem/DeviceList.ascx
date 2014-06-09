@@ -1,28 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeBehind="DeviceList.ascx.cs" Inherits="MediaMgrSystem.DeviceList" %>
 
-<script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="Scripts/jquery.timer.js"></script>
-<script type="text/javascript" src="Scripts/bootstrap.js"></script>
-<script type="text/javascript" src="Scripts/jquery.dragsort-0.5.1.min.js"></script>
-<script type="text/javascript" src="Scripts/jquery-ui-1.10.4.custom.js"></script>
-<script type="text/javascript" src="Scripts/utils.js"></script>
-
-
-
-<script src="Scripts/jquery-1.6.4.min.js"></script>
-
-<script src="Scripts/jquery.signalR-2.0.3.min.js"></script>
-
-
-<script src="signalr/hubs"></script>
-
-<link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom.min.css" type="text/css" />
-
-<link rel="stylesheet" href="Content/jquery-ui-1.10.4.custom.css" type="text/css" />
-
-<link rel="stylesheet" href="Content/DeviceList.css" type="text/css" />
-
-<webopt:BundleReference runat="server" Path="~/Content/css" />
 
 <script type="text/javascript">
 
@@ -457,7 +434,7 @@
             <a class="close" onclick=" $('#dialogForBatchOperGroup').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">分组</h3>
         </div>
         <div class="modal-body">
-            <div style="float: left; height: 200px; width: 160px; margin-right: 10px">
+            <div style="float: left; height: 185px; width: 160px; margin-right: 10px">
 
                 <h4 style="text-align: left; margin-top: 0px">可选节目</h4>
 
@@ -488,7 +465,7 @@
                             通道选择
                         </p>
                     </div>
-                    <select id="ddBatchSelectChannel">
+                    <select id="ddBatchSelectChannel" style="width:220px">
                         <option value="1">11</option>
                         <option value="2">22</option>
                         <option value="3">33</option>
@@ -503,7 +480,7 @@
                             视频源选择:
                         </p>
                     </div>
-                    <select id="ddBatchSelectVideoSorce" name="selectTest">
+                    <select id="ddBatchSelectVideoSorce" style="width:220px" name="selectTest">
                         <option value="1">11</option>
                         <option value="2">22</option>
                         <option value="3">33</option>
@@ -517,7 +494,7 @@
 
 
                     <input type="checkbox" id="ckcBatchOpenVideoSource" style="float: left; vertical-align: middle" />
-                    <label for="ckcBatchOpenVideoSource">打开视频源</label>
+                    <label for="ckcBatchOpenVideoSource" style="line-height:21px" >&nbsp;打开视频源</label>
                     <br />
 
                 </div>

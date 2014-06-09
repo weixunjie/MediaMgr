@@ -17,7 +17,7 @@ namespace MediaMgrSystem.MgrModel
         {
             if (!Page.IsPostBack)
             {
-                BindListData();
+             //   BindListData();
             }
         }
 

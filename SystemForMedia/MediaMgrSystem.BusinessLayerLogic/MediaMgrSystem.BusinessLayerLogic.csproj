@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="EncoderBLL.cs" />
     <Compile Include="ChannelBLL.cs" />
-    <Compile Include="ProgramBLL.cs" />
     <Compile Include="GroupBLL.cs" />
     <Compile Include="DeviceBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
