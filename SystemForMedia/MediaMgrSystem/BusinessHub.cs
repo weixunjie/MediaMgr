@@ -19,6 +19,11 @@ namespace MediaMgrSystem
         public IDependencyResolver Resolver { get; private set; }
         private object aa=new object ();
 
+        public void LaoWeiTest()
+        {
+        
+        }
+
         public void sendVideoControlPauseMessage(string commandType)
         {
             Class2.SetCommand(2, Clients);
@@ -26,6 +31,8 @@ namespace MediaMgrSystem
         public void SendVideoControlMessage(string commandType)
         {
 
+            Clients.All.SendRefreshMessge("df");
+            return;
 
 
             System.Diagnostics.Debug.WriteLine("Begin Send First Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));

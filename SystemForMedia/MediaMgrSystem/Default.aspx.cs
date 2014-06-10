@@ -2,6 +2,7 @@
 using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -72,6 +73,30 @@ namespace MediaMgrSystem
         {
             return DateTime.Now.ToString("HH:mm:ss");
 
+        }
+
+       [WebMethod]
+        public static string RangerUserControl(string controlName)
+        {
+            StringBuilder build = new StringBuilder();
+            HtmlTextWriter htmlWriter = new HtmlTextWriter(new StringWriter(build));
+            UserControl uc = new UserControl();
+            Control ctrl = uc.LoadControl(controlName + ".ascx");
+            htmlWriter.Flush();
+            string result;
+            try
+            {
+                ctrl.RenderControl(htmlWriter);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                htmlWriter.Flush();
+                result = build.ToString();
+            }
+            return result;
         }
 
         [WebMethod]

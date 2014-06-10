@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeBehind="DeviceList.ascx.cs" Inherits="MediaMgrSystem.DeviceList" %>
 
 
+
 <script type="text/javascript">
 
     var currentOperDeviceDevice;
@@ -11,9 +12,18 @@
     var opSleepGuidIds = new Array()
 
 
+    $(document).unbind();
+
     $(document).ready(function () {
 
-        <%   List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();%>
+        <%  
+    List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();
+
+    string deviceIds = string.Empty; for (int i = 1; i <= 1; i++) { deviceIds = deviceIds + "#deviceMenu" + i.ToString() + ","; }; deviceIds = deviceIds.TrimEnd(',');
+    string ids = string.Empty; for (int i = 0; i < dGroups.Count; i++) { ids = ids + "#btnGroupOper" + i.ToString() + ","; }; ids = ids.TrimEnd(',');
+             %>
+
+
 
         var parameters = new Array();
 
@@ -34,9 +44,9 @@
         parameters.push(parameterClientType);
 
 
-        //chat.client.sendAllMessge = function (result) {
+        //chat.client.sendClientMessge = function (result) {
 
-        //    $("#divLogs").append("God" + result);
+        //    $("#deviceMenu"+result).se
         //}
 
 
@@ -50,12 +60,15 @@
         //---------------------------------group menu
         $.showGroupmenu = function () {
 
-            <% string ids = string.Empty; for (int i = 0; i < dGroups.Count; i++) { ids = ids + "#btnGroupOper" + i.ToString() + ","; }; ids = ids.TrimEnd(','); %>
 
-            var is_in = false;
+
+        
+            var is_group_menu_in = false;
             $("<%= ids %>").click(function (e) {
 
-                is_in = true;
+          
+                alert("click");
+                is_group_menu_in = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
@@ -64,15 +77,22 @@
 
                 currentOperGroupDevice = e.currentTarget.name;
 
+           
+                $(e.currentTarget).mouseout(function (e) {
+
+                   // debugger;
+                    is_group_menu_in = false;
+                });
+
+
             });
 
-            $("<%= ids %>").mouseout(function (e) {
-                is_in = false;
-            });
-
+          
 
             $(document).click(function () {
-                if (!is_in) $("#GroupMenubox").hide();
+             
+                alert("dcoumet lic")
+                if (!is_group_menu_in) $("#GroupMenubox").hide();
             });
 
             $("#GroupMenulistPlayVideo").click(function (e) {
@@ -93,17 +113,18 @@
         $.showGroupmenu();
 
 
-
         //---------------------------------------
 
         $.showDevicemenu = function () {
 
-            <% string deviceIds = string.Empty; for (int i = 1; i <= 9; i++) { ids = ids + "#deviceMenu" + i.ToString() + ","; }; ids = ids.TrimEnd(','); %>
+
+          
 
             var is_in = false;
             $("<%= deviceIds %>").click(function (e) {
 
 
+            
                 is_in = true;
 
                 var x = $(this).offset().left;
@@ -129,7 +150,10 @@
         $.showDevicemenu();
 
         $("#btnBatchGroupOper").click(function (e) {
-            $('#dialogForBatchOperGroup').modal('show');
+
+
+          //  $(document).reload();
+              $('#dialogForBatchOperGroup').modal('show');
         });
 
 
@@ -439,7 +463,7 @@
                 <h4 style="text-align: left; margin-top: 0px">可选节目</h4>
 
                 <select size="4" multiple="multiple" style="height: 160px; width: 150px;" id="lbAvaiableGroups">
-                    
+
                     <option value="1">后台登录</option>
 
                     <option value="2">密码修改</option>
@@ -508,7 +532,7 @@
         </div>
     </div>
 
-    
+
 
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="DeviceMenubox">
@@ -539,4 +563,4 @@
 
 
 </div>
-</div>
+

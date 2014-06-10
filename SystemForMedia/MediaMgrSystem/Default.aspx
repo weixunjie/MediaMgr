@@ -51,10 +51,63 @@
         var opSleepGuidIds = new Array()
         var strclientIdentify;
         var chat;
+
+        
         $(document).ready(function () {
+
 
             chat = $.connection.Test;
             $.connection.hub.start();
+
+            chat.client.sendRefreshMessge = function (result) {
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "Default.aspx/RangerUserControl",
+                    data: "{'controlName':'DeviceList'}",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (msg) {
+                    
+                        $("#wei").html(msg.d);
+
+                        // var arr = eval(msg.d);
+                        //
+
+                    }
+                });
+
+            }
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: "Default.aspx/RangerUserControl",
+                data: "{'controlName':'DeviceList'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (msg) {
+
+
+
+                    // debugger;
+                    $("#wei").html(msg.d);
+
+
+                    // var arr = eval(msg.d);
+                    //
+
+                }
+            });
+
+          
+
+      
+
+           // debugger;
+           // $("#wei").load()
+       
 
         });
 
@@ -91,10 +144,9 @@
         <%-- <% } %>--%>
     </div>
 
-    <div style="margin-left: 390px">
+    <div id="wei" style="margin-left: 390px">
 
-        <deviceList:DeviceList ID="DeviceList1" runat="server" />
-
+         <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>
 
     <div style="clear: both;">
