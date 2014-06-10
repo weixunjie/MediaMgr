@@ -44,30 +44,16 @@
         parameters.push(parameterClientType);
 
 
-        //chat.client.sendClientMessge = function (result) {
-
-        //    $("#deviceMenu"+result).se
-        //}
-
-
-
-
-
-        ///-------------------------------------------
-
-
-
-        //---------------------------------group menu
         $.showGroupmenu = function () {
 
 
 
-        
+
             var is_group_menu_in = false;
             $("<%= ids %>").click(function (e) {
 
-          
-                alert("click");
+
+
                 is_group_menu_in = true;
 
                 var x = $(this).offset().left;
@@ -77,21 +63,19 @@
 
                 currentOperGroupDevice = e.currentTarget.name;
 
-           
+
                 $(e.currentTarget).mouseout(function (e) {
 
-                   // debugger;
                     is_group_menu_in = false;
                 });
 
 
             });
 
-          
+
 
             $(document).click(function () {
-             
-                alert("dcoumet lic")
+
                 if (!is_group_menu_in) $("#GroupMenubox").hide();
             });
 
@@ -118,13 +102,13 @@
         $.showDevicemenu = function () {
 
 
-          
+
 
             var is_in = false;
             $("<%= deviceIds %>").click(function (e) {
 
 
-            
+
                 is_in = true;
 
                 var x = $(this).offset().left;
@@ -152,8 +136,8 @@
         $("#btnBatchGroupOper").click(function (e) {
 
 
-          //  $(document).reload();
-              $('#dialogForBatchOperGroup').modal('show');
+            //  $(document).reload();
+            $('#dialogForBatchOperGroup').modal('show');
         });
 
 
@@ -489,7 +473,7 @@
                             通道选择
                         </p>
                     </div>
-                    <select id="ddBatchSelectChannel" style="width:220px">
+                    <select id="ddBatchSelectChannel" style="width: 220px">
                         <option value="1">11</option>
                         <option value="2">22</option>
                         <option value="3">33</option>
@@ -504,7 +488,7 @@
                             视频源选择:
                         </p>
                     </div>
-                    <select id="ddBatchSelectVideoSorce" style="width:220px" name="selectTest">
+                    <select id="ddBatchSelectVideoSorce" style="width: 220px" name="selectTest">
                         <option value="1">11</option>
                         <option value="2">22</option>
                         <option value="3">33</option>
@@ -518,7 +502,7 @@
 
 
                     <input type="checkbox" id="ckcBatchOpenVideoSource" style="float: left; vertical-align: middle" />
-                    <label for="ckcBatchOpenVideoSource" style="line-height:21px" >&nbsp;打开视频源</label>
+                    <label for="ckcBatchOpenVideoSource" style="line-height: 21px">&nbsp;打开视频源</label>
                     <br />
 
                 </div>
