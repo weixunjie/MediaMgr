@@ -113,6 +113,7 @@
     <Content Include="Account\Register.aspx" />
     <Content Include="Account\RegisterExternalLogin.aspx" />
     <Content Include="AlreadyPaied.aspx" />
+    <Content Include="APIError.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -170,6 +171,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="DeviceViewer.aspx" />
+    <Content Include="expresscheck.aspx" />
     <Content Include="Images\accent.png" />
     <Content Include="Images\bullet.png" />
     <Content Include="Images\heroAccent.png" />
@@ -186,6 +188,7 @@
     <Content Include="Images\orderedList9.png" />
     <Content Include="MagicBusiness.aspx" />
     <Content Include="packages.config" />
+    <Content Include="CancelResult.aspx" />
     <Content Include="WebPay.aspx" />
     <None Include="Properties\PublishProfiles\ftp.pubxml" />
     <None Include="Properties\PublishProfiles\test.pubxml" />
@@ -212,6 +215,13 @@
     </Compile>
     <Compile Include="AlreadyPaied.aspx.designer.cs">
       <DependentUpon>AlreadyPaied.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="APIError.aspx.cs">
+      <DependentUpon>APIError.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="APIError.aspx.designer.cs">
+      <DependentUpon>APIError.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="About.aspx.cs">
@@ -277,6 +287,13 @@
     <Compile Include="DeviceViewer.aspx.designer.cs">
       <DependentUpon>DeviceViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="expresscheck.aspx.cs">
+      <DependentUpon>expresscheck.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="expresscheck.aspx.designer.cs">
+      <DependentUpon>expresscheck.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -286,6 +303,14 @@
     </Compile>
     <Compile Include="MagicBusiness.aspx.designer.cs">
       <DependentUpon>MagicBusiness.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="paypalfunctions.cs" />
+    <Compile Include="CancelResult.aspx.cs">
+      <DependentUpon>CancelResult.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CancelResult.aspx.designer.cs">
+      <DependentUpon>CancelResult.aspx</DependentUpon>
     </Compile>
     <Compile Include="ProcessResult.aspx.cs">
       <DependentUpon>ProcessResult.aspx</DependentUpon>
