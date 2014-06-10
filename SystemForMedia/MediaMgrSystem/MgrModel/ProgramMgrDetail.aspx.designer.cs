@@ -31,13 +31,13 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.Literal FailureText;
         
         /// <summary>
-        /// TbGroupName control.
+        /// TbProgrmeName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TbGroupName;
+        protected global::System.Web.UI.WebControls.TextBox TbProgrmeName;
         
         /// <summary>
         /// TbHiddenId control.
@@ -49,13 +49,13 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.TextBox TbHiddenId;
         
         /// <summary>
-        /// lbAvaibleDevice control.
+        /// lbAvaibleFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox lbAvaibleDevice;
+        protected global::System.Web.UI.WebControls.ListBox lbAvaibleFiles;
         
         /// <summary>
         /// btnToRight control.
@@ -94,12 +94,12 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.Button btnAllToLeft;
         
         /// <summary>
-        /// lbSelectedDevice control.
+        /// lbSelectedFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox lbSelectedDevice;
+        protected global::System.Web.UI.WebControls.ListBox lbSelectedFiles;
     }
 }

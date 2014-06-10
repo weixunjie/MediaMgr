@@ -3,7 +3,7 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <form runat="server">
-        <h3>分组信息管理</h3>
+        <h3>节目信息管理</h3>
 
 
         <section id="groupMgrSection">
@@ -14,13 +14,13 @@
                     <div class="col-md-10">
                         <asp:GridView ID="dvGroupList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
                             <Columns>
-                                <asp:BoundField DataField="GroupId" HeaderText="分组编号" />
-                                <asp:BoundField DataField="GroupName" HeaderText="分组名称" />
+                                <asp:BoundField DataField="ProgramId" HeaderText="节目编号" />
+                                <asp:BoundField DataField="ProgramName" HeaderText="节目名称" />
 
                                 <asp:TemplateField HeaderText="操作" ItemStyle-Width="150px">
                                     <ItemTemplate>
-                                        <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("GroupId")%>' runat="server" />
-                                        <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("GroupId")%>'  CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />
+                                        <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("ProgramId")%>' runat="server" />
+                                        <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("ProgramId")%>'  CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />
                                     </ItemTemplate>
 
 
@@ -32,7 +32,7 @@
                         <br />
 
                         <br />
-                        <asp:Button runat="server" Text="新增组" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
+                        <asp:Button runat="server" Text="新增节目" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
 
 
                     </div>

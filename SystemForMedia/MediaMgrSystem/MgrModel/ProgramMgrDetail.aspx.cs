@@ -11,68 +11,86 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ProgramMgrDetail : System.Web.UI.Page
     {
-        private GroupBLL groupBLL = new GroupBLL(GlobalUtils.DbUtilsInstance);
-        private DeviceBLL deviceBLL = new DeviceBLL(GlobalUtils.DbUtilsInstance);
+        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
+        private FileInfoBLL fileInfoBLL = new FileInfoBLL(GlobalUtils.DbUtilsInstance);
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
 
-                if (Request["gid"]!=null)
+                if (Request["pid"] != null)
                 {
-                    string groupId=Request["gid"].ToString();
+                    string pId = Request["pid"].ToString();
 
-                    TbHiddenId.Text = groupId;
+                    TbHiddenId.Text = pId;
 
-                    GroupInfo gi = groupBLL.GetGroupById(groupId)[0];
+                    ProgramInfo pi = programBLL.GetProgramById(pId,true)[0];
 
-                    TbGroupName.Text = gi.GroupName;
-
-                    List<DeviceInfo> diSelecteds = deviceBLL.GetAllDevicesByGroup(groupId);
+                    this.TbProgrmeName.Text = pi.ProgramName;
 
 
-                    if (diSelecteds.Count > 0)
+                    if (pi.MappingFiles!=null && pi.MappingFiles.Count > 0)
                     {
-                        foreach (var di in diSelecteds)
+                        foreach (var fileInfo in pi.MappingFiles)
                         {
-                            lbSelectedDevice.Items.Add(new ListItem() { Text = di.DeviceName, Value = di.DeviceId });
+                            this.lbSelectedFiles.Items.Add(new ListItem() { Text = fileInfo.FileName, Value = fileInfo.FileName });
                         }
                     }
 
 
                 }
-               
-
-          
-
-               List<DeviceInfo> diAvaibles= deviceBLL.GetAllDevicesByGroup("-1");
 
 
-               if (diAvaibles.Count > 0)
-               {
-                   foreach (var di in diAvaibles)
-                   {
-                       lbAvaibleDevice.Items.Add(new ListItem() { Text = di.DeviceName, Value = di.DeviceId }); 
-                   }
-               }
 
-             
+                string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
+
+                string mpgExePath = Server.MapPath(@"\Dlls");
+
+
+                List<FileAttribute> faAvaibles = fileInfoBLL.GetAllDiskFiles(fileBasePath, mpgExePath);
+
+
+                if (faAvaibles.Count > 0)
+                {
+                    foreach (var fa in faAvaibles)
+                    {
+                        bool isFound = false;
+                        foreach (ListItem sel in lbSelectedFiles.Items)
+                        {
+                            if (sel.Value == fa.FileName)
+                            {
+                                isFound = true;
+                                break;
+                            }
+
+                        }
+
+                        if (!isFound)
+                        {
+                            this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileName, Value = fa.FileName });
+                        }
+
+                    }
+                }
+
+
             }
         }
 
         protected void btnToRight_Click(object sender, EventArgs e)
         {
-            if (lbAvaibleDevice.SelectedItem != null)
+            if (this.lbAvaibleFiles.SelectedItem != null)
             {
                 List<ListItem> itemToRemoved = new List<ListItem>();
 
-                foreach (ListItem item in lbAvaibleDevice.Items)
+                foreach (ListItem item in lbAvaibleFiles.Items)
                 {
                     if (item.Selected)
                     {
 
-                        lbSelectedDevice.Items.Add(item);
+                        this.lbSelectedFiles.Items.Add(item);
                         itemToRemoved.Add(item);
                     }
                 }
@@ -82,7 +100,7 @@ namespace MediaMgrSystem.MgrModel
                 {
                     foreach (ListItem item in itemToRemoved)
                     {
-                        lbAvaibleDevice.Items.Remove(item);
+                        lbAvaibleFiles.Items.Remove(item);
 
                     }
                 }
@@ -94,18 +112,18 @@ namespace MediaMgrSystem.MgrModel
 
         protected void btnAllToRight_Click(object sender, EventArgs e)
         {
-            if (lbAvaibleDevice.Items != null)
+            if (lbAvaibleFiles.Items != null)
             {
 
-                foreach (ListItem item in lbAvaibleDevice.Items)
+                foreach (ListItem item in this.lbAvaibleFiles.Items)
                 {
 
-                    lbSelectedDevice.Items.Add(item);
+                    lbSelectedFiles.Items.Add(item);
 
 
                 }
 
-                lbAvaibleDevice.Items.Clear();
+                lbAvaibleFiles.Items.Clear();
 
 
             }
@@ -114,16 +132,16 @@ namespace MediaMgrSystem.MgrModel
 
         protected void btnToLeft_Click(object sender, EventArgs e)
         {
-            if (lbSelectedDevice.SelectedItem != null)
+            if (this.lbSelectedFiles.SelectedItem != null)
             {
                 List<ListItem> itemToRemoved = new List<ListItem>();
 
-                foreach (ListItem item in lbSelectedDevice.Items)
+                foreach (ListItem item in lbSelectedFiles.Items)
                 {
                     if (item.Selected)
                     {
 
-                        lbAvaibleDevice.Items.Add(item);
+                        lbAvaibleFiles.Items.Add(item);
                         itemToRemoved.Add(item);
                     }
                 }
@@ -133,7 +151,7 @@ namespace MediaMgrSystem.MgrModel
                 {
                     foreach (ListItem item in itemToRemoved)
                     {
-                        lbSelectedDevice.Items.Remove(item);
+                        lbSelectedFiles.Items.Remove(item);
 
 
                     }
@@ -144,70 +162,57 @@ namespace MediaMgrSystem.MgrModel
 
         protected void btnAllToLeft_Click(object sender, EventArgs e)
         {
-            if (lbSelectedDevice.Items != null)
+            if (lbSelectedFiles.Items != null)
             {
 
-                foreach (ListItem item in lbSelectedDevice.Items)
+                foreach (ListItem item in lbSelectedFiles.Items)
                 {
 
-                    lbAvaibleDevice.Items.Add(item);
+                    lbAvaibleFiles.Items.Add(item);
 
 
                 }
 
-                lbSelectedDevice.Items.Clear();
-
+                lbSelectedFiles.Items.Clear();
 
             }
         }
 
         protected void Unnamed7_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/MgrModel/GroupMgrList.aspx");
+            Response.Redirect("~/MgrModel/ProgramMgrList.aspx");
         }
 
         protected void Unnamed6_Click(object sender, EventArgs e)
         {
-            GroupInfo gi = new GroupInfo();
+            ProgramInfo pi = new ProgramInfo();
 
-            gi.GroupName = TbGroupName.Text;
+            pi.ProgramName = this.TbProgrmeName.Text;
 
 
-            if (lbSelectedDevice.Items.Count > 0)
+            if (this.lbSelectedFiles.Items.Count > 0)
             {
-                gi.Devices = new List<DeviceInfo>();
-                foreach (ListItem item in lbSelectedDevice.Items)
+                pi.MappingFiles = new List<FileAttribute>();
+                foreach (ListItem item in lbSelectedFiles.Items)
                 {
-                    gi.Devices.Add(new DeviceInfo() { DeviceId = item.Value });
+                    pi.MappingFiles.Add(new FileAttribute() { FileName = item.Value });
                 }
-            }
-
-            if (this.lbAvaibleDevice.Items.Count > 0)
-            {
-                GroupInfo giUpdateNotAssinged = new GroupInfo();
-                giUpdateNotAssinged.Devices = new List<DeviceInfo>();
-                foreach (ListItem item in lbAvaibleDevice.Items)
-                {
-                    giUpdateNotAssinged.Devices.Add(new DeviceInfo() { DeviceId = item.Value });
-                }
-
-                groupBLL.UpdateDeviceEmptyGroup(giUpdateNotAssinged);
             }
 
 
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
-                gi.GroupId = TbHiddenId.Text;
-                groupBLL.UpdateGroup(gi);
+                pi.ProgramId = TbHiddenId.Text;
+                this.programBLL.UpdateProgram(pi);
             }
             else
             {
-                groupBLL.AddGroup(gi);
+                programBLL.AddPrograme(pi);
 
             }
 
-            Response.Redirect("~/MgrModel/GroupMgrList.aspx");
+            Response.Redirect("~/MgrModel/ProgramMgrList.aspx");
         }
     }
 }

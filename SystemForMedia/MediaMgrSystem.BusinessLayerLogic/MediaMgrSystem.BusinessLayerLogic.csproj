@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FFMPEGWrapper">
+      <HintPath>..\MediaMgrSystem\Dlls\FFMPEGWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +46,8 @@
     <Compile Include="ChannelBLL.cs" />
     <Compile Include="GroupBLL.cs" />
     <Compile Include="DeviceBLL.cs" />
+    <Compile Include="FileInfoBLL.cs" />
+    <Compile Include="ProgramBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

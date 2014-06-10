@@ -2,7 +2,7 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <form runat="server">
-        <h3 style="clip: rect(auto, auto, 10px, auto)">分组明细管理</h3>
+        <h3 style="clip: rect(auto, auto, 10px, auto)">节目明细管理</h3>
 
 
         <section id="groupMgrSection">
@@ -14,12 +14,12 @@
             </asp:PlaceHolder>
             <div class="form-group" style="margin-bottom: 10px">
 
-                <asp:Label runat="server" AssociatedControlID="TbGroupName" CssClass="col-md-2 control-label" Width="107px">组名称:</asp:Label>
+                <asp:Label runat="server" AssociatedControlID="TbProgrmeName" CssClass="col-md-2 control-label" Width="107px">节目名称:</asp:Label>
 
-                <asp:TextBox runat="server" ID="TbGroupName" CssClass="form-control" />
+                <asp:TextBox runat="server" ID="TbProgrmeName" CssClass="form-control" />
 
-                <asp:RequiredFieldValidator  style="vertical-align:middle"  ValidationGroup="inputValidate" runat="server" ControlToValidate="TbGroupName"
-                   ForeColor="Red" ErrorMessage=" 组名称不能为空" Height="25px" />
+                <asp:RequiredFieldValidator  style="vertical-align:middle"  ValidationGroup="inputValidate" runat="server" ControlToValidate="TbProgrmeName"
+                   ForeColor="Red" ErrorMessage=" 节目名称不能为空" Height="25px" />
 
                 <asp:TextBox runat="server" ID="TbHiddenId" CssClass="form-control" Visible="False" />
 
@@ -27,7 +27,7 @@
 
             <div class="form-group" style="margin-bottom: 10px">
 
-                <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">设备:</asp:Label>
+                <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">文件列表:</asp:Label>
             </div>
 
 
@@ -36,7 +36,7 @@
 
                 <div style="float: left; width: 200px">
                     <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">可选</asp:Label>
-                    <asp:ListBox ID="lbAvaibleDevice" utoPostBack="true" SelectionMode="Multiple" runat="server" Height="226px" Width="187px"></asp:ListBox>
+                    <asp:ListBox ID="lbAvaibleFiles" utoPostBack="true" SelectionMode="Multiple" runat="server" Height="226px" Width="187px"></asp:ListBox>
                 </div>
                 <div style="float: left; width: 50px; margin-top: 40px">
                     <asp:Button ID="btnToRight"   Width="40px" Height="30px" style="margin-bottom:5px" Text=">" runat="server" OnClick="btnToRight_Click"></asp:Button>
@@ -46,7 +46,7 @@
                 </div>
                 <div style="float: left; width: 240px">
                     <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">已选</asp:Label>
-                    <asp:ListBox ID="lbSelectedDevice" AutoPostBack="true" SelectionMode="Multiple" runat="server" Height="222px" Width="186px"></asp:ListBox>
+                    <asp:ListBox ID="lbSelectedFiles" AutoPostBack="true" SelectionMode="Multiple" runat="server" Height="222px" Width="186px"></asp:ListBox>
                 </div>
                 <div style="clear: both" class="clear"></div>
             </div>

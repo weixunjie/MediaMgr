@@ -3,6 +3,7 @@ using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,26 +14,28 @@ namespace MediaMgrSystem.BusinessLayerLogic
     {
 
         DbUtils dbUitls = null;
+
+        FileInfoBLL fileInfoBLL = null;
         public ProgramBLL(DbUtils dUtils)
         {
             dbUitls = dUtils;
+            fileInfoBLL = new FileInfoBLL(dbUitls);
 
         }
 
-        public List<ProgramInfo> GetProgramById(string pid)
+        public List<ProgramInfo> GetProgramById(string pid, bool isGetFileInfo=false)
         {
             String sqlStr = "SELECT * FROM PROGRAMINFO WHERE PROGRAMID=" + pid;
 
-            return GetProgramList(sqlStr);
+            return GetProgramList(sqlStr,isGetFileInfo);
         }
 
-        public List<ProgramInfo> GetAllProgramBy()
-        {
 
+        public List<ProgramInfo> GetAllProgram(bool isGetFileInfo=false)
+        {
             String sqlStr = "SELECT * FROM PROGRAMINFO";
 
-            return GetProgramList(sqlStr);
-
+            return GetProgramList(sqlStr, isGetFileInfo);
         }
 
 
@@ -47,58 +50,56 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddPrograme(ProgramInfo pi)
         {
-            String sqlStr = "INSERT INTO PROGRAMINFO(PROGRAMNAME,MAPPINGFILES,FILESBITRATE) values ('{0}','{1}','{2}')";
+            String sqlStr = "INSERT INTO PROGRAMINFO(PROGRAMNAME,MAPPINGFILES) values ('{0}','{1}')";
             string mapFiles;
-            string mapBitRate;
-            GetMappingValues(pi, out mapFiles, out mapBitRate);
 
-            sqlStr = String.Format(sqlStr, pi.ProgramName,mapFiles,mapBitRate);
+            GetMappingValues(pi, out mapFiles);
+
+            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles);
 
             int result = dbUitls.ExecuteNonQuery(sqlStr);
 
- 
- 
+
 
             return result;
 
         }
 
-        private void GetMappingValues(ProgramInfo pi, out string mapFiles, out string mapBitRate)
+        private void GetMappingValues(ProgramInfo pi, out string mapFiles)
         {
             mapFiles = string.Empty;
-            mapBitRate = string.Empty;
+
             if (pi.MappingFiles != null)
             {
                 foreach (var fa in pi.MappingFiles)
                 {
                     mapFiles += fa.FileName + "|";
-                    mapBitRate += fa.BitRate + "|";
                 }
 
                 mapFiles = mapFiles.TrimEnd('|');
-                mapBitRate = mapBitRate.TrimEnd('|');
+
             }
         }
 
 
         public int UpdateProgram(ProgramInfo pi)
         {
-            String sqlStr = "UPDATE PROGRAMINFO SET PROGRAMNAME='{0}',MAPPINGFILES='{1}' FILESBITRATE='{2}' WHERE PROGRAMID={3}";
+            String sqlStr = "UPDATE PROGRAMINFO SET PROGRAMNAME='{0}',MAPPINGFILES='{1}'  WHERE PROGRAMID={2}";
 
             string mapFiles;
-            string mapBitRate;
-            GetMappingValues(pi, out mapFiles, out mapBitRate);
-                
-            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles, mapBitRate,pi.ProgramId);
+
+            GetMappingValues(pi, out mapFiles);
+
+            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles, pi.ProgramId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
 
-        protected List<ProgramInfo> GetProgramList(string sqlStr)
+        protected List<ProgramInfo> GetProgramList(string sqlStr, bool isGetFileInfo)
         {
-            List<ProgramInfo> groups = new List<ProgramInfo>();
+            List<ProgramInfo> result = new List<ProgramInfo>();
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
             if (dt != null)
@@ -113,36 +114,38 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                         pi.ProgramName = dt.Rows[i]["PROGRAMNAME"].ToString();
 
-                        string mappingFiles = dt.Rows[i]["MappingFiles"].ToString();
 
-                        string mappingBitRate = dt.Rows[i]["FilesBitRate"].ToString();
-
-                        if (!string.IsNullOrEmpty(mappingFiles) && !string.IsNullOrEmpty(mappingBitRate))
+                        if (isGetFileInfo)
                         {
-                            string[] tmpMfile = mappingFiles.Split('|');
+                            string mappingFiles = dt.Rows[i]["MappingFiles"].ToString();
 
-                            string[] tmpBitRate = mappingBitRate.Split('|');
 
-                            pi.MappingFiles = new List<FileAttribute>();
-                            for (int k = 0; k < tmpMfile.Length; k++)
+                            if (!string.IsNullOrEmpty(mappingFiles))
                             {
-                                FileAttribute fa = new FileAttribute();
-                                fa.BitRate = tmpBitRate[k];
-                                fa.FileName = tmpMfile[k];
-                                
-                            }
+                                string[] tmpMfile = mappingFiles.Split('|');
 
+                                pi.MappingFiles = new List<FileAttribute>();
+                                for (int k = 0; k < tmpMfile.Length; k++)
+                                {
+                                    FileAttribute fa = new FileAttribute();
+                                    fa.FileName = tmpMfile[k];
+
+                                    FileAttribute tmp = fileInfoBLL.GetFileInfoByFile(fa.FileName);
+
+                                    fa.BitRate = tmp.BitRate;
+                                    pi.MappingFiles.Add(fa);
+                                }
+                            }
                         }
 
-                        //gi.GroupId = dt.Rows[i]["GROUPID"].ToString();
-                        //gi.GroupName = dt.Rows[i]["GROUPNAME"].ToString();
-                        //gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
-                        //groups.Add(gi);
+                        result.Add(pi);
+
+
                     }
                 }
             }
 
-            return groups;
+            return result;
 
         }
     }

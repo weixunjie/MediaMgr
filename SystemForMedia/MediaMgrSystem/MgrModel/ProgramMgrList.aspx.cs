@@ -11,7 +11,7 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ProgramMgrList : System.Web.UI.Page
     {
-        private GroupBLL groupBLL = new GroupBLL(GlobalUtils.DbUtilsInstance);
+        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,15 +27,15 @@ namespace MediaMgrSystem.MgrModel
         {
 
             // ListBox1.Items.RemoveAt(1);
-            Response.Redirect("~/MgrModel/GroupMgrDetail.aspx");
+            Response.Redirect("~/MgrModel/ProgramMgrDetail.aspx");
         }
 
 
         private void BindListData()
         {
-            List<GroupInfo> groups = groupBLL.GetAllGroups();
+            List<ProgramInfo> programes = programBLL.GetAllProgram();
 
-            dvGroupList.DataSource = groups;
+            dvGroupList.DataSource = programes;
             dvGroupList.DataBind();
 
         }
@@ -44,12 +44,12 @@ namespace MediaMgrSystem.MgrModel
         {
             if (e.CommandName == "Edit")
             {
-                Response.Redirect("~/MgrModel/GroupMgrDetail.aspx?gid=" + e.CommandArgument.ToString());
+                Response.Redirect("~/MgrModel/ProgramMgrDetail.aspx?pid=" + e.CommandArgument.ToString());
 
             }
             else if (e.CommandName == "Del")
             {
-                groupBLL.RemoveGroup(e.CommandArgument.ToString());
+                programBLL.RemoveProgram(e.CommandArgument.ToString());
                 BindListData();
             }
         }
