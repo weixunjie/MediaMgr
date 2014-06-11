@@ -11,81 +11,213 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Microsoft.AspNet.SignalR.Infrastructure;
+using MediaMgrSystem.BusinessLayerLogic;
 namespace MediaMgrSystem
 {
     [HubName("Test")]
     public class BusinessHub : Hub
     {
-        public IDependencyResolver Resolver { get; private set; }
-        private object aa=new object ();
 
-        public void LaoWeiTest()
+        public IDependencyResolver Resolver { get; private set; }
+
+
+        public void SendPlayCommand(string channelId, string[] programeIds)
         {
-        
+
+            if (GlobalUtils.IsChannelWorking)
+            {
+                List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+                Clients.Clients(alPCIds).sendResultBrowserClient("有通道使用中", "200");
+            }
+
+
+            string videoSvrId = GlobalUtils.GetVideoServerConnectionIds();
+
+            if (string.IsNullOrWhiteSpace(videoSvrId))
+            {
+                List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+                Clients.Clients(alPCIds).sendResultBrowserClient("视频服务未开启","200");
+            }
+            else
+            {
+
+                VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
+
+                cmdToVideoSvr.commandType = CommandTypeEnum.PLAYVEDIO;
+
+
+                List<ProgramInfo> pids = GlobalUtils.ProgramBLLInstance.GetProgramByIds(programeIds);
+
+
+                cmdToVideoSvr.arg = new VideoServerOperArg();
+
+
+                cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
+
+
+                GlobalUtils.CurrentClientGuidId = Guid.NewGuid().ToString();
+
+
+                cmdToVideoSvr.guidId = GlobalUtils.CurrentClientGuidId;
+                cmdToVideoSvr.arg.buffer = "5";
+                cmdToVideoSvr.arg.streamName = "123456790";
+
+
+                cmdToVideoSvr.arg.streamSrcs = new List<string>();
+
+                foreach (var pi in pids)
+                {
+                    if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
+                    {
+                        foreach (var file in pi.MappingFiles)
+                        {
+                            cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
+                        }
+                    }
+                }
+
+                int intCID = 0;
+
+                int port = 0;
+                if (int.TryParse(channelId, out intCID))
+                {
+                    port = 1001 + intCID;
+                }
+
+                cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:" + port.ToString();
+
+                string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
+
+
+                CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId);
+
+                Clients.Client(videoSvrId).sendMessageToClient(jsonData);
+
+
+            }
+
+
+        }
+
+
+        private void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId)
+        {
+
+            VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
+
+            dataSendToAndroidClient.commandType = CommandTypeEnum.PLAYVEDIO;
+
+
+            dataSendToAndroidClient.guidId = Guid.NewGuid().ToString();
+            GlobalUtils.CurrentClientGuidId = dataSendToAndroidClient.guidId;
+
+
+            dataSendToAndroidClient.arg = new VideoOperAndriodClientArg();
+
+
+            dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
+
+            dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
+
+            dataSendToAndroidClient.arg.streamSrcs = cmdToVideoSvr.arg.streamSrcs;
+
+            dataSendToAndroidClient.arg.udpBroadcastAddress = cmdToVideoSvr.arg.udpBroadcastAddress;
+
+            GlobalUtils.ReadyToSentClientData = dataSendToAndroidClient;
+
+
+            List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId);
+
+            List<string> needSentClientIpAddresses = new List<string>();
+
+            if (channelGroups != null && channelGroups.Count > 0)
+            {
+                foreach (var gi in channelGroups)
+                {
+                    if (gi.Devices != null && gi.Devices.Count > 0)
+                    {
+                        foreach (var di in gi.Devices)
+                        {
+                            needSentClientIpAddresses.Add(di.DeviceIpAddress);
+                        }
+                    }
+                }
+            }
+
+            if (needSentClientIpAddresses.Count > 0)
+            {
+                GlobalUtils.ReadyToSentClientIds = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
+            }
         }
 
         public void sendVideoControlPauseMessage(string commandType)
         {
-            Class2.SetCommand(2, Clients);
+            HubSendLogic.SetCommand(2, Clients);
         }
         public void SendVideoControlMessage(string commandType)
         {
 
-            Clients.All.SendRefreshMessge("df");
-            return;
+
+            //Clients.All.SendRefreshMessge("df");
+            //return;
 
 
-            System.Diagnostics.Debug.WriteLine("Begin Send First Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
-            Class2.SetCommand(1, Clients);
-            System.Diagnostics.Debug.WriteLine("End Send First Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
-       //  var   aa= GlobalHost.TraceManager;
+            //System.Diagnostics.Debug.WriteLine("Begin Send First Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            //HubSendLogic.SetCommand(1, Clients);
+            //System.Diagnostics.Debug.WriteLine("End Send First Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            ////  var   aa= GlobalHost.TraceManager;
 
-             Thread.Sleep(4000);
+            //Thread.Sleep(4000);
 
 
-             System.Diagnostics.Debug.WriteLine("Begin Send 2nd Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
-             Class2.SetCommand(2, Clients);
-             System.Diagnostics.Debug.WriteLine("End Send 2nd Command "+ DateTime.Now.ToString("HH:mm:ss.fff"));
-          
+            //System.Diagnostics.Debug.WriteLine("Begin Send 2nd Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            //HubSendLogic.SetCommand(2, Clients);
+            //System.Diagnostics.Debug.WriteLine("End Send 2nd Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
 
-         //   IPerformanceCounterManager 
-        //     SendResponseMessage("sf");
+
+            ////   IPerformanceCounterManager 
+            //     SendResponseMessage("sf");
 
         }
 
         public void SendScheduleTaskControl(string exTime, string stime)
         {
 
-            Class2.SetCommand(1, Clients);
+            //HubSendLogic.SetCommand(1, Clients);
 
-            System.Diagnostics.Debug.WriteLine("WINDOWS SERVICE Schedule Execute At:" + exTime + "  Config Time:" + stime);
+            //System.Diagnostics.Debug.WriteLine("WINDOWS SERVICE Schedule Execute At:" + exTime + "  Config Time:" + stime);
 
 
         }
 
 
-
-        public void SendMessageToMgrServer(string data)
+        public void SendMessageToMgrServer(string data, string ipAddress)
         {
-            VideoServerRegModel regModel = Newtonsoft.Json.JsonConvert.DeserializeObject<VideoServerRegModel>(data);
-
-            if (regModel.commandType == CommandTypeEnum.VIDEOSVRREG)
+            if (GlobalUtils.CheckIfVideoServer(ipAddress))
             {
-               GlobalUtils.UpdateConnectionByConnectionId(regModel.ConnectionId, SingalRClientConnectionType.VEDIOSERVER);
-            }
+                ComuResponseBase cb = (ComuResponseBase)JsonConvert.DeserializeObject(data);
+                if (cb.guidId == GlobalUtils.CurrentVideoGuidId)
+                {
+                    if (cb.errorCode == "0")
+                    {
+                        string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalUtils.ReadyToSentClientData);
 
+                        Clients.Clients(GlobalUtils.ReadyToSentClientIds).sendMessageToClient(jsonData);
+                    }
+                }
+            }
         }
         public void SendTimeToServer(string aa)
         {
             //StreamWriter sw = new StreamWriter(@"c:\logForTrack.txt", true);
             //sw.WriteLine(aa);
             //sw.Close();
-            lock(aa)
+            lock (aa)
             {
 
-            System.Diagnostics.Debug.WriteLine(aa);
+                System.Diagnostics.Debug.WriteLine(aa);
             }
- 
+
         }
 
         public void SendResponseMessage(string result)
@@ -109,7 +241,7 @@ namespace MediaMgrSystem
 
         public void SendPlayResponeMessage(string ipAddress)
         {
-            
+
             System.Diagnostics.Debug.WriteLine("IP " + ipAddress + " Play Time:" + DateTime.Now.ToString("HH:mm:ss.fff"));
 
         }
@@ -125,12 +257,12 @@ namespace MediaMgrSystem
 
             double ts = dtClient.Subtract(dtServer).TotalMilliseconds;
 
-           
+
 
         }
 
 
-    
+
 
         //private List<string> getAllTime()
         //{

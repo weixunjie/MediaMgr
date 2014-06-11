@@ -122,6 +122,7 @@ namespace MediaMgrSystem.DataAccessLayer
                     command.Parameters.Add(parameter);
                 }
             }
+
             connection.Open();
             //CommandBehavior.CloseConnection参数指示关闭Reader对象时关闭与其关联的Connection对象   
             return command.ExecuteReader(CommandBehavior.CloseConnection);

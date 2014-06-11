@@ -23,15 +23,45 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public List<ProgramInfo> GetProgramById(string pid, bool isGetFileInfo=false)
+        public List<ProgramInfo> GetProgramById(string pid, bool isGetFileInfo = false)
         {
             String sqlStr = "SELECT * FROM PROGRAMINFO WHERE PROGRAMID=" + pid;
 
-            return GetProgramList(sqlStr,isGetFileInfo);
+            return GetProgramList(sqlStr, isGetFileInfo);
+        }
+
+        public List<ProgramInfo> GetProgramByIds(string[] pids)
+        {
+            string ids = string.Empty;
+
+            if (pids!=null && pids.Length>0)
+            {
+                foreach(var str in pids)
+                {
+                    ids = ids + "'"+str + "',";
+
+                }
+
+               ids= ids.TrimEnd(',');
+            }
+
+            if (!string.IsNullOrWhiteSpace(ids))
+            {
+
+
+                String sqlStr = "SELECT * FROM PROGRAMINFO WHERE PROGRAMID in (" +ids+")" ;
+
+                return GetProgramList(sqlStr, true);
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
-        public List<ProgramInfo> GetAllProgram(bool isGetFileInfo=false)
+
+        public List<ProgramInfo> GetAllProgram(bool isGetFileInfo = false)
         {
             String sqlStr = "SELECT * FROM PROGRAMINFO";
 

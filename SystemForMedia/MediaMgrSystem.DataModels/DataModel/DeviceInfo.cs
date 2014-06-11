@@ -16,6 +16,9 @@ namespace MediaMgrSystem.DataModels
 
         public String GroupId { get; set; }
 
+        public String GroupName { get; set; }
+
+
     }
 
 }

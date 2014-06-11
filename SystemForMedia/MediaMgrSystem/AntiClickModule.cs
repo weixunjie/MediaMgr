@@ -32,7 +32,7 @@ namespace MediaMgrSystem
             DateTime dt = DateTime.UtcNow;
             
             SingalConnectedClient sc = new SingalConnectedClient();
-            SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
+            SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.PC;
             sc.ConnectionId = hub.Context.ConnectionId;
 
             string type = string.Empty;
@@ -65,7 +65,21 @@ namespace MediaMgrSystem
             sc.ConnectionType = singalRClientConnectionType;
 
             sc.ConnectionIdentify=strIdentify;
-            
+
+            if (sc.ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
+            {
+
+                string extingViedoServerCid = GlobalUtils.GetVideoServerConnectionIds();
+
+                if (!string.IsNullOrEmpty(extingViedoServerCid))
+                {
+                    GlobalUtils.RemoveConnectionByConnectionId(extingViedoServerCid);
+ 
+                }
+
+            }
+
+
             GlobalUtils.AddConnection(sc);
 
             System.Diagnostics.Debug.WriteLine("Someone Connected: Connected Id" + hub.Context.ConnectionId);
@@ -83,14 +97,11 @@ namespace MediaMgrSystem
         {
             DateTime dt = DateTime.UtcNow;
 
-            System.Diagnostics.Debug.WriteLine("Someone DISConnected: Connected Id" + hub.Context.ConnectionId);
+            System.Diagnostics.Debug.WriteLine("DISConnected: Connected Id" + hub.Context.ConnectionId);
 
             
-            GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId,"fd");
-            //String message = "SYNCTIME{0}";
-            //TimeSpan ts = new TimeSpan(dt.Ticks);
-            //message = string.Format(message, (long)((dt - Jan1st1970).TotalMilliseconds));
-            //hub.Clients.Client(hub.Context.ConnectionId).sendSyncMessage(message);
+            GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);
+    
         }
         protected override void OnAfterOutgoing(IHubOutgoingInvokerContext context)
         {

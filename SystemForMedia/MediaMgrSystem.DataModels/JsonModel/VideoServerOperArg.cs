@@ -9,7 +9,7 @@ namespace MediaMgrSystem.DataModels
     public class VideoServerOperArg 
     {
 
-        public string streamSrc
+        public List<string> streamSrcs
         {
             get;
             set;

@@ -8,12 +8,19 @@ using System.Web.UI.WebControls;
 using Newtonsoft.Json;
 using MediaMgrSystem.DataModels;
 using System.Threading;
+using MediaMgrSystem.BusinessLayerLogic;
 namespace MediaMgrSystem
 {
     public partial class ChannelList : System.Web.UI.UserControl
     {
+        private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
+
+        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
+        
         protected void Page_Load(object sender, EventArgs e)
         {
+
+
         }
 
         public List<ScheduleInfo> GetAllSchedules()
@@ -32,27 +39,23 @@ namespace MediaMgrSystem
         
 
 
-        public List<ChannelInfo> GetAllChanels()
+        public List<ChannelInfo> GetAllChannels()
         {
-            List<ChannelInfo> channels = new List<ChannelInfo>();
+            List<ChannelInfo> channels = channelBLL.GetAllChannels();
 
-            ChannelInfo gi = new ChannelInfo { ChannelId = "1", ChannelName = "moren" };
-
-
-
-            channels.Add(gi);
-            channels.Add(new ChannelInfo { ChannelId = "1", ChannelName = "ddf" });
-
-            channels.Add(new ChannelInfo { ChannelId = "23", ChannelName = "ddjklf" });
-
-                     channels.Add(new ChannelInfo { ChannelId = "283", ChannelName = "hkjhk" });
             return channels;
-
+                
         }
 
 
+        public List<ProgramInfo> GetAllPrograms()
+        {
+            List<ProgramInfo> pis = programBLL.GetAllProgram();
+           
 
+            return pis;
 
+        }
 
     }
 }

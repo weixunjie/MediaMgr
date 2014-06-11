@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.BusinessLayerLogic
 {
-    public class ChannelInfoBLL
+    public class ChannelBLL
     {
         DbUtils dbUitls = null;
-        public ChannelInfoBLL(DbUtils dUtils)
+        public ChannelBLL(DbUtils dUtils)
         {
             dbUitls = dUtils;
         }
@@ -20,7 +20,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public ChannelInfo GetChannelById(string channelId)
         {
 
-            String sqlStr = "SELECT * FROM CHANNELINFO FROM CHANNELID=" + channelId;
+            String sqlStr = "SELECT * FROM CHANNELINFO WHERE CHANNELID=" + channelId;
 
             List<ChannelInfo> cis = GetChannelList(sqlStr);
             if (cis != null && channelId.Count() > 0)
@@ -45,15 +45,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int RemoveChannel(string channelId)
         {
-            String sqlStr = "DELETE FROM CHANNELINFO where CHANNELID=" + channelId;
+            String sqlStr = "DELETE FROM CHANNELINFO WHERE CHANNELID=" + channelId;
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
         public int AddChannel(ChannelInfo ci)
-        {
-            String sqlStr = "INSERT INTO CHANNELINFO(CHANNENAME) values ('{0}')";
+        {       
+
+            String sqlStr = "INSERT INTO CHANNELINFO(CHANNELNAME) values ('{0}')";
 
             sqlStr = String.Format(sqlStr,ci.ChannelName);
 
@@ -63,7 +64,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int UpdateChannel(ChannelInfo ci)
         {
-            String sqlStr = "UPDATE CHANNELINFO SET CHANNENAME='{0}' WHERE CHANNEID={1}";
+            String sqlStr = "UPDATE CHANNELINFO SET CHANNELNAME='{0}' WHERE CHANNELID={1}";
 
             sqlStr = String.Format(sqlStr, ci.ChannelName,ci.ChannelId);
 

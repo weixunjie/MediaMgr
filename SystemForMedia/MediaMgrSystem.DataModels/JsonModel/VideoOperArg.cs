@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class VideoOperArg 
+    public class VideoOperAndriodClientArg
     {
-
-        public string streamSrc
+        public List<string> streamSrcs
         {
             get;
             set;
@@ -22,12 +21,6 @@ namespace MediaMgrSystem.DataModels
             set;
         }
 
-        public string destDeviceIP
-        {
-            get;
-            set;
-        }
-
         public int mediaType
         {
             get;
@@ -35,12 +28,6 @@ namespace MediaMgrSystem.DataModels
         }
 
         public string bitRate
-        {
-            get;
-            set;
-        }
-
-        public string broadcastFlag
         {
             get;
             set;

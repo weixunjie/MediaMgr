@@ -11,16 +11,28 @@ namespace MediaMgrSystem.BusinessLayerLogic
 {
     public class DeviceBLL
     {
+     
         DbUtils dbUitls = null;
+
+      
         public DeviceBLL(DbUtils dUtils)
         {
             dbUitls = dUtils;
+     
         }
 
         public List<DeviceInfo> GetAllDevicesByGroup(string groupId)
         {
-
             String sqlStr = "SELECT * FROM DEVICEINFO WHERE GROUPID='" + groupId + "'";
+
+            return GetDeviceList(sqlStr);
+
+        }
+
+        public List<DeviceInfo> GetADevicesById(string id)
+        {
+
+            String sqlStr = "SELECT * FROM DEVICEINFO WHERE DEVICEID='" + id + "'";
 
             return GetDeviceList(sqlStr);
 
@@ -45,7 +57,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddDevice(DeviceInfo di)
         {
-            String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID) values ('{0}','{1}',{2})";
+            String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID) values ('{0}','{1}','{2}')";
 
             sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId);
             
@@ -55,7 +67,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         
         public int UpdateDevice(DeviceInfo di)
         {
-            String sqlStr = "UPDATE DEVICEINFO SET DEVICENAME='{0}',DEVICEIPADDRESS='{1}',GROUPID={2} WHERE DEVICEID={3}";
+            String sqlStr = "UPDATE DEVICEINFO SET DEVICENAME='{0}',DEVICEIPADDRESS='{1}',GROUPID='{2}' WHERE DEVICEID={3}";
 
             sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId,di.DeviceId);
 
@@ -82,6 +94,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         di.DeviceName = dt.Rows[i]["DEVICENAME"].ToString();
                         di.DeviceIpAddress = dt.Rows[i]["DEVICEIPADDRESS"].ToString();
                         di.GroupId = dt.Rows[i]["GROUPID"].ToString();
+                       
+
                         deviceInfos.Add(di);
                     }
 

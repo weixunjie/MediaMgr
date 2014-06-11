@@ -27,7 +27,7 @@
     <%--        <script type="text/javascript" src="Scripts/json2.js"></script>--%>
 
 
- 
+
 
 
 
@@ -52,7 +52,7 @@
         var strclientIdentify;
         var chat;
 
-        
+
         $(document).ready(function () {
 
 
@@ -69,16 +69,14 @@
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
-                    
-                        $("#wei").html(msg.d);
 
-                        // var arr = eval(msg.d);
-                        //
-
+                        $("#divForDevice").html(msg.d);
                     }
                 });
 
             }
+    
+
 
             $.ajax({
                 async: false,
@@ -90,24 +88,18 @@
                 success: function (msg) {
 
 
-
-                    // debugger;
-                    $("#wei").html(msg.d);
-
-
-                    // var arr = eval(msg.d);
-                    //
+                    $("#divForDevice").html(msg.d);
 
                 }
             });
 
-          
 
-      
 
-           // debugger;
-           // $("#wei").load()
-       
+
+
+            // debugger;
+            // $("#wei").load()
+
 
         });
 
@@ -144,9 +136,9 @@
         <%-- <% } %>--%>
     </div>
 
-    <div id="wei" style="margin-left: 390px">
+    <div id="divForDevice" style="margin-left: 390px">
 
-         <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
+        <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>
 
     <div style="clear: both;">

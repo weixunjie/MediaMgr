@@ -1,8 +1,8 @@
-﻿using MediaMgrSystem.DataAccessLayer;
+﻿using MediaMgrSystem.BusinessLayerLogic;
+using MediaMgrSystem.DataAccessLayer;
 using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -13,131 +13,68 @@ namespace MediaMgrSystem
     public static class GlobalUtils
     {
 
+        private static object objForLock = new object();
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
-        public static List<SingalConnectedClient> andiordClients = new List<SingalConnectedClient>();
+        public static List<SingalConnectedClient> AllConnectedClients = new List<SingalConnectedClient>();
 
-        private static string GetApplicationNameByType(SingalRClientConnectionType type)
+
+        public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
+
+        public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
+
+
+
+        public static bool IsChannelWorking = false;
+
+        public static string CurrentVideoGuidId = string.Empty;
+
+        public static string CurrentClientGuidId = string.Empty;
+
+        public static List<string> ReadyToSentClientIds = new List<string>();
+
+        public static object ReadyToSentClientData = new object();
+
+
+        public static bool CheckIfAudio(string fileName)
         {
+            string fName = fileName.ToUpper();
 
-            switch (type)
+            if (fName.EndsWith(".FLV") || fName.EndsWith(".MP4"))
             {
-                case SingalRClientConnectionType.ANDROID:
-                    return "ConnectedClientAndriods";
-                case SingalRClientConnectionType.ENCODERDEVICE:
-                    return "ConnectedClientEncoders";
-                case SingalRClientConnectionType.PC:
-
-                    return "ConnectedClientPCs";
-
-                case SingalRClientConnectionType.VEDIOSERVER:
-                    return "ConnectedClientVideoSever";
-
-            }
-
-            return string.Empty;
-
-        }
-
-        //public static bool RemoveConnectionByConnectionId(string connectionId)
-        //{
-        //    if (!RemoveConnectionByConnectionId(connectionId, GetApplicationNameByType(SingalRClientConnectionType.ANDROID)))
-        //    {
-        //        if (!RemoveConnectionByConnectionId(connectionId, GetApplicationNameByType(SingalRClientConnectionType.ENCODERDEVICE)))
-        //        {
-        //            if (!RemoveConnectionByConnectionId(connectionId, GetApplicationNameByType(SingalRClientConnectionType.PC)))
-        //            {
-        //                if (!RemoveConnectionByConnectionId(connectionId, GetApplicationNameByType(SingalRClientConnectionType.VEDIOSERVER)))
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return true;
-        //}
-
-        public static bool UpdateConnectionByConnectionId(string connectionId, SingalRClientConnectionType type)
-        {
-            if (andiordClients != null)
-            {
-                int removeIndex = -1;
-                for (int i = 0; i < andiordClients.Count; i++)
-                {
-                    if (andiordClients[i].ConnectionId == connectionId)
-                    {
-                        andiordClients[i].ConnectionType = type;
-                        break;
-                    }
-                }
-
-
-            }
-
-            return true;
-        }
-
-        public static bool RemoveConnectionByConnectionId(string connectionId, string appName)
-        {
-
-
-            if (andiordClients != null)
-            {
-                int removeIndex = -1;
-                for (int i = 0; i < andiordClients.Count; i++)
-                {
-                    if (andiordClients[i].ConnectionId == connectionId)
-                    {
-                        removeIndex = i;
-                        break;
-                    }
-                }
-
-                if (removeIndex >= 0)
-                {
-                    andiordClients.RemoveAt(removeIndex);
-
-
-                }
+                return false;
             }
 
             return true;
 
 
+        }
+        public static bool RemoveConnectionByConnectionId(string connectionId)
+        {
+            lock (objForLock)
+            {
 
-            //HttpContext.Current.Application.Lock();
-            //bool isRemoved = false;
-            //if (HttpContext.Current.Application[appName] != null)
-            //{
-            //    List<SingalConnectedClient> connectedClients = (List<SingalConnectedClient>)HttpContext.Current.Application[appName];
+                if (AllConnectedClients != null)
+                {
+                    int removeIndex = -1;
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    {
+                        if (AllConnectedClients[i].ConnectionId == connectionId)
+                        {
+                            removeIndex = i;
+                            break;
+                        }
+                    }
 
-            //    if (connectedClients != null)
-            //    {
-            //        int removeIndex = -1;
-            //        for (int i = 0; i < connectedClients.Count; i++)
-            //        {
-            //            if (connectedClients[i].ConnectionId == connectionId)
-            //            {
-            //                removeIndex = i;
-            //                break;
-            //            }
-            //        }
+                    if (removeIndex >= 0)
+                    {
+                        AllConnectedClients.RemoveAt(removeIndex);
 
-            //        if (removeIndex >= 0)
-            //        {
-            //            connectedClients.RemoveAt(removeIndex);
-            //            isRemoved = true;
+                    }
+                }
+            }
 
-            //        }
-
-            //        HttpContext.Current.Application[appName] = connectedClients;
-
-            //    }
-            //}
-
-            //HttpContext.Current.Application.UnLock();
-            //return isRemoved;
-
+            return true;
 
         }
 
@@ -146,92 +83,109 @@ namespace MediaMgrSystem
 
             string result = string.Empty;
 
-            if (andiordClients != null)
+            lock (objForLock)
             {
-                for (int i = 0; i < andiordClients.Count; i++)
+                if (AllConnectedClients != null)
                 {
-                    if (andiordClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
                     {
-                        result = andiordClients[i].ConnectionId;
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
+                        {
+                            result = AllConnectedClients[i].ConnectionId;
+                        }
+                    }
+                }
+            }
+
+            return result;
+
+
+        }
+
+        public static void AddConnection(SingalConnectedClient client)
+        {
+            lock (objForLock)
+            {
+                AllConnectedClients.Add(client);
+            }
+
+        }
+
+
+        public static bool CheckIfVideoServer(string strIdentifies)
+        {
+            bool result = false;
+
+            lock (objForLock)
+            {
+
+                if (AllConnectedClients != null)
+                {
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    {
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER &&
+                            strIdentifies == AllConnectedClients[i].ConnectionIdentify)
+                        {
+                            result = true;
+                            break;
+                        }
                     }
                 }
 
             }
 
             return result;
-            ////string result = string.Empty;
-            ////HttpContext.Current.Application.Lock();
-
-            ////string appName = GetApplicationNameByType(SingalRClientConnectionType.VEDIOSERVER);
-            ////if (HttpContext.Current.Application[appName] != null)
-            ////{
-            ////    List<SingalConnectedClient> connectedClients = (List<SingalConnectedClient>)HttpContext.Current.Application[appName];
-
-            ////    if (connectedClients != null)
-            ////    {
-            ////        for (int i = 0; i < connectedClients.Count; i++)
-            ////        {
-            ////            if (connectedClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
-            ////            {
-            ////                result = connectedClients[i].ConnectionId;
-            ////                break;
-            ////            }
-            ////        }
-            ////    }
-            ////}
-
-            ////HttpContext.Current.Application.UnLock();
-
-            ////return result;
-        }
-
-        public static void AddConnection(SingalConnectedClient client)
-        {
-            andiordClients.Add(client);
-
-            //HttpContext.Current.Appli
-            // cation.Lock();
-
-            //string appName = GetApplicationNameByType(client.ConnectionType);
-            //if (HttpContext.Current.Application[appName] != null)
-            //{
-            //    List<SingalConnectedClient> connectedClients = (List<SingalConnectedClient>)HttpContext.Current.Application[appName];
-
-            //    if (connectedClients != null)
-            //    {
-            //        connectedClients.Add(client);
-            //        HttpContext.Current.Application[appName] = connectedClients;
-            //    }
-            //}
-            //HttpContext.Current.Application.UnLock();
 
         }
 
-        public static List<string> GetConnectionIdsByIdentify(string strIdentify, SingalRClientConnectionType type)
+        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies)
         {
-            HttpContext.Current.Application.Lock();
+            List<string> results = new List<string>();
+
+            lock (objForLock)
+            {
+
+                if (AllConnectedClients != null)
+                {
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    {
+                        if (strIdentifies.Contains(AllConnectedClients[i].ConnectionIdentify))
+                        {
+                            results.Add(AllConnectedClients[i].ConnectionIdentify);
+                        }
+                    }
+                }
+
+
+            }
+
+            return results;
+
+        }
+
+
+        public static List<string> GetAllPCDeviceConnectionIds()
+        {
+
 
             List<string> results = new List<string>();
 
-            string appName = GetApplicationNameByType(type);
-
-            if (HttpContext.Current.Application[appName] != null)
+            lock (objForLock)
             {
-                List<SingalConnectedClient> connectedClients = (List<SingalConnectedClient>)HttpContext.Current.Application[appName];
 
-                if (connectedClients != null)
+                if (AllConnectedClients != null)
                 {
-                    for (int i = 0; i < connectedClients.Count; i++)
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
                     {
-                        if (connectedClients[i].ConnectionIdentify == strIdentify)
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.PC)
                         {
-                            results.Add(connectedClients[i].ConnectionIdentify);
+                            results.Add(AllConnectedClients[i].ConnectionId);
                         }
                     }
                 }
             }
 
-            HttpContext.Current.Application.UnLock();
+
             return results;
 
         }
@@ -239,16 +193,20 @@ namespace MediaMgrSystem
         public static List<string> GetAllAndriodsDeviceConnectionIds()
         {
 
+
             List<string> results = new List<string>();
 
-
-            if (andiordClients != null)
+            lock (objForLock)
             {
-                for (int i = 0; i < andiordClients.Count; i++)
+
+                if (AllConnectedClients != null)
                 {
-                    if (andiordClients[i].ConnectionType == SingalRClientConnectionType.ANDROID)
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
                     {
-                        results.Add(andiordClients[i].ConnectionId);
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.ANDROID)
+                        {
+                            results.Add(AllConnectedClients[i].ConnectionId);
+                        }
                     }
                 }
             }

@@ -7,8 +7,12 @@
     var currentOperChannel;
     $(document).ready(function () {
 
-        <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChanels();
+        <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
              List<MediaMgrSystem.DataModels.ScheduleInfo> schedules = GetAllSchedules();
+
+             List<MediaMgrSystem.DataModels.ProgramInfo> allProgramInfos = GetAllPrograms();
+
+
              string ids = string.Empty;
              for (int i = 0; i < allChanels.Count; i++) { ids = ids + "#channelDiv" + allChanels[i].ChannelId.ToString() + ","; }; ids = ids.TrimEnd(',');
 
@@ -17,11 +21,11 @@
 
         %>
 
-
         //chat.client.sendAllMessge = function (result) {
 
 
         //}
+
 
         var isChooseSchedule = false;
         $("#btnChooseSchedule").click(function (e) {
@@ -77,10 +81,6 @@
                 }
             });
 
-
-            //alert(e.target.name);
-            // debugger;
-
         });
 
 
@@ -89,6 +89,29 @@
         });
 
         $("#btnChooseProgram").click(function (e) {
+
+
+            $("#lbSelectedProgram option").each(function () {
+
+                $(this).remove();
+            })
+
+
+            $("#lbAvaiableProgram option").each(function () {
+
+                $(this).remove();
+            })
+
+
+
+                <%  foreach (var pi in allProgramInfos)
+                    { %>
+
+
+            $("#lbAvaiableProgram").append("<option value='<% =pi.ProgramId%>'><%=pi.ProgramName%></option>");
+             
+                 <%} %>
+
             $('#dialogForChooseProgram').modal('show');
         });
 
@@ -167,6 +190,31 @@
         })
 
 
+        $("#btnConfirmPlayPrograme").click(function () {
+
+
+            if ($("#lbSelectedProgram option").length <= 0) {
+                alert("请选择节目");
+            }
+            else
+            {
+                var pids = new Array();
+
+                $("#lbSelectedProgram option").each(function () {
+
+                    pids.push($(this).val());
+                   
+                })
+
+                chat.server.sendPlayCommand(currentOperChannel, pids);
+
+                $('#dialogForChooseProgram').modal('hide');
+                
+            }
+
+        })
+
+
 
     });
 
@@ -176,12 +224,10 @@
 
 
 
-
-
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="ChannelMenubox">
-        <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">播放视频</a></li>
-        <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px" id="GroupMenulistPauseVideo" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">暂停播放</a></li>
+        <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">计划选择</a></li>
+        <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px"  data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
 
     </ul>
 
@@ -218,6 +264,8 @@
 
     </div>
 
+    <% if (channelIndex < allChanels.Count)
+       { %>
     <div " style="float: right; height: 160px">
         <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
@@ -230,15 +278,18 @@
         </div>
         <div style="height: 10px; margin-top: 10px; text-align: center; font-size: 15pt">
             <%=  allChanels[channelIndex].ChannelName  %>
+             <% channelIndex++; %>
         </div>
 
     </div>
 
-    <% } %>
+    <% }
+        } %>
 
-    
-
-   <ul style=" clear:left;  margin-left:0px; text-align:center;list-style-type:none;">
+    <div id="divChannelInfo"  style=" clear:both; margin-bottom:10px; margin-top: 10px; text-align:left; font-size: 15pt">
+           asdf
+     </div>
+   <ul style=" clear:both;  margin-left:0px; text-align:left;list-style-type:none;">
 
        <li  class="channelControlButtonLI" >           
 
@@ -272,21 +323,15 @@
 
                <h4 style="text-align:left;margin-top:0px ">可选节目</h4>
 
-            <select size="4"multiple="multiple" style=" height: 190px; width: 150px;" id="lbAvaiableProgram">
+            <select size="4" multiple="multiple" style=" height: 190px; width: 150px;" id="lbAvaiableProgram">
 
+          <%--      <%  foreach (var pi in allProgramInfos)
+                    { %>
 
-                <option value="1">后台登录</option>
+                     <option value="<% =pi.ProgramId %>"><% =pi.ProgramName %>></option>
 
-                <option value="2">密码修改</option>
-
-                <option value="3">新闻添加</option>
-
-                <option value="4">新闻编辑</option>
-
-                <option value="5">新闻删除</option>
-
-                <option value="6">新闻发布</option>
-
+             
+                 <%} %>--%>
 
             </select>
 
@@ -324,7 +369,7 @@
          
         </div>
         <div class="modal-footer">
-            <a class="btn primary">确认</a>
+            <a id="btnConfirmPlayPrograme" class="btn primary">确认</a>
         </div>
     </div>
 

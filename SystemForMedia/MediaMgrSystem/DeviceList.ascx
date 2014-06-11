@@ -44,6 +44,14 @@
         parameters.push(parameterClientType);
 
 
+
+        chat.client.sendResultBrowserClient = function (result, error) {
+
+            alert(result);
+            $("#divLogs").append(result);
+        }
+        
+
         $.showGroupmenu = function () {
 
 

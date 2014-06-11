@@ -33,7 +33,7 @@ namespace MediaMgrSystem.DataModels
         }
 
 
-        public VideoOperCommand arg
+        public VideoOperAndriodClientCommand arg
         {
             get;
             set;
