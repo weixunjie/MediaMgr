@@ -36,7 +36,11 @@ namespace MediaMgrSystem
 
         }
 
-        
+
+        public string GetIsPlaying()
+        {
+            return GlobalUtils.IsChannelPlaying.ToString().ToLower();
+        }
 
 
         public List<ChannelInfo> GetAllChannels()

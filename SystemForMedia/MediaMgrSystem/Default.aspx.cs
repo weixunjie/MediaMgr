@@ -1,4 +1,5 @@
 ﻿
+using MediaMgrSystem.BusinessLayerLogic;
 using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace MediaMgrSystem
 
     public partial class _Default : Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //  string output = FFMPEG.Execute("c:\ffmpeg.exe");
@@ -75,7 +77,7 @@ namespace MediaMgrSystem
 
         }
 
-       [WebMethod]
+        [WebMethod]
         public static string RangerUserControl(string controlName)
         {
             StringBuilder build = new StringBuilder();
@@ -116,23 +118,80 @@ namespace MediaMgrSystem
         }
 
         [WebMethod]
-        public static string GetScheduleByChannelId(string cid)
+        public static void SaveDeviceGroup(string deivceId, string groupId)
         {
-         //   Thread.Sleep(2000);
-            return "1";
+
+            if (!string.IsNullOrWhiteSpace(deivceId))
+            {
+                deivceId = deivceId.TrimEnd(',');
+                string[] strs = deivceId.Split(',');
+                if (strs != null && strs.Length > 0)
+                {
+                    foreach (var str in strs)
+                    {
+                        GlobalUtils.DeviceBLLInstance.UpdateDeviceGroup(str, groupId);
+                        //deviceBLL
+                    }
+
+                }
+            }
+            //System.Threading.Thread.Sleep(5000);
+
+
+            //JsonString js = new JsonString();
+            //js.StrValue = GuidId;
+
+            //List<JsonString> strs = new List<JsonString>();
+            //strs.Add(js);
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(strs);
+
 
         }
 
         [WebMethod]
-        public static string SaveSchedule(string cid ,string sid)
+        public static string GetScheduleByChannelId(string cid)
         {
             //   Thread.Sleep(2000);
             return "1";
 
         }
-      
-      
+
+        [WebMethod]
+        public static string SaveSchedule(string cid, string sid)
+        {
+            //   Thread.Sleep(2000);
+            return "1";
+
+        }
         
+        [WebMethod]
+        public static void SaveGroupChannel(string cid, string gid)
+        {
+            GlobalUtils.GroupBLLInstance.UpdateGroupChannel(gid, cid);
+        }
+
+        [WebMethod]
+        public static string GetChannelByGroupId(string gid)
+        {
+            //   Thread.Sleep(2000);
+           // return "3";
+
+           List<GroupInfo> gis= GlobalUtils.GroupBLLInstance.GetGroupById(gid);
+
+           if (gis != null && gis.Count > 0)
+           {
+
+               return gis[0].ChannelId;
+
+           }
+
+           return string.Empty;
+
+
+        }
+
+
+
 
     }
 }

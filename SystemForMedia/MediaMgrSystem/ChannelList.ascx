@@ -5,6 +5,8 @@
 <script type="text/javascript">
 
     var currentOperChannel;
+    var currentPlayPIds = new Array();
+    var isPlaying =<% =GetIsPlaying() %>;
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
@@ -21,21 +23,94 @@
 
         %>
 
-        //chat.client.sendAllMessge = function (result) {
+
+        chat.client.sendResultBrowserClientNoticeStatus = function (result, error) {
+
+            if (error != "0") {             
+
+                isPlaying=false;
+                $("#divChannelInfo").html(result);
+            }
+            // $("#divLogs").append('<br/>' + result);
+        }
+
+        function setButtonStatus(type)
+        {
+          
+            //All disable
+            if (type=="AllDisabled")
+            {            
+                $("#btnChannelControlPlay").attr("disabled", true);
+           
+                $("#btnChannelControlStop").attr("disabled", true);
+
+                $("#btnChannelControlRepeat").attr("disabled", true);
+            }
+
+            //Playing disable play, enabld,stop and repeta
+            if (type=="Play")
+            {            
+                $("#btnChannelControlPlay").attr("disabled", true);
+           
+                $("#btnChannelControlStop").attr("disabled", false);
+
+                $("#btnChannelControlRepeat").attr("disabled", false);
+            }
+
+            //Stop disable stop and repeta, enabled palying
+            if (type=="Stop")
+            {            
+                $("#btnChannelControlPlay").attr("disabled", false);
+           
+                $("#btnChannelControlStop").attr("disabled", true);
+
+                $("#btnChannelControlRepeat").attr("disabled", true);
+            }
+
+            if ($("#btnChannelControlPlay").attr("disabled")=="disabled")
+            {
+                $("#btnChannelControlPlay").attr("src","Images/ic_image_play_disabled.png");
+            }
+            else
+            {
+                $("#btnChannelControlPlay").src="Images/ic_image_play.png"
+
+            }
+     
+
+            if ($("#btnChannelControlStop").attr("disabled")=="disabled")
+            {
+                $("#btnChannelControlStop").attr("src","Images/ic_image_stop_disabled.png");
+              
+            }
+            else
+            {
+                $("#btnChannelControlStop").attr("src","Images/ic_image_stop.png");
+
+            }
 
 
-        //}
+            if ($("#btnChannelControlRepeat").attr("disabled")=="disabled")
+            {
+                $("#btnChannelControlRepeat").attr("src","Images/ic_image_repeat_disabled.png");
+               
+            }
+            else
+            {
+                $("#btnChannelControlRepeat").attr("src","Images/ic_image_repeat.png");
 
+            }
+
+           
+        }
 
         var isChooseSchedule = false;
         $("#btnChooseSchedule").click(function (e) {
 
             isChooseSchedule = true;
 
-
             var x = $(this).offset().left + $("#ChannelMenubox").width() + 6;
             var y = $(this).offset().top;
-
 
             $.ajax({
                 type: "POST",
@@ -124,7 +199,7 @@
 
 
                 currentOperChannel = e.currentTarget.id.replace("channelDiv", "");
-
+                <%%>
                 is_in = true;
 
                 var x = $(this).offset().left;
@@ -154,7 +229,7 @@
 
         ///-------------------------pgrame 
 
-        $("#btnToRight").click(function () {
+        $("#btnProgamToRight").click(function () {
             if ($("#lbAvaiableProgram option:selected").length > 0) {
                 $("#lbSelectedProgram").append("<option value='" + $("#lbAvaiableProgram option:selected").val() + "'>" + $("#lbAvaiableProgram option:selected").text() + "</option>");
                 $("#lbAvaiableProgram option:selected").remove();
@@ -162,7 +237,7 @@
 
         })
 
-        $("#btnAllToRight").click(function () {
+        $("#btnProgamAllToRight").click(function () {
             var leftvalue = "";
             $("#lbAvaiableProgram option").each(function () {
                 leftvalue += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
@@ -171,7 +246,7 @@
             $("#lbSelectedProgram").append(leftvalue);
         })
 
-        $("#btnToLeft").click(function () {
+        $("#btnProgamToLeft").click(function () {
             //  debugger;
             if ($("#lbSelectedProgram option:selected").length > 0) {
                 $("#lbAvaiableProgram").append("<option value='" + $("#lbSelectedProgram option:selected").val() + "'>" + $("#lbSelectedProgram option:selected").text() + "</option>");
@@ -179,7 +254,7 @@
             }
         })
 
-        $("#btnAllToLeft").click(function () {
+        $("#btnProgamAllToLeft").click(function () {
             var rightvalue = "";
             $("#lbSelectedProgram option").each(function () {
 
@@ -192,27 +267,71 @@
 
         $("#btnConfirmPlayPrograme").click(function () {
 
-
             if ($("#lbSelectedProgram option").length <= 0) {
                 alert("请选择节目");
             }
-            else
-            {
-                var pids = new Array();
+            else {
+                currentPlayPIds = new Array();
 
                 $("#lbSelectedProgram option").each(function () {
 
-                    pids.push($(this).val());
-                   
-                })
+                    currentPlayPIds.push($(this).val());
 
-                chat.server.sendPlayCommand(currentOperChannel, pids);
+                })
+                          
 
                 $('#dialogForChooseProgram').modal('hide');
-                
+
+                $("#divChannelInfo").html("通道:" + currentOperChannel + "就绪");
+
+              
+                setButtonStatus("Play");
+
+
             }
 
         })
+
+        setButtonStatus("AllDisabled");
+
+        $("#btnChannelControlPlay").click(function () {
+
+           
+            setButtonStatus("Play");
+            if (currentPlayPIds != null && currentPlayPIds.length > 0) {
+                chat.server.sendPlayCommand(currentOperChannel, currentPlayPIds);
+                $("#divChannelInfo").html("通道:" + currentOperChannel + "播放中");
+            }
+
+
+        })
+
+
+        $("#btnChannelControlStop").click(function () {
+
+            
+            setButtonStatus("Stop");
+            chat.server.sendStopRoRepeatCommand("1");                         
+        
+
+            $("#divChannelInfo").html("通道:" + currentOperChannel + "停止");
+
+
+
+        })
+
+
+        $("#btnChannelControlRepeat").click(function () {
+         
+
+            chat.server.sendStopRoRepeatCommand("2");
+
+            $("#divChannelInfo").html("通道:" + currentOperChannel + "循环");
+
+
+
+        })
+
 
 
 
@@ -270,7 +389,6 @@
         <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
             <img src="Images/ic_image_channel.png" width="90" height="99" />
-
             
         </div>
 
@@ -287,27 +405,27 @@
         } %>
 
     <div id="divChannelInfo"  style=" clear:both; margin-bottom:10px; margin-top: 10px; text-align:left; font-size: 15pt">
-           asdf
+           等待操作
      </div>
    <ul style=" clear:both;  margin-left:0px; text-align:left;list-style-type:none;">
 
        <li  class="channelControlButtonLI" >           
 
-           <img src="Images/ic_image_play.png" onmousedown='this.src="Images/ic_image_play.png"' class="channelControlButtonImage"  />
+           <img src="Images/ic_image_play.png" id="btnChannelControlPlay" onmousedown='this.src="Images/ic_image_play.png"' class="channelControlButtonImage"  />
 
        </li>
 
 
           <li class="channelControlButtonLI" >           
 
-           <img src="Images/ic_image_stop.png" onmousedown='this.src="Images/ic_image_stop.png"' class="channelControlButtonImage" />
+           <img src="Images/ic_image_stop.png" id="btnChannelControlStop" onmousedown='this.src="Images/ic_image_stop.png"'   class="channelControlButtonImage" />
 
        </li>
 
        <li class="channelControlButtonLI">
            
 
-           <img src="Images/ic_image_repeat.png" onmousedown='this.src="Images/ic_image_repeat.png"' class="channelControlButtonImage" />
+           <img src="Images/ic_image_repeat.png" id="btnChannelControlRepeat" onmousedown='this.src="Images/ic_image_repeat.png"' class="channelControlButtonImage" />
 
        </li>
          
@@ -339,20 +457,20 @@
             <div style=" float:left;height:200px; width:52px ;margin-top:52px;  margin-left:10px; margin-right:10px">
                
                 <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  id="btnToRight" style="width:30px"  >></a>
+                 <a class="btn primary"  id="btnProgamToRight" style="width:30px"  >></a>
                </div>
                                               
                  <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  id="btnAllToRight" style="width:30px"  >>></a>
+                 <a class="btn primary"  id="btnProgamAllToRight" style="width:30px"  >>></a>
                </div>
 
 
                 <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary" id="btnToLeft" style="width:30px"   ><</a>
+                 <a class="btn primary" id="btnProgamToLeft" style="width:30px"   ><</a>
                </div>
 
                  <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary" id="btnAllToLeft" style="width:30px"  ><<</a>
+                 <a class="btn primary" id="btnProgamAllToLeft" style="width:30px"  ><<</a>
                </div>
                    
                 </div>

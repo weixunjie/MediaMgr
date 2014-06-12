@@ -8,45 +8,43 @@ using System.Web.UI.WebControls;
 using Newtonsoft.Json;
 using MediaMgrSystem.DataModels;
 using System.Threading;
+using MediaMgrSystem.BusinessLayerLogic;
 namespace MediaMgrSystem
 {
     public partial class DeviceList : System.Web.UI.UserControl
     {
+
+        private GroupBLL groupBLL = new GroupBLL(GlobalUtils.DbUtilsInstance);
+
+        private DeviceBLL deviceBLL = new DeviceBLL(GlobalUtils.DbUtilsInstance);
+
+        private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
+
         protected void Page_Load(object sender, EventArgs e)
         {
         }
 
-        public List<GroupInfo> GetAllGroups()
+        public List<GroupInfo> GetAllGroupsIncludeDefaultGroup()
         {
-            List<GroupInfo> goups = new List<GroupInfo>();
+            List<GroupInfo> gis = groupBLL.GetAllGroups();
 
-            GroupInfo gi = new GroupInfo { GroupId = "1", GroupName = "moren" };
+            GroupInfo groupDefault = new GroupInfo();
 
+            groupDefault.GroupId = "-1";
+            groupDefault.GroupName = "默认分组";
+            groupDefault.Devices = deviceBLL.GetAllDevicesByGroup("-1");
 
-            gi.Devices = GetDeviceList();
+            gis.Insert(0, groupDefault);
 
-            goups.Add(gi);
-            goups.Add(new GroupInfo { GroupId = "1", GroupName = "ddf" });
-
-            return goups;
+            return gis;
 
         }
 
-        public List<DeviceInfo> GetDeviceList()
+
+        public List<ChannelInfo> GetAllChannels()
         {
-            string[] str = System.Configuration.ConfigurationManager.AppSettings["IpAddress"].ToString().Split(',');
+            return channelBLL.GetAllChannels();
 
-            List<DeviceInfo> result = new List<DeviceInfo>();
-            for (int i = 0; i < str.Length; i++)
-            {
-                DeviceInfo di = new DeviceInfo();
-                di.DeviceId = (i + 1).ToString();
-                di.DeviceIpAddress = str[i];
-                di.DeviceName = "设备"+i.ToString();
-                result.Add(di);
-            }
-
-            return result;
         }
 
 

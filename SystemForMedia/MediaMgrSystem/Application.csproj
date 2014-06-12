@@ -171,7 +171,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Images\ic_image_channel.png" />
     <Content Include="Images\ic_image_device.png" />
+    <Content Include="Images\ic_image_group.png" />
     <Content Include="Images\ic_image_menu.png" />
+    <Content Include="Images\ic_image_play.png" />
+    <Content Include="Images\ic_image_repeat.png" />
+    <Content Include="Images\ic_image_stop.png" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
     <Content Include="MgrModel\DeviceMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrList.aspx" />

@@ -12,6 +12,8 @@ namespace MediaMgrSystem.DataModels
 
         public String GroupName { get; set; }
 
+        public String ChannelId { get; set; }
+
         public List<DeviceInfo> Devices { get; set; }
 
 

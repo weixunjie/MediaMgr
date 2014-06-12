@@ -11,8 +11,8 @@ namespace MediaMgrSystem
 
 
     public class AntiClickModule : HubPipelineModule
-    {        
-        
+    {
+
 
         long weee = DateTime.Now.Ticks;
         public AntiClickModule()
@@ -26,11 +26,12 @@ namespace MediaMgrSystem
 
         private static DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-       
+
         protected override void OnAfterConnect(IHub hub)
         {
             DateTime dt = DateTime.UtcNow;
-            
+
+
             SingalConnectedClient sc = new SingalConnectedClient();
             SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.PC;
             sc.ConnectionId = hub.Context.ConnectionId;
@@ -59,12 +60,12 @@ namespace MediaMgrSystem
 
             if (hub.Context.QueryString["clientIdentify"] != null)
             {
-                strIdentify = hub.Context.QueryString["clientIdentify"].ToString();               
+                strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
             }
 
             sc.ConnectionType = singalRClientConnectionType;
 
-            sc.ConnectionIdentify=strIdentify;
+            sc.ConnectionIdentify = strIdentify;
 
             if (sc.ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
             {
@@ -74,8 +75,12 @@ namespace MediaMgrSystem
                 if (!string.IsNullOrEmpty(extingViedoServerCid))
                 {
                     GlobalUtils.RemoveConnectionByConnectionId(extingViedoServerCid);
- 
+
                 }
+
+                GlobalUtils.VideoServerIPAddress = strIdentify;
+                GlobalUtils.VideoServerConnectionId = hub.Context.ConnectionId;
+
 
             }
 
@@ -84,7 +89,7 @@ namespace MediaMgrSystem
 
             System.Diagnostics.Debug.WriteLine("Someone Connected: Connected Id" + hub.Context.ConnectionId);
 
-            
+
 
 
             //String message = "SYNCTIME{0}";
@@ -99,15 +104,20 @@ namespace MediaMgrSystem
 
             System.Diagnostics.Debug.WriteLine("DISConnected: Connected Id" + hub.Context.ConnectionId);
 
-            
+            if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
+            {
+                GlobalUtils.VideoServerIPAddress = string.Empty; ;
+                GlobalUtils.VideoServerConnectionId = string.Empty;
+            }
+
             GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);
-    
+
         }
         protected override void OnAfterOutgoing(IHubOutgoingInvokerContext context)
         {
             TimeSpan a = new TimeSpan(DateTime.Now.Ticks);
             TimeSpan b = new TimeSpan(weee);
-         //   double aa = a.Subtract(b).Duration().TotalMilliseconds;
+            //   double aa = a.Subtract(b).Duration().TotalMilliseconds;
             System.Diagnostics.Debug.WriteLine("after send:" + (a.TotalMilliseconds - b.TotalMilliseconds).ToString());
         }
 
@@ -116,7 +126,7 @@ namespace MediaMgrSystem
 
             weee = DateTime.Now.Ticks;
             TimeSpan b = new TimeSpan(weee);
-            System.Diagnostics.Debug.WriteLine("Before send"+b.TotalMilliseconds.ToString());
+            System.Diagnostics.Debug.WriteLine("Before send" + b.TotalMilliseconds.ToString());
             return base.OnBeforeOutgoing(context);
         }
         protected override bool OnBeforeIncoming(IHubIncomingInvokerContext context)

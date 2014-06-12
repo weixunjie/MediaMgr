@@ -10,8 +10,8 @@ namespace MediaMgrSystem.DataModels
     {
         PLAYVEDIO = 111,
         STOPVEDIO = 112,
-        VIDEOSVRREG = 130,
 
+        REPEATPLAY = 113,
 
     }
 }

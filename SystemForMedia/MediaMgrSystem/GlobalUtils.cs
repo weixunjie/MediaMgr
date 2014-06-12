@@ -3,6 +3,7 @@ using MediaMgrSystem.DataAccessLayer;
 using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -10,9 +11,24 @@ using System.Web;
 
 namespace MediaMgrSystem
 {
+    public class QueueItem
+    {
+        public string IpAddressStr
+        { get; set; }
+
+        public string CommandStr
+        { get; set; }
+
+        public string GuidIdStr
+        {
+            get;
+            set;
+        }
+    }
     public static class GlobalUtils
     {
 
+        public static object PublicObjectForLock = new object();
         private static object objForLock = new object();
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
@@ -21,17 +37,27 @@ namespace MediaMgrSystem
 
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
 
+        public static DeviceBLL DeviceBLLInstance = new DeviceBLL(GlobalUtils.DbUtilsInstance);
+
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
 
-
-
-        public static bool IsChannelWorking = false;
+        
+        public static bool IsChannelPlaying = false;
 
         public static string CurrentVideoGuidId = string.Empty;
+
+        public static string VideoServerIPAddress = string.Empty;
+
+        public static string VideoServerConnectionId = string.Empty;
+
 
         public static string CurrentClientGuidId = string.Empty;
 
         public static List<string> ReadyToSentClientIds = new List<string>();
+        public static List<string> ReadyToSentClientIPs = new List<string>();
+
+
+        public static List<QueueItem> CommandQueues = new List<QueueItem>();
 
         public static object ReadyToSentClientData = new object();
 
@@ -46,7 +72,6 @@ namespace MediaMgrSystem
             }
 
             return true;
-
 
         }
         public static bool RemoveConnectionByConnectionId(string connectionId)
@@ -155,8 +180,6 @@ namespace MediaMgrSystem
                         }
                     }
                 }
-
-
             }
 
             return results;

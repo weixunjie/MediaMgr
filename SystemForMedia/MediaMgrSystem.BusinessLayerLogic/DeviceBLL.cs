@@ -75,6 +75,17 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public int UpdateDeviceGroup(string deviceId,string groupdId)
+        {
+            String sqlStr = "UPDATE DEVICEINFO SET GROUPID='{0}' WHERE DEVICEID={1}";
+
+            sqlStr = String.Format(sqlStr,groupdId, deviceId);
+
+            return dbUitls.ExecuteNonQuery(sqlStr);
+
+        }
+
+
 
         protected List<DeviceInfo> GetDeviceList(string sqlStr)
         {

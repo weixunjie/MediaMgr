@@ -55,8 +55,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
             String sqlStr = "INSERT INTO GROUPINFO(GROUPNAME) values ('{0}') SELECT SCOPE_IDENTITY()";
 
             sqlStr = String.Format(sqlStr, gi.GroupName);
-          
-            string newId= dbUitls.ExecuteScalar(sqlStr).ToString();
+
+            string newId = dbUitls.ExecuteScalar(sqlStr).ToString();
 
             gi.GroupId = newId;
             UpdateDeviceGroup(gi);
@@ -97,12 +97,26 @@ namespace MediaMgrSystem.BusinessLayerLogic
             }
         }
 
+        public void UpdateGroupChannel(string groupId, string channelId)
+        {
+
+            String sqlStrUpdateDevice = "UPDATE GROUPINFO SET CHANNELID='{0}' WHERE GROUPID={1}";
+
+            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice,channelId, groupId);
+
+            dbUitls.ExecuteNonQuery(sqlStrUpdateDevice);
+
+
+
+        }
+
+
         public int UpdateGroup(GroupInfo gi)
         {
             String sqlStr = "UPDATE GROUPINFO SET GROUPNAME='{0}' WHERE GROUPID={1}";
 
             UpdateDeviceGroup(gi);
-      
+
 
             sqlStr = String.Format(sqlStr, gi.GroupName, gi.GroupId);
 
@@ -126,6 +140,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         GroupInfo gi = new GroupInfo();
                         gi.GroupId = dt.Rows[i]["GROUPID"].ToString();
                         gi.GroupName = dt.Rows[i]["GROUPNAME"].ToString();
+                        gi.ChannelId = dt.Rows[i]["CHANNELID"].ToString();
                         gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
                         groups.Add(gi);
                     }

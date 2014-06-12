@@ -84,7 +84,8 @@ namespace MediaMgrSystem.MgrModel
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
-                di.GroupId = TbHiddenId.Text;
+                di.DeviceId = TbHiddenId.Text;
+
                 deviceBLL.UpdateDevice(di);
             }
             else
