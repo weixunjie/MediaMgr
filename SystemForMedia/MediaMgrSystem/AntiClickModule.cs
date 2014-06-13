@@ -84,6 +84,31 @@ namespace MediaMgrSystem
 
             }
 
+            if (sc.ConnectionType == SingalRClientConnectionType.ANDROID)
+            {
+
+
+                List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(sc.ConnectionIdentify);
+
+                if (dis != null && dis.Count > 0)
+                {
+
+                }
+                else
+                {
+                    DeviceInfo di = new DeviceInfo();
+                    di.DeviceIpAddress = sc.ConnectionIdentify;
+                    di.DeviceName = sc.ConnectionIdentify;
+                    di.GroupId = "-1";
+
+                    GlobalUtils.DeviceBLLInstance.AddDevice(di);
+
+                }
+
+                SendRefreshNotice(hub);
+
+
+            }
 
             GlobalUtils.AddConnection(sc);
 
@@ -98,6 +123,14 @@ namespace MediaMgrSystem
             //hub.Clients.Client(hub.Context.ConnectionId).sendSyncMessage(message);
         }
 
+        private void SendRefreshNotice(IHub hub)
+        {
+
+            List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+            hub.Clients.Clients(ids).sendRefreshMessge();
+        }
+
         protected override void OnAfterDisconnect(IHub hub)
         {
             DateTime dt = DateTime.UtcNow;
@@ -108,6 +141,11 @@ namespace MediaMgrSystem
             {
                 GlobalUtils.VideoServerIPAddress = string.Empty; ;
                 GlobalUtils.VideoServerConnectionId = string.Empty;
+            }
+
+            if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId)) 
+            {
+                SendRefreshNotice(hub);
             }
 
             GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);

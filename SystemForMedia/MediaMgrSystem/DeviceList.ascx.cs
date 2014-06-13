@@ -41,6 +41,12 @@ namespace MediaMgrSystem
         }
 
 
+        public bool CheckDeviceIsOnline(string ipAddress)
+        {
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }).Count > 0;
+
+        }
+
         public List<ChannelInfo> GetAllChannels()
         {
             return channelBLL.GetAllChannels();

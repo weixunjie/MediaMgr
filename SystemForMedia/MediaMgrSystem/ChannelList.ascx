@@ -9,6 +9,7 @@
     var currentPlayPIds = new Array();
     var isPlaying =<% =GetIsPlaying() %>;
     var isChooseSchedule = false;
+    var  is_in = false;
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
@@ -141,20 +142,21 @@
 
         $.showChannelMenu = function () {
 
-            var is_in = false;
+          
             $("<%= ids %>").click(function (e) {
 
-
+            
                 currentOperChannel = e.currentTarget.id.replace("channelDiv", "");
+
+                currentOperChannelName=$(this).data("itemid");
+
                 <%%>
                 is_in = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
-                $("#ChannelMenubox").show().css("left", x).css("top", y);
-
-                //  currentSelectedDevice = e.currentTarget.name;;
+                $("#ChannelMenubox").show().css("left", x).css("top", y);          
 
 
             });
@@ -229,10 +231,9 @@
 
                 $('#dialogForChooseProgram').modal('hide');
 
-                $("#divChannelInfo").html("通道:" + currentOperChannel + "就绪");
-
+                $("#divChannelInfo").html("通道:" + currentOperChannelName + "就绪");
               
-                setButtonStatus("Play");
+                setButtonStatus("Stop");
 
 
             }
@@ -247,9 +248,8 @@
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
                 chat.server.sendPlayCommand(currentOperChannel, currentPlayPIds);
-                $("#divChannelInfo").html("通道:" + currentOperChannel + "播放中");
+                $("#divChannelInfo").html("通道:" + currentOperChannelName + "播放中");
             }
-
 
         })
 
@@ -261,7 +261,7 @@
             chat.server.sendStopRoRepeatCommand("1");                         
         
 
-            $("#divChannelInfo").html("通道:" + currentOperChannel + "停止");
+            $("#divChannelInfo").html("通道:" + currentOperChannelName + "停止");
 
 
 
@@ -273,7 +273,7 @@
 
             chat.server.sendStopRoRepeatCommand("2");
 
-            $("#divChannelInfo").html("通道:" + currentOperChannel + "循环");
+            $("#divChannelInfo").html("通道:" + currentOperChannelName + "循环");
 
         })        
 
@@ -309,7 +309,7 @@
         { %>
 
     <div  style="float: left; height: 160px">
-        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" itemid="id="channelDiv<%=allChanels[channelIndex].ChannelName %>"" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
+        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" data-itemid="<%=allChanels[channelIndex].ChannelName.Trim() %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
             <img src="Images/ic_image_channel.png" width="90" height="99" />
         </div>
@@ -328,7 +328,7 @@
     <% if (channelIndex < allChanels.Count)
        { %>
     <div " style="float: right; height: 160px">
-        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
+        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" data-itemid="<%=allChanels[channelIndex].ChannelName.Trim() %>"   style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
             <img src="Images/ic_image_channel.png" width="90" height="99" />
             

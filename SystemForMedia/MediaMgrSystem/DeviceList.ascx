@@ -475,7 +475,17 @@
                                 <div class="row" style="margin-left: 0px">
                                     <div class="col-md-4">
                                         <p style="text-align: center">
-                                            <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="Images/ic_image_device.png" style="width: 50px; height: 50px" />
+
+                                            <% string srcName = "Images/ic_image_device.png";
+
+                                               if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
+                                               {
+                                                   srcName = "Images/ic_image_device_offline.png";
+                                               }
+                                               
+                                                %>
+
+                                            <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p id="ptext" style="text-align: center">
                                             <% =dGroups[l].Devices[k].DeviceName %>
@@ -542,6 +552,8 @@
                                 <div class="row" style="margin-left: 0px">
                                     <div class="col-md-4">
                                         <p style="text-align: center">
+
+
                                             <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/ic_image_group.png" style="width: 50px; height: 50px" />
                                         </p>
                                         <p id="ptext" style="text-align: center">

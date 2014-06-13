@@ -87,9 +87,9 @@ namespace MediaMgrSystem
             cmdToAndroidClient.commandType = commandType == "1" ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
 
 
-            GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
+            GlobalUtils.CurrentClientGuidId = Guid.NewGuid().ToString();
 
-            cmdToAndroidClient.guidId = GlobalUtils.CurrentVideoGuidId;
+            cmdToAndroidClient.guidId = GlobalUtils.CurrentClientGuidId;
             return cmdToAndroidClient;
         }
 
@@ -99,6 +99,7 @@ namespace MediaMgrSystem
             {
                 List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                 Clients.Clients(alPCIds).sendResultBrowserClient("正在播放中", "200");
+                return;
             }
 
 
@@ -107,6 +108,7 @@ namespace MediaMgrSystem
                 List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                 Clients.Clients(alPCIds).sendResultBrowserClient("视频服务未开启", "200");
                 Clients.Clients(alPCIds).sendResultBrowserClientNoticeStatus("视频服务未开启", "200");
+                return;
             }
             else
             {
@@ -125,10 +127,10 @@ namespace MediaMgrSystem
                 cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
 
 
-                GlobalUtils.CurrentClientGuidId = Guid.NewGuid().ToString();
+                GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
 
 
-                cmdToVideoSvr.guidId = GlobalUtils.CurrentClientGuidId;
+                cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
                 cmdToVideoSvr.arg.buffer = "5";
                 cmdToVideoSvr.arg.streamName = "123456790";
 
@@ -158,6 +160,7 @@ namespace MediaMgrSystem
                 cmdToVideoSvr.arg.streamName = "123456790" + port.ToString();
 
                 CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId);
+
                 PushQueue("播放视频");
 
                 string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
@@ -167,6 +170,8 @@ namespace MediaMgrSystem
 
                 string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalUtils.ReadyToSentClientData);
                 Clients.Clients(GlobalUtils.ReadyToSentClientIds).sendMessageToClient(jsonDataToClient);
+
+                GlobalUtils.IsChannelPlaying = true;
             }
 
 
@@ -277,7 +282,7 @@ namespace MediaMgrSystem
         public void SendMessageToMgrServer(string data, string ipAddress)
         {
 
-            ComuResponseBase cb = (ComuResponseBase)JsonConvert.DeserializeObject(data);
+            ComuResponseBase cb = JsonConvert.DeserializeObject <ComuResponseBase>(data);
 
             lock (GlobalUtils.PublicObjectForLock)
             {

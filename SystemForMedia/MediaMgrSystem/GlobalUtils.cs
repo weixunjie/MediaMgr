@@ -127,10 +127,12 @@ namespace MediaMgrSystem
 
         }
 
+        
+       
         public static void AddConnection(SingalConnectedClient client)
         {
             lock (objForLock)
-            {
+            {                
                 AllConnectedClients.Add(client);
             }
 
@@ -176,7 +178,7 @@ namespace MediaMgrSystem
                     {
                         if (strIdentifies.Contains(AllConnectedClients[i].ConnectionIdentify))
                         {
-                            results.Add(AllConnectedClients[i].ConnectionIdentify);
+                            results.Add(AllConnectedClients[i].ConnectionId);
                         }
                     }
                 }
@@ -210,6 +212,33 @@ namespace MediaMgrSystem
 
 
             return results;
+
+        }
+
+
+        public static bool CheckIfConnectionIdIsAndriod(string id)
+        {
+
+
+            List<string> results = new List<string>();
+
+            lock (objForLock)
+            {
+
+                if (AllConnectedClients != null)
+                {
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    {
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.ANDROID && AllConnectedClients[i].ConnectionId==id)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+
+            return false;
 
         }
 

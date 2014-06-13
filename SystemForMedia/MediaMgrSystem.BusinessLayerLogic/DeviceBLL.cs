@@ -38,6 +38,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public List<DeviceInfo> GetADevicesByIPAddress(string ipStr)
+        {
+
+            String sqlStr = "SELECT * FROM DEVICEINFO WHERE DEVICEIPADDRESS='" + ipStr + "'";
+
+            return GetDeviceList(sqlStr);
+
+        }
+
+
         public List<DeviceInfo> GetAllDevices()
         {
 
