@@ -9,7 +9,7 @@
     var currentPlayPIds = new Array();
     var isPlaying =<% =GetIsPlaying() %>;
     var isChooseSchedule = false;
-    var  is_in = false;
+    var is_in = false;
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
@@ -135,6 +135,9 @@
              
                  <%} %>
 
+            $("#ChannelMenubox").hide();
+            $("#SchduleBox").hide()
+            is_in = false;
             $('#dialogForChooseProgram').modal('show');
         });
 

@@ -39,7 +39,7 @@ namespace MediaMgrSystem
 
                     Clients.Clients(alPCIds).sendResultBrowserClientNoticeStatus("视频服务未开启", "200");
 
-                    
+
                 }
 
                 else
@@ -237,80 +237,88 @@ namespace MediaMgrSystem
                 GlobalUtils.ReadyToSentClientIPs = needSentClientIpAddresses;
                 GlobalUtils.ReadyToSentClientIds = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
             }
+            else
+            {
+                GlobalUtils.ReadyToSentClientIPs = new List<string>();
+                GlobalUtils.ReadyToSentClientIds = new List<string>();
+            }
         }
 
         public void sendVideoControlPauseMessage(string commandType)
         {
             HubSendLogic.SetCommand(2, Clients);
         }
-        public void SendVideoControlMessage(string commandType)
-        {
 
-            //Clients.All.SendRefreshMessge("df");
-            //return;
+        //public void SendVideoControlMessage(string commandType)
+        //{
 
-
-            //System.Diagnostics.Debug.WriteLine("Begin Send First Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
-            //HubSendLogic.SetCommand(1, Clients);
-            //System.Diagnostics.Debug.WriteLine("End Send First Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
-            ////  var   aa= GlobalHost.TraceManager;
-
-            //Thread.Sleep(4000);
+        //    //Clients.All.SendRefreshMessge("df");
+        //    //return;
 
 
-            //System.Diagnostics.Debug.WriteLine("Begin Send 2nd Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
-            //HubSendLogic.SetCommand(2, Clients);
-            //System.Diagnostics.Debug.WriteLine("End Send 2nd Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+        //    //System.Diagnostics.Debug.WriteLine("Begin Send First Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+        //    //HubSendLogic.SetCommand(1, Clients);
+        //    //System.Diagnostics.Debug.WriteLine("End Send First Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+        //    ////  var   aa= GlobalHost.TraceManager;
+
+        //    //Thread.Sleep(4000);
 
 
-            ////   IPerformanceCounterManager 
-            //     SendResponseMessage("sf");
-
-        }
-
-        public void SendScheduleTaskControl(string exTime, string stime)
-        {
-
-            //HubSendLogic.SetCommand(1, Clients);
-
-            //System.Diagnostics.Debug.WriteLine("WINDOWS SERVICE Schedule Execute At:" + exTime + "  Config Time:" + stime);
+        //    //System.Diagnostics.Debug.WriteLine("Begin Send 2nd Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
+        //    //HubSendLogic.SetCommand(2, Clients);
+        //    //System.Diagnostics.Debug.WriteLine("End Send 2nd Command " + DateTime.Now.ToString("HH:mm:ss.fff"));
 
 
-        }
+        //    ////   IPerformanceCounterManager 
+        //    //     SendResponseMessage("sf");
+
+        //}
+
+        //public void SendScheduleTaskControl(string exTime, string stime)
+        //{
+
+        //    //HubSendLogic.SetCommand(1, Clients);
+
+        //    //System.Diagnostics.Debug.WriteLine("WINDOWS SERVICE Schedule Execute At:" + exTime + "  Config Time:" + stime);
+
+
+        //}
 
 
         public void SendMessageToMgrServer(string data, string ipAddress)
         {
 
-            ComuResponseBase cb = JsonConvert.DeserializeObject <ComuResponseBase>(data);
+            ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
 
             lock (GlobalUtils.PublicObjectForLock)
             {
                 QueueItem item2Removed = null;
+                string str = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
-                    if (cb != null && cb.errorCode!=null)
+                    if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
                         {
-                            List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-                            string str = string.Empty;
+
+                          
 
                             string strOperResult = string.Empty;
 
-                            strOperResult=cb.errorCode=="0"?"成功":"失败。错误消息编号"+cb.errorCode+",内容："+cb.message;
+                            strOperResult = cb.errorCode == "0" ? "成功" : "失败。错误消息编号" + cb.errorCode + ",内容：" + cb.message;
 
-                            if (que.IpAddressStr == GlobalUtils.VideoServerIPAddress)
+                            if (ipAddress == GlobalUtils.VideoServerIPAddress)
                             {
-                                str = que.CommandStr + " ->视频服务器操作"+strOperResult;
+                                str = que.CommandStr + " ->视频服务器操作" + strOperResult;
+                                item2Removed = que;
                             }
-                            else
+                            else if (ipAddress == que.IpAddressStr)
                             {
-                                str = que.CommandStr + " ->终端（" + que.IpAddressStr + ")操作"+strOperResult;
+                                str = que.CommandStr + " ->终端（" + que.IpAddressStr + ")操作" + strOperResult;
+                                item2Removed = que;
                             }
 
-                            Clients.Clients(alPCIds).sendResultBrowserClient(str, cb.errorCode);
-                            item2Removed = que;
+
                             break;
                         }
                     }
@@ -318,6 +326,8 @@ namespace MediaMgrSystem
 
                 if (item2Removed != null)
                 {
+                    List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+                    Clients.Clients(alPCIds).sendResultBrowserClient(str, cb.errorCode);
                     GlobalUtils.CommandQueues.Remove(item2Removed);
                 }
 
