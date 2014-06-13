@@ -174,8 +174,13 @@
     <Content Include="Images\ic_image_group.png" />
     <Content Include="Images\ic_image_menu.png" />
     <Content Include="Images\ic_image_play.png" />
+    <Content Include="Images\ic_image_play_disabled.png" />
+    <Content Include="Images\ic_image_play_hover.png" />
     <Content Include="Images\ic_image_repeat.png" />
+    <Content Include="Images\ic_image_repeat_disabled.png" />
+    <Content Include="Images\ic_image_repeat_hover.png" />
     <Content Include="Images\ic_image_stop.png" />
+    <Content Include="Images\ic_image_stop_disabled.png" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
     <Content Include="MgrModel\DeviceMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrList.aspx" />
@@ -192,7 +197,7 @@
     <Content Include="Scripts\jquery.signalR-2.0.3.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.min.js" />
     <Content Include="Scripts\json2.js" />
-    <Content Include="Scripts\utils.js" />
+    <Content Include="Scripts\channelScheduleLogic.js" />
     <Content Include="Scripts\jquery.timer.js" />
     <Content Include="MgrModel\GroupMgrDetail.aspx" />
     <Content Include="MgrModel\GroupMgrList.aspx" />

@@ -1,12 +1,14 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeBehind="ChannelList.ascx.cs" Inherits="MediaMgrSystem.ChannelList" %>
 
-
+<script src="<%=ResolveUrl("Scripts/channelScheduleLogic.js")%>" type="text/javascript" ></script>
 
 <script type="text/javascript">
 
     var currentOperChannel;
+    var currentOperChannelName;
     var currentPlayPIds = new Array();
     var isPlaying =<% =GetIsPlaying() %>;
+    var isChooseSchedule = false;
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
@@ -22,6 +24,8 @@
              for (int i = 0; i < schedules.Count; i++) { schdueleIds = schdueleIds + "#btnSchedule" + schedules[i].ScheduleId.ToString() + ","; }; schdueleIds = schdueleIds.TrimEnd(',');
 
         %>
+
+       
 
 
         chat.client.sendResultBrowserClientNoticeStatus = function (result, error) {
@@ -67,13 +71,14 @@
                 $("#btnChannelControlRepeat").attr("disabled", true);
             }
 
+      
             if ($("#btnChannelControlPlay").attr("disabled")=="disabled")
             {
                 $("#btnChannelControlPlay").attr("src","Images/ic_image_play_disabled.png");
             }
             else
             {
-                $("#btnChannelControlPlay").src="Images/ic_image_play.png"
+                $("#btnChannelControlPlay").attr("src","Images/ic_image_play.png");
 
             }
      
@@ -103,65 +108,7 @@
 
            
         }
-
-        var isChooseSchedule = false;
-        $("#btnChooseSchedule").click(function (e) {
-
-            isChooseSchedule = true;
-
-            var x = $(this).offset().left + $("#ChannelMenubox").width() + 6;
-            var y = $(this).offset().top;
-
-            $.ajax({
-                type: "POST",
-                async: false,
-                url: "Default.aspx/GetScheduleByChannelId",
-                data: "{'cid':'" + currentOperChannel + "'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-                    $("<% =schdueleIds%>").css("font-weight", "normal");
-                    $("#btnSchedule" + msg.d).css("font-weight", "bold");
-
-                }
-            });
-
-
-
-          <%--  <% int a=GetSelectedSchedule(%> e.target.name <% )%>
-
-            alert(<%=i%>);--%>
-
-            $("#SchduleBox").show().css("left", x).css("top", y);
-
-
-        });
-
-
-        $("<% =schdueleIds%>").click(function (e) {
-
-
-            var currentOperScheduel = e.currentTarget.id.replace("btnSchedule", "");
-
-            $.ajax({
-                type: "POST",
-                async: true,
-                url: "Default.aspx/SaveSchedule",
-                data: "{'cid':'" + currentOperChannel + "',sid:'" + currentOperScheduel + "'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-                }
-            });
-
-        });
-
-
-        $("#btnChooseSchedule").mouseout(function (e) {
-            isChooseSchedule = false;
-        });
+      
 
         $("#btnChooseProgram").click(function (e) {
 
@@ -328,12 +275,7 @@
 
             $("#divChannelInfo").html("通道:" + currentOperChannel + "循环");
 
-
-
-        })
-
-
-
+        })        
 
     });
 
@@ -367,7 +309,7 @@
         { %>
 
     <div  style="float: left; height: 160px">
-        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>"style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
+        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" itemid="id="channelDiv<%=allChanels[channelIndex].ChannelName %>"" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
             <img src="Images/ic_image_channel.png" width="90" height="99" />
         </div>
@@ -411,21 +353,21 @@
 
        <li  class="channelControlButtonLI" >           
 
-           <img src="Images/ic_image_play.png" id="btnChannelControlPlay" onmousedown='this.src="Images/ic_image_play.png"' class="channelControlButtonImage"  />
+           <img src="Images/ic_image_play.png" id="btnChannelControlPlay"  onmouseout='this.src="Images/ic_image_play.png"' onmouseover='this.src="Images/ic_image_play_hover.png"' onmousedown='this.src="Images/ic_image_play_hover.png"' class="channelControlButtonImage"  />
 
        </li>
 
 
           <li class="channelControlButtonLI" >           
 
-           <img src="Images/ic_image_stop.png" id="btnChannelControlStop" onmousedown='this.src="Images/ic_image_stop.png"'   class="channelControlButtonImage" />
+           <img src="Images/ic_image_stop.png" id="btnChannelControlStop" onmousedown='this.src="Images/ic_image_stop_hover.png"'  onmouseover='this.src="Images/ic_image_stop_hover.png"'    class="channelControlButtonImage" />
 
        </li>
 
        <li class="channelControlButtonLI">
            
 
-           <img src="Images/ic_image_repeat.png" id="btnChannelControlRepeat" onmousedown='this.src="Images/ic_image_repeat.png"' class="channelControlButtonImage" />
+           <img src="Images/ic_image_repeat.png" id="btnChannelControlRepeat" onmouseover='this.src="Images/ic_image_repeat_hover.png"' onmousedown='this.src="Images/ic_image_repeat_hover.png"' class="channelControlButtonImage" />
 
        </li>
          

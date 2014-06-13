@@ -22,12 +22,14 @@
 
 
     <script type="text/javascript" src="Scripts/jquery.dragsort-0.5.1.min.js"></script>
-    <script type="text/javascript" src="Scripts/utils.js"></script>
+    
+
+
 
     <%--        <script type="text/javascript" src="Scripts/json2.js"></script>--%>
 
 
-    
+
 
 
     <script src="Scripts/jquery.signalR-2.0.3.min.js"></script>
@@ -74,7 +76,7 @@
                 });
 
             }
-    
+
 
 
             $.ajax({
