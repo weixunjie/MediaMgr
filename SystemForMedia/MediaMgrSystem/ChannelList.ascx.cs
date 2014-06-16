@@ -16,6 +16,8 @@ namespace MediaMgrSystem
         private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
 
         private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
+
+        private ScheduleBLL scheduleBLL = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
         
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -25,14 +27,7 @@ namespace MediaMgrSystem
 
         public List<ScheduleInfo> GetAllSchedules()
         {
-            List<ScheduleInfo> schedules = new List<ScheduleInfo>();
-
-            ScheduleInfo gi = new ScheduleInfo { ScheduleId = "1", ScheduleName = "moren" };
-
-            schedules.Add(gi);
-            schedules.Add(new ScheduleInfo { ScheduleId = "2", ScheduleName = "ddf" });
-
-            return schedules;
+            return scheduleBLL.GetAllSchedules();
 
         }
 
@@ -61,5 +56,6 @@ namespace MediaMgrSystem
 
         }
 
+    
     }
 }

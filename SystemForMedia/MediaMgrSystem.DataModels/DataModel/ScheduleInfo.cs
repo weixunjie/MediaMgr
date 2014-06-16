@@ -13,6 +13,8 @@ namespace MediaMgrSystem.DataModels
         public String ScheduleName { get; set; }
 
 
+        public String ProgrameId { get; set; }
 
+        public String ScheduleTime { get; set; }
     }
 }

@@ -135,11 +135,11 @@
 --%>
 
         $("#btnConfirmedBatchGroupOperation").click(function (e) {
-            
-       
-            $("#dialogForBatchGrouplbAvaiableGroups option:selected").each(function () {               
 
-                  
+
+            $("#dialogForBatchGrouplbAvaiableGroups option:selected").each(function () {
+
+
                 var selectedGroupId = $(this).val();
 
                 var selectedChannelId = $('#ddBatchSelectChannel option:selected').val();
@@ -153,14 +153,14 @@
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
-                  
 
-                }
-                  });
 
-               // $(this).remove();
+                    }
+                });
+
+                // $(this).remove();
             })
-            
+
 
             $('#dialogForBatchGroup').modal('hide');
         });
@@ -238,12 +238,11 @@
 
 
 
-            var is_in = false;
 
             $("<%= imgGroupShowIds %>").click(function (e) {
 
-                
-               $("#menuForSingleGroup").hide();
+
+                $("#menuForSingleGroup").hide();
                 $("#channelMenuForSignleGroupBox").hide()
 
                 currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
@@ -264,11 +263,25 @@
             });
 
             $(document).click(function () {
+               // debugger;
                 if (!is_in && !isChooseChannel) {
                     $("#menuForSingleGroup").hide();
                     $("#channelMenuForSignleGroupBox").hide()
                 }
+                if (!is_in && !isChooseSchedule) {
+                    $("#ChannelMenubox").hide();
+                    $("#SchduleBox").hide()
+                }
             });
+
+            //debugger;
+            //$(document).click(function () {
+            //    debugger;
+            //    if (!is_in && !isChooseSchedule) {
+            //        $("#ChannelMenubox").hide();
+            //        $("#SchduleBox").hide()
+            //    }
+            //});
         }
 
         $.showGroupClickMenu();
@@ -483,7 +496,7 @@
                                                    srcName = "Images/ic_image_device_offline.png";
                                                }
                                                
-                                                %>
+                                            %>
 
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
@@ -698,7 +711,7 @@
 
     <!-- save sort order here which can be retrieved on server on postback -->
 
-    <div id="divLogs" style="width: 300px; height: 200px" class="pull-left">asdf</div>
+    <div id="divLogs" style="width: 300px; height: 200px" class="pull-left"></div>
     <div style="clear: both;">
     </div>
 

@@ -12,7 +12,7 @@ namespace MediaMgrSystem.DataModels
 
         public String ChannelName { get; set; }
 
-
+        public String ScheduelId { get; set; }
 
     }
 }

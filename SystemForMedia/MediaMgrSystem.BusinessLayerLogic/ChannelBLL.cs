@@ -34,6 +34,23 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public ChannelInfo GetChannelByScheduleId(string sid)
+        {
+
+            String sqlStr = "SELECT * FROM CHANNELINFO WHERE ScheduelId=" + sid;
+
+            List<ChannelInfo> cis = GetChannelList(sqlStr);
+            if (cis != null && cis.Count() > 0)
+            {
+                return cis[0];
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
         public List<ChannelInfo> GetAllChannels()
         {
 
@@ -72,6 +89,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public int UpdateChannelSchedule(string cid, string sid)
+        {
+            String sqlStr = "UPDATE CHANNELINFO SET SCHEDUELID='{0}' WHERE CHANNELID={1}";
+
+            sqlStr = String.Format(sqlStr, sid, cid);
+
+            return dbUitls.ExecuteNonQuery(sqlStr);
+
+        }
+
 
         protected List<ChannelInfo> GetChannelList(string sqlStr)
         {
@@ -88,6 +115,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         ChannelInfo ci = new ChannelInfo();
                         ci.ChannelId = dt.Rows[i]["CHANNELID"].ToString();
                         ci.ChannelName = dt.Rows[i]["CHANNELNAME"].ToString();
+                        ci.ScheduelId = dt.Rows[i]["SCHEDUELID"].ToString();
                         channelsInfo.Add(ci);
                     }
                 }

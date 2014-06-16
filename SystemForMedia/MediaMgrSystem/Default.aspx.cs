@@ -151,16 +151,16 @@ namespace MediaMgrSystem
         [WebMethod]
         public static string GetScheduleByChannelId(string cid)
         {
+           ChannelInfo ci= GlobalUtils.ChannelBLLInstance.GetChannelById(cid);
             //   Thread.Sleep(2000);
-            return "1";
+           return ci.ScheduelId;
 
         }
 
         [WebMethod]
-        public static string SaveSchedule(string cid, string sid)
+        public static void SaveSchedule(string cid, string sid)
         {
-            //   Thread.Sleep(2000);
-            return "1";
+            GlobalUtils.ChannelBLLInstance.UpdateChannelSchedule(cid, sid);
 
         }
         

@@ -53,12 +53,17 @@
         var strclientIdentify;
         var chat;
 
+        var isChooseSchedule = false;
+
+        var is_in = false;
+
+        var isChooseChannel = false;
+              
+
+        chat = $.connection.MediaMgrHub;
+        $.connection.hub.start();
 
         $(document).ready(function () {
-
-
-            chat = $.connection.Test;
-            $.connection.hub.start();
 
             chat.client.sendRefreshMessge = function (result) {
 

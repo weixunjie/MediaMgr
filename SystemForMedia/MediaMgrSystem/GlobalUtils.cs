@@ -37,6 +37,11 @@ namespace MediaMgrSystem
 
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
 
+
+        public static ScheduleBLL ScheduleBLLInstance = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
+
+        public static ChannelBLL ChannelBLLInstance = new ChannelBLL(GlobalUtils.DbUtilsInstance);
+
         public static DeviceBLL DeviceBLLInstance = new DeviceBLL(GlobalUtils.DbUtilsInstance);
 
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
@@ -53,6 +58,8 @@ namespace MediaMgrSystem
 
         public static string CurrentClientGuidId = string.Empty;
 
+        public static object VideoSvrArg=null;
+
         public static List<string> ReadyToSentClientIds = new List<string>();
         public static List<string> ReadyToSentClientIPs = new List<string>();
 
@@ -61,7 +68,7 @@ namespace MediaMgrSystem
 
         public static object ReadyToSentClientData = new object();
 
-
+        public static object ReadyToSentSVRData = new object();
         public static bool CheckIfAudio(string fileName)
         {
             string fName = fileName.ToUpper();

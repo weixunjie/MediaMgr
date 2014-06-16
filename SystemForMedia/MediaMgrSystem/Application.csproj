@@ -182,8 +182,10 @@
     <Content Include="Images\ic_image_stop.png" />
     <Content Include="Images\ic_image_stop_disabled.png" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
+    <Content Include="MgrModel\ScheduleMgrDetail.aspx" />
     <Content Include="MgrModel\DeviceMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrList.aspx" />
+    <Content Include="MgrModel\ScheduleMgrList.aspx" />
     <Content Include="MgrModel\DeviceMgrList.aspx" />
     <Content Include="MgrModel\ProgramMgrDetail.aspx" />
     <Content Include="MgrModel\ProgramMgrList.aspx" />
@@ -270,8 +272,9 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="SendLogic.cs" />
     <Compile Include="BusinessHub.cs" />
-    <Compile Include="AntiClickModule.cs" />
+    <Compile Include="MediaMgrHubPipelineModule.cs" />
     <Compile Include="ChannelList.ascx.cs">
       <DependentUpon>ChannelList.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -305,6 +308,13 @@
     <Compile Include="MgrModel\ChannelMgrDetail.aspx.designer.cs">
       <DependentUpon>ChannelMgrDetail.aspx</DependentUpon>
     </Compile>
+    <Compile Include="MgrModel\ScheduleMgrDetail.aspx.cs">
+      <DependentUpon>ScheduleMgrDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\ScheduleMgrDetail.aspx.designer.cs">
+      <DependentUpon>ScheduleMgrDetail.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MgrModel\DeviceMgrDetail.aspx.cs">
       <DependentUpon>DeviceMgrDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -318,6 +328,13 @@
     </Compile>
     <Compile Include="MgrModel\ChannelMgrList.aspx.designer.cs">
       <DependentUpon>ChannelMgrList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\ScheduleMgrList.aspx.cs">
+      <DependentUpon>ScheduleMgrList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\ScheduleMgrList.aspx.designer.cs">
+      <DependentUpon>ScheduleMgrList.aspx</DependentUpon>
     </Compile>
     <Compile Include="MgrModel\DeviceMgrList.aspx.cs">
       <DependentUpon>DeviceMgrList.aspx</DependentUpon>
@@ -413,7 +430,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:19671/</IISUrl>
+          <IISUrl>http://192.168.1.100:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>

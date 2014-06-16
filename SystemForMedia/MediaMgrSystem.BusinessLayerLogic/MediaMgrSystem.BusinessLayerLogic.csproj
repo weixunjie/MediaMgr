@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScheduleBLL.cs" />
     <Compile Include="EncoderBLL.cs" />
     <Compile Include="ChannelBLL.cs" />
     <Compile Include="GroupBLL.cs" />

@@ -7,9 +7,7 @@
     var currentOperChannel;
     var currentOperChannelName;
     var currentPlayPIds = new Array();
-    var isPlaying =<% =GetIsPlaying() %>;
-    var isChooseSchedule = false;
-    var is_in = false;
+
     $(document).ready(function () {
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
@@ -34,6 +32,8 @@
             if (error != "0") {             
 
                 isPlaying=false;
+                
+                setButtonStatus("Stop");
                 $("#divChannelInfo").html(result);
             }
             // $("#divLogs").append('<br/>' + result);
@@ -168,12 +168,7 @@
                 is_in = false;
             });
 
-            $(document).click(function () {
-                if (!is_in && !isChooseSchedule) {
-                    $("#ChannelMenubox").hide();
-                    $("#SchduleBox").hide()
-                }
-            });
+     
         }
 
         $.showChannelMenu();
@@ -229,8 +224,7 @@
 
                     currentPlayPIds.push($(this).val());
 
-                })
-                          
+                })                          
 
                 $('#dialogForChooseProgram').modal('hide');
 
@@ -250,8 +244,11 @@
            
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentOperChannel, currentPlayPIds);
-                $("#divChannelInfo").html("通道:" + currentOperChannelName + "播放中");
+                chat.server.sendPlayCommand(currentOperChannel, currentPlayPIds,"0");
+
+              //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
+
+                $("#divChannelInfo").html("(" + currentOperChannelName + ")->播放中");
             }
 
         })
@@ -264,21 +261,76 @@
             chat.server.sendStopRoRepeatCommand("1");                         
         
 
-            $("#divChannelInfo").html("通道:" + currentOperChannelName + "停止");
-
+            $("#divChannelInfo").html("(" + currentOperChannelName + ")->停止");
 
 
         })
 
+ 
 
         $("#btnChannelControlRepeat").click(function () {
          
 
             chat.server.sendStopRoRepeatCommand("2");
 
-            $("#divChannelInfo").html("通道:" + currentOperChannelName + "循环");
+            $("#divChannelInfo").html("("+currentOperChannelName + ")->循环");
 
-        })        
+        })
+
+
+        $("#btnChooseSchedule").click(function (e) {
+
+
+            isChooseSchedule = true;
+
+            var x = $(this).offset().left + $("#ChannelMenubox").width() + 6;
+            var y = $(this).offset().top;
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "Default.aspx/GetScheduleByChannelId",
+                data: "{'cid':'" + currentOperChannel + "'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (msg) {
+
+                    $("<% =schdueleIds%>").css("font-weight", "normal");
+                $("#btnSchedule" + msg.d).css("font-weight", "bold");
+
+            }
+        });
+
+
+            $("#SchduleBox").show().css("left", x).css("top", y);
+
+
+        });
+
+
+        $("<% =schdueleIds%>").click(function (e) {
+
+
+            var currentOperScheduel = e.currentTarget.id.replace("btnSchedule", "");
+
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "Default.aspx/SaveSchedule",
+                data: "{'cid':'" + currentOperChannel + "',sid:'" + currentOperScheduel + "'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (msg) {
+
+                }
+            });
+
+        });
+
+
+        $("#btnChooseSchedule").mouseout(function (e) {
+            isChooseSchedule = false;
+        });
 
     });
 
@@ -302,7 +354,7 @@
             for (int i = 0; i < schedules.Count; i++)
             { 
         %>
-        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =schedules[i].ScheduleId %>" id="btnSchedule<% =schedules[i].ScheduleId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false">播8放视555555555555555555555555555555频</a></li>
+        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =schedules[i].ScheduleId %>" id="btnSchedule<% =schedules[i].ScheduleId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =schedules[i].ScheduleName %>" </a></li>
         <%}%>
     </ul>
 
@@ -373,6 +425,8 @@
            <img src="Images/ic_image_repeat.png" id="btnChannelControlRepeat" onmouseover='this.src="Images/ic_image_repeat_hover.png"' onmousedown='this.src="Images/ic_image_repeat_hover.png"' class="channelControlButtonImage" />
 
        </li>
+
+       
          
 
    </ul>
