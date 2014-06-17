@@ -115,7 +115,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         ChannelInfo ci = new ChannelInfo();
                         ci.ChannelId = dt.Rows[i]["CHANNELID"].ToString();
                         ci.ChannelName = dt.Rows[i]["CHANNELNAME"].ToString();
-                        ci.ScheduelId = dt.Rows[i]["SCHEDUELID"].ToString();
+                        ci.ScheduelId = dt.Rows[i]["SCHEDULEID"].ToString();
                         channelsInfo.Add(ci);
                     }
                 }

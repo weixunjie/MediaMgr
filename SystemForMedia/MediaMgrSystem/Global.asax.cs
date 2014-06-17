@@ -44,7 +44,7 @@ namespace MediaMgrSystem
 
             timer.Enabled = true;
 
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.setTime);
+           // timer.Elapsed += new System.Timers.ElapsedEventHandler(this.setTime);
 
         }
 
@@ -52,73 +52,73 @@ namespace MediaMgrSystem
 
         public void setTime(Object sender, ElapsedEventArgs e)
         {
-            List<ScheduleInfo> sis = GlobalUtils.ScheduleBLLInstance.GetAllSchedules();
+            //List<ScheduleInfo> sis = GlobalUtils.ScheduleBLLInstance.GetAllSchedules();
 
-            lock (lockObjet)
-            {
-                foreach (var si in sis)
-                {
-                    string dtNow = DateTime.Now.ToString("HH:mm:ss");
+            //lock (lockObjet)
+            //{
+            //    foreach (var si in sis)
+            //    {
+            //        string dtNow = DateTime.Now.ToString("HH:mm:ss");
 
 
-                    List<string> result = new List<string>();
-                    if (Application["LastRunningMins"] != null)
-                    {
-                        result = (List<string>)Application["LastRunningMins"];
-                    }
+            //        List<string> result = new List<string>();
+            //        if (Application["LastRunningMins"] != null)
+            //        {
+            //            result = (List<string>)Application["LastRunningMins"];
+            //        }
 
-                    DateTime dtST;
-                    if (DateTime.TryParse(si.ScheduleTime, out dtST))
-                    {
+            //        DateTime dtST;
+            //        if (DateTime.TryParse(si.ScheduleTime, out dtST))
+            //        {
 
-                        TimeSpan tes = DateTime.Parse(dtNow).Subtract(dtST).Duration();
-                        if (tes.TotalSeconds <= 5)
-                        {
-                            if (!result.Contains(si.ScheduleTime))
-                            {
-                                Application.Lock();
-                                result.Add(si.ScheduleTime);
-                                Application["LastRunningMins"] = result;
+            //            TimeSpan tes = DateTime.Parse(dtNow).Subtract(dtST).Duration();
+            //            if (tes.TotalSeconds <= 5)
+            //            {
+            //                if (!result.Contains(si.ScheduleTime))
+            //                {
+            //                    Application.Lock();
+            //                    result.Add(si.ScheduleTime);
+            //                    Application["LastRunningMins"] = result;
 
-                                string exTime = DateTime.Now.ToString("HH:mm:ss");
-                                System.Diagnostics.Debug.WriteLine("Schedule Execute At:" + exTime + "  Config Time:" + si.ScheduleTime);
+            //                    string exTime = DateTime.Now.ToString("HH:mm:ss");
+            //                    System.Diagnostics.Debug.WriteLine("Schedule Execute At:" + exTime + "  Config Time:" + si.ScheduleTime);
 
-                                ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelByScheduleId(si.ScheduleId);
+            //                    ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelByScheduleId(si.ScheduleId);
                            
-                                string[] strPids = new string[1];
-                                strPids[0] = si.ProgrameId;
+            //                    string[] strPids = new string[1];
+            //                    strPids[0] = si.ProgrameId;
 
 
-                                IHubConnectionContext allClients = GlobalHost.ConnectionManager.GetHubContext("MediaMgrHub").Clients;
+            //                    IHubConnectionContext allClients = GlobalHost.ConnectionManager.GetHubContext("MediaMgrHub").Clients;
 
 
                           
 
-                                if (GlobalUtils.IsChannelPlaying)
-                                {
+            //                    if (GlobalUtils.IsChannelPlaying)
+            //                    {
 
-                                    //SendLogic.SendStopRoRepeatCommand("1", allClients);
+            //                        //SendLogic.SendStopRoRepeatCommand("1", allClients);
 
-                                    GlobalUtils.IsChannelPlaying=false;
+            //                        GlobalUtils.IsChannelPlaying=false;
  
-                                }
+            //                    }
 
                          
 
 
 
 
-                                SendLogic.SendPlayCommand(ci.ChannelId, strPids, allClients, true);
-                                //  Class2.SetCommand(1, a);
+            //                    SendLogic.SendPlayCommand(ci.ChannelId, strPids, allClients, true);
+            //                    //  Class2.SetCommand(1, a);
 
-                                Application.UnLock();
-                                return;
-                            }
-                        }
-                    }
-                }
+            //                    Application.UnLock();
+            //                    return;
+            //                }
+            //            }
+            //        }
+            //    }
 
-            }
+            //}
 
             //    lock (lockObjet)
             //    {

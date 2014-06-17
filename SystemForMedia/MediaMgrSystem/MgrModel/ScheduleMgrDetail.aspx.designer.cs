@@ -49,21 +49,21 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.TextBox TbHiddenId;
         
         /// <summary>
-        /// TBTime control.
+        /// divTask control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TBTime;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divTask;
         
         /// <summary>
-        /// ddProgram control.
+        /// dvTaskList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddProgram;
+        protected global::System.Web.UI.WebControls.GridView dvTaskList;
     }
 }

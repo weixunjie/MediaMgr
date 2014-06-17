@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="DataModel\FileAttribute.cs" />
     <Compile Include="DataModel\ProgramInfo.cs" />
+    <Compile Include="DataModel\ScheduleTaskInfo.cs" />
     <Compile Include="DataModel\ScheduleInfo.cs" />
     <Compile Include="DataModel\ChannelInfo.cs" />
     <Compile Include="DataModel\EncoderInfo.cs" />

@@ -11,12 +11,10 @@
                 <div class="form-group">
 
                     <div class="col-md-10">
-                        <asp:GridView ID="dvList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound">
+                        <asp:GridView ID="dvList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
                             <Columns>
                                 <asp:BoundField DataField="ScheduleId" HeaderText="编号" />
                                 <asp:BoundField DataField="ScheduleName" HeaderText="名称" />
-
-                                <asp:BoundField DataField="ProgrameId" HeaderText="节目" />
 
                                 <asp:TemplateField HeaderText="操作" ItemStyle-Width="150px">
                                     <ItemTemplate>
@@ -33,7 +31,7 @@
                         <br />
 
                         <br />
-                        <asp:Button runat="server" Text="新增设备" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
+                        <asp:Button runat="server" Text="新增计划" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
 
 
                     </div>

@@ -24,15 +24,7 @@ namespace MediaMgrSystem.MgrModel
 
 
 
-                this.ddProgram.DataSource = allProgram;
-
-                ddProgram.DataValueField = "ProgramId";
-
-                ddProgram.DataTextField = "ProgramName";
-
-                ddProgram.DataBind();
-
-
+                divTask.Visible = false;
                 if (Request["id"] != null)
                 {
                     string id = Request["id"].ToString();
@@ -43,20 +35,10 @@ namespace MediaMgrSystem.MgrModel
 
                     this.TbName.Text = si.ScheduleName;
 
-                    this.TBTime.Text = si.ScheduleTime;
 
 
 
-                    
-
-
-                    var found = ddProgram.Items.FindByValue(si.ProgrameId);
-
-                    if (found != null)
-                    {
-                        found.Selected = true;
-                    }
-
+                    divTask.Visible = true;
 
                 }
 
@@ -76,13 +58,6 @@ namespace MediaMgrSystem.MgrModel
 
             si.ScheduleName = TbName.Text;
 
-            si.ScheduleTime = TBTime.Text;
-
-
-
-            si.ProgrameId = this.ddProgram.SelectedItem.Value;
-
-
 
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
@@ -97,6 +72,54 @@ namespace MediaMgrSystem.MgrModel
             }
 
             Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
+        }
+
+        private void BindSTaskListData()
+        {
+            List<ScheduleTaskInfo> dis = scheduleBLL.GetAllScheduleTaksByScheduleId(TbHiddenId.Text);
+
+            this.dvTaskList.DataSource = dis;
+            dvTaskList.DataBind();
+
+        }
+
+        protected void dvTaskList_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Edit")
+            {
+                Response.Redirect("~/MgrModel/ScheduleTaskMgrDetail.aspx?id=" + e.CommandArgument.ToString() + "&sid=" + TbHiddenId.Text);
+
+            }
+            else if (e.CommandName == "Del")
+            {
+                scheduleBLL.RemoveSchedule(e.CommandArgument.ToString());
+                BindSTaskListData();
+
+            }
+        }
+
+        protected void Add_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/MgrModel/ScheduleTaskMgrDetail.aspx?sid=" + TbHiddenId.Text);
+        }
+
+        protected void dvTaskList_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                try
+                {
+
+                    List<ProgramInfo> result = this.programBLL.GetProgramById(e.Row.Cells[6].Text);
+
+                    if (result != null && result.Count > 0)
+                    {
+                        e.Row.Cells[6].Text = result[0].ProgramName;
+                    }
+                }
+                catch { }
+            }
+
         }
     }
 }

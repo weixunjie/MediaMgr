@@ -23,25 +23,6 @@
              %>
 
 
-        //var parameters = new Array();
-
-        //var parameterClientIdentify = new Array();
-
-        //var parameterClientType = new Array();
-        ////-------------------------------Singalr 
-
-        //strclientIdentify = guid();
-
-        //parameterClientIdentify.push("clientIdentify");
-        //parameterClientIdentify.push(strclientIdentify);
-
-        //parameterClientType.push("clientType");
-        //parameterClientType.push("PC");
-
-        //parameters.push(parameterClientIdentify);
-        //parameters.push(parameterClientType);
-
-
 
         chat.client.sendResultBrowserClient = function (result, error) {
 
@@ -263,7 +244,7 @@
             });
 
             $(document).click(function () {
-               // debugger;
+                // debugger;
                 if (!is_in && !isChooseChannel) {
                     $("#menuForSingleGroup").hide();
                     $("#channelMenuForSignleGroupBox").hide()

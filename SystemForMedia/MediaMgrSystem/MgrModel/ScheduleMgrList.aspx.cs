@@ -54,23 +54,6 @@ namespace MediaMgrSystem.MgrModel
                 BindListData();
             }
         }
-
-        protected void dvList_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                try
-                {
-
-                    List<ProgramInfo> result = this.programBLL.GetProgramById(e.Row.Cells[2].Text);
-
-                    if (result != null && result.Count > 0)
-                    {
-                        e.Row.Cells[2].Text = result[0].ProgramName;
-                    }
-                }
-                catch { }
-            }
-        }
+       
     }
 }

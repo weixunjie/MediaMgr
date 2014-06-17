@@ -162,9 +162,11 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\ChannelList.css" />
+    <Content Include="Content\dateTimePicker.css" />
     <Content Include="Content\jquery-ui-1.10.4.custom.css" />
     <Content Include="Content\jquery-ui-1.10.4.custom.min.css" />
     <Content Include="Content\DeviceList.css" />
+    <Content Include="Content\jquery-ui-timepicker-addon.css" />
     <Content Include="Content\Site.css" />
     <Content Include="ChannelList.ascx" />
     <Content Include="DeviceList.ascx" />
@@ -182,6 +184,7 @@
     <Content Include="Images\ic_image_stop.png" />
     <Content Include="Images\ic_image_stop_disabled.png" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
+    <Content Include="MgrModel\ScheduleTaskMgrDetail.aspx" />
     <Content Include="MgrModel\ScheduleMgrDetail.aspx" />
     <Content Include="MgrModel\DeviceMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrList.aspx" />
@@ -192,10 +195,16 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.7.2.js" />
     <Content Include="Scripts\jquery-ui-1.10.4.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.4.custom.min.js" />
+    <Content Include="Scripts\jquery-ui-sliderAccess.js" />
+    <Content Include="Scripts\jquery-ui-timepicker-addon.js" />
+    <Content Include="Scripts\jquery-ui-timepicker-zh-CN.js" />
+    <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\jquery.dragsort-0.5.1.js" />
     <Content Include="Scripts\jquery.dragsort-0.5.1.min.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.min.js" />
     <Content Include="Scripts\json2.js" />
@@ -272,6 +281,13 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.cs">
+      <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.designer.cs">
+      <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>
+    </Compile>
     <Compile Include="SendLogic.cs" />
     <Compile Include="BusinessHub.cs" />
     <Compile Include="MediaMgrHubPipelineModule.cs" />
@@ -430,7 +446,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://192.168.1.100:19671/</IISUrl>
+          <IISUrl>http://localhost:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>
