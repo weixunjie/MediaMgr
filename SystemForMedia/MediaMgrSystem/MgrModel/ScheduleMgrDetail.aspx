@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="ScheduleMgrDetail.aspx.cs" Inherits="MediaMgrSystem.MgrModel.ScheduleMgrDetail" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <form runat="server">
+
         <h3 style="clip: rect(auto, auto, 10px, auto)">计划明细管理</h3>
 
 
@@ -36,7 +36,6 @@
 
 
 
-
             <div class="form-group">
 
                 <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Unnamed6_Click" />
@@ -48,7 +47,7 @@
 
              <div style="clear: both" class="clear"></div>
 
-            <div id="divTask" runat="server" >
+            <div id="divTask" style="margin-top:15px" runat="server" >
 
             <div class="form-group" style="margin-bottom: 10px">
 
@@ -79,11 +78,11 @@
 
                                 <asp:BoundField DataField="ScheduleTaskPriority" HeaderText="优先级" />
 
-                                <asp:BoundField DataField="ScheduleTaskProgarm" HeaderText="节目" />
+                                <asp:BoundField DataField="ScheduleTaskProgarmId" HeaderText="节目" />
 
-                                <asp:BoundField DataField="ScheduleTaskWeeks" HeaderText="播放星期" />
+                                <asp:BoundField DataField="StrWeeks" HeaderText="播放星期" />
 
-                                <asp:BoundField DataField="ScheduleTaskSpecialDays" HeaderText="特别日期" />
+                                <asp:BoundField DataField="StrDays" HeaderText="特别日期" />
 
                        
                                 <asp:TemplateField HeaderText="操作" ItemStyle-Width="150px">
@@ -114,5 +113,5 @@
         </section>
 
 
-    </form>
+   
 </asp:Content>

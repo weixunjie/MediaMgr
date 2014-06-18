@@ -184,6 +184,7 @@
     <Content Include="Images\ic_image_stop.png" />
     <Content Include="Images\ic_image_stop_disabled.png" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
+    <Content Include="MgrModel\PreviewMP3.aspx" />
     <Content Include="MgrModel\ScheduleTaskMgrDetail.aspx" />
     <Content Include="MgrModel\ScheduleMgrDetail.aspx" />
     <Content Include="MgrModel\DeviceMgrDetail.aspx" />
@@ -281,6 +282,13 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="MgrModel\PreviewMP3.aspx.cs">
+      <DependentUpon>PreviewMP3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\PreviewMP3.aspx.designer.cs">
+      <DependentUpon>PreviewMP3.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.cs">
       <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

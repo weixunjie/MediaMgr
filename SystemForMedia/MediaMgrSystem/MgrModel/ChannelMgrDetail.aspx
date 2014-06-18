@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="ChannelMgrDetail.aspx.cs" Inherits="MediaMgrSystem.MgrModel.ChannelMgrDetail" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <form runat="server">
+   
         <h3 style="clip: rect(auto, auto, 10px, auto)">通道明细管理</h3>
 
 
@@ -42,5 +42,5 @@
         </section>
 
 
-    </form>
+
 </asp:Content>

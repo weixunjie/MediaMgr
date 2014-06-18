@@ -18,155 +18,246 @@ namespace MediaMgrSystem
     public static class SendLogic
     {
 
-
-        public static void SendPlayCommand(string channelId, string[] programeIds, IHubConnectionContext hub,bool isScheduled)
+        public static void SendPlayCommand(string channelId, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId)
         {
-            string errorrNotOpenVideoSvr = "视频服务器未开启";
-            if (GlobalUtils.IsChannelPlaying)
-            {
-                List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-                hub.Clients(alPCIds).sendResultBrowserClient("正在播放中,请先停止", "200");
-                return;
-            }
 
-
-            if (string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
-            {
-                List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-                hub.Clients(alPCIds).sendResultBrowserClient(errorrNotOpenVideoSvr, "200");
-                hub.Clients(alPCIds).sendResultBrowserClientNoticeStatus(errorrNotOpenVideoSvr, "200");
-                return;
-            }
-            else
+            lock (GlobalUtils.PublicObjectForLock)
             {
 
-                VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
+                bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
 
-                cmdToVideoSvr.commandType = CommandTypeEnum.PLAYVEDIO;
+                string errorrNotOpenVideoSvr = "视频服务器未开启";
 
-
-                List<ProgramInfo> pids = GlobalUtils.ProgramBLLInstance.GetProgramByIds(programeIds);
-
-
-                cmdToVideoSvr.arg = new VideoServerOperArg();
-
-
-                cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
-
-
-                GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
-
-
-                cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
-             
-                cmdToVideoSvr.arg.streamName = "123456790";
-
-                cmdToVideoSvr.arg.streamSrcs = new List<string>();
-
-                foreach (var pi in pids)
+                if (!isSchedule && GlobalUtils.IsChannelManuallyPlaying)
                 {
-                    if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
+                    foreach (var sTask in GlobalUtils.RunningSchudules)
                     {
-                        foreach (var file in pi.MappingFiles)
+                        //优先手工播放
+                        if (sTask.ChannelId == channelId)
                         {
-                            cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
+                            SendStopRoRepeatCommand(channelId, hub, sTask.GuidId,channelId);
+
                         }
                     }
+
+                    List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+                    hub.Clients(alPCIds).sendResultBrowserClient("正在播放中,请先停止", "200");
+                    return;
+
                 }
 
-                int intCID = 0;
-
-                int port = 0;
-                if (int.TryParse(channelId, out intCID))
+                if (string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
                 {
-                    port = 1001 + intCID;
+
+                    if (isSchedule)
+                    {
+
+                        if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                        {
+
+                            ComuResponseBase cr = new ComuResponseBase();
+
+                            cr.guidId = scheduleTaskGuidId;
+
+                            cr.errorCode = "200";
+
+                            cr.message = "视频服务器未开启";
+                            hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                        }
+                    }
+                    else
+                    {
+                        List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+                        hub.Clients(alPCIds).sendResultBrowserClient(errorrNotOpenVideoSvr, "200");
+                        hub.Clients(alPCIds).sendResultBrowserClientNoticeStatus(errorrNotOpenVideoSvr, "200");
+                    }
+
+
+                    return;
+                }
+                else
+                {
+                    if (isSchedule)
+                    {
+                        foreach (var sTask in GlobalUtils.RunningSchudules)
+                        {
+                            //取消上个同个通道的计划
+                            if (sTask.ChannelId == channelId)
+                            {
+                                SendStopRoRepeatCommand(channelId, hub, sTask.GuidId, channelId);
+
+                            }
+                        }
+                    }
+
+                    VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
+
+                    cmdToVideoSvr.commandType = CommandTypeEnum.PLAYVEDIO;
+
+                    List<ProgramInfo> pids = GlobalUtils.ProgramBLLInstance.GetProgramByIds(programeIds);
+
+
+                    cmdToVideoSvr.arg = new VideoServerOperArg();
+
+
+                    cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
+
+
+                    GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
+
+
+                    cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
+
+                    cmdToVideoSvr.arg.streamName = "123456790";
+
+                    cmdToVideoSvr.arg.streamSrcs = new List<string>();
+
+                    foreach (var pi in pids)
+                    {
+                        if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
+                        {
+                            foreach (var file in pi.MappingFiles)
+                            {
+                                cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
+                            }
+                        }
+                    }
+
+                    int intCID = 0;
+
+                    int port = 0;
+                    if (int.TryParse(channelId, out intCID))
+                    {
+                        port = 1001 + intCID;
+                    }
+
+                    cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:1234";// +port.ToString();
+                    cmdToVideoSvr.arg.streamName = "123456790" + port.ToString();
+
+                    List<string> clientsIpToSend = new List<string>();
+
+                    List<string> clientsConectionIdToSend = new List<string>();
+
+                    object clientsDatraToSend = new object();
+
+                    CreateCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
+
+                    PushQueue("播放视频", clientsIpToSend);
+
+                    GlobalUtils.VideoSvrArg = cmdToVideoSvr.arg;
+
+
+                    TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
+
+
+                    string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
+                    hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+
+                    TimeSpan afterSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
+
+                    double offsetTotalMilliseconds = afterSendToAllClient.Subtract(beforeSendToAllClient).Duration().TotalMilliseconds;
+
+
+                    int bufferTime = (int)(4000 - offsetTotalMilliseconds);
+
+                    cmdToVideoSvr.arg.buffer = cmdToVideoSvr.arg.buffer = !string.IsNullOrWhiteSpace(scheduleTaskGuidId) ? bufferTime.ToString() : (bufferTime - 2000).ToString();
+
+                    string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
+                    hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonData);
+
+                    GlobalUtils.IsChannelManuallyPlaying = true;
                 }
 
-                cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:1234";// +port.ToString();
-                cmdToVideoSvr.arg.streamName = "123456790" + port.ToString();
-
-                CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId);
-
-                PushQueue("播放视频");
-
-                GlobalUtils.VideoSvrArg = cmdToVideoSvr.arg;
-
-
-
-                TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
-                
-
-                string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalUtils.ReadyToSentClientData);
-                hub.Clients(GlobalUtils.ReadyToSentClientIds).sendMessageToClient(jsonDataToClient);
-
-                TimeSpan afterSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
-
-                double offsetTotalMilliseconds = afterSendToAllClient.Subtract(beforeSendToAllClient).Duration().TotalMilliseconds;
-
-
-                int bufferTime = (int)(4000 - offsetTotalMilliseconds);
-
-                cmdToVideoSvr.arg.buffer = cmdToVideoSvr.arg.buffer = isScheduled ? bufferTime.ToString(): (bufferTime-2000).ToString();
-
-                string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-                hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonData);
-
-
-                GlobalUtils.IsChannelPlaying = true;
             }
 
 
         }
 
-        public static void SendStopRoRepeatCommand(string commandType, IHubConnectionContext hub)
+        public static void SendStopRoRepeatCommand(string commandType, IHubConnectionContext hub, string scheduleTaskGuidId, string channelId)
         {
-            string errorrNotOpenVideoSvr = "视频服务器未开启";
-            if (GlobalUtils.IsChannelPlaying)
-            {
-                string videoSvrId = GlobalUtils.GetVideoServerConnectionIds();
 
-                if (string.IsNullOrWhiteSpace(videoSvrId))
+            bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
+
+            string errorrNotOpenVideoSvr = "视频服务器未开启";
+
+            string videoSvrId = GlobalUtils.GetVideoServerConnectionIds();
+
+            if (string.IsNullOrWhiteSpace(videoSvrId))
+            {
+                if (isSchedule)
+                {
+                    ComuResponseBase cr = new ComuResponseBase();
+
+                    cr.guidId = scheduleTaskGuidId;
+
+                    cr.errorCode = "200";
+
+                    cr.message = "视频服务器未开启";
+
+                    if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                    {
+
+                        hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                    }
+
+                }
+                else
                 {
                     List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                     hub.Clients(alPCIds).sendResultBrowserClient(errorrNotOpenVideoSvr, "200");
-
                     hub.Clients(alPCIds).sendResultBrowserClientNoticeStatus(errorrNotOpenVideoSvr, "200");
-
                 }
 
-                else
-                {
-                    VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
-
-                    cmdToVideoSvr.commandType = commandType == "1" ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
-
-
-                    GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
-
-                    cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
-
-                    VideoOperAndriodClientCommand cmdToAndroidClient = CreateAndroidCommandForStopRepeat(commandType);
-
-                    cmdToVideoSvr.arg = (VideoServerOperArg)GlobalUtils.VideoSvrArg;
-
-                    PushQueue(commandType == "1" ? "停止" : "循环播放");
-
-                    string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-                    hub.Client(videoSvrId).sendMessageToClient(jsonDataToVideoSvr);
-
-
-                    string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToAndroidClient);
-
-                    hub.Clients(GlobalUtils.ReadyToSentClientIds).sendMessageToClient(jsonDataToClient);
-
-
-                    if (commandType == "1")
-                    {
-                        GlobalUtils.IsChannelPlaying = false;
-                    }
-                }
             }
 
+            else
+            {
+                SendOutStopRepeatCommandToServerAndClient(commandType, hub, channelId, isSchedule);
+            }
+
+
+
+        }
+
+        private static void SendOutStopRepeatCommandToServerAndClient(string commandType, IHubConnectionContext hub,
+            string channelId, bool isSchedule)
+        {
+            VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
+
+            cmdToVideoSvr.commandType = commandType == "1" ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
+
+
+            GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
+
+            cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
+
+
+
+            List<string> clientsIpToSend = new List<string>();
+
+            List<string> clientsConectionIdToSend = new List<string>();
+
+            object clientsDatraToSend = new object();
+
+            CreateCommandForAndriodClients(null, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
+
+
+
+            PushQueue(commandType == "1" ? "停止" : "循环播放", clientsIpToSend);
+
+            string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
+            hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+
+
+            string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
+
+            hub.Clients(clientsIpToSend).sendMessageToClient(jsonDataToClient);
+
+
+            if (!isSchedule)
+            {
+                GlobalUtils.IsChannelManuallyPlaying = false;
+            }
         }
 
         private static VideoOperAndriodClientCommand CreateAndroidCommandForStopRepeat(string commandType)
@@ -286,19 +377,20 @@ namespace MediaMgrSystem
 
 
         //}
-        private static void PushQueue(string cmdText)
+        private static void PushQueue(string cmdText, List<string> clientIps)
         {
 
             GlobalUtils.CommandQueues.Add(new QueueItem() { IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandStr = cmdText });
 
-            foreach (var ip in GlobalUtils.ReadyToSentClientIPs)
+            foreach (var ip in clientIps)
             {
                 GlobalUtils.CommandQueues.Add(new QueueItem() { IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandStr = cmdText });
             }
         }
 
 
-        private static void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId)
+        private static void CreateCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
+            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out object dataToSend)
         {
 
             VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
@@ -313,16 +405,18 @@ namespace MediaMgrSystem
             dataSendToAndroidClient.arg = new VideoOperAndriodClientArg();
 
 
-            dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
+            if (pids != null && pids.Count > 0)
+            {
+                dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
 
-            dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
+                dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
 
-            dataSendToAndroidClient.arg.streamSrcs = cmdToVideoSvr.arg.streamSrcs;
+                dataSendToAndroidClient.arg.streamSrcs = cmdToVideoSvr.arg.streamSrcs;
 
-            dataSendToAndroidClient.arg.udpBroadcastAddress = cmdToVideoSvr.arg.udpBroadcastAddress;
+                dataSendToAndroidClient.arg.udpBroadcastAddress = cmdToVideoSvr.arg.udpBroadcastAddress;
+            }
 
-            GlobalUtils.ReadyToSentClientData = dataSendToAndroidClient;
-
+            dataToSend = dataSendToAndroidClient;
 
             List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId);
 
@@ -344,13 +438,13 @@ namespace MediaMgrSystem
 
             if (needSentClientIpAddresses.Count > 0)
             {
-                GlobalUtils.ReadyToSentClientIPs = needSentClientIpAddresses;
-                GlobalUtils.ReadyToSentClientIds = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
+                ipsNeedToSend = needSentClientIpAddresses;
+                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
             }
             else
             {
-                GlobalUtils.ReadyToSentClientIPs = new List<string>();
-                GlobalUtils.ReadyToSentClientIds = new List<string>();
+                ipsNeedToSend = new List<string>();
+                idsNeedToSend = new List<string>();
             }
         }
 

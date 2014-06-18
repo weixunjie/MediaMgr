@@ -19,6 +19,7 @@ namespace MediaMgrSystem.MgrModel
             if (!Page.IsPostBack)
             {
 
+                lbMessage.Visible = false;
                 List<ProgramInfo> allProgram = programBLL.GetAllProgram();
 
 
@@ -39,7 +40,6 @@ namespace MediaMgrSystem.MgrModel
                 }
 
 
-                this.tbSelectDate.Value = DateTime.Now.ToString("YYYY-MM-DD");
 
                 if (Request["sid"] != null)
                 {
@@ -58,10 +58,10 @@ namespace MediaMgrSystem.MgrModel
 
                     this.TbName.Text = si.ScheduleTaskName;
 
-                   // this.tbStartTime.Value = si.ScheduleTaskStartTime;
+                    this.tbStartTime.Value = si.ScheduleTaskStartTime;
 
 
-                    this.tbEndTime.Value = si.ScheduleTaskEndTime;
+                    tbEndTime.Value = si.ScheduleTaskEndTime;
 
 
                     this.lbSelectedDate.Items.Clear();
@@ -113,42 +113,34 @@ namespace MediaMgrSystem.MgrModel
                     {
                         found.Selected = true;
                     }
-
-
-
                 }
-
-
-
             }
         }
 
         protected void Unnamed7_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
+            Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
         }
 
         protected void Unnamed6_Click(object sender, EventArgs e)
         {
 
-            rvEndTime.IsValid = true;
-
-
+            lbMessage.Visible = false;
             DateTime dtStart;
             DateTime dtEnd;
 
-            //if (DateTime.TryParse(tbStartTime.Value, out dtStart) &&
-            //    DateTime.TryParse(tbEndTime.Value, out dtEnd))
-            //{
-            //    if (dtEnd <= dtStart)
-            //    {
-            //        rvEndTime.IsValid = false;
+            if (DateTime.TryParse(tbStartTime.Value, out dtStart) &&
+                DateTime.TryParse(tbEndTime.Value, out dtEnd))
+            {
+                if (dtEnd <= dtStart)
+                {
 
-            //        return;
+                    lbMessage.Text = "结束时间必须大于开始时间";
+                    lbMessage.Visible = true;
+                    return;
 
-            //    }
-            //}
-
+                }
+            }
 
             ScheduleTaskInfo si = new ScheduleTaskInfo();
 
@@ -164,9 +156,13 @@ namespace MediaMgrSystem.MgrModel
             si.ScheduleTaskSpecialDays = new List<string>();
 
 
+            si.StrDays = "";
+            si.StrWeeks = "";
+
             foreach (ListItem lv in lbSelectedDate.Items)
             {
                 si.ScheduleTaskSpecialDays.Add(lv.Value);
+                si.StrDays += lv.Value + ",";
             }
 
 
@@ -177,9 +173,19 @@ namespace MediaMgrSystem.MgrModel
                 if (lv.Selected)
                 {
                     si.ScheduleTaskWeeks.Add(lv.Value);
+                    si.StrWeeks += lv.Value + ",";
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(si.StrWeeks))
+            {
+                si.StrWeeks = si.StrWeeks.TrimEnd(',');
+            }
+
+            if (!string.IsNullOrWhiteSpace(si.StrDays))
+            {
+                si.StrDays = si.StrDays.TrimEnd(',');
+            }
 
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
@@ -190,15 +196,15 @@ namespace MediaMgrSystem.MgrModel
             }
             else
             {
-                scheduleBLL.UpdateScheduleTask(si);
+                scheduleBLL.AddSchdeulTask(si);
             }
 
-            Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
+            Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
         }
 
         protected void btnDelSelected_Click(object sender, EventArgs e)
         {
-            if (lbSelectedDate.SelectedItem!=null)
+            if (lbSelectedDate.SelectedItem != null)
             {
                 lbSelectedDate.Items.Remove(lbSelectedDate.SelectedItem);
             }
@@ -206,9 +212,36 @@ namespace MediaMgrSystem.MgrModel
 
         protected void btnAddDate_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrWhiteSpace(tbSelectDate.Value))
+            {
+                lbSelectedDate.Items.Add(new ListItem() { Text = tbSelectDate.Value, Value = tbSelectDate.Value });
+            }
 
-            lbSelectedDate.Items.Add(new ListItem(){Text=tbSelectDate.Value,Value=tbSelectDate.Value});
-       
+        }
+
+        protected void btnPreview_Click(object sender, EventArgs e)
+        {
+            if (ddProgram.SelectedItem != null)
+            {
+                List<ProgramInfo> pis = programBLL.GetProgramById(ddProgram.SelectedValue,true);
+
+                if (pis != null && pis.Count > 0)
+                {
+
+                    if (pis[0].MappingFiles != null && pis[0].MappingFiles.Count > 0)
+                    {
+                                               
+                        string fileUrl = ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
+
+                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl="+fileUrl);
+
+                        Response.Write("<script language='javascript'>window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');</script>");
+                        //  Response.Write("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
+                    }
+
+                }
+            }
         }
     }
+
 }

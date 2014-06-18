@@ -34,7 +34,7 @@ namespace MediaMgrSystem
 
         public string GetIsPlaying()
         {
-            return GlobalUtils.IsChannelPlaying.ToString().ToLower();
+            return GlobalUtils.IsChannelManuallyPlaying.ToString().ToLower();
         }
 
 

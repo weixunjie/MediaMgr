@@ -24,27 +24,11 @@ namespace MediaMgrSystem
 
             // Code that runs on application startup
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            //    BundleConfig.RegisterBundles(BundleTable.Bundles);
+     
             GlobalHost.HubPipeline.AddModule(new MediaMgrHubPipelineModule());
 
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0, 0, 6);
 
-
-            //GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 0,1200);
-
-
-            //   GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
-
-
-
-            System.Timers.Timer timer = new System.Timers.Timer(500);
-
-
-            timer.AutoReset = true;
-
-            timer.Enabled = true;
-
-           // timer.Elapsed += new System.Timers.ElapsedEventHandler(this.setTime);
 
         }
 
@@ -84,7 +68,7 @@ namespace MediaMgrSystem
             //                    System.Diagnostics.Debug.WriteLine("Schedule Execute At:" + exTime + "  Config Time:" + si.ScheduleTime);
 
             //                    ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelByScheduleId(si.ScheduleId);
-                           
+
             //                    string[] strPids = new string[1];
             //                    strPids[0] = si.ProgrameId;
 
@@ -92,7 +76,7 @@ namespace MediaMgrSystem
             //                    IHubConnectionContext allClients = GlobalHost.ConnectionManager.GetHubContext("MediaMgrHub").Clients;
 
 
-                          
+
 
             //                    if (GlobalUtils.IsChannelPlaying)
             //                    {
@@ -100,10 +84,10 @@ namespace MediaMgrSystem
             //                        //SendLogic.SendStopRoRepeatCommand("1", allClients);
 
             //                        GlobalUtils.IsChannelPlaying=false;
- 
+
             //                    }
 
-                         
+
 
 
 

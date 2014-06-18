@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="DeviceMgrDetail.aspx.cs" Inherits="MediaMgrSystem.MgrModel.DeviceMgrDetail" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <form runat="server">
+ 
         <h3 style="clip: rect(auto, auto, 10px, auto)">设备明细管理</h3>
 
 
@@ -71,5 +71,4 @@
         </section>
 
 
-    </form>
 </asp:Content>

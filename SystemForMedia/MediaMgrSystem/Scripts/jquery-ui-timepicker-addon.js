@@ -879,7 +879,7 @@ $.fn.extend({
 	//########################################################################
 	datetimepicker: function(o) {
 	    o = o || {};
-	    debugger;
+
 		var tmp_args = arguments;
 
 		if (typeof(o) == 'string'){

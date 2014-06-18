@@ -582,8 +582,7 @@
                 <h4 style="text-align: left; margin-top: 0px">可选组</h4>
 
                 <select size="4" multiple="multiple" style="height: 160px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
-
-
+                    
                     <% foreach (var di in dGroups)
                        {
                            if (di.GroupId == "-1") { continue; } %>

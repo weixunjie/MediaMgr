@@ -35,7 +35,7 @@ namespace MediaMgrSystem.MgrModel
 
                     this.TbName.Text = si.ScheduleName;
 
-
+                    this.BindSTaskListData();
 
 
                     divTask.Visible = true;
@@ -110,7 +110,7 @@ namespace MediaMgrSystem.MgrModel
                 try
                 {
 
-                    List<ProgramInfo> result = this.programBLL.GetProgramById(e.Row.Cells[6].Text);
+                    List<ProgramInfo> result = this.programBLL.GetProgramById(e.Row.Cells[5].Text);
 
                     if (result != null && result.Count > 0)
                     {
@@ -118,6 +118,26 @@ namespace MediaMgrSystem.MgrModel
                     }
                 }
                 catch { }
+
+                string strWeeks = e.Row.Cells[5].Text;
+
+                strWeeks = strWeeks.Replace("1", "一");
+
+                strWeeks = strWeeks.Replace("2", "二");
+                strWeeks = strWeeks.Replace("3", "三");
+
+                strWeeks = strWeeks.Replace("4", "四");
+
+                strWeeks = strWeeks.Replace("5", "五");
+
+                strWeeks = strWeeks.Replace("6", "六");
+
+                strWeeks = strWeeks.Replace("7", "日");
+
+                e.Row.Cells[5].Text = strWeeks;
+
+
+
             }
 
         }

@@ -2,7 +2,7 @@
 
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <form runat="server">
+   
         <h3>节目信息管理</h3>
 
 
@@ -51,7 +51,7 @@
         </section>
 
 
-    </form>
+
 </asp:Content>
 
 <%--<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">

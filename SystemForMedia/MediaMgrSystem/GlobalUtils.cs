@@ -25,6 +25,22 @@ namespace MediaMgrSystem
             set;
         }
     }
+
+    public class ScheduleRunningItem
+    {
+        public string ChannelId
+        { get; set; }
+
+        public string GuidId
+        { get; set; }
+
+        public string RunningTime
+        {
+            get;
+            set;
+        }
+    }
+
     public static class GlobalUtils
     {
 
@@ -47,7 +63,7 @@ namespace MediaMgrSystem
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
 
         
-        public static bool IsChannelPlaying = false;
+        public static bool IsChannelManuallyPlaying = false;
 
         public static string CurrentVideoGuidId = string.Empty;
 
@@ -55,20 +71,29 @@ namespace MediaMgrSystem
 
         public static string VideoServerConnectionId = string.Empty;
 
+        public static string WindowsServiceConnectionId = string.Empty;
+
 
         public static string CurrentClientGuidId = string.Empty;
 
         public static object VideoSvrArg=null;
 
-        public static List<string> ReadyToSentClientIds = new List<string>();
-        public static List<string> ReadyToSentClientIPs = new List<string>();
+        //public static List<string> ReadyToSentClientIds = new List<string>();
+        //public static List<string> ReadyToSentClientIPs = new List<string>();
 
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
 
-        public static object ReadyToSentClientData = new object();
+        //public static object ReadyToSentClientData = new object();
 
-        public static object ReadyToSentSVRData = new object();
+        //public static object ReadyToSentSVRData = new object();
+
+
+
+        public static List<ScheduleRunningItem> RunningSchudules =new  List<ScheduleRunningItem>();
+
+
+
         public static bool CheckIfAudio(string fileName)
         {
             string fName = fileName.ToUpper();

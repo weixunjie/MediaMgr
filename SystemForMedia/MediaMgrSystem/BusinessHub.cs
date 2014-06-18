@@ -26,86 +26,17 @@ namespace MediaMgrSystem
         /// 2: repeat
         /// </summary>
         /// <param name="commandType"></param>
-        public void SendStopRoRepeatCommand(string commandType)
+        public void SendStopRoRepeatCommand(string commandType, string channelId,string scheduleGuidId)
         {
-            SendLogic.SendStopRoRepeatCommand(commandType, Clients);
+            SendLogic.SendStopRoRepeatCommand(commandType, Clients, scheduleGuidId, channelId);
 
         }
 
-    
-
-        public void SendPlayCommand(string channelId, string[] programeIds,string cmdType)
+        public void SendPlayCommand(string channelId, string[] programeIds, string scheduleGuidId)
         {
-            SendLogic.SendPlayCommand(channelId, programeIds, Clients,false);
-        }
-
-        private void PushQueue(string cmdText)
-        {
-
-            GlobalUtils.CommandQueues.Add(new QueueItem() { IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandStr = cmdText });
-
-            foreach (var ip in GlobalUtils.ReadyToSentClientIPs)
-            {
-                GlobalUtils.CommandQueues.Add(new QueueItem() { IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandStr = cmdText });
-            }
-        }
-
-        private void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId)
-        {
-
-            VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
-
-            dataSendToAndroidClient.commandType = CommandTypeEnum.PLAYVEDIO;
-
-
-            dataSendToAndroidClient.guidId = Guid.NewGuid().ToString();
-            GlobalUtils.CurrentClientGuidId = dataSendToAndroidClient.guidId;
-
-
-            dataSendToAndroidClient.arg = new VideoOperAndriodClientArg();
-
-
-            dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
-
-            dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
-
-            dataSendToAndroidClient.arg.streamSrcs = cmdToVideoSvr.arg.streamSrcs;
-
-            dataSendToAndroidClient.arg.udpBroadcastAddress = cmdToVideoSvr.arg.udpBroadcastAddress;
-
-            GlobalUtils.ReadyToSentClientData = dataSendToAndroidClient;
-
-
-            List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId);
-
-            List<string> needSentClientIpAddresses = new List<string>();
-
-            if (channelGroups != null && channelGroups.Count > 0)
-            {
-                foreach (var gi in channelGroups)
-                {
-                    if (gi.Devices != null && gi.Devices.Count > 0)
-                    {
-                        foreach (var di in gi.Devices)
-                        {
-                            needSentClientIpAddresses.Add(di.DeviceIpAddress);
-                        }
-                    }
-                }
-            }
-
-            if (needSentClientIpAddresses.Count > 0)
-            {
-                GlobalUtils.ReadyToSentClientIPs = needSentClientIpAddresses;
-                GlobalUtils.ReadyToSentClientIds = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
-            }
-            else
-            {
-                GlobalUtils.ReadyToSentClientIPs = new List<string>();
-                GlobalUtils.ReadyToSentClientIds = new List<string>();
-            }
-        }
-
+            SendLogic.SendPlayCommand(channelId, programeIds, Clients, scheduleGuidId);
+        }    
+        
         public void sendVideoControlPauseMessage(string commandType)
         {
             HubSendLogic.SetCommand(2, Clients);
@@ -192,7 +123,7 @@ namespace MediaMgrSystem
                     }
                 }
 
-            
+
 
                 if (!string.IsNullOrEmpty(removeIP) && !string.IsNullOrEmpty(removeGuid))
                 {
@@ -215,89 +146,23 @@ namespace MediaMgrSystem
 
             }
 
-        }
+        }     
 
-        public void SendTimeToServer(string aa)
+
+        public void sendScheduleTaskControl(string cid, string[] pid, string cmdType,string guid)
         {
-            //StreamWriter sw = new StreamWriter(@"c:\logForTrack.txt", true);
-            //sw.WriteLine(aa);
-            //sw.Close();
-            lock (aa)
+            //Play
+            if (cmdType == "1")
+            {
+                SendLogic.SendPlayCommand(cid, pid, Clients, guid);
+                
+            }
+            //Stop
+            else if (cmdType == "2")
             {
 
-                System.Diagnostics.Debug.WriteLine(aa);
+                SendLogic.SendStopRoRepeatCommand("1",Clients,guid,cid);
             }
-
-        }
-
-        public void SendResponseMessage(string result)
-        {
-            VideoResponse vr = Newtonsoft.Json.JsonConvert.DeserializeObject<VideoResponse>(result);
-
-
-            IList<string> ids = new List<string>();
-            ids.Add(HttpContext.Current.Application["connectionId"].ToString());
-
-            if (vr.errorCode == "0")
-            {
-                Clients.Clients(ids).sendResponseMessage(vr.deviceIP, " 成功");
-            }
-            else
-            {
-                Clients.Clients(ids).sendResponseMessage(vr.deviceIP, " 失败，原因：" + vr.message);
-            }
-
-        }
-
-        public void SendPlayResponeMessage(string ipAddress)
-        {
-
-            System.Diagnostics.Debug.WriteLine("IP " + ipAddress + " Play Time:" + DateTime.Now.ToString("HH:mm:ss.fff"));
-
-        }
-
-
-
-        public void SendReceivedMessage(string IpAddress, string serverSendTime, string time)
-        {
-
-            DateTime dtServer = DateTime.Parse(serverSendTime);
-
-            DateTime dtClient = DateTime.Parse(time);
-
-            double ts = dtClient.Subtract(dtServer).TotalMilliseconds;
-
-
-
-        }
-
-
-
-
-        //private List<string> getAllTime()
-        //{
-        //    List<string> rsult = new List<string>();
-        //    StreamReader sw = new StreamReader(@"c:\logbb.txt", false);
-        //    while (!sw.EndOfStream)
-        //    {
-
-        //        string aa = sw.ReadLine();
-
-        //        if (!string.IsNullOrEmpty(aa))
-        //        {
-        //            rsult.Add(aa);
-        //        }
-        //    }
-        //    sw.Close();
-
-        //    return rsult;
-
-
-        //}
-
-        public void SendSyncTimeResponse(string IpAddress, string time)
-        {
-
         }
 
     }

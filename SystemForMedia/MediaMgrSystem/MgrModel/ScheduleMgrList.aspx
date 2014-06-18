@@ -2,7 +2,7 @@
 
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <form runat="server">
+ 
         <h3>计划管理</h3>
 
         <section id="groupMgrSection">
@@ -50,7 +50,7 @@
         </section>
 
 
-    </form>
+  
 </asp:Content>
 
 <%--<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
