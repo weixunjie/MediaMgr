@@ -24,6 +24,18 @@ namespace MediaMgrSystem
             get;
             set;
         }
+
+        public bool IsScheduled
+        {
+            get;
+            set;
+        }
+
+        public long PushTicks
+        {
+            get;
+            set;
+        }
     }
 
     public class ScheduleRunningItem
@@ -62,8 +74,17 @@ namespace MediaMgrSystem
 
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
 
-        
+
         public static bool IsChannelManuallyPlaying = false;
+
+
+        public static string[] ChannelManuallyPlayingPids = null;
+
+
+        public static string ChannelManuallyPlayingChannelId = string.Empty;
+
+        public static string ChannelManuallyPlayingChannelName = string.Empty;
+
 
         public static string CurrentVideoGuidId = string.Empty;
 
@@ -76,7 +97,7 @@ namespace MediaMgrSystem
 
         public static string CurrentClientGuidId = string.Empty;
 
-        public static object VideoSvrArg=null;
+        public static object VideoSvrArg = null;
 
         //public static List<string> ReadyToSentClientIds = new List<string>();
         //public static List<string> ReadyToSentClientIPs = new List<string>();
@@ -90,7 +111,7 @@ namespace MediaMgrSystem
 
 
 
-        public static List<ScheduleRunningItem> RunningSchudules =new  List<ScheduleRunningItem>();
+        public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
 
 
 
@@ -159,12 +180,37 @@ namespace MediaMgrSystem
 
         }
 
-        
-       
+        public static string GetWindowsServiceConnectionIds()
+        {
+
+            string result = string.Empty;
+
+            lock (objForLock)
+            {
+                if (AllConnectedClients != null)
+                {
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    {
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.WINDOWSSERVICE)
+                        {
+                            result = AllConnectedClients[i].ConnectionId;
+                        }
+                    }
+                }
+            }
+
+            return result;
+
+
+        }
+
+
+
+
         public static void AddConnection(SingalConnectedClient client)
         {
             lock (objForLock)
-            {                
+            {
                 AllConnectedClients.Add(client);
             }
 
@@ -195,6 +241,28 @@ namespace MediaMgrSystem
 
             return result;
 
+        }
+
+        public static string  GetIdentifyByConectionId(string connId)
+        {
+            List<string> results = new List<string>();
+
+            lock (objForLock)
+            {
+
+                if (AllConnectedClients != null)
+                {
+                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    {
+                        if (AllConnectedClients[i].ConnectionId==connId)
+                        {
+                            return AllConnectedClients[i].ConnectionIdentify;
+                        }
+                    }
+                }
+            }
+
+            return "";
         }
 
         public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies)
@@ -261,7 +329,7 @@ namespace MediaMgrSystem
                 {
                     for (int i = 0; i < AllConnectedClients.Count; i++)
                     {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.ANDROID && AllConnectedClients[i].ConnectionId==id)
+                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.ANDROID && AllConnectedClients[i].ConnectionId == id)
                         {
                             return true;
                         }

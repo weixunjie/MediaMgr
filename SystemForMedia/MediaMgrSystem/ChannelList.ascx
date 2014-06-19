@@ -4,11 +4,28 @@
 
 <script type="text/javascript">
 
-    var currentOperChannel;
-    var currentOperChannelName;
-    var currentPlayPIds = new Array();
+    var currentOperChannel='<% =GetIsPlayingChannelId() %>';
+    var currentOperChannelName='<% =GetIsPlayingChannelName() %>';
+    var currentPlayPIds = '<% =GetIsPlayingPIds() %>';
+    var boolIsPlaying='<% = GetIsPlaying() %>';
+
+   
+
 
     $(document).ready(function () {
+
+       
+       
+        if (boolIsPlaying=="true")
+        {
+            setButtonStatus("Play");
+            $("#divChannelInfo").html("通道:" + currentOperChannelName + "播放中");
+        }
+        else
+        {
+            setButtonStatus("AllDisabled");
+        }
+
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
              List<MediaMgrSystem.DataModels.ScheduleInfo> schedules = GetAllSchedules();
@@ -23,8 +40,7 @@
              for (int i = 0; i < schedules.Count; i++) { schdueleIds = schdueleIds + "#btnSchedule" + schedules[i].ScheduleId.ToString() + ","; }; schdueleIds = schdueleIds.TrimEnd(',');
 
         %>
-
-       
+               
 
 
         chat.client.sendResultBrowserClientNoticeStatus = function (result, error) {
@@ -244,9 +260,9 @@
            
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentOperChannel, currentPlayPIds,"0");
+                chat.server.sendPlayCommand(currentOperChannel, currentOperChannelName, currentPlayPIds,null);
 
-              //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
+                //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
 
                 $("#divChannelInfo").html("(" + currentOperChannelName + ")->播放中");
             }
@@ -296,10 +312,10 @@
                 success: function (msg) {
 
                     $("<% =schdueleIds%>").css("font-weight", "normal");
-                $("#btnSchedule" + msg.d).css("font-weight", "bold");
+                    $("#btnSchedule" + msg.d).css("font-weight", "bold");
 
-            }
-        });
+                }
+            });
 
 
             $("#SchduleBox").show().css("left", x).css("top", y);

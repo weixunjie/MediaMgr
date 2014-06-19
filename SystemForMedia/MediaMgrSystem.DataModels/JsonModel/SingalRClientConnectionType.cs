@@ -11,6 +11,7 @@ namespace MediaMgrSystem.DataModels
         PC,
         ANDROID,
         VEDIOSERVER,
-        ENCODERDEVICE
+        ENCODERDEVICE,
+        WINDOWSSERVICE
     }
 }

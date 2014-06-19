@@ -307,7 +307,6 @@
       <DependentUpon>ChannelList.ascx</DependentUpon>
     </Compile>
     <Compile Include="GlobalUtils.cs" />
-    <Compile Include="HubSendLogic.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

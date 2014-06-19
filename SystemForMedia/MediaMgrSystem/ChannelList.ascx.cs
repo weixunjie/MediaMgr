@@ -31,10 +31,24 @@ namespace MediaMgrSystem
 
         }
 
-
         public string GetIsPlaying()
         {
             return GlobalUtils.IsChannelManuallyPlaying.ToString().ToLower();
+        }
+
+        public string[] GetIsPlayingPIds()
+        {
+            return GlobalUtils.ChannelManuallyPlayingPids;
+        }
+
+        public string GetIsPlayingChannelId()
+        {
+            return GlobalUtils.ChannelManuallyPlayingChannelId;
+        }
+
+        public string GetIsPlayingChannelName()
+        {
+            return GlobalUtils.ChannelManuallyPlayingChannelName;
         }
 
 

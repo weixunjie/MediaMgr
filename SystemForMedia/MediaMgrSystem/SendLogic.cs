@@ -18,7 +18,7 @@ namespace MediaMgrSystem
     public static class SendLogic
     {
 
-        public static void SendPlayCommand(string channelId, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId)
+        public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId)
         {
 
             lock (GlobalUtils.PublicObjectForLock)
@@ -28,21 +28,26 @@ namespace MediaMgrSystem
 
                 string errorrNotOpenVideoSvr = "视频服务器未开启";
 
-                if (!isSchedule && GlobalUtils.IsChannelManuallyPlaying)
+                if (!isSchedule)
                 {
+                    //手工模式一次只能操作一个通道
+                    if (GlobalUtils.IsChannelManuallyPlaying)
+                    {
+                        List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+                        hub.Clients(alPCIds).sendResultBrowserClient("正在播放中,请先停止", "200");
+                        return;
+                    }
+
                     foreach (var sTask in GlobalUtils.RunningSchudules)
                     {
                         //优先手工播放
                         if (sTask.ChannelId == channelId)
                         {
-                            SendStopRoRepeatCommand(channelId, hub, sTask.GuidId,channelId);
+                            SendStopRoRepeatCommand(channelId, hub, sTask.GuidId, channelId);
 
                         }
                     }
 
-                    List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-                    hub.Clients(alPCIds).sendResultBrowserClient("正在播放中,请先停止", "200");
-                    return;
 
                 }
 
@@ -75,6 +80,7 @@ namespace MediaMgrSystem
 
                     return;
                 }
+
                 else
                 {
                     if (isSchedule)
@@ -108,7 +114,8 @@ namespace MediaMgrSystem
 
                     cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
 
-                    cmdToVideoSvr.arg.streamName = "123456790";
+
+                    cmdToVideoSvr.arg.streamName = "123456790" + channelId;
 
                     cmdToVideoSvr.arg.streamSrcs = new List<string>();
 
@@ -138,7 +145,7 @@ namespace MediaMgrSystem
 
                     List<string> clientsConectionIdToSend = new List<string>();
 
-                    object clientsDatraToSend = new object();
+                    VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
 
                     CreateCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
 
@@ -165,7 +172,18 @@ namespace MediaMgrSystem
                     string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
                     hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonData);
 
-                    GlobalUtils.IsChannelManuallyPlaying = true;
+                    new Thread(ProcessTimeOutRequest).Start();
+
+                    if (!isSchedule)
+                    {
+                        GlobalUtils.ChannelManuallyPlayingChannelId = channelId;
+
+                        GlobalUtils.ChannelManuallyPlayingPids = programeIds;
+
+                        GlobalUtils.ChannelManuallyPlayingChannelName = channelName;
+
+                        GlobalUtils.IsChannelManuallyPlaying = true;
+                    }
                 }
 
             }
@@ -232,16 +250,21 @@ namespace MediaMgrSystem
             cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
 
 
+            cmdToVideoSvr.arg = new VideoServerOperArg();
+
+            cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
 
             List<string> clientsIpToSend = new List<string>();
 
             List<string> clientsConectionIdToSend = new List<string>();
 
-            object clientsDatraToSend = new object();
+            VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
 
             CreateCommandForAndriodClients(null, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
 
 
+            clientsDatraToSend.arg = new VideoOperAndriodClientArg();
+            clientsDatraToSend.arg.streamName = "1234567890" + channelId;
 
             PushQueue(commandType == "1" ? "停止" : "循环播放", clientsIpToSend);
 
@@ -253,12 +276,50 @@ namespace MediaMgrSystem
 
             hub.Clients(clientsIpToSend).sendMessageToClient(jsonDataToClient);
 
+            new Thread(ProcessTimeOutRequest).Start();
 
             if (!isSchedule)
             {
+                GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
+                GlobalUtils.ChannelManuallyPlayingPids = null;
+                GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
                 GlobalUtils.IsChannelManuallyPlaying = false;
             }
         }
+
+        private static void ProcessTimeOutRequest()
+        {
+            Thread.Sleep(2000);
+
+
+            lock (GlobalUtils.PublicObjectForLock)
+            {
+                List<QueueItem> queueToRemoved = new List<QueueItem>();
+                foreach (var que in GlobalUtils.CommandQueues)
+                {
+                    TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
+
+                    TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
+                    if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 3000)
+                    {
+                        queueToRemoved.Add(que);
+
+                        //Write timeout logs hereeeeeeeeeeeeeee.
+                    }
+                }
+
+                if (queueToRemoved != null && queueToRemoved.Count > 0)
+                {
+                    foreach (QueueItem item in queueToRemoved)
+                    {
+                        GlobalUtils.CommandQueues.Remove(item);
+                        System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                    }
+
+                }
+            }
+        }
+
 
         private static VideoOperAndriodClientCommand CreateAndroidCommandForStopRepeat(string commandType)
         {
@@ -272,6 +333,80 @@ namespace MediaMgrSystem
             cmdToAndroidClient.guidId = GlobalUtils.CurrentClientGuidId;
             return cmdToAndroidClient;
         }
+
+
+        private static void PushQueue(string cmdText, List<string> clientIps)
+        {
+            long currentTicks = DateTime.Now.Ticks;
+
+            GlobalUtils.CommandQueues.Add(new QueueItem() { PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandStr = cmdText });
+
+            foreach (var ip in clientIps)
+            {
+                GlobalUtils.CommandQueues.Add(new QueueItem() { PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandStr = cmdText });
+            }
+        }
+
+
+        private static void CreateCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
+            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend)
+        {
+
+            VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
+
+            dataSendToAndroidClient.commandType = CommandTypeEnum.PLAYVEDIO;
+
+
+            dataSendToAndroidClient.guidId = Guid.NewGuid().ToString();
+            GlobalUtils.CurrentClientGuidId = dataSendToAndroidClient.guidId;
+
+
+            dataSendToAndroidClient.arg = new VideoOperAndriodClientArg();
+
+
+            if (pids != null && pids.Count > 0)
+            {
+                dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
+
+                dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
+
+                dataSendToAndroidClient.arg.streamSrcs = cmdToVideoSvr.arg.streamSrcs;
+
+                dataSendToAndroidClient.arg.udpBroadcastAddress = cmdToVideoSvr.arg.udpBroadcastAddress;
+            }
+
+            dataToSend = dataSendToAndroidClient;
+
+            List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId);
+
+            List<string> needSentClientIpAddresses = new List<string>();
+
+            if (channelGroups != null && channelGroups.Count > 0)
+            {
+                foreach (var gi in channelGroups)
+                {
+                    if (gi.Devices != null && gi.Devices.Count > 0)
+                    {
+                        foreach (var di in gi.Devices)
+                        {
+                            needSentClientIpAddresses.Add(di.DeviceIpAddress);
+                        }
+                    }
+                }
+            }
+
+            if (needSentClientIpAddresses.Count > 0)
+            {
+                ipsNeedToSend = needSentClientIpAddresses;
+                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
+            }
+            else
+            {
+                ipsNeedToSend = new List<string>();
+                idsNeedToSend = new List<string>();
+            }
+        }
+
 
         //public static void SendPlayCommand(string channelId, string[] programeIds, IHubConnectionContext hub,bool isScheduled)
         //{
@@ -377,77 +512,6 @@ namespace MediaMgrSystem
 
 
         //}
-        private static void PushQueue(string cmdText, List<string> clientIps)
-        {
-
-            GlobalUtils.CommandQueues.Add(new QueueItem() { IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandStr = cmdText });
-
-            foreach (var ip in clientIps)
-            {
-                GlobalUtils.CommandQueues.Add(new QueueItem() { IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandStr = cmdText });
-            }
-        }
-
-
-        private static void CreateCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
-            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out object dataToSend)
-        {
-
-            VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
-
-            dataSendToAndroidClient.commandType = CommandTypeEnum.PLAYVEDIO;
-
-
-            dataSendToAndroidClient.guidId = Guid.NewGuid().ToString();
-            GlobalUtils.CurrentClientGuidId = dataSendToAndroidClient.guidId;
-
-
-            dataSendToAndroidClient.arg = new VideoOperAndriodClientArg();
-
-
-            if (pids != null && pids.Count > 0)
-            {
-                dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
-
-                dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
-
-                dataSendToAndroidClient.arg.streamSrcs = cmdToVideoSvr.arg.streamSrcs;
-
-                dataSendToAndroidClient.arg.udpBroadcastAddress = cmdToVideoSvr.arg.udpBroadcastAddress;
-            }
-
-            dataToSend = dataSendToAndroidClient;
-
-            List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId);
-
-            List<string> needSentClientIpAddresses = new List<string>();
-
-            if (channelGroups != null && channelGroups.Count > 0)
-            {
-                foreach (var gi in channelGroups)
-                {
-                    if (gi.Devices != null && gi.Devices.Count > 0)
-                    {
-                        foreach (var di in gi.Devices)
-                        {
-                            needSentClientIpAddresses.Add(di.DeviceIpAddress);
-                        }
-                    }
-                }
-            }
-
-            if (needSentClientIpAddresses.Count > 0)
-            {
-                ipsNeedToSend = needSentClientIpAddresses;
-                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
-            }
-            else
-            {
-                ipsNeedToSend = new List<string>();
-                idsNeedToSend = new List<string>();
-            }
-        }
-
 
 
     }
