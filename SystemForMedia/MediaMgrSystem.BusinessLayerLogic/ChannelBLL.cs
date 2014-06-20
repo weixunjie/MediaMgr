@@ -91,7 +91,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int UpdateChannelSchedule(string cid, string sid)
         {
-            String sqlStr = "UPDATE CHANNELINFO SET SCHEDUELID='{0}' WHERE CHANNELID={1}";
+            String sqlStr = "UPDATE CHANNELINFO SET SCHEDULEID='{0}' WHERE CHANNELID={1}";
 
             sqlStr = String.Format(sqlStr, sid, cid);
 

@@ -17,7 +17,7 @@
                                 <asp:BoundField DataField="ProgramId" HeaderText="节目编号" />
                                 <asp:BoundField DataField="ProgramName" HeaderText="节目名称" />
 
-                                <asp:TemplateField HeaderText="操作" ItemStyle-Width="150px">
+                                <asp:TemplateField HeaderText="操作" ItemStyle-Width="135px">
                                     <ItemTemplate>
                                         <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("ProgramId")%>' runat="server" />
                                         <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("ProgramId")%>'  CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />

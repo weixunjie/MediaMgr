@@ -101,13 +101,11 @@ namespace MediaMgrSystem
                         GlobalUtils.CommandQueues.Remove(removedItem);
                     }
                 }
-
             }
-
         }
 
 
-        public void sendScheduleTaskControl(string cid, string[] pid, string cmdType, string guid)
+        public void SendScheduleTaskControl(string cid, string[] pid, string cmdType, string guid)
         {
             //Play
             if (cmdType == "1")

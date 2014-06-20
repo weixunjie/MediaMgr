@@ -43,13 +43,42 @@ namespace MediaMgrSystem
                         //优先手工播放
                         if (sTask.ChannelId == channelId)
                         {
-                            SendStopRoRepeatCommand(channelId, hub, sTask.GuidId, channelId);
+                            SendStopRoRepeatCommand("1", hub, sTask.GuidId, channelId);
+
+                            ComuResponseBase cr = new ComuResponseBase();
+
+                            cr.guidId = scheduleTaskGuidId;
+
+                            cr.errorCode = "202";
+
+                            cr.message = "计划失败，优先手工播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
+                            hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+
+                            break;
+
 
                         }
                     }
 
 
                 }
+
+
+                if (isSchedule && GlobalUtils.IsChannelManuallyPlaying && channelId == GlobalUtils.ChannelManuallyPlayingChannelId)
+                {
+                    //优先手工播放
+                    ComuResponseBase cr = new ComuResponseBase();
+
+                    cr.guidId = scheduleTaskGuidId;
+
+                    cr.errorCode = "202";
+
+                    cr.message = "计划失败，优先手工播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
+                    hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+
+                    return;
+                }
+
 
                 if (string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
                 {
@@ -66,7 +95,7 @@ namespace MediaMgrSystem
 
                             cr.errorCode = "200";
 
-                            cr.message = "视频服务器未开启";
+                            cr.message = errorrNotOpenVideoSvr;
                             hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
                         }
                     }
@@ -85,14 +114,25 @@ namespace MediaMgrSystem
                 {
                     if (isSchedule)
                     {
+
+                        string cidToStop = string.Empty;
+
+                        string guidIdToStop = string.Empty;
                         foreach (var sTask in GlobalUtils.RunningSchudules)
                         {
                             //取消上个同个通道的计划
                             if (sTask.ChannelId == channelId)
                             {
-                                SendStopRoRepeatCommand(channelId, hub, sTask.GuidId, channelId);
+                                cidToStop = channelId;
+                                guidIdToStop = sTask.GuidId;
+                                break;
 
                             }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(cidToStop))
+                        {
+                            SendStopRoRepeatCommand("1", hub, guidIdToStop, channelId);
                         }
                     }
 
@@ -147,7 +187,10 @@ namespace MediaMgrSystem
 
                     VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
 
-                    CreateCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
+                    CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
+
+
+                    string runTime = DateTime.Now.ToString("HH:mm");
 
                     PushQueue("播放视频", clientsIpToSend);
 
@@ -155,6 +198,9 @@ namespace MediaMgrSystem
 
 
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
+
+
+                    System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
 
                     string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
@@ -172,6 +218,9 @@ namespace MediaMgrSystem
                     string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
                     hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonData);
 
+                    System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+
+
                     new Thread(ProcessTimeOutRequest).Start();
 
                     if (!isSchedule)
@@ -184,11 +233,69 @@ namespace MediaMgrSystem
 
                         GlobalUtils.IsChannelManuallyPlaying = true;
                     }
+                    else
+                    {
+                        GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = runTime });
+                        System.Diagnostics.Debug.WriteLine("Add Schedule Task " + channelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
+
+                        ComuResponseBase cr = new ComuResponseBase();
+
+                        cr.guidId = scheduleTaskGuidId;
+
+                        cr.errorCode = "181";
+
+                        cr.message = "StartVideo";
+
+                        if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                        {
+
+                            hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                        }
+
+
+                    }
                 }
 
             }
 
 
+
+
+
+
+        }
+
+        private static void ProcessTimeOutRequest()
+        {
+            Thread.Sleep(4000);
+
+            lock (GlobalUtils.objectLockSchduleQueueItem)
+            {
+                List<QueueItem> queueToRemoved = new List<QueueItem>();
+                foreach (var que in GlobalUtils.CommandQueues)
+                {
+                    TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
+
+                    TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
+                    if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 4000)
+                    {
+                        queueToRemoved.Add(que);
+                        List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                        //Write timeout logs hereeeeeeeeeeeeeee.
+                    }
+                }
+
+                if (queueToRemoved != null && queueToRemoved.Count > 0)
+                {
+                    foreach (QueueItem item in queueToRemoved)
+                    {
+                        GlobalUtils.CommandQueues.Remove(item);
+                        System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                    }
+
+                }
+            }
         }
 
         public static void SendStopRoRepeatCommand(string commandType, IHubConnectionContext hub, string scheduleTaskGuidId, string channelId)
@@ -235,89 +342,127 @@ namespace MediaMgrSystem
 
 
 
+
         }
 
         private static void SendOutStopRepeatCommandToServerAndClient(string commandType, IHubConnectionContext hub,
             string channelId, bool isSchedule)
         {
-            VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
-
-            cmdToVideoSvr.commandType = commandType == "1" ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
-
-
-            GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
-
-            cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
-
-
-            cmdToVideoSvr.arg = new VideoServerOperArg();
-
-            cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
-
-            List<string> clientsIpToSend = new List<string>();
-
-            List<string> clientsConectionIdToSend = new List<string>();
-
-            VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
-
-            CreateCommandForAndriodClients(null, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
-
-
-            clientsDatraToSend.arg = new VideoOperAndriodClientArg();
-            clientsDatraToSend.arg.streamName = "1234567890" + channelId;
-
-            PushQueue(commandType == "1" ? "停止" : "循环播放", clientsIpToSend);
-
-            string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-            hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
-
-
-            string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
-
-            hub.Clients(clientsIpToSend).sendMessageToClient(jsonDataToClient);
-
-            new Thread(ProcessTimeOutRequest).Start();
-
-            if (!isSchedule)
-            {
-                GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
-                GlobalUtils.ChannelManuallyPlayingPids = null;
-                GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
-                GlobalUtils.IsChannelManuallyPlaying = false;
-            }
-        }
-
-        private static void ProcessTimeOutRequest()
-        {
-            Thread.Sleep(2000);
-
 
             lock (GlobalUtils.PublicObjectForLock)
             {
-                List<QueueItem> queueToRemoved = new List<QueueItem>();
-                foreach (var que in GlobalUtils.CommandQueues)
+                VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
+
+                cmdToVideoSvr.commandType = commandType == "1" ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
+
+
+                GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
+
+                cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
+
+
+                cmdToVideoSvr.arg = new VideoServerOperArg();
+
+                cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
+
+                List<string> clientsIpToSend = new List<string>();
+
+                List<string> clientsConectionIdToSend = new List<string>();
+
+                VideoOperAndriodClientCommand clientsDataToSend = new VideoOperAndriodClientCommand();
+
+                CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDataToSend);
+
+
+                clientsDataToSend.arg = new VideoOperAndriodClientArg();
+                clientsDataToSend.arg.streamName = "1234567890" + channelId;
+
+                PushQueue(commandType == "1" ? "停止" : "循环播放", clientsIpToSend);
+
+                System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+
+                string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
+                hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+
+
+                string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
+
+                hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+
+                System.Diagnostics.Debug.WriteLine("Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+
+                new Thread(ProcessTimeOutRequest).Start();
+
+                if (!isSchedule)
                 {
-                    TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
-
-                    TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
-                    if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 3000)
-                    {
-                        queueToRemoved.Add(que);
-
-                        //Write timeout logs hereeeeeeeeeeeeeee.
-                    }
+                    GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
+                    GlobalUtils.ChannelManuallyPlayingPids = null;
+                    GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
+                    GlobalUtils.IsChannelManuallyPlaying = false;
                 }
-
-                if (queueToRemoved != null && queueToRemoved.Count > 0)
+                else
                 {
-                    foreach (QueueItem item in queueToRemoved)
+
+                    ///Remove schudle task
+                    ScheduleRunningItem itemToRemove = null;
+
+                    foreach (var sTask in GlobalUtils.RunningSchudules)
                     {
-                        GlobalUtils.CommandQueues.Remove(item);
-                        System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                        if (sTask.ChannelId == channelId)
+                        {
+                            itemToRemove = sTask;
+                        }
                     }
+
+
+                    if (GlobalUtils.IsChannelManuallyPlaying)
+                    {
+                        if (channelId == GlobalUtils.ChannelManuallyPlayingChannelId)
+                        {
+                            ComuResponseBase cr = new ComuResponseBase();
+
+                            cr.guidId = itemToRemove.GuidId;
+
+                            cr.errorCode = "200";
+
+                            cr.message = "计划停止失败，手工播放中";
+
+                            if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                            {
+
+                                hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                            }
+
+                            return;
+                        }
+                    }
+
+
+                    if (itemToRemove != null)
+                    {
+
+                        ComuResponseBase cr = new ComuResponseBase();
+
+                        cr.guidId = itemToRemove.GuidId;
+
+                        cr.errorCode = "180";
+
+                        cr.message = "StopVideo";
+
+                        if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                        {
+
+                            hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                        }
+
+                        System.Diagnostics.Debug.WriteLine("Removing Schedule Task " + itemToRemove.ChannelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
+                        GlobalUtils.RunningSchudules.Remove(itemToRemove);
+                    }
+
 
                 }
             }
+
         }
 
 
@@ -348,7 +493,7 @@ namespace MediaMgrSystem
         }
 
 
-        private static void CreateCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
+        private static void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
             out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend)
         {
 
@@ -377,10 +522,35 @@ namespace MediaMgrSystem
 
             dataToSend = dataSendToAndroidClient;
 
+            GetClientIpAndIdList(channelId, out ipsNeedToSend, out idsNeedToSend);
+        }
+
+
+        private static void CreateCommandForStopRepeatToClients(CommandTypeEnum cmdType, string channelId,
+           out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend)
+        {
+
+            VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
+
+            dataSendToAndroidClient.commandType = cmdType;
+
+
+            dataSendToAndroidClient.guidId = Guid.NewGuid().ToString();
+            GlobalUtils.CurrentClientGuidId = dataSendToAndroidClient.guidId;
+
+
+            dataToSend = dataSendToAndroidClient;
+
+
+
+            GetClientIpAndIdList(channelId, out ipsNeedToSend, out idsNeedToSend);
+        }
+
+        private static void GetClientIpAndIdList(string channelId, out List<string> ipsNeedToSend, out List<string> idsNeedToSend)
+        {
             List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId);
 
             List<string> needSentClientIpAddresses = new List<string>();
-
             if (channelGroups != null && channelGroups.Count > 0)
             {
                 foreach (var gi in channelGroups)

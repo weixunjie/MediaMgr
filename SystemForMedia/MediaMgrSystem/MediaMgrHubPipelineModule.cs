@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace MediaMgrSystem
@@ -12,17 +13,20 @@ namespace MediaMgrSystem
 
     public class MediaMgrHubPipelineModule : HubPipelineModule
     {
-        
-        
+
+
         public MediaMgrHubPipelineModule()
         {
-      
+     
+
         }
 
 
+       
+
         protected override void OnAfterConnect(IHub hub)
         {
-           
+
 
 
             SingalConnectedClient sc = new SingalConnectedClient();
@@ -33,8 +37,8 @@ namespace MediaMgrSystem
 
             string strIdentify = string.Empty;
 
-          
-          
+
+
 
             if (hub.Context.QueryString["clientType"] != null)
             {
@@ -46,7 +50,7 @@ namespace MediaMgrSystem
                     singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
                 }
                 else if (type == "VIDEOSERVER")
-                {                  
+                {
                     singalRClientConnectionType = SingalRClientConnectionType.VEDIOSERVER;
 
                     hub.Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendResultBrowserClient("视频服务器连接成功", "20");
@@ -61,7 +65,7 @@ namespace MediaMgrSystem
                 else if (type == "WINDOWSSERVICE")
                 {
                     singalRClientConnectionType = SingalRClientConnectionType.WINDOWSSERVICE;
-                    
+
 
                 }
             }
@@ -73,12 +77,12 @@ namespace MediaMgrSystem
 
             sc.ConnectionType = singalRClientConnectionType;
 
-          
+
 
             if (singalRClientConnectionType != SingalRClientConnectionType.ANDROID)
             {
                 strIdentify = Guid.NewGuid().ToString();
- 
+
             }
             sc.ConnectionIdentify = strIdentify;
 
@@ -170,7 +174,7 @@ namespace MediaMgrSystem
                 GlobalUtils.VideoServerConnectionId = string.Empty;
             }
 
-            if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId)) 
+            if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId))
             {
                 SendRefreshNotice(hub);
             }
@@ -178,7 +182,7 @@ namespace MediaMgrSystem
             GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);
 
         }
-  
+
         protected override object OnAfterIncoming(object result, IHubIncomingInvokerContext context)
         {
             return base.OnAfterIncoming(result, context);

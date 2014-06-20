@@ -57,6 +57,9 @@ namespace MediaMgrSystem
     {
 
         public static object PublicObjectForLock = new object();
+
+        public static object objectLockSchduleQueueItem = new object();
+
         private static object objForLock = new object();
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
@@ -112,6 +115,9 @@ namespace MediaMgrSystem
 
 
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
+
+
+
 
 
 

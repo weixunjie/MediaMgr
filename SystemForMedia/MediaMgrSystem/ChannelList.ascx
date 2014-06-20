@@ -4,26 +4,21 @@
 
 <script type="text/javascript">
 
-    var currentOperChannel='<% =GetIsPlayingChannelId() %>';
-    var currentOperChannelName='<% =GetIsPlayingChannelName() %>';
+    var currentOperChannel = '<% =GetIsPlayingChannelId() %>';
+    var currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
     var currentPlayPIds = '<% =GetIsPlayingPIds() %>';
-    var boolIsPlaying='<% = GetIsPlaying() %>';
+    var boolIsPlaying = '<% = GetIsPlaying() %>';
 
-   
 
 
     $(document).ready(function () {
 
-       
-       
-        if (boolIsPlaying=="true")
-        {
+        setButtonStatus("AllDisabled");
+
+        if (boolIsPlaying == "true") {
             setButtonStatus("Play");
-            $("#divChannelInfo").html("通道:" + currentOperChannelName + "播放中");
-        }
-        else
-        {
-            setButtonStatus("AllDisabled");
+
+            $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
         }
 
 
@@ -40,92 +35,82 @@
              for (int i = 0; i < schedules.Count; i++) { schdueleIds = schdueleIds + "#btnSchedule" + schedules[i].ScheduleId.ToString() + ","; }; schdueleIds = schdueleIds.TrimEnd(',');
 
         %>
-               
+
 
 
         chat.client.sendResultBrowserClientNoticeStatus = function (result, error) {
 
-            if (error != "0") {             
+            if (error != "0") {
 
-                isPlaying=false;
-                
+                isPlaying = false;
+
                 setButtonStatus("Stop");
                 $("#divChannelInfo").html(result);
             }
             // $("#divLogs").append('<br/>' + result);
         }
 
-        function setButtonStatus(type)
-        {
-          
+        function setButtonStatus(type) {
+
             //All disable
-            if (type=="AllDisabled")
-            {            
+            if (type == "AllDisabled") {
                 $("#btnChannelControlPlay").attr("disabled", true);
-           
+
                 $("#btnChannelControlStop").attr("disabled", true);
 
                 $("#btnChannelControlRepeat").attr("disabled", true);
             }
 
             //Playing disable play, enabld,stop and repeta
-            if (type=="Play")
-            {            
+            if (type == "Play") {
                 $("#btnChannelControlPlay").attr("disabled", true);
-           
+
                 $("#btnChannelControlStop").attr("disabled", false);
 
                 $("#btnChannelControlRepeat").attr("disabled", false);
             }
 
             //Stop disable stop and repeta, enabled palying
-            if (type=="Stop")
-            {            
+            if (type == "Stop") {
                 $("#btnChannelControlPlay").attr("disabled", false);
-           
+
                 $("#btnChannelControlStop").attr("disabled", true);
 
                 $("#btnChannelControlRepeat").attr("disabled", true);
             }
 
-      
-            if ($("#btnChannelControlPlay").attr("disabled")=="disabled")
-            {
-                $("#btnChannelControlPlay").attr("src","Images/ic_image_play_disabled.png");
-            }
-            else
-            {
-                $("#btnChannelControlPlay").attr("src","Images/ic_image_play.png");
 
+            if ($("#btnChannelControlPlay").attr("disabled") == "disabled") {
+                $("#btnChannelControlPlay").attr("src", "Images/ic_image_play_disabled.png");
             }
-     
-
-            if ($("#btnChannelControlStop").attr("disabled")=="disabled")
-            {
-                $("#btnChannelControlStop").attr("src","Images/ic_image_stop_disabled.png");
-              
-            }
-            else
-            {
-                $("#btnChannelControlStop").attr("src","Images/ic_image_stop.png");
+            else {
+                $("#btnChannelControlPlay").attr("src", "Images/ic_image_play.png");
 
             }
 
 
-            if ($("#btnChannelControlRepeat").attr("disabled")=="disabled")
-            {
-                $("#btnChannelControlRepeat").attr("src","Images/ic_image_repeat_disabled.png");
-               
+            if ($("#btnChannelControlStop").attr("disabled") == "disabled") {
+                $("#btnChannelControlStop").attr("src", "Images/ic_image_stop_disabled.png");
+
             }
-            else
-            {
-                $("#btnChannelControlRepeat").attr("src","Images/ic_image_repeat.png");
+            else {
+                $("#btnChannelControlStop").attr("src", "Images/ic_image_stop.png");
 
             }
 
-           
+
+            if ($("#btnChannelControlRepeat").attr("disabled") == "disabled") {
+                $("#btnChannelControlRepeat").attr("src", "Images/ic_image_repeat_disabled.png");
+
+            }
+            else {
+                $("#btnChannelControlRepeat").attr("src", "Images/ic_image_repeat.png");
+
+            }
+
+
         }
-      
+
 
         $("#btnChooseProgram").click(function (e) {
 
@@ -161,13 +146,13 @@
 
         $.showChannelMenu = function () {
 
-          
+
             $("<%= ids %>").click(function (e) {
 
-            
+
                 currentOperChannel = e.currentTarget.id.replace("channelDiv", "");
 
-                currentOperChannelName=$(this).data("itemid");
+                currentOperChannelName = $(this).data("itemid");
 
                 <%%>
                 is_in = true;
@@ -175,7 +160,7 @@
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
-                $("#ChannelMenubox").show().css("left", x).css("top", y);          
+                $("#ChannelMenubox").show().css("left", x).css("top", y);
 
 
             });
@@ -184,7 +169,7 @@
                 is_in = false;
             });
 
-     
+
         }
 
         $.showChannelMenu();
@@ -240,12 +225,12 @@
 
                     currentPlayPIds.push($(this).val());
 
-                })                          
+                })
 
                 $('#dialogForChooseProgram').modal('hide');
 
-                $("#divChannelInfo").html("通道:" + currentOperChannelName + "就绪");
-              
+                $("#divChannelInfo").html(currentOperChannelName + "已选节目，请开始播放");
+
                 setButtonStatus("Stop");
 
 
@@ -253,18 +238,18 @@
 
         })
 
-        setButtonStatus("AllDisabled");
+
 
         $("#btnChannelControlPlay").click(function () {
 
-           
+
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentOperChannel, currentOperChannelName, currentPlayPIds,null);
+                chat.server.sendPlayCommand(currentOperChannel, currentOperChannelName, currentPlayPIds, null);
 
                 //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
 
-                $("#divChannelInfo").html("(" + currentOperChannelName + ")->播放中");
+                $("#divChannelInfo").html(+currentOperChannelName + "正在播放中");
             }
 
         })
@@ -272,24 +257,23 @@
 
         $("#btnChannelControlStop").click(function () {
 
-            
-            setButtonStatus("Stop");
-            chat.server.sendStopRoRepeatCommand("1");                         
-        
+            //string commandType, string channelId, string scheduleGuidId)
 
-            $("#divChannelInfo").html("(" + currentOperChannelName + ")->停止");
+            setButtonStatus("Stop");
+            chat.server.sendStopRoRepeatCommand("1", currentOperChannel, "");
+
+
+            $("#divChannelInfo").html("(" + currentOperChannelName + "停止播放");
 
 
         })
 
- 
+
 
         $("#btnChannelControlRepeat").click(function () {
-         
 
-            chat.server.sendStopRoRepeatCommand("2");
 
-            $("#divChannelInfo").html("("+currentOperChannelName + ")->循环");
+            chat.server.sendStopRoRepeatCommand("2", currentOperChannel, "");
 
         })
 
