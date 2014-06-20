@@ -53,10 +53,20 @@ namespace MediaMgrWS
         private HubConnection hubConnection;
         List<TaskInfo> runningTask = new List<TaskInfo>();
 
-        private object lockObjet = new object();
+        private bool _isConnected = false;
+
+        private TaskInfo _lastRunStartTime = null;
+
+        private TaskInfo _lastRunEndTime = null;
+
+        private object lockObject = new object();
+
+        private object lockQueuItems = new object();
 
         private DbUtils dbUitls = null;
-        private Timer aTimer;
+        private Timer aTimerCheckStartSchedule;
+
+        private Timer aTimerCheckStopSchedule;
         private IHubProxy hubProxy;
         public MediaMgrService()
         {
@@ -64,15 +74,47 @@ namespace MediaMgrWS
             InitializeComponent();
         }
 
-        void aTimer_Elapsed(object sender, ElapsedEventArgs e)
+
+
+        void aTimerForStart_Elapsed(object sender, ElapsedEventArgs e)
         {
-            lock (lockObjet)
+            lock (lockObject)
             {
+                if (_isConnected)
+                {
+                    CheckAndStartTask();
+                }
+            }
+        }
 
-                string dtMins = DateTime.Now.AddMinutes(2).ToString("1900-01-01 HH:mm");
+        void aTimerForStop_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (lockObject)
+            {
+                if (_isConnected)
+                {
+                    CheckAndStopTask();
+                }
+            }
+        }
 
-                string strWeek = DateTime.Today.DayOfWeek.ToString();
+        private void CheckAndStartTask()
+        {
+            string sqlStr = "SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
+                          " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>CONVERT(DATETIME,'{0}') " +
+                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}' OR SCHEDULETASKWEEKS LIKE '%{2}' ) AND " +
+                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) ";
 
+            CheckTask(sqlStr, true);
+        }
+
+
+        private void CheckTask(string sqlStr, bool isCheckStart)
+        {
+
+            try
+            {
+                string strWeek = DateTime.Now.DayOfWeek.ToString();
                 string weekIndex = string.Empty;
                 switch (strWeek)
                 {
@@ -98,174 +140,203 @@ namespace MediaMgrWS
                         weekIndex = "7";
                         break;
 
-
                 }
 
-                CheckAndStartTask(dtMins, weekIndex);
-                CheckAndStopTask(dtMins, weekIndex);
+                string dtMins = DateTime.Now.ToString("1900-01-01 HH:mm");
 
-            }
-        }
 
-        private void CheckAndStartTask(string dtMins, string weekIndex)
-        {
-            string sqlStr = " select * from dbo.ScheduleTaskInfo where  " +
-                          " CONVERT(datetime,'1900-01-01 '+ ScheduleTaskStartTime)>CONVERT(datetime,'{0}') " +
-                          " and (ScheduleTaskspecialDays like '%{1}' or ScheduleTaskWeeks like '%{2}' ) and " +
-                          "ScheduleTaskId in(select distinct ScheduleId from dbo.ChannelInfo) ";
+                sqlStr = String.Format(sqlStr, dtMins, DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
 
-            sqlStr = String.Format(sqlStr, dtMins, DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
+                DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
-            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
-
-            if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
+                if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
                 {
-                    string strRunningTime = dt.Rows[i]["ScheduleTaskStartTime"].ToString();
-
-                    DateTime dtRunTime;
-                    string dtNow = DateTime.Now.ToString("HH:mm:ss");
-                    if (DateTime.TryParse(strRunningTime, out dtRunTime))
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
+                        string strTimeToCheck = isCheckStart ? dt.Rows[i]["ScheduleTaskStartTime"].ToString() : dt.Rows[i]["ScheduleTaskEndTime"].ToString();
 
-                        string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
-                        string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
-
-                        string programeIds = dt.Rows[i]["ScheduleTaskProgarmId"].ToString();
-
-                        TimeSpan tsOffset = DateTime.Parse(dtNow).Subtract(dtRunTime).Duration();
-                        if (tsOffset.TotalSeconds <= 5)
+                        DateTime dtRunTime;
+                        string dtNow = DateTime.Now.ToString("HH:mm:ss");
+                        if (DateTime.TryParse(strTimeToCheck, out dtRunTime))
                         {
-                            bool foundRunningTask = false;
-                            foreach (var task in runningTask)
+
+                            string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
+                            string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
+
+                            TimeSpan tsOffset = dtRunTime.Subtract(DateTime.Parse(dtNow));
+                            if (tsOffset.TotalSeconds <= 5 && tsOffset.TotalMilliseconds > 0)
                             {
-                                if (task.TaskId == strScheduleTaskId)
+                                if (isCheckStart)
                                 {
-                                    foundRunningTask = true;
-                                    break;
-                                }
-                            }
-
-                            if (!foundRunningTask)
-                            {
-
-                                string sqlStrGetChannelId = " select ChannelId from dbo.ChannelInfo where ScheduleId=' " + strScheduleId + "'";
-
-
-                                string cId = string.Empty;
-                                DataTable dtCId = dbUitls.ExecuteDataTable(sqlStrGetChannelId);
-
-                                if (dtCId != null && dt.Rows != null && dt.Rows.Count > 0)
-                                {
-                                    cId = dtCId.Rows[0][0].ToString();
-                                }
-
-                                string[] strPids = null;
-
-                                if (!string.IsNullOrEmpty(programeIds))
-                                {
-                                    strPids = programeIds.Split(',');
-                                }
-
-                                if (!string.IsNullOrEmpty(cId) && strPids != null && strPids.Length > 0)
-                                {
-
-                                    runningTask.Add(new TaskInfo() { TaskId = strScheduleTaskId, RuningTime = strRunningTime, ChannelId = cId });
-
-                                    hubProxy.Invoke("sendScheduleTaskControl", cId, strPids, 1);
-
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-
-
-        private void CheckAndStopTask(string dtMins, string weekIndex)
-        {
-            string sqlStr = " select * from dbo.ScheduleTaskInfo where  " +
-                          " CONVERT(datetime,'1900-01-01 '+ ScheduleTaskEndTime)>CONVERT(datetime,'{0}') " +
-                          " and (ScheduleTaskspecialDays like '%{1}' or ScheduleTaskWeeks like '%{2}' ) and " +
-                          "ScheduleTaskId in(select distinct ScheduleId from dbo.ChannelInfo) ";
-
-            sqlStr = String.Format(sqlStr, dtMins, DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
-
-            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
-
-            if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    string strRunningTime = dt.Rows[i]["ScheduleTaskStartTime"].ToString();
-
-                    DateTime dtRunTime;
-                    string dtNow = DateTime.Now.ToString("HH:mm:ss");
-                    if (DateTime.TryParse(strRunningTime, out dtRunTime))
-                    {
-
-                        string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
-                        string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
-
-                        TimeSpan tsOffset = DateTime.Parse(dtNow).Subtract(dtRunTime).Duration();
-                        if (tsOffset.TotalSeconds <= 1)
-                        {
-                            bool foundRunningTask = false;
-                            foreach (var task in runningTask)
-                            {
-                                if (task.TaskId == strScheduleTaskId)
-                                {
-                                    foundRunningTask = true;
-                                    break;
-                                }
-                            }
-
-                            if (foundRunningTask)
-                            {
-
-                                string sqlStrGetChannelId = " select ChannelId from dbo.ChannelInfo where ScheduleId=' " + strScheduleId + "'";
-
-
-                                string cId = string.Empty;
-                                DataTable dtCId = dbUitls.ExecuteDataTable(sqlStrGetChannelId);
-
-
-                                if (!string.IsNullOrEmpty(cId))
-                                {
-                                    TaskInfo taskToRemove = null;
-
-                                    if (runningTask != null && runningTask.Count > 0)
+                                    if (_lastRunStartTime != null &&
+                                        _lastRunStartTime.RuningTime == strTimeToCheck &&
+                                        _lastRunStartTime.TaskId == strScheduleTaskId
+                                        )
                                     {
+                                        ///Don't send repeat command
+                                        return;
+
+                                    }
+
+                                    _lastRunStartTime = _lastRunStartTime ?? new TaskInfo();
+
+                                    _lastRunStartTime.RuningTime = strTimeToCheck;
+
+                                    _lastRunStartTime.TaskId = strScheduleTaskId;
+
+                                }
+                                else
+                                {
+
+                                    if (_lastRunEndTime != null &&
+                                      _lastRunEndTime.RuningTime == strTimeToCheck &&
+                                      _lastRunEndTime.TaskId == strScheduleTaskId
+                                      )
+                                    {
+                                        ///Don't send repeat command
+                                        return;
+                                    }
+
+                                    _lastRunEndTime = _lastRunStartTime ?? new TaskInfo();
+                                    _lastRunEndTime.RuningTime = strTimeToCheck;
+
+                                    _lastRunEndTime.TaskId = strScheduleTaskId;
+                                }
+
+
+
+                                string sqlStrGetChannelId = "SELECT CHANNELID FROM DBO.CHANNELINFO WHERE SCHEDULEID='" + strScheduleId + "'";
+
+                                List<string> strChannelIds = new List<string>();
+                                DataTable dtChannel = dbUitls.ExecuteDataTable(sqlStrGetChannelId);
+
+                                if (dtChannel != null && dtChannel.Rows.Count > 0)
+                                {
+                                    for (int k = 0; k < dtChannel.Rows.Count; k++)
+                                    {
+                                        strChannelIds.Add(dtChannel.Rows[k][0].ToString());
+                                    }
+                                }
+
+                                foreach (string cid in strChannelIds)
+                                {
+                                    if (!string.IsNullOrEmpty(cid))
+                                    {
+                                        bool foundRunningTask = false;
                                         foreach (var task in runningTask)
                                         {
-                                            if (task.TaskId == strScheduleId)
+                                            if (task.TaskId == strScheduleTaskId && task.ChannelId == cid)
                                             {
-                                                taskToRemove = task;
+                                                foundRunningTask = true;
+                                                break;
                                             }
                                         }
 
+                                        if (foundRunningTask && !isCheckStart)
+                                        {
+
+                                            TaskInfo taskToRemove = FindAndRemoveTask(strScheduleTaskId, cid);
+
+                                            string[] strPids = new string[0];
+                                            //Stop
+                                            hubProxy.Invoke("sendScheduleTaskControl", cid, strPids, "2", taskToRemove != null ? taskToRemove.GuidId : string.Empty);
+
+                                            System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + taskToRemove.GuidId);
+
+                                        }
+
+                                        else if (isCheckStart)
+                                        {
+
+                                            TaskInfo taskToRemove = FindAndRemoveTask(strScheduleTaskId, cid);
+
+                                            string programeIds = dt.Rows[i]["ScheduleTaskProgarmId"].ToString();
+
+                                            string[] strPids = null;
+
+                                            if (!string.IsNullOrEmpty(programeIds))
+                                            {
+                                                strPids = programeIds.Split(',');
+                                            }
+
+                                            if (!string.IsNullOrEmpty(cid) && strPids != null && strPids.Length > 0)
+                                            {
+                                                string strGuid = Guid.NewGuid().ToString();
+
+
+                                                lock (lockQueuItems)
+                                                {
+
+                                                    runningTask.Add(new TaskInfo() { GuidId = strGuid, TaskId = strScheduleTaskId, RuningTime = strTimeToCheck, ChannelId = cid });
+
+                                                }
+                                                //Start 
+
+                                                System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strGuid);
+                                                hubProxy.Invoke("sendScheduleTaskControl", cid, strPids, "1", strGuid);
+                                            }
+
+
+                                        }
+
                                     }
-
-                                    if (taskToRemove != null)
-                                    {
-                                        runningTask.Remove(taskToRemove);
-                                    }
-
-                                    hubProxy.Invoke("sendScheduleTaskControl", cId, null, 2);
-
                                 }
-
                             }
                         }
                     }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("出错拉 " + ex.Message);
+            }
+        }
+
+        private TaskInfo FindAndRemoveTask(string strScheduleTaskId, string cid)
+        {
+
+            lock (lockQueuItems)
+            {
+                TaskInfo taskToRemove = null;
+
+                if (runningTask != null && runningTask.Count > 0)
+                {
+                    foreach (var task in runningTask)
+                    {
+                        if (task.TaskId == strScheduleTaskId && task.ChannelId == cid)
+                        {
+                            taskToRemove = task;
+                        }
+                    }
+
                 }
 
+                if (taskToRemove != null)
+                {
+                    runningTask.Remove(taskToRemove);
+                }
+
+                return taskToRemove;
             }
+
+            return null;
+
+
+        }
+
+
+
+
+        private void CheckAndStopTask()
+        {
+            string sqlStr = " SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
+                          " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)>CONVERT(DATETIME,'{0}') " +
+                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}' OR SCHEDULETASKWEEKS LIKE '%{2}' ) AND " +
+                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) ";
+
+
+            CheckTask(sqlStr, false);
         }
 
         protected override void OnStart(string[] args)
@@ -277,45 +348,51 @@ namespace MediaMgrWS
 
         private void DoConnection()
         {
+            string strSvrUrl = System.Configuration.ConfigurationSettings.AppSettings["ServerUrl"].ToString();
+            hubConnection = new HubConnection(strSvrUrl, "clientIdentify=NA&clientType=WINDOWSSERVICE");
 
-            hubConnection = new HubConnection("http://localhost/MediaMgrDemo");
 
-            hubProxy = hubConnection.CreateHubProxy("Test");
+            hubProxy = hubConnection.CreateHubProxy("MediaMgrHub");
 
             hubConnection.Start();
 
-
             hubProxy.On<string>("sendMessageToWindowService", (data) =>
             {
-
-                ComuResponse resp = Newtonsoft.Json.JsonConvert.DeserializeObject<ComuResponse>(data);
-
-                if (resp != null && !string.IsNullOrWhiteSpace(resp.guidId))
+                lock (lockQueuItems)
                 {
-                    lock (lockObjet)
-                    {
-                        TaskInfo taskToRemove = null;
+                    ComuResponse resp = Newtonsoft.Json.JsonConvert.DeserializeObject<ComuResponse>(data);
 
-                        if (runningTask != null && runningTask.Count > 0)
+
+                    if (resp != null && !string.IsNullOrWhiteSpace(resp.guidId))
+                    {
+
+                        System.Diagnostics.Debug.WriteLine("Received Message From BS Server at " + DateTime.Now.ToString("HH:mm:ss") + " Error:" + resp.errorCode + resp.message + " Guid ID" + resp.guidId);
+
+                        //Start video, no need remove queue
+                        if (resp.errorCode != "181")
                         {
-                            foreach (var task in runningTask)
+                            TaskInfo taskToRemove = null;
+
+                            if (runningTask != null && runningTask.Count > 0)
                             {
-                                if (task.GuidId == resp.guidId)
+                                foreach (var task in runningTask)
                                 {
-                                    taskToRemove = task;
+                                    if (task.GuidId == resp.guidId)
+                                    {
+                                        taskToRemove = task;
+                                    }
                                 }
+
                             }
 
-                        }
-
-                        if (taskToRemove != null)
-                        {
-                            runningTask.Remove(taskToRemove);
+                            if (taskToRemove != null)
+                            {
+                                runningTask.Remove(taskToRemove);
+                            }
                         }
                     }
+
                 }
-
-
 
 
             });
@@ -328,26 +405,39 @@ namespace MediaMgrWS
         {
 
             if (obj.NewState == Microsoft.AspNet.SignalR.Client.ConnectionState.Connected)
-            {
-                aTimer = new Timer();
-                aTimer.Elapsed += aTimer_Elapsed;
-                aTimer.Interval = 1 * 800;
-                aTimer.Enabled = true;
+            {                
+                _isConnected = true;
+                aTimerCheckStartSchedule = new Timer();
+                aTimerCheckStartSchedule.Elapsed += aTimerForStart_Elapsed;
+                aTimerCheckStartSchedule.Interval = 1 * 800;
+                aTimerCheckStartSchedule.Enabled = true;
+
+
+                aTimerCheckStopSchedule = new Timer();
+                aTimerCheckStopSchedule.Elapsed += aTimerForStop_Elapsed;
+                aTimerCheckStopSchedule.Interval = 1 * 800;
+                aTimerCheckStopSchedule.Enabled = true;
+
+
 
             }
             else if (obj.NewState == Microsoft.AspNet.SignalR.Client.ConnectionState.Disconnected)
             {
+                _isConnected = false;
                 DoConnection();
             }
         }
 
         protected override void OnStop()
         {
-            aTimer.Stop();
+            aTimerCheckStartSchedule.Stop();
+            aTimerCheckStopSchedule.Stop();
             if (hubConnection != null)
             {
                 hubConnection.Stop();
             }
+
+
         }
 
 
