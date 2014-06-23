@@ -78,6 +78,14 @@ namespace MediaMgrSystem
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
 
 
+        public static EncoderBLL EncoderBLLInstance = new EncoderBLL(GlobalUtils.DbUtilsInstance);
+
+
+
+
+
+
+
         public static bool IsChannelManuallyPlaying = false;
 
 

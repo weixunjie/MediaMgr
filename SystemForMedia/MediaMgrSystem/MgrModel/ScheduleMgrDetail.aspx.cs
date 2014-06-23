@@ -47,12 +47,12 @@ namespace MediaMgrSystem.MgrModel
             }
         }
 
-        protected void Unnamed7_Click(object sender, EventArgs e)
+        protected void Back_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
         }
 
-        protected void Unnamed6_Click(object sender, EventArgs e)
+        protected void Add_Click(object sender, EventArgs e)
         {
             ScheduleInfo si = new ScheduleInfo();
 
@@ -98,7 +98,7 @@ namespace MediaMgrSystem.MgrModel
             }
         }
 
-        protected void Add_Click(object sender, EventArgs e)
+        protected void AddTask_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/MgrModel/ScheduleTaskMgrDetail.aspx?sid=" + TbHiddenId.Text);
         }
@@ -109,17 +109,16 @@ namespace MediaMgrSystem.MgrModel
             {
                 try
                 {
-
                     List<ProgramInfo> result = this.programBLL.GetProgramById(e.Row.Cells[5].Text);
 
                     if (result != null && result.Count > 0)
                     {
-                        e.Row.Cells[6].Text = result[0].ProgramName;
+                        e.Row.Cells[5].Text = result[0].ProgramName;
                     }
                 }
                 catch { }
 
-                string strWeeks = e.Row.Cells[5].Text;
+                string strWeeks = e.Row.Cells[6].Text;
 
                 strWeeks = strWeeks.Replace("1", "一");
 
@@ -134,7 +133,7 @@ namespace MediaMgrSystem.MgrModel
 
                 strWeeks = strWeeks.Replace("7", "日");
 
-                e.Row.Cells[5].Text = strWeeks;
+                e.Row.Cells[6].Text = strWeeks;
 
 
 

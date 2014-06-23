@@ -178,12 +178,12 @@ namespace MediaMgrSystem.MgrModel
             }
         }
 
-        protected void Unnamed7_Click(object sender, EventArgs e)
+        protected void Back_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/MgrModel/ProgramMgrList.aspx");
         }
 
-        protected void Unnamed6_Click(object sender, EventArgs e)
+        protected void Add_Click(object sender, EventArgs e)
         {
             ProgramInfo pi = new ProgramInfo();
 

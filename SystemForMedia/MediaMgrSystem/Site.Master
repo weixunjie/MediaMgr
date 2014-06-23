@@ -79,6 +79,8 @@
 
                         <li><a href="/MgrModel/DeviceMgrList.aspx" >设备管理</a></li>
 
+                         <li><a href="/MgrModel/EncoderMgrList.aspx">视频源管理</a></li>
+
                         <li><a href="/MgrModel/ChannelMgrList.aspx">通道管理</a></li>
 
                         <li><a href="/MgrModel/ScheduleMgrList.aspx">计划管理</a></li>

@@ -9,7 +9,6 @@
             <div class="form-horizontal">
 
                 <div class="form-group">
-
                     <div class="col-md-10">
                         <asp:GridView ID="dvList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
                             <Columns>

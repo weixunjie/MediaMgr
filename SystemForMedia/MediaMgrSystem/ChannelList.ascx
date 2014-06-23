@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeBehind="ChannelList.ascx.cs" Inherits="MediaMgrSystem.ChannelList" %>
 
-<script src="<%=ResolveUrl("Scripts/channelScheduleLogic.js")%>" type="text/javascript" ></script>
+<script src="<%=ResolveUrl("Scripts/channelScheduleLogic.js")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
 
@@ -229,7 +229,7 @@
 
                 $('#dialogForChooseProgram').modal('hide');
 
-                $("#divChannelInfo").html(currentOperChannelName + "已选节目，请开始播放");
+                $("#divChannelInfo").html(currentOperChannelName + "准备就绪");
 
                 setButtonStatus("Stop");
 
@@ -249,7 +249,7 @@
 
                 //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
 
-                $("#divChannelInfo").html(+currentOperChannelName + "正在播放中");
+                $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
             }
 
         })
@@ -263,7 +263,7 @@
             chat.server.sendStopRoRepeatCommand("1", currentOperChannel, "");
 
 
-            $("#divChannelInfo").html("(" + currentOperChannelName + "停止播放");
+            $("#divChannelInfo").html( currentOperChannelName + "已停止播放");
 
 
         })
@@ -340,31 +340,43 @@
 
 
 
-    <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="ChannelMenubox">
-        <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">计划选择</a></li>
-        <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px"  data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
+<ul class="dropdown-menu" role="menu"
+    aria-labelledby="dropdownMenu" id="ChannelMenubox">
+    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">计划选择</a></li>
+    <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
 
-    </ul>
+</ul>
 
-    <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="SchduleBox">
+<ul class="dropdown-menu" role="menu"
+    aria-labelledby="dropdownMenu" id="SchduleBox">
 
-        <% 
-            for (int i = 0; i < schedules.Count; i++)
-            { 
-        %>
-        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =schedules[i].ScheduleId %>" id="btnSchedule<% =schedules[i].ScheduleId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =schedules[i].ScheduleName %>" </a></li>
-        <%}%>
-    </ul>
+    <% 
+        for (int i = 0; i < schedules.Count; i++)
+        { 
+    %>
+    <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =schedules[i].ScheduleId %>" id="btnSchedule<% =schedules[i].ScheduleId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =schedules[i].ScheduleName %></a></li>
+    <%}%>
+</ul>
 
-    <%  int channelIndex = 0;
-        int cRows = allChanels.Count / 2 + allChanels.Count % 2;
-        for (int i = 0; i < cRows; i++)
+<%  
+  
+    for (int i = 0; i < allChanels.Count; i++)
+    {
+
+        if (i % 2 == 0)
+        {
+%>
+
+    <div style="float: left; height: 160px">
+
+    <% }
+        else
         { %>
 
-    <div  style="float: left; height: 160px">
-        <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" data-itemid="<%=allChanels[channelIndex].ChannelName.Trim() %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
+    <div style="float: right; height: 160px">
+
+        <% } %>
+        <div id="channelDiv<%=allChanels[i].ChannelId %>" data-itemid="<%=allChanels[i].ChannelName.Trim() %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
             <img src="Images/ic_image_channel.png" width="90" height="99" />
         </div>
@@ -374,13 +386,12 @@
 
 
         <div style="height: 10px; margin-top: 10px; text-align: center; font-size: 15pt">
-            <%=  allChanels[channelIndex].ChannelName  %>
-            <% channelIndex++; %>
+            <%=  allChanels[i].ChannelName  %>
         </div>
 
     </div>
 
-    <% if (channelIndex < allChanels.Count)
+    <%--    <% if (channelIndex < allChanels.Count)
        { %>
     <div " style="float: right; height: 160px">
         <div id="channelDiv<%=allChanels[channelIndex].ChannelId %>" data-itemid="<%=allChanels[channelIndex].ChannelName.Trim() %>"   style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
@@ -398,100 +409,93 @@
 
     </div>
 
-    <% }
-        } %>
+    <% }--%>
+    <% } %>
 
-    <div id="divChannelInfo"  style=" clear:both; margin-bottom:10px; margin-top: 10px; text-align:left; font-size: 15pt">
-           等待操作
-     </div>
-   <ul style=" clear:both;  margin-left:0px; text-align:left;list-style-type:none;">
+    <div id="divChannelInfo" style="clear: both; margin-bottom: 10px; margin-top: 10px; text-align: left; font-size: 15pt">
+        等待操作
+    </div>
+    <ul style="clear: both; margin-left: 0px; text-align: left; list-style-type: none;">
 
-       <li  class="channelControlButtonLI" >           
+        <li class="channelControlButtonLI">
 
-           <img src="Images/ic_image_play.png" id="btnChannelControlPlay"  onmouseout='this.src="Images/ic_image_play.png"' onmouseover='this.src="Images/ic_image_play_hover.png"' onmousedown='this.src="Images/ic_image_play_hover.png"' class="channelControlButtonImage"  />
+            <img src="Images/ic_image_play.png" id="btnChannelControlPlay" onmouseout='this.src="Images/ic_image_play.png"' onmouseover='this.src="Images/ic_image_play_hover.png"' onmousedown='this.src="Images/ic_image_play_hover.png"' class="channelControlButtonImage" />
 
-       </li>
+        </li>
 
 
-          <li class="channelControlButtonLI" >           
+        <li class="channelControlButtonLI">
 
-           <img src="Images/ic_image_stop.png" id="btnChannelControlStop" onmousedown='this.src="Images/ic_image_stop_hover.png"'  onmouseover='this.src="Images/ic_image_stop_hover.png"'    class="channelControlButtonImage" />
+            <img src="Images/ic_image_stop.png" id="btnChannelControlStop" onmousedown='this.src="Images/ic_image_stop_hover.png"' onmouseover='this.src="Images/ic_image_stop_hover.png"' class="channelControlButtonImage" />
 
-       </li>
+        </li>
 
-       <li class="channelControlButtonLI">
-           
+        <li class="channelControlButtonLI">
 
-           <img src="Images/ic_image_repeat.png" id="btnChannelControlRepeat" onmouseover='this.src="Images/ic_image_repeat_hover.png"' onmousedown='this.src="Images/ic_image_repeat_hover.png"' class="channelControlButtonImage" />
 
-       </li>
+            <img src="Images/ic_image_repeat.png" id="btnChannelControlRepeat" onmouseover='this.src="Images/ic_image_repeat_hover.png"' onmousedown='this.src="Images/ic_image_repeat_hover.png"' class="channelControlButtonImage" />
 
-       
-         
+        </li>
 
-   </ul>
 
- <div id="dialogForChooseProgram"   style="width:auto"  class="modal hide">
+
+
+    </ul>
+
+    <div id="dialogForChooseProgram" style="width: auto" class="modal hide">
         <div class="modal-header">
             <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭">&times;</a><h3>节目选择</h3>
         </div>
         <div class="modal-body">
-           <div  style=" float:left; height: 200px; width: 150px;">
+            <div style="float: left; height: 200px; width: 150px;">
 
-               <h4 style="text-align:left;margin-top:0px ">可选节目</h4>
+                <h4 style="text-align: left; margin-top: 0px">可选节目</h4>
 
-            <select size="4" multiple="multiple" style=" height: 190px; width: 150px;" id="lbAvaiableProgram">
+                <select size="4" multiple="multiple" style="height: 190px; width: 150px;" id="lbAvaiableProgram">
 
-          <%--      <%  foreach (var pi in allProgramInfos)
+                    <%--      <%  foreach (var pi in allProgramInfos)
                     { %>
 
                      <option value="<% =pi.ProgramId %>"><% =pi.ProgramName %>></option>
 
              
                  <%} %>--%>
+                </select>
 
-            </select>
+            </div>
+            <div style="float: left; height: 200px; width: 52px; margin-top: 52px; margin-left: 10px; margin-right: 10px">
 
-               </div>
-            <div style=" float:left;height:200px; width:52px ;margin-top:52px;  margin-left:10px; margin-right:10px">
-               
-                <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  id="btnProgamToRight" style="width:30px"  >></a>
-               </div>
-                                              
-                 <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary"  id="btnProgamAllToRight" style="width:30px"  >>></a>
-               </div>
-
-
-                <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary" id="btnProgamToLeft" style="width:30px"   ><</a>
-               </div>
-
-                 <div  class="channelProgrameListOperButton" >
-                 <a class="btn primary" id="btnProgamAllToLeft" style="width:30px"  ><<</a>
-               </div>
-                   
+                <div class="channelProgrameListOperButton">
+                    <a class="btn primary" id="btnProgamToRight" style="width: 30px">></a>
                 </div>
-           
 
-                
-            <div style=" float:left;height: 200px; width: 150px;" >
-             <h4 style="text-align:left; margin-top:0px ">已选节目</h4>
-        
-            <select size="4"style=" height: 190px; width: 150px;" multiple="multiple" id="lbSelectedProgram" >
-            </select>
+                <div class="channelProgrameListOperButton">
+                    <a class="btn primary" id="btnProgamAllToRight" style="width: 30px">>></a>
+                </div>
 
-             </div>
-         
+
+                <div class="channelProgrameListOperButton">
+                    <a class="btn primary" id="btnProgamToLeft" style="width: 30px"><</a>
+                </div>
+
+                <div class="channelProgrameListOperButton">
+                    <a class="btn primary" id="btnProgamAllToLeft" style="width: 30px"><<</a>
+                </div>
+
+            </div>
+
+
+
+            <div style="float: left; height: 200px; width: 150px;">
+                <h4 style="text-align: left; margin-top: 0px">已选节目</h4>
+
+                <select size="4" style="height: 190px; width: 150px;" multiple="multiple" id="lbSelectedProgram">
+                </select>
+
+            </div>
+
         </div>
         <div class="modal-footer">
             <a id="btnConfirmPlayPrograme" class="btn primary">确认</a>
         </div>
     </div>
-
-
-
-  
-
-

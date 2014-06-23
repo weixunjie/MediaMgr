@@ -33,38 +33,38 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public List<EncoderInfo> GetAllChannels()
+        public List<EncoderInfo> GetAllEncoders()
         {
 
-            String sqlStr = "SELECT * FROM CHANNELINFO";
+            String sqlStr = "SELECT * FROM ENCODERINFO";
 
             return GetEncoderList(sqlStr);
 
         }
 
-        public int RemoveChannel(string channelId)
+        public int RemoveEncoder(string encoderId)
         {
-            String sqlStr = "DELETE FROM CHANNELINFO where CHANNELID=" + channelId;
+            String sqlStr = "DELETE FROM ENCODERINFO where ENCODERID=" + encoderId;
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
-        public int AddChannel(ChannelInfo ci)
+        public int AddEncoder(EncoderInfo ei)
         {
-            String sqlStr = "INSERT INTO CHANNELINFO(CHANNENAME) values ('{0}')";
+            String sqlStr = "INSERT INTO ENCODERINFO(ENCODERNAME) values ('{0}')";
 
-            sqlStr = String.Format(sqlStr,ci.ChannelName);
+            sqlStr = String.Format(sqlStr,ei.EncoderName);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
-        public int UpdateChannel(ChannelInfo ci)
+        public int UpdateEncoder(EncoderInfo ei)
         {
-            String sqlStr = "UPDATE CHANNELINFO SET CHANNENAME='{0}' WHERE CHANNEID={1}";
+            String sqlStr = "UPDATE ENCODERINFO SET ENCODERNAME='{0}' WHERE ENCODERID={1}";
 
-            sqlStr = String.Format(sqlStr, ci.ChannelName,ci.ChannelId);
+            sqlStr = String.Format(sqlStr, ei.EncoderName,ei.EncoderId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 

@@ -200,7 +200,27 @@ namespace MediaMgrSystem
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
 
+                    int intBufTime = 4000;
+                    if (isSchedule)
+                    {
+                        int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
+
+                        int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
+
+
+
+                        int offSet = schduleTicks - nowTicks;
+                        if (offSet > intBufTime)
+                        {
+                            int toSleep = offSet - intBufTime;
+                            Thread.Sleep(toSleep);
+                            System.Diagnostics.Debug.WriteLine("我一下再发 " + toSleep);
+                        }
+                    }
+
                     System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+
+
 
 
                     string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
@@ -211,7 +231,7 @@ namespace MediaMgrSystem
                     double offsetTotalMilliseconds = afterSendToAllClient.Subtract(beforeSendToAllClient).Duration().TotalMilliseconds;
 
 
-                    int bufferTime = (int)(4000 - offsetTotalMilliseconds);
+                    int bufferTime = (int)(intBufTime - offsetTotalMilliseconds);
 
                     cmdToVideoSvr.arg.buffer = cmdToVideoSvr.arg.buffer = !string.IsNullOrWhiteSpace(scheduleTaskGuidId) ? bufferTime.ToString() : (bufferTime - 2000).ToString();
 
@@ -455,8 +475,10 @@ namespace MediaMgrSystem
                             hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
                         }
 
-                        System.Diagnostics.Debug.WriteLine("Removing Schedule Task " + itemToRemove.ChannelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
+                        
                         GlobalUtils.RunningSchudules.Remove(itemToRemove);
+
+                        System.Diagnostics.Debug.WriteLine("Removing Schedule Task " + itemToRemove.ChannelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
                     }
 
 

@@ -4,6 +4,7 @@
 
 
 
+<%@ Register Src="EncoderList.ascx" TagName="EncoderList" TagPrefix="encoderList" %>
 <%@ Register Src="DeviceList.ascx" TagName="DeviceList" TagPrefix="deviceList" %>
 <%@ Register Src="ChannelList.ascx" TagName="ChannelList" TagPrefix="channelList" %>
 
@@ -58,8 +59,6 @@
 
             }
 
-
-
             $.ajax({
                 async: false,
                 type: "POST",
@@ -91,6 +90,12 @@
     <div style="width: 250px; height: 160%; float: left; text-align: center">
 
         <channelList:ChannelList ID="cList" runat="server" />
+
+
+        <div style="margin-top:20px">
+
+        <encoderList:EncoderList ID="EncoderList" runat="server" />
+            </div>
         <%--  <div style="width: 100px; position: relative; height: 100px; line-height: 100px; vertical-align: central; text-align: center; float: left; padding: 4px 4px 4px 4px"
                 class="jumbotron">
                 通道<%= (channelIndex).ToString()  %>

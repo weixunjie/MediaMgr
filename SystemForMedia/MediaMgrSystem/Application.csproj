@@ -159,6 +159,9 @@
     <Content Include="Account\LoginOut.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Bundle.config" />
+    <Content Include="Dlls\ffmpeg.exe" />
+    <Content Include="Dlls\FFMPEGWrapper.dll" />
+    <Content Include="EncoderList.ascx" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\ChannelList.css" />
@@ -173,6 +176,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Images\ic_image_channel.png" />
     <Content Include="Images\ic_image_device.png" />
+    <Content Include="Images\ic_image_device_offline.png" />
+    <Content Include="Images\ic_image_encoder.png" />
     <Content Include="Images\ic_image_group.png" />
     <Content Include="Images\ic_image_menu.png" />
     <Content Include="Images\ic_image_play.png" />
@@ -183,7 +188,10 @@
     <Content Include="Images\ic_image_repeat_hover.png" />
     <Content Include="Images\ic_image_stop.png" />
     <Content Include="Images\ic_image_stop_disabled.png" />
+    <Content Include="Images\ic_image_stop_hover.png" />
+    <Content Include="MgrModel\EncoderMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
+    <Content Include="MgrModel\EncoderMgrList.aspx" />
     <Content Include="MgrModel\PreviewMP3.aspx" />
     <Content Include="MgrModel\ScheduleTaskMgrDetail.aspx" />
     <Content Include="MgrModel\ScheduleMgrDetail.aspx" />
@@ -282,6 +290,27 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="EncoderList.ascx.cs">
+      <DependentUpon>EncoderList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EncoderList.ascx.designer.cs">
+      <DependentUpon>EncoderList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\EncoderMgrDetail.aspx.cs">
+      <DependentUpon>EncoderMgrDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\EncoderMgrDetail.aspx.designer.cs">
+      <DependentUpon>EncoderMgrDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\EncoderMgrList.aspx.cs">
+      <DependentUpon>EncoderMgrList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\EncoderMgrList.aspx.designer.cs">
+      <DependentUpon>EncoderMgrList.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MgrModel\PreviewMP3.aspx.cs">
       <DependentUpon>PreviewMP3.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

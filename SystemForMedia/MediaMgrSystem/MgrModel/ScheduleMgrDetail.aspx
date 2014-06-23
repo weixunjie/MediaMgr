@@ -38,8 +38,8 @@
 
             <div class="form-group">
 
-                <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Unnamed6_Click" />
-                <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Unnamed7_Click" />
+                <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Add_Click" />
+                <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Back_Click" />
 
                 <br />
 
@@ -100,7 +100,7 @@
                         <br />
 
                         <br />
-                        <asp:Button runat="server" Text="新增任务" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
+                        <asp:Button runat="server" Text="新增任务" CssClass="btn btn-default" OnClick="AddTask_Click" Width="195px" />
 
 
                     </div>
