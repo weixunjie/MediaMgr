@@ -102,7 +102,7 @@ namespace MediaMgrWS
         {
             string sqlStr = "SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
                           " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>CONVERT(DATETIME,'{0}') " +
-                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}' OR SCHEDULETASKWEEKS LIKE '%{2}' ) AND " +
+                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
                           "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) ";
 
             CheckTask(sqlStr, true);
@@ -164,7 +164,18 @@ namespace MediaMgrWS
                             string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
 
                             TimeSpan tsOffset = dtRunTime.Subtract(DateTime.Parse(dtNow));
-                            if (tsOffset.TotalSeconds <= 5 && tsOffset.TotalMilliseconds > 0)
+
+                            //Schedule to play: send 5s in advance
+                            //Scehdue to stop: send 1s in advance
+                            int andvanceSec = 2;
+
+                            if (isCheckStart)
+                            {
+                                andvanceSec = 7;
+                            }
+
+
+                            if (tsOffset.TotalSeconds <= andvanceSec && tsOffset.TotalMilliseconds > 0)
                             {
                                 if (isCheckStart)
                                 {
@@ -205,21 +216,26 @@ namespace MediaMgrWS
 
 
 
-                                string sqlStrGetChannelId = "SELECT CHANNELID FROM DBO.CHANNELINFO WHERE SCHEDULEID='" + strScheduleId + "'";
+                                string sqlStrGetChannelId = "SELECT CHANNELID,CHANNELNAME FROM DBO.CHANNELINFO WHERE SCHEDULEID='" + strScheduleId + "'";
 
                                 List<string> strChannelIds = new List<string>();
+                                List<string> strChannelNames = new List<string>();
                                 DataTable dtChannel = dbUitls.ExecuteDataTable(sqlStrGetChannelId);
 
                                 if (dtChannel != null && dtChannel.Rows.Count > 0)
                                 {
                                     for (int k = 0; k < dtChannel.Rows.Count; k++)
                                     {
-                                        strChannelIds.Add(dtChannel.Rows[k][0].ToString());
+                                        strChannelIds.Add(dtChannel.Rows[k]["CHANNELID"].ToString());
+                                        strChannelNames.Add(dtChannel.Rows[k]["CHANNELNAME"].ToString());
                                     }
                                 }
 
-                                foreach (string cid in strChannelIds)
+                                
+                                for (int m=0;m<strChannelIds.Count;m++ )
                                 {
+                                    string cid=strChannelIds[m];
+                                    string cName=strChannelNames[m];
                                     if (!string.IsNullOrEmpty(cid))
                                     {
                                         bool foundRunningTask = false;
@@ -239,7 +255,7 @@ namespace MediaMgrWS
 
                                             string[] strPids = new string[0];
                                             //Stop
-                                            hubProxy.Invoke("sendScheduleTaskControl", cid, strPids, "2", taskToRemove != null ? taskToRemove.GuidId : string.Empty);
+                                            hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", taskToRemove != null ? taskToRemove.GuidId : string.Empty, strTimeToCheck);
 
                                             System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + taskToRemove.GuidId);
 
@@ -273,7 +289,7 @@ namespace MediaMgrWS
                                                 //Start 
 
                                                 System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strGuid);
-                                                hubProxy.Invoke("sendScheduleTaskControl", cid, strPids, "1", strGuid);
+                                                hubProxy.Invoke("sendScheduleTaskControl", cid,cName, strPids, "1", strGuid,strTimeToCheck);
                                             }
 
 
@@ -332,7 +348,7 @@ namespace MediaMgrWS
         {
             string sqlStr = " SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
                           " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)>CONVERT(DATETIME,'{0}') " +
-                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}' OR SCHEDULETASKWEEKS LIKE '%{2}' ) AND " +
+                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
                           "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) ";
 
 
