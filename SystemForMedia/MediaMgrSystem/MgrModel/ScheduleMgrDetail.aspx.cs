@@ -11,15 +11,13 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ScheduleMgrDetail : System.Web.UI.Page
     {
-        private ScheduleBLL scheduleBLL = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
-        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
-
+    
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
 
-                List<ProgramInfo> allProgram = programBLL.GetAllProgram();
+                List<ProgramInfo> allProgram =GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
 
 
@@ -31,7 +29,7 @@ namespace MediaMgrSystem.MgrModel
 
                     TbHiddenId.Text = id;
 
-                    ScheduleInfo si = scheduleBLL.GetAllScheduleById(id)[0];
+                    ScheduleInfo si = GlobalUtils.ScheduleBLLInstance.GetAllScheduleById(id)[0];
 
                     this.TbName.Text = si.ScheduleName;
 
@@ -64,11 +62,11 @@ namespace MediaMgrSystem.MgrModel
             {
                 si.ScheduleId = TbHiddenId.Text;
 
-                scheduleBLL.UpdateSchedule(si);
+                GlobalUtils.ScheduleBLLInstance.UpdateSchedule(si);
             }
             else
             {
-                scheduleBLL.AddSchedule(si);
+                GlobalUtils.ScheduleBLLInstance.AddSchedule(si);
             }
 
             Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
@@ -76,7 +74,7 @@ namespace MediaMgrSystem.MgrModel
 
         private void BindSTaskListData()
         {
-            List<ScheduleTaskInfo> dis = scheduleBLL.GetAllScheduleTaksByScheduleId(TbHiddenId.Text);
+            List<ScheduleTaskInfo> dis = GlobalUtils.ScheduleBLLInstance.GetAllScheduleTaksByScheduleId(TbHiddenId.Text);
 
             this.dvTaskList.DataSource = dis;
             dvTaskList.DataBind();
@@ -92,7 +90,7 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                scheduleBLL.RemoveSchedule(e.CommandArgument.ToString());
+                GlobalUtils.ScheduleBLLInstance.RemoveSchedule(e.CommandArgument.ToString());
                 BindSTaskListData();
 
             }
@@ -109,7 +107,7 @@ namespace MediaMgrSystem.MgrModel
             {
                 try
                 {
-                    List<ProgramInfo> result = this.programBLL.GetProgramById(e.Row.Cells[5].Text);
+                    List<ProgramInfo> result = GlobalUtils.ProgramBLLInstance.GetProgramById(e.Row.Cells[5].Text);
 
                     if (result != null && result.Count > 0)
                     {

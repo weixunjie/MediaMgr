@@ -1,9 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeBehind="DeviceList.ascx.cs" Inherits="MediaMgrSystem.DeviceList" %>
 
 
-
 <script type="text/javascript">
-
 
 
     var currentOperGroup;
@@ -13,107 +11,26 @@
     $(document).ready(function () {
 
         <%  
+
+    
     List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroupsIncludeDefaultGroup();
     List<MediaMgrSystem.DataModels.ChannelInfo> channels = GetAllChannels();
+
+    List<MediaMgrSystem.DataModels.EncoderInfo> encoders = GetAllEncoders();
+
+
+
+
     string deviceIds = string.Empty; for (int i = 1; i <= 1; i++) { deviceIds = deviceIds + "#deviceMenu" + i.ToString() + ","; }; deviceIds = deviceIds.TrimEnd(',');
     string imgGroupShowIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { if (dGroups[i].GroupId == "-1") { continue; } imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ","; }; imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
 
-    string btnMeneChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMeneChannelSelIds = btnMeneChannelSelIds + "#btnMeneChannelSel" + channels[i].ChannelId + ","; }; btnMeneChannelSelIds = btnMeneChannelSelIds.TrimEnd(',');
+    string btnMenuChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMenuChannelSelIds = btnMenuChannelSelIds + "#btnMenuChannelSel" + channels[i].ChannelId + ","; }; btnMenuChannelSelIds = btnMenuChannelSelIds.TrimEnd(',');
+
+    string btnMenuEncoderSelIds = string.Empty; for (int i = 0; i < encoders.Count; i++) { btnMenuEncoderSelIds = btnMenuEncoderSelIds + "#btnMenuEncoderSel" + encoders[i].EncoderId + ","; }; btnMenuEncoderSelIds = btnMenuEncoderSelIds.TrimEnd(',');
     
              %>
 
 
-
-        chat.client.sendResultBrowserClient = function (result, error) {
-
-            // alert(result);
-            $("#divLogs").append('<br/>' + result);
-        }
-
-
-        //  $.showGroupmenu = function () {
-
-        <%--
-            var is_group_menu_in = false;
-            $("<%= ids %>").click(function (e) {
-
-                is_group_menu_in = true;
-
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
-
-                $("#GroupMenubox").show().css("left", x).css("top", y);
-
-                currentOperGroupDevice = e.currentTarget.name;
-
-
-                $(e.currentTarget).mouseout(function (e) {
-
-                    is_group_menu_in = false;
-                });
-
-
-            });
-
-
-
-            $(document).click(function () {
-
-                if (!is_group_menu_in) $("#GroupMenubox").hide();
-            });
-
-            $("#GroupMenulistPlayVideo").click(function (e) {
-
-                var guidId = guid();
-                chat.server.sendVideoControlMessage("PC");
-
-            });
-
-            $("#GroupMenulistPauseVideo").click(function (e) {
-
-                var guidId = guid();
-                chat.server.sendVideoControlPauseMessage("PC");
-
-            });
-        }
-
-
-        $.showGroupmenu();
-
-        //---------------------------------------
-
-        $.showDevicemenu = function () {
-
-
-            var is_in = false;
-            $("<%= deviceIds %>").click(function (e) {
-
-
-
-                is_in = true;
-
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
-
-                $("#DeviceMenubox").show().css("left", x).css("top", y);
-
-
-                //  currentSelectedDevice = e.currentTarget.name;;
-
-
-            });
-
-            $("<%= ids %>").mouseout(function (e) {
-                is_in = false;
-            });
-
-            $(document).click(function () {
-                if (!is_in) $("#DeviceMenubox").hide();
-            });
-        }
-
-        $.showDevicemenu();
---%>
 
         $("#btnConfirmedBatchGroupOperation").click(function (e) {
 
@@ -125,12 +42,14 @@
 
                 var selectedChannelId = $('#ddBatchSelectChannel option:selected').val();
 
+                var selectedEncoderId = $('#ddBatchSelectVideoSorce option:selected').val();
+
 
                 $.ajax({
                     type: "POST",
                     async: false,
-                    url: "Default.aspx/SaveGroupChannel",
-                    data: "{'cid':'" + selectedChannelId + "',gid:'" + selectedGroupId + "'}",
+                    url: "Default.aspx/SaveGroupChannelAndEncoder",
+                    data: "{'cid':'" + selectedChannelId + "',gid:'" + selectedGroupId + "','eid':'" + selectedEncoderId + "'}",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
@@ -139,12 +58,12 @@
                     }
                 });
 
-                // $(this).remove();
             })
 
 
             $('#dialogForBatchGroup').modal('hide');
         });
+
         $("#btnBatchGroupOperation").click(function (e) {
 
             $('#dialogForBatchGroup').modal('show');
@@ -152,16 +71,13 @@
 
 
 
-        var isChooseChannel = false;
         $("#btnSingleGroupChooseChannel").click(function (e) {
 
 
-            isChooseChannel = true;
+            is_popup_2nd_menu = true;
 
-
-            var x = $(this).offset().left + $("#channelMenuForSignleGroupBox").width() + 6;
+            var x = $(this).offset().left + $("#ChannelMenuForSignleGroupBox").width() + 6;
             var y = $(this).offset().top;
-
 
             $.ajax({
                 type: "POST",
@@ -172,28 +88,20 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (msg) {
 
-                    $("<% =btnMeneChannelSelIds%>").css("font-weight", "normal");
-                    $("#btnMeneChannelSel" + msg.d).css("font-weight", "bold");
+                    $("<% =btnMenuChannelSelIds%>").css("font-weight", "normal");
+                    $("#btnMenuChannelSel" + msg.d).css("font-weight", "bold");
 
                 }
             });
 
-
-
-          <%--  <% int a=GetSelectedSchedule(%> e.target.name <% )%>
-
-            alert(<%=i%>);--%>
-
-            $("#channelMenuForSignleGroupBox").show().css("left", x).css("top", y);
-
-
+            $("#ChannelMenuForSignleGroupBox").show().css("left", x).css("top", y);
         });
 
 
-        $("<% =btnMeneChannelSelIds%>").click(function (e) {
+        $("<% =btnMenuChannelSelIds%>").click(function (e) {
 
 
-            var currentOperChannel = e.currentTarget.id.replace("btnMeneChannelSel", "");
+            var currentOperChannel = e.currentTarget.id.replace("btnMenuChannelSel", "");
 
             $.ajax({
                 type: "POST",
@@ -207,156 +115,109 @@
                 }
             });
 
+            is_popup_2nd_menu = false;
+            is_popup_1st_menu = false;
+
         });
 
 
         $("#btnSingleGroupChooseChannel").mouseout(function (e) {
-            isChooseChannel = false;
+            is_popup_2nd_menu = false;
+        });
+
+        $("#btnSingleGroupChooseEncoder").click(function (e) {
+
+            is_popup_2nd_menu = true;
+
+            var x = $(this).offset().left + $("#EncoderMenuForSignleGroupBox").width() + 6;
+            var y = $(this).offset().top;
+
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "Default.aspx/GetEncoderByGroupId",
+                data: "{'gid':'" + currentOperGroup + "'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (msg) {
+
+                    $("<% =btnMenuEncoderSelIds%>").css("font-weight", "normal");
+                    $("#btnMenuEncoderSel" + msg.d).css("font-weight", "bold");
+
+                }
+            });
+
+
+            $("#EncoderMenuForSignleGroupBox").show().css("left", x).css("top", y);
+
+
+        });
+
+
+
+        $("<% =btnMenuEncoderSelIds%>").click(function (e) {
+
+            var currentOperEncoder = e.currentTarget.id.replace("btnMenuEncoderSel", "");
+
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "Default.aspx/SaveGroupEncoder",
+                data: "{'cid':'" + currentOperEncoder + "',gid:'" + currentOperGroup + "'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (msg) {
+
+                }
+            });
+
+            is_popup_2nd_menu = false;
+            is_popup_1st_menu = false;
+
+        });
+
+        $("#btnSingleGroupChooseEncoder").mouseout(function (e) {
+            is_popup_2nd_menu = false;
         });
 
 
         $.showGroupClickMenu = function () {
 
 
-
-
             $("<%= imgGroupShowIds %>").click(function (e) {
-
-
-                $("#menuForSingleGroup").hide();
-                $("#channelMenuForSignleGroupBox").hide()
 
                 currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
 
-                is_in = true;
+                is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
-                $("#menuForSingleGroup").show().css("left", x).css("top", y);
-
+                $("#MenuForSingleGroup").show().css("left", x).css("top", y);
 
 
             });
 
             $("<%= imgGroupShowIds %>").mouseout(function (e) {
-                is_in = false;
+                is_popup_1st_menu = false;
             });
 
             $(document).click(function () {
-                // debugger;
-                if (!is_in && !isChooseChannel) {
-                    $("#menuForSingleGroup").hide();
-                    $("#channelMenuForSignleGroupBox").hide()
-                }
-                if (!is_in && !isChooseSchedule) {
+
+                if (!is_popup_1st_menu && !is_popup_2nd_menu) {
+                    $("#MenuForSingleGroup").hide();
+                    $("#ChannelMenuForSignleGroupBox").hide()
+                    $("#EncoderMenubox").hide();
                     $("#ChannelMenubox").hide();
-                    $("#SchduleBox").hide()
+                    $("#ChannelMenuSchduleBox").hide()
+                    $("#EncoderMenuForSignleGroupBox").hide();
                 }
             });
 
-            //debugger;
-            //$(document).click(function () {
-            //    debugger;
-            //    if (!is_in && !isChooseSchedule) {
-            //        $("#ChannelMenubox").hide();
-            //        $("#SchduleBox").hide()
-            //    }
-            //});
         }
 
         $.showGroupClickMenu();
-
-
-
-        //------------------------------------
-
-
-        //$("#btnGroupAllPause").click(function (e) {
-        //    //   $("#divLogs").html("操作中...");
-        //    //  opDevices.push(currentSelectedDevice);
-        //    var guidId = guid();
-        //    chat.server.sendControlMessage("TO", "AOFF");
-        //    opGuidIds.push(guidId);
-
-        //    processControlTimeOut(guidId);
-
-
-        //});
-        //$("#btnGroupOper").click(function (e) {
-        //    //   $("#divLogs").html("操作中...");
-        //    //  opDevices.push(currentSelectedDevice);
-        //    //  var guidId = guid();
-        //    chat.server.sendControlMessage("TO", "A");
-        //    //   opGuidIds.push(guidId);
-
-
-        //});
-
-
-
-
-        //$("#DeviceMenulistPauseVideo").click(function (e) {
-        //    $("#divLogs").html("操作中...");
-        //    //  debugger;
-        //    opDevices.push(currentSelectedDevice);
-        //    var guidId = guid();
-        //    chat.server.sendControlMessage("TP", currentSelectedDevice);
-        //    opGuidIds.push(guidId);
-
-        //    processControlTimeOut(guidId);
-        //    //setTimeout("showTime()", 5000);
-
-        //    ////$.sleep(8, function (arg) {
-        //    ////    debugger;
-        //    ////    var exstingIndex = -1;
-        //    ////    for (var i = 0; i < opGuidIds.length; i++) {
-        //    ////        if (opGuidIds[i] == arg) {
-        //    ////            exstingIndex = i
-        //    ////        }
-        //    ////    }
-        //    ////    if (exstingIndex >= 0) {
-
-
-
-        //    ////        $("#divLogs").html(opDevices[exstingIndex] + "操作失败");
-
-        //    ////        opDevices.splice(exstingIndex, 1);
-        //    ////        opGuidIds.splice(exstingIndex, 1);
-        //    ////    }
-        //    ////}, guidId);
-        //});
-        //$("#DeviceMenulistPlayVideo").click(function (e) {
-        //    $("#divLogs").html("操作中...");
-        //    opDevices.push(currentSelectedDevice);
-        //    var guidId = guid();
-        //    chat.server.sendControlMessage("TO", currentSelectedDevice);
-        //    opGuidIds.push(guidId);
-
-
-        //    //setTimeout("showTime()", 5000);
-
-        //    ////$.sleep(8, function (arg) {
-        //    ////    debugger;
-        //    ////    var exstingIndex = -1;
-        //    ////    for (var i = 0; i < opGuidIds.length; i++) {
-        //    ////        if (opGuidIds[i] == arg) {
-        //    ////            exstingIndex = i
-        //    ////        }
-        //    ////    }
-        //    ////    if (exstingIndex >= 0) {
-
-
-
-        //    ////        $("#divLogs").html(opDevices[exstingIndex] + "操作失败");
-
-        //    ////        opDevices.splice(exstingIndex, 1);
-        //    ////        opGuidIds.splice(exstingIndex, 1);
-        //    ////    }
-        //    ////}, guidId);
-        //});
-
-
 
 
 
@@ -369,8 +230,6 @@
         $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
 
         function saveOrder() {
-
-            // debugger;
 
 
             <%  for (int i = 0; i < dGroups.Count; i++)
@@ -402,12 +261,11 @@
                 }
            %>
 
-
         };
 
+
+
     });
-
-
 
 
 </script>
@@ -481,7 +339,7 @@
 
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
-                                        <p id="ptext" style="text-align: center">
+                                        <p style="text-align: center">
                                             <% =dGroups[l].Devices[k].DeviceName %>
                                         </p>
                                     </div>
@@ -582,7 +440,7 @@
                 <h4 style="text-align: left; margin-top: 0px">可选组</h4>
 
                 <select size="4" multiple="multiple" style="height: 160px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
-                    
+
                     <% foreach (var di in dGroups)
                        {
                            if (di.GroupId == "-1") { continue; } %>
@@ -622,12 +480,11 @@
                         </p>
                     </div>
                     <select id="ddBatchSelectVideoSorce" style="width: 220px" name="selectTest">
-                        <option value="1">11</option>
-                        <option value="2">22</option>
-                        <option value="3">33</option>
-                        <option value="4">44</option>
-                        <option value="5">55</option>
-                        <option value="6">66</option>
+
+                        <%  foreach (var ei in encoders)
+                            { %>
+                        <option value="<%= ei.EncoderId %>"><% =ei.EncoderName %></option>
+                        <% } %>
                     </select>
                 </div>
 
@@ -652,48 +509,35 @@
 
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="menuForSingleGroup">
+        aria-labelledby="dropdownMenu" id="MenuForSingleGroup">
         <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通通选择</a></li>
         <li><a class="btn" id="btnSingleGroupChooseEncoder" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">视频源选择</a></li>
 
     </ul>
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="channelMenuForSignleGroupBox">
+        aria-labelledby="dropdownMenu" id="ChannelMenuForSignleGroupBox">
 
         <% 
             for (int i = 0; i < channels.Count; i++)
             { 
         %>
-        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =channels[i].ChannelName %>" id="btnMeneChannelSel<% =channels[i].ChannelId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =channels[i].ChannelName %></a></li>
+        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =channels[i].ChannelName %>" id="btnMenuChannelSel<% =channels[i].ChannelId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =channels[i].ChannelName %></a></li>
         <%}%>
     </ul>
 
-    <%--    <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="DeviceMenubox">
+    <ul class="dropdown-menu" role="menu"
+        aria-labelledby="dropdownMenu" id="EncoderMenuForSignleGroupBox">
 
-        <li><a class="btn" id="DeviceMenulistPlayVideo" data-backdrop="static" data-dismiss="modal" data-keyboard="false">播放视频</a></li>
-        <li><a class="btn" id="DeviceMenulistPauseVideo" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">暂停播放</a></li>
-
+        <% 
+            for (int i = 0; i < encoders.Count; i++)
+            { 
+        %>
+        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =encoders[i].EncoderName %>" id="btnMenuEncoderSel<% =encoders[i].EncoderId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =encoders[i].EncoderName %></a></li>
+        <%}%>
     </ul>
 
-
-
-    <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="GroupMenubox">
-
-        <li><a class="btn" id="GroupMenulistPlayVideo" data-backdrop="static" data-dismiss="modal" data-keyboard="false">播放视频</a></li>
-        <li><a class="btn" id="GroupMenulistPauseVideo" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">暂停播放</a></li>
-
-    </ul>--%>
-
-
-
     <!-- save sort order here which can be retrieved on server on postback -->
-
-    <div id="divLogs" style="width: 300px; height: 200px" class="pull-left"></div>
-    <div style="clear: both;">
-    </div>
 
 
 

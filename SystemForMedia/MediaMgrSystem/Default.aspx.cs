@@ -151,9 +151,9 @@ namespace MediaMgrSystem
         [WebMethod]
         public static string GetScheduleByChannelId(string cid)
         {
-           ChannelInfo ci= GlobalUtils.ChannelBLLInstance.GetChannelById(cid);
+            ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelById(cid);
             //   Thread.Sleep(2000);
-           return ci.ScheduelId;
+            return ci.ScheduelId;
 
         }
 
@@ -163,7 +163,12 @@ namespace MediaMgrSystem
             GlobalUtils.ChannelBLLInstance.UpdateChannelSchedule(cid, sid);
 
         }
-        
+        [WebMethod]
+        public static void SaveGroupChannelAndEncoder(string cid, string gid,string eid)
+        {
+            GlobalUtils.GroupBLLInstance.UpdateGroupChannelAndEncoder(gid, cid,eid);
+        }
+
         [WebMethod]
         public static void SaveGroupChannel(string cid, string gid)
         {
@@ -171,24 +176,50 @@ namespace MediaMgrSystem
         }
 
         [WebMethod]
+        public static void SaveGroupEncoder(string cid, string gid)
+        {
+            GlobalUtils.GroupBLLInstance.UpdateGroupEncoder(gid, cid);
+        }
+
+        [WebMethod]
         public static string GetChannelByGroupId(string gid)
         {
             //   Thread.Sleep(2000);
-           // return "3";
+            // return "3";
 
-           List<GroupInfo> gis= GlobalUtils.GroupBLLInstance.GetGroupById(gid);
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetGroupById(gid);
 
-           if (gis != null && gis.Count > 0)
-           {
+            if (gis != null && gis.Count > 0)
+            {
 
-               return gis[0].ChannelId;
+                return gis[0].ChannelId;
 
-           }
+            }
 
-           return string.Empty;
+            return string.Empty;
 
 
         }
+
+
+        [WebMethod]
+        public static string GetEncoderByGroupId(string gid)
+        {
+
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetGroupById(gid);
+
+            if (gis != null && gis.Count > 0)
+            {
+
+                return gis[0].EncoderId;
+
+            }
+
+            return string.Empty;
+
+
+        }
+
 
 
 

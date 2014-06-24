@@ -26,15 +26,15 @@ namespace MediaMgrSystem
         /// 2: repeat
         /// </summary>
         /// <param name="commandType"></param>
-        public void SendStopRoRepeatCommand(string commandType, string channelId, string scheduleGuidId)
+        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId)
         {
-            SendLogic.SendStopRoRepeatCommand(commandType, Clients, scheduleGuidId, channelId);
+            SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "");
 
         }
 
-        public void SendPlayCommand(string channelId, string channelName, string[] programeIds, string scheduleGuidId)
+        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId)
         {
-            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId);
+            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId,"");
         }
 
 
@@ -72,8 +72,11 @@ namespace MediaMgrSystem
                             }
 
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-                            Clients.Clients(alPCIds).sendResultBrowserClient(str, cb.errorCode);
-                       
+
+
+
+                            Clients.Clients(alPCIds).sendRefreshLogMessge(str, cb.errorCode);
+
                             removeGuid = cb.guidId;
 
 
@@ -105,19 +108,19 @@ namespace MediaMgrSystem
         }
 
 
-        public void SendScheduleTaskControl(string cid, string[] pid, string cmdType, string guid)
+        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid,string scheduleTime)
         {
             //Play
             if (cmdType == "1")
             {
-                SendLogic.SendPlayCommand(cid, string.Empty, pid, Clients, guid);
+                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime);
 
             }
             //Stop
             else if (cmdType == "2")
             {
 
-                SendLogic.SendStopRoRepeatCommand("1", Clients, guid, cid);
+                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime);
             }
         }
 

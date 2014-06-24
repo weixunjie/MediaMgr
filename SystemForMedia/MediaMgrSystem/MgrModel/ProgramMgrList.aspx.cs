@@ -11,8 +11,7 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ProgramMgrList : System.Web.UI.Page
     {
-        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
-
+ 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -33,7 +32,7 @@ namespace MediaMgrSystem.MgrModel
 
         private void BindListData()
         {
-            List<ProgramInfo> programes = programBLL.GetAllProgram();
+            List<ProgramInfo> programes = GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
             dvGroupList.DataSource = programes;
             dvGroupList.DataBind();
@@ -49,7 +48,7 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                programBLL.RemoveProgram(e.CommandArgument.ToString());
+                GlobalUtils.ProgramBLLInstance.RemoveProgram(e.CommandArgument.ToString());
                 BindListData();
             }
         }

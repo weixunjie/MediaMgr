@@ -10,7 +10,6 @@
     $(document).ready(function () {
 
 
-
         <%   List<MediaMgrSystem.DataModels.EncoderInfo> allEncoders = GetAllEncoders();
 
 
@@ -20,7 +19,7 @@
         %>
 
 
-        var is_popup_menu = false;
+     
 
         $.showEncoderMenu = function () {
 
@@ -32,8 +31,7 @@
 
                 currentOperEncoderName = $(this).data("itemid");
 
-                <%%>
-                is_popup_menu = true;
+                is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
@@ -44,23 +42,13 @@
             });
 
             $("<%= ids %>").mouseout(function (e) {
-                is_popup_menu = false;
+                is_popup_1st_menu = false;
             });
 
 
         }
 
-        $.showEncoderMenu()
-
-        $(document).click(function () {
-      
-            if (!is_popup_menu ) {
-                $("#EncoderMenubox").hide();
-           
-            }
-          
-        });
-
+        $.showEncoderMenu()   
 
     });
 

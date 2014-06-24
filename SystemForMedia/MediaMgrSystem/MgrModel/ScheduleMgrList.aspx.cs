@@ -12,8 +12,7 @@ namespace MediaMgrSystem.MgrModel
     public partial class ScheduleMgrList : System.Web.UI.Page
     {
 
-        private ScheduleBLL scheduleBLL = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
-        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
+       
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -34,7 +33,7 @@ namespace MediaMgrSystem.MgrModel
 
         private void BindListData()
         {
-            List<ScheduleInfo> dis = scheduleBLL.GetAllSchedules();
+            List<ScheduleInfo> dis = GlobalUtils.ScheduleBLLInstance.GetAllSchedules();
 
             dvList.DataSource = dis;
             dvList.DataBind();
@@ -50,7 +49,7 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                scheduleBLL.RemoveSchedule(e.CommandArgument.ToString());
+                GlobalUtils.ScheduleBLLInstance.RemoveSchedule(e.CommandArgument.ToString());
                 BindListData();
             }
         }

@@ -36,6 +36,18 @@ namespace MediaMgrSystem
             get;
             set;
         }
+
+        public string ChannelName
+        {
+            get;
+            set;     
+        }
+
+        public string ScheduledTime
+        {
+            get;
+            set;
+        }
     }
 
     public class ScheduleRunningItem
@@ -61,6 +73,7 @@ namespace MediaMgrSystem
         public static object objectLockSchduleQueueItem = new object();
 
         private static object objForLock = new object();
+
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
         public static List<SingalConnectedClient> AllConnectedClients = new List<SingalConnectedClient>();
@@ -69,18 +82,22 @@ namespace MediaMgrSystem
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
 
 
-        public static ScheduleBLL ScheduleBLLInstance = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
+        public static ScheduleBLL ScheduleBLLInstance = new ScheduleBLL(DbUtilsInstance);
 
-        public static ChannelBLL ChannelBLLInstance = new ChannelBLL(GlobalUtils.DbUtilsInstance);
+        public static ChannelBLL ChannelBLLInstance = new ChannelBLL(DbUtilsInstance);
 
-        public static DeviceBLL DeviceBLLInstance = new DeviceBLL(GlobalUtils.DbUtilsInstance);
+        public static DeviceBLL DeviceBLLInstance = new DeviceBLL(DbUtilsInstance);
 
-        public static ProgramBLL ProgramBLLInstance = new ProgramBLL(GlobalUtils.DbUtilsInstance);
-
-
-        public static EncoderBLL EncoderBLLInstance = new EncoderBLL(GlobalUtils.DbUtilsInstance);
+        public static ProgramBLL ProgramBLLInstance = new ProgramBLL(DbUtilsInstance);
 
 
+        public static EncoderBLL EncoderBLLInstance = new EncoderBLL(DbUtilsInstance);
+
+        public static LogBLL LogBLLInstance = new LogBLL(DbUtilsInstance);
+
+
+
+        public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
 
 

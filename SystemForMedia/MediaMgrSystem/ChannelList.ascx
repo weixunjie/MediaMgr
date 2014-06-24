@@ -4,12 +4,11 @@
 
 <script type="text/javascript">
 
-    var currentOperChannel = '<% =GetIsPlayingChannelId() %>';
+    var currentOperChannelId = '<% =GetIsPlayingChannelId() %>';
     var currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
     var currentPlayPIds = '<% =GetIsPlayingPIds() %>';
     var boolIsPlaying = '<% = GetIsPlaying() %>';
-
-
+    
 
     $(document).ready(function () {
 
@@ -38,7 +37,7 @@
 
 
 
-        chat.client.sendResultBrowserClientNoticeStatus = function (result, error) {
+        chat.client.sendManualPlayStatus = function (result, error) {
 
             if (error != "0") {
 
@@ -137,8 +136,8 @@
                  <%} %>
 
             $("#ChannelMenubox").hide();
-            $("#SchduleBox").hide()
-            is_in = false;
+            $("#ChannelMenuSchduleBox").hide()
+            is_popup_1st_menu = false;
             $('#dialogForChooseProgram').modal('show');
         });
 
@@ -150,12 +149,12 @@
             $("<%= ids %>").click(function (e) {
 
 
-                currentOperChannel = e.currentTarget.id.replace("channelDiv", "");
+                currentOperChannelId = e.currentTarget.id.replace("channelDiv", "");
 
                 currentOperChannelName = $(this).data("itemid");
 
-                <%%>
-                is_in = true;
+              
+                is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
@@ -166,7 +165,7 @@
             });
 
             $("<%= ids %>").mouseout(function (e) {
-                is_in = false;
+                is_popup_1st_menu = false;
             });
 
 
@@ -245,7 +244,7 @@
 
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentOperChannel, currentOperChannelName, currentPlayPIds, null);
+                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null);
 
                 //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
 
@@ -260,7 +259,7 @@
             //string commandType, string channelId, string scheduleGuidId)
 
             setButtonStatus("Stop");
-            chat.server.sendStopRoRepeatCommand("1", currentOperChannel, "");
+            chat.server.sendStopRoRepeatCommand("1", currentOperChannelId, currentOperChannelName, "");
 
 
             $("#divChannelInfo").html( currentOperChannelName + "已停止播放");
@@ -273,7 +272,7 @@
         $("#btnChannelControlRepeat").click(function () {
 
 
-            chat.server.sendStopRoRepeatCommand("2", currentOperChannel, "");
+            chat.server.sendStopRoRepeatCommand("2", currentOperChannelId, "");
 
         })
 
@@ -281,7 +280,7 @@
         $("#btnChooseSchedule").click(function (e) {
 
 
-            isChooseSchedule = true;
+            is_popup_2nd_menu = true;
 
             var x = $(this).offset().left + $("#ChannelMenubox").width() + 6;
             var y = $(this).offset().top;
@@ -290,7 +289,7 @@
                 type: "POST",
                 async: false,
                 url: "Default.aspx/GetScheduleByChannelId",
-                data: "{'cid':'" + currentOperChannel + "'}",
+                data: "{'cid':'" + currentOperChannelId + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (msg) {
@@ -302,7 +301,7 @@
             });
 
 
-            $("#SchduleBox").show().css("left", x).css("top", y);
+            $("#ChannelMenuSchduleBox").show().css("left", x).css("top", y);
 
 
         });
@@ -317,7 +316,7 @@
                 type: "POST",
                 async: true,
                 url: "Default.aspx/SaveSchedule",
-                data: "{'cid':'" + currentOperChannel + "',sid:'" + currentOperScheduel + "'}",
+                data: "{'cid':'" + currentOperChannelId + "',sid:'" + currentOperScheduel + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (msg) {
@@ -325,11 +324,14 @@
                 }
             });
 
+            is_popup_1st_menu = false;
+            is_popup_2nd_menu = false;
+
         });
 
 
         $("#btnChooseSchedule").mouseout(function (e) {
-            isChooseSchedule = false;
+            is_popup_2nd_menu = false;
         });
 
     });
@@ -348,7 +350,7 @@
 </ul>
 
 <ul class="dropdown-menu" role="menu"
-    aria-labelledby="dropdownMenu" id="SchduleBox">
+    aria-labelledby="dropdownMenu" id="ChannelMenuSchduleBox">
 
     <% 
         for (int i = 0; i < schedules.Count; i++)

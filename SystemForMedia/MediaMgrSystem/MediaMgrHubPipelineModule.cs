@@ -159,7 +159,7 @@ namespace MediaMgrSystem
 
             List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
 
-            hub.Clients.Clients(ids).sendRefreshMessge();
+            hub.Clients.Clients(ids).sendRefreshDeviceMessge();
         }
 
         protected override void OnAfterDisconnect(IHub hub)

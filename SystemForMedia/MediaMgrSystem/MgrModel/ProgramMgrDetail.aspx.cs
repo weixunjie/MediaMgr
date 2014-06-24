@@ -11,9 +11,6 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ProgramMgrDetail : System.Web.UI.Page
     {
-        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
-        private FileInfoBLL fileInfoBLL = new FileInfoBLL(GlobalUtils.DbUtilsInstance);
-
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -26,12 +23,12 @@ namespace MediaMgrSystem.MgrModel
 
                     TbHiddenId.Text = pId;
 
-                    ProgramInfo pi = programBLL.GetProgramById(pId,true)[0];
+                    ProgramInfo pi = GlobalUtils.ProgramBLLInstance.GetProgramById(pId, true)[0];
 
                     this.TbProgrmeName.Text = pi.ProgramName;
 
 
-                    if (pi.MappingFiles!=null && pi.MappingFiles.Count > 0)
+                    if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
                     {
                         foreach (var fileInfo in pi.MappingFiles)
                         {
@@ -49,7 +46,7 @@ namespace MediaMgrSystem.MgrModel
                 string mpgExePath = Server.MapPath(@"\Dlls");
 
 
-                List<FileAttribute> faAvaibles = fileInfoBLL.GetAllDiskFiles(fileBasePath, mpgExePath);
+                List<FileAttribute> faAvaibles = GlobalUtils.FileInfoBLLInstance.GetAllDiskFiles(fileBasePath, mpgExePath);
 
 
                 if (faAvaibles.Count > 0)
@@ -204,11 +201,11 @@ namespace MediaMgrSystem.MgrModel
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
                 pi.ProgramId = TbHiddenId.Text;
-                this.programBLL.UpdateProgram(pi);
+                GlobalUtils.ProgramBLLInstance.UpdateProgram(pi);
             }
             else
             {
-                programBLL.AddPrograme(pi);
+                GlobalUtils.ProgramBLLInstance.AddPrograme(pi);
 
             }
 

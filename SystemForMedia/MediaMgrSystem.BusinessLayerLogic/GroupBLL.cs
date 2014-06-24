@@ -109,7 +109,32 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
 
         }
+       public void UpdateGroupChannelAndEncoder(string groupId, string channelId,string encoderId)
+        {
 
+            String sqlStrUpdateDevice = "UPDATE GROUPINFO SET CHANNELID='{0}', ENCODERID='{1}' WHERE GROUPID={2}";
+
+            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice,channelId,encoderId, groupId);
+
+            dbUitls.ExecuteNonQuery(sqlStrUpdateDevice);
+
+
+
+        }
+
+
+        public void UpdateGroupEncoder(string groupId, string encoderId)
+        {
+
+            String sqlStrUpdateDevice = "UPDATE GROUPINFO SET ENCODERID='{0}' WHERE GROUPID={1}";
+
+            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice, encoderId, groupId);
+
+            dbUitls.ExecuteNonQuery(sqlStrUpdateDevice);
+
+
+
+        }
 
         public int UpdateGroup(GroupInfo gi)
         {
@@ -141,6 +166,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         gi.GroupId = dt.Rows[i]["GROUPID"].ToString();
                         gi.GroupName = dt.Rows[i]["GROUPNAME"].ToString();
                         gi.ChannelId = dt.Rows[i]["CHANNELID"].ToString();
+                        gi.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
                         gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
                         groups.Add(gi);
                     }

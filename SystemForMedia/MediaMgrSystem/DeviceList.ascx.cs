@@ -14,25 +14,19 @@ namespace MediaMgrSystem
     public partial class DeviceList : System.Web.UI.UserControl
     {
 
-        private GroupBLL groupBLL = new GroupBLL(GlobalUtils.DbUtilsInstance);
-
-        private DeviceBLL deviceBLL = new DeviceBLL(GlobalUtils.DbUtilsInstance);
-
-        private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
-
         protected void Page_Load(object sender, EventArgs e)
         {
         }
 
         public List<GroupInfo> GetAllGroupsIncludeDefaultGroup()
         {
-            List<GroupInfo> gis = groupBLL.GetAllGroups();
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
 
             GroupInfo groupDefault = new GroupInfo();
 
             groupDefault.GroupId = "-1";
             groupDefault.GroupName = "默认分组";
-            groupDefault.Devices = deviceBLL.GetAllDevicesByGroup("-1");
+            groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroup("-1");
 
             gis.Insert(0, groupDefault);
 
@@ -49,10 +43,15 @@ namespace MediaMgrSystem
 
         public List<ChannelInfo> GetAllChannels()
         {
-            return channelBLL.GetAllChannels();
+            return GlobalUtils.ChannelBLLInstance.GetAllChannels();
 
         }
 
+        public List<EncoderInfo> GetAllEncoders()
+        {
+            return GlobalUtils.EncoderBLLInstance.GetAllEncoders();
+
+        }
 
 
     }

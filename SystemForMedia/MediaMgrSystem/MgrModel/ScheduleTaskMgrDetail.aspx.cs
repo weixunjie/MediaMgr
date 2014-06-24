@@ -10,17 +10,14 @@ using System.Web.UI.WebControls;
 namespace MediaMgrSystem.MgrModel
 {
     public partial class ScheduleTaskMgrDetail : System.Web.UI.Page
-    {
-        private ScheduleBLL scheduleBLL = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
-        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
-
+    { 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
 
                 lbMessage.Visible = false;
-                List<ProgramInfo> allProgram = programBLL.GetAllProgram();
+                List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
 
                 this.ddProgram.DataSource = allProgram;
@@ -54,7 +51,7 @@ namespace MediaMgrSystem.MgrModel
 
                     TbHiddenId.Text = id;
 
-                    ScheduleTaskInfo si = scheduleBLL.GetAllScheduleTaskById(id);
+                    ScheduleTaskInfo si = GlobalUtils.ScheduleBLLInstance.GetAllScheduleTaskById(id);
 
                     this.TbName.Text = si.ScheduleTaskName;
 
@@ -192,11 +189,11 @@ namespace MediaMgrSystem.MgrModel
             {
                 si.ScheduleTaskId = TbHiddenId.Text;
 
-                scheduleBLL.UpdateScheduleTask(si);
+                GlobalUtils.ScheduleBLLInstance.UpdateScheduleTask(si);
             }
             else
             {
-                scheduleBLL.AddSchdeulTask(si);
+                GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
             }
 
             Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
@@ -223,7 +220,7 @@ namespace MediaMgrSystem.MgrModel
         {
             if (ddProgram.SelectedItem != null)
             {
-                List<ProgramInfo> pis = programBLL.GetProgramById(ddProgram.SelectedValue,true);
+                List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(ddProgram.SelectedValue, true);
 
                 if (pis != null && pis.Count > 0)
                 {

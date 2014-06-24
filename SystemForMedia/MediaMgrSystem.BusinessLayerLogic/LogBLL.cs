@@ -1,0 +1,78 @@
+﻿using MediaMgrSystem.DataAccessLayer;
+using MediaMgrSystem.DataModels;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MediaMgrSystem.BusinessLayerLogic
+{
+    public class LogBLL
+    {
+        DbUtils dbUitls = null;
+        public LogBLL(DbUtils dUtils)
+        {
+            dbUitls = dUtils;
+        }
+
+        public List<LogInfo> GetTop3Logs()
+        {
+
+            String sqlStr = "SELECT TOP 3 * FROM LOGINFO ORDER by LOGDATE DESC";
+
+            return GetLogList(sqlStr);
+
+        }
+
+        public int RemoveLog(string logId)
+        {
+            String sqlStr = "DELETE FROM LOGINFO where LOGID=" + logId;
+
+            return dbUitls.ExecuteNonQuery(sqlStr);
+
+        }
+
+        public int AddLog(string logName, string logDesp)
+        {
+            String sqlStr = "INSERT INTO LOGINFO(LOGNAME,LOGDESP,LOGDATE) values ('{0}','{1}','{2}')";
+
+            sqlStr = String.Format(sqlStr, logName, logDesp, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            return dbUitls.ExecuteNonQuery(sqlStr);
+        }
+
+        protected List<LogInfo> GetLogList(string sqlStr)
+        {
+            List<LogInfo> logInfos = new List<LogInfo>();
+            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
+
+            if (dt != null)
+            {
+                if (dt.Rows.Count > 0)
+                {
+
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        LogInfo li = new LogInfo();
+                        li.LogId = dt.Rows[i]["LOGID"].ToString();
+                        li.LogName = dt.Rows[i]["LOGNAME"].ToString();
+                        li.LogDesp = dt.Rows[i]["LOGDESP"].ToString();
+                        string strDate = dt.Rows[i]["LOGDATE"].ToString();
+                        DateTime dtOut;
+                        if (DateTime.TryParse(strDate, out dtOut))
+                        {
+                            li.LogDate = dtOut.ToString("yyyy-MM-dd HH:mm:ss");
+
+                        }
+                        logInfos.Add(li);
+                    }
+                }
+            }
+
+            return logInfos;
+
+        }
+    }
+}

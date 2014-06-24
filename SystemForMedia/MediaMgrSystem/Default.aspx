@@ -28,22 +28,63 @@
         var strclientIdentify;
         var chat;
 
-        var isChooseSchedule = false;
+        var is_popup_2nd_menu = false;
 
-        var is_in = false;
-
-        var isChooseChannel = false;
-
-
-
+        var is_popup_1st_menu = false;
+        
 
         $(document).ready(function () {
 
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
 
-            chat.client.sendRefreshMessge = function (result) {
+            chat.connection.stateChanged(function (change) {
+                if (change.newState === $.signalR.connectionState.disconnected) {                    
+                    chat = $.connection.MediaMgrHub;
+                    $.connection.hub.start();
+                    console.log('reconnected now!');
+                    
+                }
+                else if (change.newState === $.signalR.connectionState.connected) {
+                    console.log('connection started!');
+                }
+            });
+            chat.client.sendRefreshDeviceMessge = function (result) {
+                 
+                loadDeviceList();
 
+            }
+
+            chat.client.sendRefreshLogMessge = function (result) {
+
+                loadLogList();
+
+            }
+
+            loadDeviceList();
+            loadLogList();
+
+     
+     
+            function loadDeviceList()
+            {
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "Default.aspx/RangerUserControl",
+                    data: "{'controlName':'LogList'}",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (msg) {
+
+                        $("#divforLogs").html(msg.d);
+
+                    }
+                });
+
+            }
+
+            function loadLogList() {
                 $.ajax({
                     async: false,
                     type: "POST",
@@ -54,33 +95,11 @@
                     success: function (msg) {
 
                         $("#divForDevice").html(msg.d);
+
                     }
                 });
 
             }
-
-            $.ajax({
-                async: false,
-                type: "POST",
-                url: "Default.aspx/RangerUserControl",
-                data: "{'controlName':'DeviceList'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-
-                    $("#divForDevice").html(msg.d);
-
-                }
-            });
-
-
-
-
-
-            // debugger;
-            // $("#wei").load()
-
 
         });
 
@@ -91,30 +110,11 @@
 
         <channelList:ChannelList ID="cList" runat="server" />
 
+        <div style="margin-top: 20px">
 
-        <div style="margin-top:20px">
+            <encoderList:EncoderList ID="EncoderList" runat="server" />
 
-        <encoderList:EncoderList ID="EncoderList" runat="server" />
-            </div>
-        <%--  <div style="width: 100px; position: relative; height: 100px; line-height: 100px; vertical-align: central; text-align: center; float: left; padding: 4px 4px 4px 4px"
-                class="jumbotron">
-                通道<%= (channelIndex).ToString()  %>
-                <% channelIndex++; %>
-                <div style="width: 20px; height: 20px; line-height: 20px; position: absolute; right: 5px; bottom: 5px;">
-                    <img src="Images/ic_image_menu.png" width="20" height="20" />
-                </div>
-            </div>
-
-            <div style="width: 100px; position: relative; height: 100px; line-height: 100px; vertical-align: central; text-align: center; float: right; padding: 4px 4px 4px 4px"
-                class="jumbotron">
-                通道<%= (channelIndex).ToString()  %>
-                <% channelIndex++; %>
-                <div style="width: 20px; height: 20px; line-height: 20px; position: absolute; right: 5px; bottom: 5px;">
-                    <img src="Images/ic_image_menu.png" width="20" height="20" />
-                </div>
-            </div>--%>
-
-        <%-- <% } %>--%>
+        </div>
     </div>
 
     <div id="divForDevice" style="margin-left: 390px">
@@ -123,6 +123,12 @@
     </div>
 
     <div style="clear: both;">
+    </div>
+
+    
+    <div id="divforLogs" style="margin-left: 390px">
+
+        <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>
 
 </asp:Content>
