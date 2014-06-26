@@ -12,6 +12,7 @@ using System.Configuration;
 
 using System.Timers;
 using MediaMgrSystem.DataAccessLayer;
+
 namespace MediaMgrWS
 {
 
@@ -61,12 +62,16 @@ namespace MediaMgrWS
 
         private object lockObject = new object();
 
+        private object lockFlag = new object();
+
         private object lockQueuItems = new object();
 
         private DbUtils dbUitls = null;
+
         private Timer aTimerCheckStartSchedule;
 
         private Timer aTimerCheckStopSchedule;
+
         private IHubProxy hubProxy;
         public MediaMgrService()
         {
@@ -231,11 +236,11 @@ namespace MediaMgrWS
                                     }
                                 }
 
-                                
-                                for (int m=0;m<strChannelIds.Count;m++ )
+
+                                for (int m = 0; m < strChannelIds.Count; m++)
                                 {
-                                    string cid=strChannelIds[m];
-                                    string cName=strChannelNames[m];
+                                    string cid = strChannelIds[m];
+                                    string cName = strChannelNames[m];
                                     if (!string.IsNullOrEmpty(cid))
                                     {
                                         bool foundRunningTask = false;
@@ -289,7 +294,7 @@ namespace MediaMgrWS
                                                 //Start 
 
                                                 System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strGuid);
-                                                hubProxy.Invoke("sendScheduleTaskControl", cid,cName, strPids, "1", strGuid,strTimeToCheck);
+                                                hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strGuid, strTimeToCheck);
                                             }
 
 
@@ -421,8 +426,12 @@ namespace MediaMgrWS
         {
 
             if (obj.NewState == Microsoft.AspNet.SignalR.Client.ConnectionState.Connected)
-            {                
-                _isConnected = true;
+            {
+                lock (lockFlag)
+                {
+                    _isConnected = true;
+                }
+
                 aTimerCheckStartSchedule = new Timer();
                 aTimerCheckStartSchedule.Elapsed += aTimerForStart_Elapsed;
                 aTimerCheckStartSchedule.Interval = 1 * 800;
@@ -439,8 +448,26 @@ namespace MediaMgrWS
             }
             else if (obj.NewState == Microsoft.AspNet.SignalR.Client.ConnectionState.Disconnected)
             {
-                _isConnected = false;
-                DoConnection();
+                if (aTimerCheckStartSchedule != null)
+                {
+                    aTimerCheckStartSchedule.Stop();
+                }
+
+                if (aTimerCheckStopSchedule != null)
+                {
+                    aTimerCheckStopSchedule.Stop();
+                }
+
+                lock (lockFlag)
+                {
+                    _isConnected = false;
+                }
+                System.Threading.Thread.Sleep(4000);
+
+                if (!_isConnected)
+                {
+                    DoConnection();
+                }
             }
         }
 
