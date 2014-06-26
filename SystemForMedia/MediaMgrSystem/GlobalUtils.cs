@@ -1,6 +1,7 @@
 ﻿using MediaMgrSystem.BusinessLayerLogic;
 using MediaMgrSystem.DataAccessLayer;
 using MediaMgrSystem.DataModels;
+using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -11,12 +12,21 @@ using System.Web;
 
 namespace MediaMgrSystem
 {
+    public enum QueueCommandType
+    {
+        NONE,
+        MANAULLYPLAY,
+        MANAULLYSTOP,
+        MANAULLYREPEAT,
+        SCHEDULEPLAY,
+        SCHEDULESTOP
+    }
     public class QueueItem
     {
         public string IpAddressStr
         { get; set; }
 
-        public string CommandStr
+        public QueueCommandType CommandType
         { get; set; }
 
         public string GuidIdStr
@@ -40,10 +50,16 @@ namespace MediaMgrSystem
         public string ChannelName
         {
             get;
-            set;     
+            set;
         }
 
         public string ScheduledTime
+        {
+            get;
+            set;
+        }
+
+        public bool IsVideoServer
         {
             get;
             set;
@@ -89,6 +105,10 @@ namespace MediaMgrSystem
         public static DeviceBLL DeviceBLLInstance = new DeviceBLL(DbUtilsInstance);
 
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(DbUtilsInstance);
+
+
+        public static UserBLL UserBLLInstance = new UserBLL(DbUtilsInstance);
+
 
 
         public static EncoderBLL EncoderBLLInstance = new EncoderBLL(DbUtilsInstance);
@@ -274,7 +294,7 @@ namespace MediaMgrSystem
 
         }
 
-        public static string  GetIdentifyByConectionId(string connId)
+        public static string GetIdentifyByConectionId(string connId)
         {
             List<string> results = new List<string>();
 
@@ -285,7 +305,7 @@ namespace MediaMgrSystem
                 {
                     for (int i = 0; i < AllConnectedClients.Count; i++)
                     {
-                        if (AllConnectedClients[i].ConnectionId==connId)
+                        if (AllConnectedClients[i].ConnectionId == connId)
                         {
                             return AllConnectedClients[i].ConnectionIdentify;
                         }
@@ -373,6 +393,27 @@ namespace MediaMgrSystem
 
         }
 
+        public static void AddLogs(IHubConnectionContext hub, string logName, string logDesp)
+        {
+            try
+            {
+                LogBLLInstance.AddLog(logName, logDesp);
+
+                List<String> alPCIds = GetAllPCDeviceConnectionIds();
+
+                hub.Clients(alPCIds).sendRefreshLogMessge();
+            }
+            catch (Exception ex)
+            {
+                if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
+                {
+                    LogBLLInstance.AddLog("程序异常", ex.Message);
+                }
+
+            }
+        }
+
+
         public static List<string> GetAllAndriodsDeviceConnectionIds()
         {
 
@@ -397,6 +438,32 @@ namespace MediaMgrSystem
 
             return results;
 
+        }
+
+        public static string GetCommandTextGetByType(QueueCommandType type)
+        {
+            switch (type)
+            {
+                case QueueCommandType.MANAULLYPLAY:
+                    return "手工播放时";
+
+                case QueueCommandType.MANAULLYSTOP:
+                    return "手工结束播放时";
+
+                case QueueCommandType.MANAULLYREPEAT:
+                    return "手工循环播放时";
+
+                case QueueCommandType.SCHEDULEPLAY:
+                    return "播放计划运行时";
+
+
+                case QueueCommandType.SCHEDULESTOP:
+                    return "结束播放计划运行时";
+
+
+            }
+
+            return string.Empty;
         }
     }
 }

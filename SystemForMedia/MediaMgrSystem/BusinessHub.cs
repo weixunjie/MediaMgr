@@ -34,7 +34,7 @@ namespace MediaMgrSystem
 
         public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId)
         {
-            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId,"");
+            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "");
         }
 
 
@@ -47,35 +47,48 @@ namespace MediaMgrSystem
             {
                 string matchIPAddress = string.Empty; ;
                 String removeGuid = string.Empty;
-                string str = string.Empty;
+                string strOperResult = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
-                        {
+                        {                       
 
-                            string strOperResult = string.Empty;
-
-                            strOperResult = cb.errorCode == "0" ? "成功" : "失败。错误消息编号" + cb.errorCode + ",内容：" + cb.message;
+                            strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
+                                                        
 
                             if (connectionId == GlobalUtils.VideoServerConnectionId)
                             {
-                                str = que.CommandStr + " ->视频服务器操作" + strOperResult;
+                                strOperResult =  "视频服务器操作" + strOperResult;
+                                matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);                             
 
                             }
                             else
                             {
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
-                                str = que.CommandStr + " ->终端（" + matchIPAddress + ")操作" + strOperResult;
+                                strOperResult ="终端" + matchIPAddress + "操作" + strOperResult;
+                            }
 
+
+                            string strCmdType = GlobalUtils.GetCommandTextGetByType(que.CommandType);
+                            if (que.IsScheduled)
+                            {
+
+                                GlobalUtils.AddLogs(Clients, "计划任务", que.ChannelName + strCmdType + strOperResult + "，运行时间：" + que.ScheduledTime);
+                            }
+                            else
+                            {
+
+
+                                GlobalUtils.AddLogs(Clients, "手动操作", que.ChannelName + strCmdType + strOperResult);
                             }
 
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
 
 
 
-                            Clients.Clients(alPCIds).sendRefreshLogMessge(str, cb.errorCode);
+                            Clients.Clients(alPCIds).sendRefreshLogMessge(strOperResult, cb.errorCode);
 
                             removeGuid = cb.guidId;
 
@@ -96,7 +109,6 @@ namespace MediaMgrSystem
                         {
                             removedItem = que;
                             break;
-
                         }
                     }
                     if (removedItem != null)
@@ -108,7 +120,7 @@ namespace MediaMgrSystem
         }
 
 
-        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid,string scheduleTime)
+        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime)
         {
             //Play
             if (cmdType == "1")

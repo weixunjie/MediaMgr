@@ -7,20 +7,22 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace MediaMgrSystem.MgrModel
+namespace MediaMgrSystem
 {
-    public partial class PreviewMP3 : System.Web.UI.Page
+    public partial class LogOut : System.Web.UI.Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            Session["UserId"] = null;
+            Session["UserName"] = null;
 
-            if (Session["UserId"] == null)
-            {
-                Response.Redirect("~/Login.aspx");
-            }
-    
+            Session["IsLoginPageNow"] = true;
+
+            Response.Redirect("~/Login.aspx");
+
         }
 
-       
+
     }
 }

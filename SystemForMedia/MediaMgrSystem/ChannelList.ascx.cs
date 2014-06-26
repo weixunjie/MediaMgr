@@ -12,13 +12,7 @@ using MediaMgrSystem.BusinessLayerLogic;
 namespace MediaMgrSystem
 {
     public partial class ChannelList : System.Web.UI.UserControl
-    {
-        private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
-
-        private ProgramBLL programBLL = new ProgramBLL(GlobalUtils.DbUtilsInstance);
-
-        private ScheduleBLL scheduleBLL = new ScheduleBLL(GlobalUtils.DbUtilsInstance);
-        
+    {        
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -27,7 +21,7 @@ namespace MediaMgrSystem
 
         public List<ScheduleInfo> GetAllSchedules()
         {
-            return scheduleBLL.GetAllSchedules();
+            return GlobalUtils.ScheduleBLLInstance.GetAllSchedules();
 
         }
 
@@ -54,7 +48,7 @@ namespace MediaMgrSystem
 
         public List<ChannelInfo> GetAllChannels()
         {
-            List<ChannelInfo> channels = channelBLL.GetAllChannels();
+            List<ChannelInfo> channels = GlobalUtils.ChannelBLLInstance.GetAllChannels();
 
             return channels;
                 
@@ -63,7 +57,7 @@ namespace MediaMgrSystem
 
         public List<ProgramInfo> GetAllPrograms()
         {
-            List<ProgramInfo> pis = programBLL.GetAllProgram();
+            List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetAllProgram();
            
 
             return pis;

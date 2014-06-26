@@ -17,12 +17,12 @@ namespace MediaMgrSystem
 
         public MediaMgrHubPipelineModule()
         {
-     
+
 
         }
 
 
-       
+
 
         protected override void OnAfterConnect(IHub hub)
         {
@@ -100,6 +100,8 @@ namespace MediaMgrSystem
                 GlobalUtils.VideoServerIPAddress = strIdentify;
                 GlobalUtils.VideoServerConnectionId = hub.Context.ConnectionId;
 
+                GlobalUtils.AddLogs(hub.Clients, "系统提示", "视频服务器已连接");
+
 
             }
 
@@ -114,6 +116,7 @@ namespace MediaMgrSystem
 
                 }
 
+                GlobalUtils.AddLogs(hub.Clients, "系统提示", "后台计划服务已连接");
 
                 GlobalUtils.WindowsServiceConnectionId = strIdentify;
                 GlobalUtils.WindowsServiceConnectionId = hub.Context.ConnectionId;
@@ -172,6 +175,17 @@ namespace MediaMgrSystem
             {
                 GlobalUtils.VideoServerIPAddress = string.Empty; ;
                 GlobalUtils.VideoServerConnectionId = string.Empty;
+
+                GlobalUtils.AddLogs(hub.Clients, "系统异常", "视频服务器断开连接");
+
+            }
+
+            if (hub.Context.ConnectionId == GlobalUtils.WindowsServiceConnectionId)
+            {
+                GlobalUtils.WindowsServiceConnectionId = string.Empty;
+
+                GlobalUtils.AddLogs(hub.Clients, "系统异常", "后台计划服务断开连接");
+
             }
 
             if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId))

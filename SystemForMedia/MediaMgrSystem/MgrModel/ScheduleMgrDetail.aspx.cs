@@ -16,6 +16,11 @@ namespace MediaMgrSystem.MgrModel
         {
             if (!Page.IsPostBack)
             {
+                if (Session["UserId"] == null)
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
+       
 
                 List<ProgramInfo> allProgram =GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
@@ -33,7 +38,7 @@ namespace MediaMgrSystem.MgrModel
 
                     this.TbName.Text = si.ScheduleName;
 
-                    this.BindSTaskListData();
+                    this.BindTaskListData();
 
 
                     divTask.Visible = true;
@@ -72,7 +77,7 @@ namespace MediaMgrSystem.MgrModel
             Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
         }
 
-        private void BindSTaskListData()
+        private void BindTaskListData()
         {
             List<ScheduleTaskInfo> dis = GlobalUtils.ScheduleBLLInstance.GetAllScheduleTaksByScheduleId(TbHiddenId.Text);
 
@@ -90,8 +95,8 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                GlobalUtils.ScheduleBLLInstance.RemoveSchedule(e.CommandArgument.ToString());
-                BindSTaskListData();
+                GlobalUtils.ScheduleBLLInstance.RemoveSchdeulTask(e.CommandArgument.ToString());
+                BindTaskListData();
 
             }
         }

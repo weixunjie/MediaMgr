@@ -10,14 +10,21 @@ using System.Web.UI.WebControls;
 namespace MediaMgrSystem.MgrModel
 {
     public partial class ScheduleTaskMgrDetail : System.Web.UI.Page
-    { 
+    {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["UserId"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
+
             if (!Page.IsPostBack)
             {
 
+
                 lbMessage.Visible = false;
                 List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllProgram();
+
 
 
                 this.ddProgram.DataSource = allProgram;
@@ -227,10 +234,10 @@ namespace MediaMgrSystem.MgrModel
 
                     if (pis[0].MappingFiles != null && pis[0].MappingFiles.Count > 0)
                     {
-                                               
+
                         string fileUrl = ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
 
-                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl="+fileUrl);
+                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
 
                         Response.Write("<script language='javascript'>window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');</script>");
                         //  Response.Write("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);

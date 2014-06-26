@@ -11,10 +11,16 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ChannelMgrList : System.Web.UI.Page
     {
-        private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
+        private UserBLL channelBLL = new UserBLL(GlobalUtils.DbUtilsInstance);
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["UserId"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
+       
+
             if (!Page.IsPostBack)
             {
                 BindListData();
@@ -33,7 +39,7 @@ namespace MediaMgrSystem.MgrModel
 
         private void BindListData()
         {
-            List<ChannelInfo> datas = channelBLL.GetAllChannels();
+            List<ChannelInfo> datas = GlobalUtils.ChannelBLLInstance.GetAllChannels();
 
             dvList.DataSource = datas;
             dvList.DataBind();
@@ -49,7 +55,7 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                channelBLL.RemoveChannel(e.CommandArgument.ToString());
+                GlobalUtils.ChannelBLLInstance.RemoveChannel(e.CommandArgument.ToString());
                 BindListData();
             }
         }

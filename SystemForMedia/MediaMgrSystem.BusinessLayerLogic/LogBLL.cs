@@ -26,12 +26,38 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+
+        public List<LogInfo> GetLogsByCriteria(string name, string dataBefore, string dateAfter)
+        {
+
+            String sqlStr = "SELECT  * FROM LOGINFO WHERE LOGNAME LIKE '%{0}%' and LOGDATE>='{1}' AND LOGDATE<='{2}'  ORDER by LOGDATE DESC ";
+
+            sqlStr = string.Format(sqlStr, name, dataBefore + " 00:00:00", dateAfter + " 23:59:59");
+            return GetLogList(sqlStr);
+
+        }
+
         public int RemoveLog(string logId)
         {
             String sqlStr = "DELETE FROM LOGINFO where LOGID=" + logId;
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
+        }
+
+        public int RemoveLogByDayBefore(string strDayBefore)
+        {
+            int intDayBefore;
+            if (int.TryParse(strDayBefore, out intDayBefore))
+            {
+                String sqlStr = "DELETE FROM LOGINFO WHERE LOGDATE<='{0}'";
+
+                sqlStr = String.Format(sqlStr, DateTime.Now.AddDays(-intDayBefore).ToString("yyyy-MM-dd 00:00:00"));
+
+                return dbUitls.ExecuteNonQuery(sqlStr);
+            }
+
+            return 1;
         }
 
         public int AddLog(string logName, string logDesp)

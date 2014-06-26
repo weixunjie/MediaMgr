@@ -12,10 +12,13 @@ namespace MediaMgrSystem.MgrModel
     public partial class ChannelMgrDetail : System.Web.UI.Page
     {
 
-        private ChannelBLL channelBLL = new ChannelBLL(GlobalUtils.DbUtilsInstance);
-
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["UserId"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }      
+
             if (!Page.IsPostBack)
             {
 
@@ -25,7 +28,7 @@ namespace MediaMgrSystem.MgrModel
 
                     TbHiddenId.Text = id;
 
-                    ChannelInfo ci = channelBLL.GetChannelById(id);
+                    ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelById(id);
 
                     this.TbName.Text = ci.ChannelName;
 
@@ -50,12 +53,12 @@ namespace MediaMgrSystem.MgrModel
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
-                ci.ChannelId = TbHiddenId.Text;              
-                channelBLL.UpdateChannel(ci);
+                ci.ChannelId = TbHiddenId.Text;
+                GlobalUtils.ChannelBLLInstance.UpdateChannel(ci);
             }
             else
             {
-                channelBLL.AddChannel(ci);
+                GlobalUtils.ChannelBLLInstance.AddChannel(ci);
             }
 
             Response.Redirect("~/MgrModel/ChannelMgrList.aspx");

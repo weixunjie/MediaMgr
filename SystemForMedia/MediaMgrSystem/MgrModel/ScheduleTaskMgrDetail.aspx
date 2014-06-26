@@ -40,10 +40,10 @@
 
     <h3 style="clip: rect(auto, auto, 10px, auto)">任务明细管理</h3>
 
-    <asp:Label ID="lbMessage" runat="server" Style="margin-bottom:20px" Text="k" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
+    <asp:Label ID="lbMessage" runat="server"  Text="" Visible="false" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
 
 
-    <section id="groupMgrSection">
+    <section >
 
         <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
             <p class="text-danger">
@@ -139,13 +139,9 @@
                 ForeColor="Red" ErrorMessage=" 开始时间不能为空" Height="25px" />
 
         </div>
+        
 
-
-
-
-        <div class="form-group" style="margin-bottom: 10px">
-
-
+        <div class="form-group" style="margin-bottom: 10px">            
 
             <asp:Label runat="server" AssociatedControlID="tbEndTime" CssClass="col-md-2 control-label" Width="107px">结束时间</asp:Label>
 

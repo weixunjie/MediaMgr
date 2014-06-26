@@ -46,6 +46,7 @@ namespace MediaMgrSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             //  string output = FFMPEG.Execute("c:\ffmpeg.exe");
 
 
@@ -180,6 +181,10 @@ namespace MediaMgrSystem
         {
             GlobalUtils.GroupBLLInstance.UpdateGroupEncoder(gid, cid);
         }
+
+
+   
+        
 
         [WebMethod]
         public static string GetChannelByGroupId(string gid)

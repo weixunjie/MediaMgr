@@ -259,8 +259,7 @@
             //string commandType, string channelId, string scheduleGuidId)
 
             setButtonStatus("Stop");
-            chat.server.sendStopRoRepeatCommand("1", currentOperChannelId, currentOperChannelName, "");
-
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName,true,"");
 
             $("#divChannelInfo").html( currentOperChannelName + "已停止播放");
 
@@ -271,8 +270,7 @@
 
         $("#btnChannelControlRepeat").click(function () {
 
-
-            chat.server.sendStopRoRepeatCommand("2", currentOperChannelId, "");
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, false, "");
 
         })
 

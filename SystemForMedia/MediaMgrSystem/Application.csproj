@@ -161,6 +161,7 @@
     <Content Include="Bundle.config" />
     <Content Include="Dlls\ffmpeg.exe" />
     <Content Include="Dlls\FFMPEGWrapper.dll" />
+    <Content Include="LogOut.aspx" />
     <Content Include="LogList.ascx" />
     <Content Include="EncoderList.ascx" />
     <Content Include="Content\bootstrap.css" />
@@ -193,7 +194,11 @@
     <Content Include="MgrModel\EncoderMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
     <Content Include="MgrModel\EncoderMgrList.aspx" />
+    <Content Include="MgrModel\LogMgrList.aspx" />
     <Content Include="MgrModel\PreviewMP3.aspx" />
+    <Content Include="Login.aspx" />
+    <Content Include="MgrModel\UserMgrDetail.aspx" />
+    <Content Include="MgrModel\UserMgrList.aspx" />
     <Content Include="MgrModel\ScheduleTaskMgrDetail.aspx" />
     <Content Include="MgrModel\ScheduleMgrDetail.aspx" />
     <Content Include="MgrModel\DeviceMgrDetail.aspx" />
@@ -291,6 +296,13 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="LogOut.aspx.cs">
+      <DependentUpon>LogOut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LogOut.aspx.designer.cs">
+      <DependentUpon>LogOut.aspx</DependentUpon>
+    </Compile>
     <Compile Include="LogList.ascx.cs">
       <DependentUpon>LogList.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -319,12 +331,40 @@
     <Compile Include="MgrModel\EncoderMgrList.aspx.designer.cs">
       <DependentUpon>EncoderMgrList.aspx</DependentUpon>
     </Compile>
+    <Compile Include="MgrModel\LogMgrList.aspx.cs">
+      <DependentUpon>LogMgrList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\LogMgrList.aspx.designer.cs">
+      <DependentUpon>LogMgrList.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MgrModel\PreviewMP3.aspx.cs">
       <DependentUpon>PreviewMP3.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="MgrModel\PreviewMP3.aspx.designer.cs">
       <DependentUpon>PreviewMP3.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\UserMgrDetail.aspx.cs">
+      <DependentUpon>UserMgrDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\UserMgrDetail.aspx.designer.cs">
+      <DependentUpon>UserMgrDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\UserMgrList.aspx.cs">
+      <DependentUpon>UserMgrList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\UserMgrList.aspx.designer.cs">
+      <DependentUpon>UserMgrList.aspx</DependentUpon>
     </Compile>
     <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.cs">
       <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>

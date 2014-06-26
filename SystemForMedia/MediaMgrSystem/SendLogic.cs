@@ -18,21 +18,13 @@ namespace MediaMgrSystem
     public static class SendLogic
     {
 
-        private static void AddLogs(IHubConnectionContext hub, string logName, string logDesp)
-        {
-            GlobalUtils.LogBLLInstance.AddLog(logName, logDesp);
-
-            List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-
-            hub.Clients(alPCIds).sendRefreshLogMessge();
-        }
 
 
         public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime)
         {
 
             lock (GlobalUtils.PublicObjectForLock)
-            {                
+            {
                 bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
 
                 string errorrNotOpenVideoSvr = "视频服务器未开启";
@@ -44,7 +36,7 @@ namespace MediaMgrSystem
                     {
                         List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
 
-                        AddLogs(hub, "手动操作", channelName + "正在播放中,请先停止");
+                        GlobalUtils.AddLogs(hub, "手动操作", channelName + "正在播放中,请先停止");
                         hub.Clients(alPCIds).sendManualPlayStatus("正在播放中,请先停止", "200");
                         return;
                     }
@@ -66,7 +58,7 @@ namespace MediaMgrSystem
                             cr.message = "计划停止，优先手工播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
 
 
-                            AddLogs(hub, "计划任务", GlobalUtils.ChannelManuallyPlayingChannelName + "计划已停止，优先手工播放,运行时间：" + sTask.RunningTime);
+                            GlobalUtils.AddLogs(hub, "计划任务", GlobalUtils.ChannelManuallyPlayingChannelName + "计划已停止，优先手工播放,运行时间：" + sTask.RunningTime);
 
                             hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
 
@@ -91,7 +83,7 @@ namespace MediaMgrSystem
 
                     cr.message = "计划失败，优先手动播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
 
-                    AddLogs(hub, "计划任务", channelName + "播放计划失败，优先手工播放,运行时间：" + scheduleTime);
+                    GlobalUtils.AddLogs(hub, "计划任务", channelName + "播放计划失败，优先手工播放，运行时间：" + scheduleTime);
 
                     hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
 
@@ -117,7 +109,7 @@ namespace MediaMgrSystem
                             cr.message = errorrNotOpenVideoSvr;
                             hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
 
-                            AddLogs(hub, "计划任务", channelName + "播放计划失败，" + errorrNotOpenVideoSvr + ", 运行时间：" +scheduleTime);
+                            GlobalUtils.AddLogs(hub, "计划任务", channelName + "播放计划失败，" + errorrNotOpenVideoSvr + ", 运行时间：" + scheduleTime);
                         }
                     }
                     else
@@ -125,7 +117,7 @@ namespace MediaMgrSystem
                         List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
 
 
-                        AddLogs(hub, "手动操作", channelName + "手动播放失败, "+errorrNotOpenVideoSvr);
+                        GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放失败, " + errorrNotOpenVideoSvr);
 
                         hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200");
                     }
@@ -218,8 +210,19 @@ namespace MediaMgrSystem
                     CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
 
 
+                    QueueCommandType type=QueueCommandType.NONE;
 
-                    PushQueue("播放视频", clientsIpToSend, isSchedule, channelName, scheduleTime);
+                    if (isSchedule)
+                    {
+                        type=QueueCommandType.SCHEDULEPLAY;
+                    }
+                    else
+                    {
+                        type = QueueCommandType.MANAULLYPLAY;
+                    }
+
+                    PushQueue(type, clientsIpToSend, isSchedule, channelName, scheduleTime);
+                    
 
                     GlobalUtils.VideoSvrArg = cmdToVideoSvr.arg;
 
@@ -263,7 +266,18 @@ namespace MediaMgrSystem
                     cmdToVideoSvr.arg.buffer = cmdToVideoSvr.arg.buffer = !string.IsNullOrWhiteSpace(scheduleTaskGuidId) ? bufferTime.ToString() : (bufferTime - 2000).ToString();
 
                     string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-                    hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonData);
+
+
+                    if (!string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
+                    {
+                        hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonData);
+                    }
+                    else
+                    {
+                        GlobalUtils.AddLogs(hub, "系统异常", "视频服务器突然关闭");
+                        return;
+ 
+                    }
 
                     System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
@@ -282,7 +296,9 @@ namespace MediaMgrSystem
 
                         GlobalUtils.IsChannelManuallyPlaying = true;
 
-                        AddLogs(hub, "计划任务", channelName + "运行计划成功，运行时间：" + scheduleTime);
+
+                        GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放成功");
+
                     }
                     else
                     {
@@ -301,8 +317,8 @@ namespace MediaMgrSystem
                         {
 
                             hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                            GlobalUtils.AddLogs(hub, "计划任务", channelName + "运行播放计划成功，运行时间：" + scheduleTime);
 
-                            AddLogs(hub, "手动操作", channelName + "手动播放成功");
                         }
 
 
@@ -319,13 +335,13 @@ namespace MediaMgrSystem
 
         }
 
-        private static void ProcessTimeOutRequest(object hub )
+        private static void ProcessTimeOutRequest(object hub)
         {
             Thread.Sleep(4000);
 
             lock (GlobalUtils.objectLockSchduleQueueItem)
             {
-                IHubConnectionContext hubContent=hub as IHubCallerConnectionContext;
+                IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
                 List<QueueItem> queueToRemoved = new List<QueueItem>();
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
@@ -344,13 +360,27 @@ namespace MediaMgrSystem
                     foreach (QueueItem item in queueToRemoved)
                     {
 
-                        if (item.IsScheduled)
+                        string ipToDisplay = string.Empty;
+                        if (item.IsVideoServer)
                         {
-                            AddLogs(hubContent, "计划任务", item.ChannelName + "计划，终端:" + item.IpAddressStr + "操作超时");
+
+                            ipToDisplay = " 视频服务器";
                         }
                         else
                         {
-                            AddLogs(hubContent, "手动操作", item.ChannelName + item.CommandStr+"，终端：" + item.IpAddressStr + "操作超时");
+                            ipToDisplay = " 终端:" + item.IpAddressStr;
+
+                        }
+
+                        string strCmdType = GlobalUtils.GetCommandTextGetByType(item.CommandType);
+                        if (item.IsScheduled)
+                        {
+                            
+                            GlobalUtils.AddLogs(hubContent, "计划任务", item.ChannelName + strCmdType + ipToDisplay + "操作超时, 计划时间:" + item.ScheduledTime);
+                        }
+                        else
+                        {
+                            GlobalUtils.AddLogs(hubContent, "手动操作", item.ChannelName + strCmdType + ipToDisplay + "操作超时");
                         }
 
                         GlobalUtils.CommandQueues.Remove(item);
@@ -372,10 +402,10 @@ namespace MediaMgrSystem
 
             if (string.IsNullOrWhiteSpace(videoSvrId))
             {
-                
+
                 if (isSchedule)
                 {
-                    
+
                     ComuResponseBase cr = new ComuResponseBase();
 
                     cr.guidId = scheduleTaskGuidId;
@@ -386,17 +416,17 @@ namespace MediaMgrSystem
 
                     if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
                     {
-                        AddLogs(hub, "计划任务", channelName + "计划已停止，"+errorrNotOpenVideoSvr+",运行时间：" + scheduleTime);
+                        GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划失败，" + errorrNotOpenVideoSvr + ",运行时间：" + scheduleTime);
                         hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
                     }
 
                 }
                 else
                 {
-                    List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();      
+                    List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                     hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200");
 
-                    AddLogs(hub, "手动操作", channelName + "停止操作失败，" +errorrNotOpenVideoSvr + scheduleTime);
+                    GlobalUtils.AddLogs(hub, "手动操作", channelName + "停止播放操作失败，" + errorrNotOpenVideoSvr + scheduleTime);
                 }
 
             }
@@ -443,12 +473,36 @@ namespace MediaMgrSystem
                 clientsDataToSend.arg = new VideoOperAndriodClientArg();
                 clientsDataToSend.arg.streamName = "1234567890" + channelId;
 
-                PushQueue(isWantToStop ? "停止" : "循环播放", clientsIpToSend, isSchedule, channelName, scheduleTime);
+                QueueCommandType cmdType = QueueCommandType.NONE;
+
+                if (isSchedule)
+                {
+                    cmdType = QueueCommandType.SCHEDULESTOP;
+
+                }
+                else
+                {
+                    cmdType=isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
+                }
+
+                PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime);
+
+
 
                 System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
                 string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-                hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+
+                if (!string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
+                {
+                    hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+                }
+                else
+                {
+                    GlobalUtils.AddLogs(hub, "系统异常", "视频服务器突然关闭");
+                    return;
+
+                }                
 
 
                 string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
@@ -466,7 +520,7 @@ namespace MediaMgrSystem
                     GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
                     GlobalUtils.IsChannelManuallyPlaying = false;
 
-                    AddLogs(hub, "手动操作", channelName + "手动停止成功");
+                    GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动停止成功");
                 }
                 else
                 {
@@ -498,7 +552,7 @@ namespace MediaMgrSystem
                             if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
                             {
 
-                                AddLogs(hub, "计划任务", channelName + "计划执行失败，手工播放中,运行时间：" + scheduleTime);
+                                GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划执行失败，手工播放中,运行时间：" + scheduleTime);
                                 hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
                             }
 
@@ -527,7 +581,7 @@ namespace MediaMgrSystem
 
                         GlobalUtils.RunningSchudules.Remove(itemToRemove);
 
-                        AddLogs(hub, "计划任务", channelName + "停止播放计划成功,运行时间：" + scheduleTime);
+                        GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划成功,运行时间：" + scheduleTime);
 
                         System.Diagnostics.Debug.WriteLine("Removing Schedule Task " + itemToRemove.ChannelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
                     }
@@ -553,15 +607,15 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushQueue(string cmdText, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime)
+        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime)
         {
             long currentTicks = DateTime.Now.Ticks;
 
-            GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandStr = cmdText });
+            GlobalUtils.CommandQueues.Add(new QueueItem() {  IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
 
             foreach (var ip in clientIps)
             {
-                GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandStr = cmdText });
+                GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandType = cmdType });
             }
         }
 

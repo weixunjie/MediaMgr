@@ -9,17 +9,27 @@ using System.Web.UI.WebControls;
 
 namespace MediaMgrSystem.MgrModel
 {
-    public partial class DeviceMgrList : System.Web.UI.Page
+    public partial class UserMgrList : System.Web.UI.Page
     {
-
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (Session["UserId"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
- 
+            else
+            {
+                if (Session["IsSuperUser"] != null)
+                {
+                    if (Session["IsSuperUser"].ToString() != "1")
+                    {
+                        Response.Redirect("~/Login.aspx");
+                    }
+
+                }
+            }
             if (!Page.IsPostBack)
             {
                 BindListData();
@@ -32,44 +42,48 @@ namespace MediaMgrSystem.MgrModel
         {
 
             // ListBox1.Items.RemoveAt(1);
-            Response.Redirect("~/MgrModel/DeviceMgrDetail.aspx");
+            Response.Redirect("~/MgrModel/UserMgrDetail.aspx");
         }
 
 
         private void BindListData()
         {
-            List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetAllDevices();
+            List<UserInfo> data = GlobalUtils.UserBLLInstance.GetAllUses();
 
-            dvList.DataSource = dis;
+            dvList.DataSource = data;
             dvList.DataBind();
 
         }
+
 
         protected void dvGroupList_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Edit")
             {
-                Response.Redirect("~/MgrModel/DeviceMgrDetail.aspx?id=" + e.CommandArgument.ToString());
+                Response.Redirect("~/MgrModel/UserMgrDetail.aspx?id=" + e.CommandArgument.ToString());
 
             }
             else if (e.CommandName == "Del")
             {
-                GlobalUtils.DeviceBLLInstance.RemoveDevice(e.CommandArgument.ToString());
+                GlobalUtils.ProgramBLLInstance.RemoveProgram(e.CommandArgument.ToString());
                 BindListData();
             }
         }
 
         protected void dvList_RowDataBound(object sender, GridViewRowEventArgs e)
         {
+
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                List<GroupInfo> result= GlobalUtils.GroupBLLInstance.GetGroupById(e.Row.Cells[2].Text);
-                e.Row.Cells[2].Text = "默认分组";
-                if (result != null && result.Count > 0)
-                {
-                    e.Row.Cells[2].Text = result[0].GroupName;
-                }
+
+                string userLevel = e.Row.Cells[3].Text;
+
+                e.Row.Cells[3].Text = userLevel == "1" ? "超级用户" : "普通用户";
+                string isActive = e.Row.Cells[4].Text;
+
+                e.Row.Cells[4].Text = isActive == "1" ? "是" : "否";
             }
+
         }
     }
 }

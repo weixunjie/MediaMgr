@@ -72,12 +72,12 @@
                     async: false,
                     type: "POST",
                     url: "Default.aspx/RangerUserControl",
-                    data: "{'controlName':'LogList'}",
+                    data: "{'controlName':'DeviceList'}",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
 
-                        $("#divforLogs").html(msg.d);
+                        $("#divForDevice").html(msg.d);
 
                     }
                 });
@@ -89,12 +89,12 @@
                     async: false,
                     type: "POST",
                     url: "Default.aspx/RangerUserControl",
-                    data: "{'controlName':'DeviceList'}",
+                    data: "{'controlName':'LogList'}",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
 
-                        $("#divForDevice").html(msg.d);
+                        $("#divforLogs").html(msg.d);
 
                     }
                 });
