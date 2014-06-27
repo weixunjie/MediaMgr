@@ -462,7 +462,7 @@ namespace MediaMgrWS
                 {
                     _isConnected = false;
                 }
-                System.Threading.Thread.Sleep(4000);
+                System.Threading.Thread.Sleep(10000);
 
                 if (!_isConnected)
                 {
