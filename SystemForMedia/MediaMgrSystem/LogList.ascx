@@ -17,7 +17,7 @@
 </script>
 
 
-<div id="divLogs" style="width: 500px; height: 200px" class="pull-left">
+<div id="divLogs" style="width: 700px; height: 200px" class="pull-left">
 
     <%
         foreach (var logItem in top3Logs)

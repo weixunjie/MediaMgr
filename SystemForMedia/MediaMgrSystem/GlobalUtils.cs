@@ -119,8 +119,7 @@ namespace MediaMgrSystem
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
-
-
+        
 
 
         public static bool IsChannelManuallyPlaying = false;
@@ -146,23 +145,11 @@ namespace MediaMgrSystem
         public static string CurrentClientGuidId = string.Empty;
 
         public static object VideoSvrArg = null;
-
-        //public static List<string> ReadyToSentClientIds = new List<string>();
-        //public static List<string> ReadyToSentClientIPs = new List<string>();
-
+        
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
 
-        //public static object ReadyToSentClientData = new object();
-
-        //public static object ReadyToSentSVRData = new object();
-
-
-
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
-
-
-
 
 
 
@@ -254,9 +241,6 @@ namespace MediaMgrSystem
 
 
         }
-
-
-
 
         public static void AddConnection(SingalConnectedClient client)
         {

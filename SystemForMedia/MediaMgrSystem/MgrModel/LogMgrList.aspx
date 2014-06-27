@@ -158,7 +158,7 @@
 
 
         
-        <div class="form-group" style="margin-bottom: 10px">
+        <div class="form-group" style="margin-top: 15px">
 
 
             <asp:Label runat="server" AssociatedControlID="ddDateBefore" CssClass="col-md-2 control-label" Width="107px">日志删除:</asp:Label>

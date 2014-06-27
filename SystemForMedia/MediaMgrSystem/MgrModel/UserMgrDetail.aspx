@@ -39,7 +39,6 @@
             <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbName"
                 ForeColor="Red" ErrorMessage=" 名称不能为空" Height="25px" />
 
-
         </div>
 
 

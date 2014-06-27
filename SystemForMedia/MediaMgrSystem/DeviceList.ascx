@@ -72,11 +72,12 @@
 
 
         $("#btnSingleGroupChooseChannel").click(function (e) {
-
+                   
+            $("#deviceListSingleGroupChooseEncoderMenu").hide();
 
             is_popup_2nd_menu = true;
 
-            var x = $(this).offset().left + $("#ChannelMenuForSignleGroupBox").width() + 6;
+            var x = $(this).offset().left + $("#deviceListSingleGroupChooseChannelMenu").width() + 6;
             var y = $(this).offset().top;
 
             $.ajax({
@@ -94,7 +95,7 @@
                 }
             });
 
-            $("#ChannelMenuForSignleGroupBox").show().css("left", x).css("top", y);
+            $("#deviceListSingleGroupChooseChannelMenu").show().css("left", x).css("top", y);
         });
 
 
@@ -115,6 +116,7 @@
                 }
             });
 
+
             is_popup_2nd_menu = false;
             is_popup_1st_menu = false;
 
@@ -127,9 +129,15 @@
 
         $("#btnSingleGroupChooseEncoder").click(function (e) {
 
+
+
+     
+            $("#deviceListSingleGroupChooseChannelMenu").hide()
+
+
             is_popup_2nd_menu = true;
 
-            var x = $(this).offset().left + $("#EncoderMenuForSignleGroupBox").width() + 6;
+            var x = $(this).offset().left + $("#deviceListSingleGroupChooseEncoderMenu").width() + 6;
             var y = $(this).offset().top;
 
 
@@ -149,7 +157,7 @@
             });
 
 
-            $("#EncoderMenuForSignleGroupBox").show().css("left", x).css("top", y);
+            $("#deviceListSingleGroupChooseEncoderMenu").show().css("left", x).css("top", y);
 
 
         });
@@ -187,6 +195,12 @@
 
             $("<%= imgGroupShowIds %>").click(function (e) {
 
+
+                $("#deviceListSingleGroupClickMenuBox").hide();
+                $("#deviceListSingleGroupChooseChannelMenu").hide()
+            
+                $("#deviceListSingleGroupChooseEncoderMenu").hide();
+
                 currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
 
                 is_popup_1st_menu = true;
@@ -194,7 +208,8 @@
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
-                $("#MenuForSingleGroup").show().css("left", x).css("top", y);
+
+                $("#deviceListSingleGroupClickMenuBox").show().css("left", x).css("top", y);
 
 
             });
@@ -206,12 +221,12 @@
             $(document).click(function () {
 
                 if (!is_popup_1st_menu && !is_popup_2nd_menu) {
-                    $("#MenuForSingleGroup").hide();
-                    $("#ChannelMenuForSignleGroupBox").hide()
-                    $("#EncoderMenubox").hide();
-                    $("#ChannelMenubox").hide();
-                    $("#ChannelMenuSchduleBox").hide()
-                    $("#EncoderMenuForSignleGroupBox").hide();
+                    $("#deviceListSingleGroupClickMenuBox").hide();
+                    $("#deviceListSingleGroupChooseChannelMenu").hide()
+                    $("#encoderListEncoderClickMenuBox").hide();
+                    $("#channelListChannelClickMenuBox").hide();
+                    $("#channelListChannelChooseScheduleMenu").hide()
+                    $("#deviceListSingleGroupChooseEncoderMenu").hide();
                 }
             });
 
@@ -509,14 +524,14 @@
 
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="MenuForSingleGroup">
+        aria-labelledby="dropdownMenu" id="deviceListSingleGroupClickMenuBox">
         <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通通选择</a></li>
         <li><a class="btn" id="btnSingleGroupChooseEncoder" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">视频源选择</a></li>
 
     </ul>
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="ChannelMenuForSignleGroupBox">
+        aria-labelledby="dropdownMenu" id="deviceListSingleGroupChooseChannelMenu">
 
         <% 
             for (int i = 0; i < channels.Count; i++)
@@ -527,7 +542,7 @@
     </ul>
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="EncoderMenuForSignleGroupBox">
+        aria-labelledby="dropdownMenu" id="deviceListSingleGroupChooseEncoderMenu">
 
         <% 
             for (int i = 0; i < encoders.Count; i++)

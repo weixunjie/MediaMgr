@@ -62,9 +62,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddLog(string logName, string logDesp)
         {
-            String sqlStr = "INSERT INTO LOGINFO(LOGNAME,LOGDESP,LOGDATE) values ('{0}','{1}','{2}')";
+            String sqlStr = "INSERT INTO LOGINFO(LOGNAME,LOGDESP,LOGDATE) values ('{0}','{1}',getdate())";
 
-            sqlStr = String.Format(sqlStr, logName, logDesp, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            sqlStr = String.Format(sqlStr, logName, logDesp);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
         }

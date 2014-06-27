@@ -36,7 +36,7 @@
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
-                $("#EncoderMenubox").show().css("left", x).css("top", y);
+                $("#encoderListEncoderClickMenuBox").show().css("left", x).css("top", y);
 
 
             });
@@ -60,7 +60,7 @@
 
 
 <ul class="dropdown-menu" role="menu"
-    aria-labelledby="dropdownMenu" id="EncoderMenubox">
+    aria-labelledby="dropdownMenu" id="encoderListEncoderClickMenuBox">
     <li><a class="btn" id="btnOpenEncoder" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开</a></li>
     <li><a class="btn" id="btnCloseEncoder" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭</a></li>
 

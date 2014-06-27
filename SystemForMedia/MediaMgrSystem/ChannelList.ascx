@@ -8,7 +8,7 @@
     var currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
     var currentPlayPIds = '<% =GetIsPlayingPIds() %>';
     var boolIsPlaying = '<% = GetIsPlaying() %>';
-    
+
 
     $(document).ready(function () {
 
@@ -135,8 +135,8 @@
              
                  <%} %>
 
-            $("#ChannelMenubox").hide();
-            $("#ChannelMenuSchduleBox").hide()
+            $("#channelListChannelClickMenuBox").hide();
+            $("#channelListChannelChooseScheduleMenu").hide()
             is_popup_1st_menu = false;
             $('#dialogForChooseProgram').modal('show');
         });
@@ -149,17 +149,22 @@
             $("<%= ids %>").click(function (e) {
 
 
+
+                $("#channelListChannelClickMenuBox").hide();
+                $("#channelListChannelChooseScheduleMenu").hide()
+
+
                 currentOperChannelId = e.currentTarget.id.replace("channelDiv", "");
 
                 currentOperChannelName = $(this).data("itemid");
 
-              
+
                 is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
-                $("#ChannelMenubox").show().css("left", x).css("top", y);
+                $("#channelListChannelClickMenuBox").show().css("left", x).css("top", y);
 
 
             });
@@ -259,13 +264,12 @@
             //string commandType, string channelId, string scheduleGuidId)
 
             setButtonStatus("Stop");
-            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName,true,"");
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "");
 
-            $("#divChannelInfo").html( currentOperChannelName + "已停止播放");
+            $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
 
 
         })
-
 
 
         $("#btnChannelControlRepeat").click(function () {
@@ -278,9 +282,10 @@
         $("#btnChooseSchedule").click(function (e) {
 
 
+
             is_popup_2nd_menu = true;
 
-            var x = $(this).offset().left + $("#ChannelMenubox").width() + 6;
+            var x = $(this).offset().left + $("#channelListChannelClickMenuBox").width() + 6;
             var y = $(this).offset().top;
 
             $.ajax({
@@ -299,7 +304,7 @@
             });
 
 
-            $("#ChannelMenuSchduleBox").show().css("left", x).css("top", y);
+            $("#channelListChannelChooseScheduleMenu").show().css("left", x).css("top", y);
 
 
         });
@@ -341,14 +346,14 @@
 
 
 <ul class="dropdown-menu" role="menu"
-    aria-labelledby="dropdownMenu" id="ChannelMenubox">
+    aria-labelledby="dropdownMenu" id="channelListChannelClickMenuBox">
     <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">计划选择</a></li>
     <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
 
 </ul>
 
 <ul class="dropdown-menu" role="menu"
-    aria-labelledby="dropdownMenu" id="ChannelMenuSchduleBox">
+    aria-labelledby="dropdownMenu" id="channelListChannelChooseScheduleMenu">
 
     <% 
         for (int i = 0; i < schedules.Count; i++)
@@ -367,7 +372,7 @@
         {
 %>
 
-    <div style="float: left; height: 160px">
+<div style="float: left; height: 160px">
 
     <% }
         else
