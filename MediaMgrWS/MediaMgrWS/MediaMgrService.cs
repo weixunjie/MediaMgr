@@ -172,11 +172,11 @@ namespace MediaMgrWS
 
                             //Schedule to play: send 5s in advance
                             //Scehdue to stop: send 1s in advance
-                            int andvanceSec = 2;
+                            int andvanceSec = 5;
 
                             if (isCheckStart)
                             {
-                                andvanceSec = 7;
+                                andvanceSec = 8;
                             }
 
 
