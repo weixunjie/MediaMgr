@@ -119,7 +119,7 @@ namespace MediaMgrSystem
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
-        
+
 
 
         public static bool IsChannelManuallyPlaying = false;
@@ -145,7 +145,7 @@ namespace MediaMgrSystem
         public static string CurrentClientGuidId = string.Empty;
 
         public static object VideoSvrArg = null;
-        
+
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
 
@@ -157,12 +157,7 @@ namespace MediaMgrSystem
         {
             string fName = fileName.ToUpper();
 
-            if (fName.EndsWith(".FLV") || fName.EndsWith(".MP4"))
-            {
-                return false;
-            }
-
-            return true;
+            return fName.EndsWith(".MP3");
 
         }
         public static bool RemoveConnectionByConnectionId(string connectionId)

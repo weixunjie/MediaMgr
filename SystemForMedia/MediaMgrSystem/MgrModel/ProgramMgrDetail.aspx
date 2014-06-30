@@ -36,7 +36,7 @@
 
                 <div style="float: left; width: 200px">
                     <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">可选</asp:Label>
-                    <asp:ListBox ID="lbAvaibleFiles" autoPostBack="true" SelectionMode="Multiple" runat="server" Height="226px" Width="187px"></asp:ListBox>
+                    <asp:ListBox ID="lbAvaibleFiles"  SelectionMode="Multiple" runat="server" Height="226px" Width="187px"></asp:ListBox>
                 </div>
                 <div style="float: left; width: 50px; margin-top: 40px">
                     <asp:Button ID="btnToRight"     Width="40px" Height="30px" style="margin-bottom:5px" Text=">" runat="server" OnClick="btnToRight_Click"></asp:Button>
@@ -46,7 +46,7 @@
                 </div>
                 <div style="float: left; width: 240px">
                     <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">已选</asp:Label>
-                    <asp:ListBox ID="lbSelectedFiles" AutoPostBack="true" SelectionMode="Multiple" runat="server" Height="222px" Width="186px"></asp:ListBox>
+                    <asp:ListBox ID="lbSelectedFiles" SelectionMode ="Multiple" runat="server" Height="222px" Width="186px"></asp:ListBox>
                 </div>
                 <div style="clear: both" class="clear"></div>
             </div>

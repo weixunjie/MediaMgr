@@ -42,11 +42,11 @@
                 if (change.newState === $.signalR.connectionState.disconnected) {                    
                     chat = $.connection.MediaMgrHub;
                     $.connection.hub.start();
-                    console.log('reconnected now!');
+                 
                     
                 }
                 else if (change.newState === $.signalR.connectionState.connected) {
-                    console.log('connection started!');
+                   
                 }
             });
             chat.client.sendRefreshDeviceMessge = function (result) {
@@ -106,7 +106,7 @@
     </script>
 
 
-    <div style="width: 250px; height: 160%; float: left; text-align: center">
+    <div style="width: 250px; height: 160%; float: left; margin-left:10px; text-align: center">
 
         <channelList:ChannelList ID="cList" runat="server" />
 

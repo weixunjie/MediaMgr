@@ -309,13 +309,13 @@
         <thead>
             <tr>
 
-                <th>
+                    <th style="line-height:30px">
                     <div class="row" style="margin-left: 0px">
 
                         <div class="pull-left"><%=dGroups[l].GroupName %></div>
                         <% if (dGroups[l].GroupId != "-1")
                            {  %>
-                        <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">操作</a></div>
+                        <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
                         <% }  %>
                     </div>
 
@@ -384,7 +384,7 @@
         <thead>
             <tr>
 
-                <th>
+                <th style="line-height:30px">
                     <div class="row" style="margin-left: 0px">
 
                         <div class="pull-left">分组信息</div>
@@ -469,7 +469,7 @@
 
 
             <div style="float: left; height: 220px; width: 220px;">
-                <h4 style="text-align: left; margin-top: 0px">操作</h4>
+                <h4 style="text-align: left; margin-top: 0px">批量操作</h4>
 
                 <div>
                     <div class="batchOperationLableStyle">
@@ -548,7 +548,7 @@
             for (int i = 0; i < encoders.Count; i++)
             { 
         %>
-        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =encoders[i].EncoderName %>" id="btnMenuEncoderSel<% =encoders[i].EncoderId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =encoders[i].EncoderName %></a></li>
+        <li><a class="btn  btn-default" style="margin-bottom: 3px; font-weight: normal" name="<% =encoders[i].EncoderName %>" id="btnMenuEncoderSel<% =encoders[i].EncoderId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =encoders[i].EncoderName %></a></li>
         <%}%>
     </ul>
 

@@ -2,7 +2,14 @@
 
 <script src="<%=ResolveUrl("Scripts/channelScheduleLogic.js")%>" type="text/javascript"></script>
 
+<style>
+     .notactive {
+        pointer-events: none;
+        cursor: default;
+    }
+</style>
 <script type="text/javascript">
+
 
     var currentOperChannelId = '<% =GetIsPlayingChannelId() %>';
     var currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
@@ -51,6 +58,7 @@
 
         function setButtonStatus(type) {
 
+   
             //All disable
             if (type == "AllDisabled") {
                 $("#btnChannelControlPlay").attr("disabled", true);
@@ -81,28 +89,35 @@
 
             if ($("#btnChannelControlPlay").attr("disabled") == "disabled") {
                 $("#btnChannelControlPlay").attr("src", "Images/ic_image_play_disabled.png");
+                $("#btnChannelControlPlay").addClass("notactive");
             }
             else {
                 $("#btnChannelControlPlay").attr("src", "Images/ic_image_play.png");
-
+                $("#btnChannelControlPlay").removeClass("notactive");
             }
 
 
             if ($("#btnChannelControlStop").attr("disabled") == "disabled") {
                 $("#btnChannelControlStop").attr("src", "Images/ic_image_stop_disabled.png");
+                $("#btnChannelControlStop").addClass("notactive");
 
             }
             else {
+           
+                $("#btnChannelControlRepeat").removeClass("notactive");
                 $("#btnChannelControlStop").attr("src", "Images/ic_image_stop.png");
 
             }
 
 
             if ($("#btnChannelControlRepeat").attr("disabled") == "disabled") {
+
+                $("#btnChannelControlRepeat").addClass("notactive");
                 $("#btnChannelControlRepeat").attr("src", "Images/ic_image_repeat_disabled.png");
 
             }
             else {
+                $("#btnChannelControlRepeat").removeClass("notactive");
                 $("#btnChannelControlRepeat").attr("src", "Images/ic_image_repeat.png");
 
             }

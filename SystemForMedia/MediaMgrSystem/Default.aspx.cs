@@ -47,29 +47,11 @@ namespace MediaMgrSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            //  string output = FFMPEG.Execute("c:\ffmpeg.exe");
-
-
-            //FFMPEG.FFMPEGExecutableFilePath = @"c:\FFMPEG.exe";
-
-            //VideoFile videoFile = new VideoFile(@"c:\hamster.flv");
-
-            //INIFile ab = new INIFile(@"F:\test");
-            //string iniFile = @"F:\test\test.ini";
-            //if (!File.Exists(iniFile))
-            //{
-            //    using (FileStream fs = File.Create(iniFile))
-            //    {
-            //        fs.Close();
-            //    }
-            //}
-            //string[] args = new string[10];
-            //INIFile myINI = new INIFile(iniFile);
-            //for (int i = 0; i < args.Length; i++)
-            //{
-            //    args[i] = Convert.ToString(i + i * i * i);
-            //    myINI.IniWriteValue("WebDir", "arg" + i.ToString(), args[i]);
-            //}
+            if (Session["UserId"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
+ 
         }
 
         public string getDataTime()

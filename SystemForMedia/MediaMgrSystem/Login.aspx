@@ -3,18 +3,19 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="/Scripts/html5.js"></script>
+    <![endif]-->
+
     <style>
         * {
             margin: 0;
             padding: 0;
         }
 
-        body {
-            font-family: "宋体";
-        }
-
         .loginBox {
-            width: 520px;
+            width: 460px;
             height: 270px;
             padding: 0 20px;
             border: 1px solid #fff;
@@ -23,8 +24,8 @@
             border-radius: 8px;
             background: white;
             box-shadow: 0 0 15px #222;
-            background: -moz-linear-gradient(top, #fff, #efefef 8%);
-            background: -webkit-gradient(linear, 0 0, 0 100%, from(#f6f6f6), to(#f4f4f4));
+            background: #EEEEEE;
+            /*background: -webkit-gradient(linear, 0 0, 0 100%, from(#f6f6f6), to(#f4f4f4));*/
             font: 11px/1.5em 'Microsoft YaHei';
             position: absolute;
             left: 50%;
@@ -52,7 +53,7 @@
 
 
 
-                <div class="form-group" style="margin-bottom: 10px">
+                <div class="form-group" >
 
                     <asp:Label runat="server" AssociatedControlID="tbUserName" CssClass="col-md-2 control-label" Width="107px">用户名:</asp:Label>
 
@@ -66,14 +67,12 @@
 
 
                 </div>
-
-
-
+                
                 <div class="form-group" style="margin-bottom: 10px">
 
                     <asp:Label runat="server" AssociatedControlID="tbPassword" CssClass="col-md-2 control-label" Width="107px">密码:</asp:Label>
 
-                    <asp:TextBox runat="server" ID="tbPassword"  TextMode="Password" CssClass="form-control" />
+                    <asp:TextBox runat="server" ID="tbPassword" TextMode="Password" CssClass="form-control" />
 
 
                     <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbPassword"

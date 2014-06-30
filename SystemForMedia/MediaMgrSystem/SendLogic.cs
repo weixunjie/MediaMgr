@@ -175,7 +175,7 @@ namespace MediaMgrSystem
                     cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
 
 
-                    cmdToVideoSvr.arg.streamName = "123456790" + channelId;
+                    cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
 
                     cmdToVideoSvr.arg.streamSrcs = new List<string>();
 
@@ -195,11 +195,11 @@ namespace MediaMgrSystem
                     int port = 0;
                     if (int.TryParse(channelId, out intCID))
                     {
-                        port = 1001 + intCID;
+                        port = 1234 + intCID;
                     }
 
-                    cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:1234";// +port.ToString();
-                    cmdToVideoSvr.arg.streamName = "123456790" + port.ToString();
+                    cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:"+port.ToString();
+
 
                     List<string> clientsIpToSend = new List<string>();
 
@@ -210,11 +210,11 @@ namespace MediaMgrSystem
                     CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
 
 
-                    QueueCommandType type=QueueCommandType.NONE;
+                    QueueCommandType type = QueueCommandType.NONE;
 
                     if (isSchedule)
                     {
-                        type=QueueCommandType.SCHEDULEPLAY;
+                        type = QueueCommandType.SCHEDULEPLAY;
                     }
                     else
                     {
@@ -222,31 +222,32 @@ namespace MediaMgrSystem
                     }
 
                     PushQueue(type, clientsIpToSend, isSchedule, channelName, scheduleTime);
-                    
+
 
                     GlobalUtils.VideoSvrArg = cmdToVideoSvr.arg;
 
 
-                    TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
 
-                    int intBufTime = 4000;
+                    int intBufTime = isSchedule?5000:4000;
                     if (isSchedule)
                     {
                         int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
 
                         int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
-
-
+                        
 
                         int offSet = schduleTicks - nowTicks;
                         if (offSet > intBufTime)
                         {
                             int toSleep = offSet - intBufTime;
                             Thread.Sleep(toSleep);
-                            System.Diagnostics.Debug.WriteLine("我一下再发 " + toSleep);
+                            System.Diagnostics.Debug.WriteLine("Dont be shame " + toSleep);
                         }
                     }
+
+
+                    TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
                     System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
@@ -276,7 +277,7 @@ namespace MediaMgrSystem
                     {
                         GlobalUtils.AddLogs(hub, "系统异常", "视频服务器突然关闭");
                         return;
- 
+
                     }
 
                     System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
@@ -375,7 +376,7 @@ namespace MediaMgrSystem
                         string strCmdType = GlobalUtils.GetCommandTextGetByType(item.CommandType);
                         if (item.IsScheduled)
                         {
-                            
+
                             GlobalUtils.AddLogs(hubContent, "计划任务", item.ChannelName + strCmdType + ipToDisplay + "操作超时, 计划时间:" + item.ScheduledTime);
                         }
                         else
@@ -471,7 +472,7 @@ namespace MediaMgrSystem
 
 
                 clientsDataToSend.arg = new VideoOperAndriodClientArg();
-                clientsDataToSend.arg.streamName = "1234567890" + channelId;
+
 
                 QueueCommandType cmdType = QueueCommandType.NONE;
 
@@ -482,7 +483,25 @@ namespace MediaMgrSystem
                 }
                 else
                 {
-                    cmdType=isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
+                    cmdType = isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
+                }
+
+
+
+                if (isSchedule)
+                {
+                    int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
+
+                    int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
+
+
+                    int offSet = schduleTicks - nowTicks;
+                    if (offSet > 0)
+                    {
+
+                        Thread.Sleep(offSet);
+                        System.Diagnostics.Debug.WriteLine("Pause我一下再发 " + offSet);
+                    }
                 }
 
                 PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime);
@@ -502,7 +521,8 @@ namespace MediaMgrSystem
                     GlobalUtils.AddLogs(hub, "系统异常", "视频服务器突然关闭");
                     return;
 
-                }                
+                }
+
 
 
                 string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
@@ -611,7 +631,7 @@ namespace MediaMgrSystem
         {
             long currentTicks = DateTime.Now.Ticks;
 
-            GlobalUtils.CommandQueues.Add(new QueueItem() {  IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
+            GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
 
             foreach (var ip in clientIps)
             {

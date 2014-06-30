@@ -57,17 +57,22 @@
         <script type="text/javascript" src="/Scripts/jquery-ui-timepicker-addon.js"></script>
 
         <script type="text/javascript" src="/Scripts/jquery-ui-timepicker-zh-CN.js"></script>
-        <div class='container'>
+        <div class='container' style="padding-left:5px" >
 
-            <div class='navbar navbar-inverse  '>
+            <div class='navbar navbar-inverse  ' >
 
-                <div class='navbar-inner nav-collapse ' style="height: auto;">
+                <div class='navbar-inner nav-collapse ' style="height: auto">
 
                     <ul class="nav navbar-nav" style="padding-left: 0px; margin-left: 0px">
-                        <li>
-                            <a class="navbar-brand" runat="server">管理后台</a>
+                        <li style="padding-left:0px; height:20px; vertical-align:middle">
 
-                        <li>
+
+                            <a style="padding-left:0px; height:20px; " class="navbar-brand" runat="server">管理后台</a>
+                       
+
+
+                        </li>
+                 
                     </ul>
                     <% if (Session["UserId"] != null)
                        { %>>

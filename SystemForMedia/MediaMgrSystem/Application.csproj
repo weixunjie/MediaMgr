@@ -208,6 +208,7 @@
     <Content Include="MgrModel\ProgramMgrDetail.aspx" />
     <Content Include="MgrModel\ProgramMgrList.aspx" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\html5.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.7.2.js" />
