@@ -473,8 +473,15 @@ namespace MediaMgrWS
 
         protected override void OnStop()
         {
-            aTimerCheckStartSchedule.Stop();
-            aTimerCheckStopSchedule.Stop();
+            if (aTimerCheckStartSchedule != null)
+            {
+                aTimerCheckStartSchedule.Stop();
+            }
+
+            if (aTimerCheckStopSchedule != null)
+            {
+                aTimerCheckStopSchedule.Stop();
+            }
             if (hubConnection != null)
             {
                 hubConnection.Stop();
