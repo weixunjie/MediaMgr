@@ -230,22 +230,7 @@ namespace MediaMgrSystem
 
 
                     int intBufTime = isSchedule?5000:4000;
-                    if (isSchedule)
-                    {
-                        int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
-
-                        int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
-                        
-
-                        int offSet = schduleTicks - nowTicks;
-                        if (offSet > intBufTime)
-                        {
-                            int toSleep = offSet - intBufTime;
-                            Thread.Sleep(toSleep);
-                            System.Diagnostics.Debug.WriteLine("Dont be shame " + toSleep);
-                        }
-                    }
-
+         
 
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
@@ -485,24 +470,8 @@ namespace MediaMgrSystem
                 {
                     cmdType = isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
                 }
-
-
-
-                if (isSchedule)
-                {
-                    int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
-
-                    int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
-
-
-                    int offSet = schduleTicks - nowTicks;
-                    if (offSet > 0)
-                    {
-
-                        Thread.Sleep(offSet);
-                        System.Diagnostics.Debug.WriteLine("Pause我一下再发 " + offSet);
-                    }
-                }
+                
+          
 
                 PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime);
 

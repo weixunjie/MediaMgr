@@ -114,6 +114,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                         ui.UserLevel = dt.Rows[i]["USERLEVEL"].ToString();
 
+                        ui.Password = dt.Rows[i]["PASSWORD"].ToString();
+
                         ui.UserCode = dt.Rows[i]["UserCode"].ToString();
 
                         string isActive=dt.Rows[i]["IsActive"].ToString();

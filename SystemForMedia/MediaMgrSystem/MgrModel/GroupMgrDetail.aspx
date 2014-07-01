@@ -2,6 +2,11 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
+     <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
         <h3 style="clip: rect(auto, auto, 10px, auto)">分组明细管理</h3>
 
 
@@ -39,10 +44,10 @@
                     <asp:ListBox ID="lbAvaibleDevice" utoPostBack="true" SelectionMode="Multiple" runat="server" Height="226px" Width="187px"></asp:ListBox>
                 </div>
                 <div style="float: left; width: 50px; margin-top: 40px">
-                    <asp:Button ID="btnToRight"   Width="40px" Height="30px" style="margin-bottom:5px" Text=">" runat="server" OnClick="btnToRight_Click"></asp:Button>
-                    <asp:Button ID="btnAllToRight" Height="30px" Width="40px" style="margin-bottom:5px" Text=">>" runat="server" OnClick="btnAllToRight_Click"></asp:Button>
-                    <asp:Button ID="btnToLeft" Width="40px" Height="30px" style="margin-bottom:5px" Text="<" runat="server" OnClick="btnToLeft_Click"></asp:Button>
-                    <asp:Button ID="btnAllToLeft" Width="40px" Height="30px" style="margin-bottom:5px"  Text="<<" runat="server" OnClick="btnAllToLeft_Click"></asp:Button>
+                    <asp:Button ID="btnToRight" CssClass="btn primary"   Width="40px" Height="30px" style="margin-bottom:5px" Text=">" runat="server" OnClick="btnToRight_Click"></asp:Button>
+                    <asp:Button ID="btnAllToRight" CssClass="btn primary" Height="30px" Width="40px" style="margin-bottom:5px" Text=">>" runat="server" OnClick="btnAllToRight_Click"></asp:Button>
+                    <asp:Button ID="btnToLeft" CssClass="btn primary" Width="40px" Height="30px" style="margin-bottom:5px" Text="<" runat="server" OnClick="btnToLeft_Click"></asp:Button>
+                    <asp:Button ID="btnAllToLeft" CssClass="btn primary" Width="40px" Height="30px" style="margin-bottom:5px"  Text="<<" runat="server" OnClick="btnAllToLeft_Click"></asp:Button>
                 </div>
                 <div style="float: left; width: 240px">
                     <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">已选</asp:Label>
@@ -71,6 +76,8 @@
                 </div>
             </div>
         </section>
+            </ContentTemplate>
+        </asp:UpdatePanel>
 
 
 </asp:Content>

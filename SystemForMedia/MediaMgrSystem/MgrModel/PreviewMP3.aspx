@@ -1,8 +1,7 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="PreviewMP3.aspx.cs" Inherits="MediaMgrSystem.MgrModel.PreviewMP3" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PreviewMP3.aspx.cs" Inherits="MediaMgrSystem.MgrModel.PreviewMP3" %>
 
 
-
-<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+<div>
 
     <object id="MediaPlayer" height="64" width="260" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
         <param name="AutoStart" value="1">
@@ -50,4 +49,5 @@
         <param name="SAMIFilename" value="">
         <!--字幕ID-->
     </object>
-</asp:Content>
+
+</div>

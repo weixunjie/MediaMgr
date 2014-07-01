@@ -471,7 +471,7 @@
 
                 <h4 style="text-align: left; margin-top: 0px">可选节目</h4>
 
-                <select size="4" multiple="multiple" style="height: 190px; width: 150px;" id="lbAvaiableProgram">
+                <select  multiple="multiple" style="height: 190px; width: 150px;" id="lbAvaiableProgram">
 
                     <%--      <%  foreach (var pi in allProgramInfos)
                     { %>

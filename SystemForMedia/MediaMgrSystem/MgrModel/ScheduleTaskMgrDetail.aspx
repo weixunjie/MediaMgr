@@ -2,22 +2,34 @@
 
 
 
+
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+
+
+
 
     <script type="text/javascript">
 
 
-        $(document).ready(function () {
+        Sys.Application.add_load(EndRequestHandler);
 
-            $('input[id$=tbStartTime]').timepicker({});
+      
+        function EndRequestHandler() {
 
-            $("input[id$=tbEndTime]").timepicker({});
+            $("input[id$=tbSelectDate]").datepicker({
+                dateFormat: "yy-mm-dd", changeYear: true,
+                changeMonth: true,
+                numberOfMonths: 1,
 
-            $("input[id$=tbSelectDate]").datepicker({ dateFormat: "yy-mm-dd" });
-        });
+            });
 
-
+        }
     </script>
+
+
 
     <style>
         .cb td {
@@ -38,12 +50,15 @@
 
 
 
+
+
+
     <h3 style="clip: rect(auto, auto, 10px, auto)">任务明细管理</h3>
 
-    <asp:Label ID="lbMessage" runat="server"  Text="" Visible="false" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
+    <asp:Label ID="lbMessage" runat="server" Text="" Visible="false" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
 
 
-    <section >
+    <section>
 
         <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
             <p class="text-danger">
@@ -87,31 +102,43 @@
         <div class="form-group" style="margin-bottom: 10px">
 
 
-            <div style="float: left; width: 200px">
-                <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">特殊日期</asp:Label>
-                <asp:ListBox ID="lbSelectedDate" utoPostBack="true" SelectionMode="Multiple" runat="server" Height="75px" Width="187px"></asp:ListBox>
-            </div>
+            <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Conditional" ChildrenAsTriggers="false" runat="server">
+                <ContentTemplate>
 
-            <div style="float: left; width: 240px">
 
-                <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">日期选择</asp:Label>
+                    <div style="float: left; width: 200px">
+                        <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">特殊日期</asp:Label>
+                        <asp:ListBox ID="lbSelectedDate" utoPostBack="true" SelectionMode="Multiple" runat="server" Height="75px" Width="187px"></asp:ListBox>
+                    </div>
 
-                <input type="text" runat="server" id="tbSelectDate" />
+                    <div style="float: left; width: 240px">
 
-                <asp:Button ID="btnDelSelected" Width="115px" CssClass="btn primary" Height="30px" Style="margin-right: 15px" Text="删除选中" runat="server" OnClick="btnDelSelected_Click"></asp:Button>
-                <asp:Button ID="btnAddDate" Width="88px" CssClass="btn primary" Height="30px" Style="margin-bottom: 5px" Text="添加日期" runat="server" OnClick="btnAddDate_Click"></asp:Button>
-            </div>
+                        <asp:Label runat="server" CssClass="col-md-2 control-label" Width="107px">日期选择</asp:Label>
+
+                        <input type="text" runat="server" id="tbSelectDate" />
+
+
+
+                        <asp:Button ID="btnDelSelected" Width="115px" CssClass="btn primary" Height="30px" Style="margin-right: 15px" Text="删除选中" runat="server" OnClick="btnDelSelected_Click"></asp:Button>
+                        <asp:Button ID="btnAddDate" Width="88px" CssClass="btn primary" Height="30px" Style="margin-bottom: 5px" Text="添加日期" runat="server" OnClick="btnAddDate_Click"></asp:Button>
+                </ContentTemplate>
+
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="btnAddDate" />
+                    <asp:AsyncPostBackTrigger ControlID="btnDelSelected" />
+                </Triggers>
+            </asp:UpdatePanel>
 
         </div>
 
 
 
-        <div class="form-group" style="margin-bottom: 10px">
 
+
+        <div class="form-group" style="margin-bottom: 10px">
 
             <asp:Label runat="server" AssociatedControlID="btnPreview" CssClass="col-md-2 control-label" Width="107px">节目:</asp:Label>
 
-            
             <div style="height: 30px; line-height: 30px; overflow: hidden;">
                 <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddProgram" CssClass="form-control" />
 
@@ -120,14 +147,9 @@
 
             </div>
 
-
-
         </div>
 
-
         <div class="form-group" style="margin-bottom: 10px">
-
-
 
 
             <asp:Label runat="server" AssociatedControlID="tbStartTime" CssClass="col-md-2 control-label" Width="107px">开始时间</asp:Label>
@@ -139,9 +161,9 @@
                 ForeColor="Red" ErrorMessage=" 开始时间不能为空" Height="25px" />
 
         </div>
-        
 
-        <div class="form-group" style="margin-bottom: 10px">            
+
+        <div class="form-group" style="margin-bottom: 10px">
 
             <asp:Label runat="server" AssociatedControlID="tbEndTime" CssClass="col-md-2 control-label" Width="107px">结束时间</asp:Label>
 
@@ -171,7 +193,6 @@
             <asp:Label runat="server" AssociatedControlID="ddPriority" CssClass="col-md-2 control-label" Width="107px">优先级</asp:Label>
 
             <asp:DropDownList runat="server" Width="220px" ID="ddPriority" CssClass="form-control" />
-
 
 
             <div style="clear: both" class="clear"></div>

@@ -53,21 +53,21 @@ namespace MediaMgrSystem
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
-                        {                       
+                        {
 
                             strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
-                                                        
+
 
                             if (connectionId == GlobalUtils.VideoServerConnectionId)
                             {
-                                strOperResult =  "视频服务器操作" + strOperResult;
-                                matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);                             
+                                strOperResult = "视频服务器操作" + strOperResult;
+                                matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
 
                             }
                             else
                             {
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
-                                strOperResult ="终端" + matchIPAddress + "操作" + strOperResult;
+                                strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
                             }
 
 
@@ -119,20 +119,82 @@ namespace MediaMgrSystem
             }
         }
 
+        private void ThreadToRunStartTask(object para)
+        {
+
+            object[] objs = para as object[];
+
+            Thread.Sleep((int)objs[5]);
+            System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString());
+
+            SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString());
+
+         
+        }
+
+
+        private void ThreadToRunStopTask(object para)
+        {
+            object[] objs = para as object[];
+
+            Thread.Sleep((int)objs[5]);
+            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString());
+
+            SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(),true, Clients, objs[3].ToString(), objs[4].ToString());
+        }
+
 
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime)
         {
+
+            object[] objs = new object[7];
+            objs[0] = channelId;
+            objs[1] = channelName;
+            objs[2] = pid;
+            objs[3] = guid;
+            objs[4] = scheduleTime;
+
+         
             //Play
             if (cmdType == "1")
             {
-                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime);
+                int intBufTime = 5000;
+                int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
+
+                int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
+
+
+                int offSet = schduleTicks - nowTicks;
+                if (offSet > intBufTime)
+                {
+                    int toSleep = offSet - intBufTime;
+
+                    objs[5] = toSleep;
+
+                    new Thread(ThreadToRunStartTask).Start(objs);
+                }
 
             }
             //Stop
             else if (cmdType == "2")
             {
 
-                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime);
+                int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
+
+                int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
+
+
+                int offSet = schduleTicks - nowTicks;
+                if (offSet > 0)
+                {         
+
+                    objs[5] = offSet;
+                    new Thread(ThreadToRunStopTask).Start(objs);
+                
+
+                }
+
+                
             }
         }
 

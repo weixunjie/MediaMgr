@@ -48,9 +48,12 @@ namespace MediaMgrSystem.MgrModel
 
                     this.tbUserCode.Text = ui.UserCode;
                     this.tbName.Text = ui.UserName;
-                    this.tbPassword.Text = ui.Password;
 
-                    this.tbConfimedPass.Text = ui.Password;
+
+
+                    tbPassword.Attributes.Add("value", ui.Password);
+
+                    tbConfimedPass.Attributes.Add("value", ui.Password);
 
 
                     this.chIsAcitve.Checked = ui.IsActive;

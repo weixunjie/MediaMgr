@@ -12,73 +12,91 @@ namespace MediaMgrSystem.MgrModel
     public partial class ProgramMgrDetail : System.Web.UI.Page
     {
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected void LoadData_Click(object sender, EventArgs e)
         {
+
+
+
             if (Session["UserId"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
 
-            if (!Page.IsPostBack)
+
+            if (Request["pid"] != null)
             {
+                string pId = Request["pid"].ToString();
 
-                if (Request["pid"] != null)
+                TbHiddenId.Text = pId;
+
+                ProgramInfo pi = GlobalUtils.ProgramBLLInstance.GetProgramById(pId, true)[0];
+
+                this.TbProgrmeName.Text = pi.ProgramName;
+
+
+                if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
                 {
-                    string pId = Request["pid"].ToString();
-
-                    TbHiddenId.Text = pId;
-
-                    ProgramInfo pi = GlobalUtils.ProgramBLLInstance.GetProgramById(pId, true)[0];
-
-                    this.TbProgrmeName.Text = pi.ProgramName;
-
-
-                    if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
+                    foreach (var fileInfo in pi.MappingFiles)
                     {
-                        foreach (var fileInfo in pi.MappingFiles)
-                        {
-                            this.lbSelectedFiles.Items.Add(new ListItem() { Text = fileInfo.FileName, Value = fileInfo.FileName });
-                        }
-                    }
-
-
-                }
-
-
-
-                string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
-
-                string mpgExePath = Server.MapPath(@"\Dlls");
-
-
-                List<FileAttribute> faAvaibles = GlobalUtils.FileInfoBLLInstance.GetAllDiskFiles(fileBasePath, mpgExePath);
-
-
-                if (faAvaibles.Count > 0)
-                {
-                    foreach (var fa in faAvaibles)
-                    {
-                        bool isFound = false;
-                        foreach (ListItem sel in lbSelectedFiles.Items)
-                        {
-                            if (sel.Value == fa.FileName)
-                            {
-                                isFound = true;
-                                break;
-                            }
-
-                        }
-
-                        if (!isFound)
-                        {
-                            this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileName, Value = fa.FileName });
-                        }
-
+                        this.lbSelectedFiles.Items.Add(new ListItem() { Text = fileInfo.FileName, Value = fileInfo.FileName });
                     }
                 }
 
 
             }
+
+
+
+            string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
+
+            string mpgExePath = Server.MapPath(@"\Dlls");
+
+
+            List<FileAttribute> faAvaibles = GlobalUtils.FileInfoBLLInstance.GetAllDiskFiles(fileBasePath, mpgExePath);
+
+
+            if (faAvaibles.Count > 0)
+            {
+                foreach (var fa in faAvaibles)
+                {
+                    bool isFound = false;
+                    foreach (ListItem sel in lbSelectedFiles.Items)
+                    {
+                        if (sel.Value == fa.FileName)
+                        {
+                            isFound = true;
+                            break;
+                        }
+
+                    }
+
+                    if (!isFound)
+                    {
+                        this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileName, Value = fa.FileName });
+                    }
+
+                }
+            }
+
+            groupMgrSection.Visible = true;
+
+
+            updateProcess.AssociatedUpdatePanelID = null;
+
+
+        }
+
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+            if (!Page.IsPostBack)
+            {
+
+                groupMgrSection.Visible = false;
+            }
+            //UpdatePanel1.TemplateControl.set = false;
+
         }
 
         protected void btnToRight_Click(object sender, EventArgs e)

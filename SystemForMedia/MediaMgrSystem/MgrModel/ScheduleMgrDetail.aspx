@@ -2,6 +2,7 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
+    
         <h3 style="clip: rect(auto, auto, 10px, auto)">计划明细管理</h3>
 
 
@@ -25,15 +26,7 @@
 
             </div>
 
-     
-
-
-             <div style="clear: both" class="clear"></div>
-                  
-
-
-            
-
+                  <div style="clear: both" class="clear"></div>                
 
 
             <div class="form-group">

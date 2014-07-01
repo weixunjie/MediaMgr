@@ -130,46 +130,123 @@ namespace MediaMgrSystem.MgrModel
         {
 
             lbMessage.Visible = false;
-            DateTime dtStart;
-            DateTime dtEnd;
+            DateTime dtStart = DateTime.Now;
+            DateTime dtEnd = DateTime.Now;
 
-            if (DateTime.TryParse(tbStartTime.Value, out dtStart) &&
-                DateTime.TryParse(tbEndTime.Value, out dtEnd))
+
+            bool isStartTimeOk = false;
+
+
+            if (tbStartTime.Value.Length == 5 && tbStartTime.Value.IndexOf(":") == 2)
             {
-                if (dtEnd <= dtStart)
+                if (DateTime.TryParse(tbStartTime.Value, out dtStart))
                 {
 
-                    lbMessage.Text = "结束时间必须大于开始时间";
-                    lbMessage.Visible = true;
-                    return;
-
+                    isStartTimeOk = true;
                 }
+            }
+
+            if (!isStartTimeOk)
+            {
+                lbMessage.Text = "开始时间格式不正确";
+                lbMessage.Visible = true;
+                return;
+            }
+
+
+            bool isEndTimeOk = false;
+            if (tbEndTime.Value.Length == 5 && tbEndTime.Value.IndexOf(":") == 2)
+            {
+                if (DateTime.TryParse(tbEndTime.Value, out dtEnd))
+                {
+
+                    isEndTimeOk = true;
+                }
+            }
+
+            if (!isEndTimeOk)
+            {
+                lbMessage.Text = "结束时间格式不正确";
+                lbMessage.Visible = true;
+                return;
+            }
+
+
+
+            if (dtEnd <= dtStart)
+            {
+                lbMessage.Text = "结束时间必须大于开始时间";
+                lbMessage.Visible = true;
+                return;
+
             }
 
             ScheduleTaskInfo si = new ScheduleTaskInfo();
 
 
-            si.ScheduleId = TbHiddenIdSchedule.Text;
-            si.ScheduleTaskStartTime = tbStartTime.Value;
-            si.ScheduleTaskName = TbName.Text;
-            si.ScheduleTaskPriority = ddPriority.SelectedValue;
-            si.ScheduleTaskEndTime = tbEndTime.Value;
-
-            si.ScheduleTaskProgarmId = ddProgram.SelectedValue;
-
             si.ScheduleTaskSpecialDays = new List<string>();
+
+            si.ScheduleTaskspecialDaysToWeeks = new List<string>();
+
+            string sqlCheckWeeks = string.Empty;
+
+            string sqlSpecDaysWeekInSchedeulWeek = string.Empty;
+
+            string sqlSpecDaysWeekInSpecialDaysWeek = string.Empty;
+
+
+            string sqlWeekInSpecDaysWeek = string.Empty;
+
+            string sqlWeekInScheduleWeek = string.Empty;
 
 
             si.StrDays = "";
             si.StrWeeks = "";
+            si.StrSpecialDaysToWeeks = "";
 
             foreach (ListItem lv in lbSelectedDate.Items)
             {
                 si.ScheduleTaskSpecialDays.Add(lv.Value);
                 si.StrDays += lv.Value + ",";
+
+
+                string strWeek = DateTime.Parse(lv.Value).DayOfWeek.ToString();
+                string weekIndex = string.Empty;
+                switch (strWeek)
+                {
+                    case "Monday":
+                        weekIndex = "1";
+                        break;
+                    case "Tuesday":
+                        weekIndex = "2";
+                        break;
+                    case "Wednesday":
+                        weekIndex = "3";
+                        break;
+                    case "Thursday":
+                        weekIndex = "4";
+                        break;
+                    case "Friday":
+                        weekIndex = "5";
+                        break;
+                    case "Saturday":
+                        weekIndex = "6";
+                        break;
+                    case "Sunday":
+                        weekIndex = "7";
+                        break;
+
+                }
+
+
+
+
+                si.StrSpecialDaysToWeeks += weekIndex + ",";
+                si.ScheduleTaskspecialDaysToWeeks.Add(weekIndex);
+                sqlSpecDaysWeekInSpecialDaysWeek = sqlSpecDaysWeekInSpecialDaysWeek + " SCHEDULETASKSPECIALDAYSTOWEEKS LIKE '%" + weekIndex + "%' OR";
+
+                sqlSpecDaysWeekInSchedeulWeek = sqlSpecDaysWeekInSchedeulWeek + " SCHEDULETASKWEEKS LIKE '%" + weekIndex + "%' OR";
             }
-
-
 
             si.ScheduleTaskWeeks = new List<string>();
             foreach (ListItem lv in CbWeek.Items)
@@ -178,7 +255,44 @@ namespace MediaMgrSystem.MgrModel
                 {
                     si.ScheduleTaskWeeks.Add(lv.Value);
                     si.StrWeeks += lv.Value + ",";
+
+                    sqlWeekInSpecDaysWeek = sqlWeekInSpecDaysWeek + " SCHEDULETASKSPECIALDAYSTOWEEKS LIKE '%" + lv.Value + "%'  OR";
+
+                    sqlWeekInScheduleWeek = sqlWeekInScheduleWeek + " SCHEDULETASKWEEKS LIKE '%" + lv.Value + "%'  OR";
                 }
+            }
+
+            if (!string.IsNullOrWhiteSpace(sqlSpecDaysWeekInSpecialDaysWeek))
+            {
+                if (!string.IsNullOrWhiteSpace(sqlWeekInScheduleWeek))
+                {
+                    sqlCheckWeeks = "AND " + "(" + sqlSpecDaysWeekInSpecialDaysWeek +
+                        sqlSpecDaysWeekInSchedeulWeek +
+                        sqlWeekInSpecDaysWeek +
+                        sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
+                }
+                else
+                {
+                    sqlCheckWeeks = "AND " + "(" + sqlSpecDaysWeekInSpecialDaysWeek + sqlSpecDaysWeekInSchedeulWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
+
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(sqlWeekInScheduleWeek))
+                {
+                    sqlCheckWeeks = "AND " + "(" +
+                        sqlWeekInSpecDaysWeek +
+                        sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
+                }
+
+                
+
+            }
+
+            if (!string.IsNullOrWhiteSpace(si.StrSpecialDaysToWeeks))
+            {
+                si.StrSpecialDaysToWeeks = si.StrSpecialDaysToWeeks.TrimEnd(',');
             }
 
             if (!string.IsNullOrWhiteSpace(si.StrWeeks))
@@ -190,6 +304,26 @@ namespace MediaMgrSystem.MgrModel
             {
                 si.StrDays = si.StrDays.TrimEnd(',');
             }
+
+
+
+            if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskTimeIsOverLap(TbHiddenIdSchedule.Text, tbStartTime.Value, tbEndTime.Value, TbHiddenId.Text, sqlCheckWeeks))
+            {
+                lbMessage.Text = "时间与该计划的其他任务时间段有冲突";
+                lbMessage.Visible = true;
+                return;
+            }
+
+
+
+            si.ScheduleId = TbHiddenIdSchedule.Text;
+            si.ScheduleTaskStartTime = tbStartTime.Value;
+            si.ScheduleTaskName = TbName.Text;
+            si.ScheduleTaskPriority = ddPriority.SelectedValue;
+            si.ScheduleTaskEndTime = tbEndTime.Value;
+
+            si.ScheduleTaskProgarmId = ddProgram.SelectedValue;
+
 
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))

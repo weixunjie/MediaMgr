@@ -27,10 +27,12 @@ namespace MediaMgrSystem.DataModels
 
         public List<String> ScheduleTaskSpecialDays { get; set; }
 
-
+        public List<String> ScheduleTaskspecialDaysToWeeks { get; set; }
         public String StrWeeks { get; set; }
 
         public String StrDays { get; set; }
+
+        public String StrSpecialDaysToWeeks { get; set; }
 
 
 

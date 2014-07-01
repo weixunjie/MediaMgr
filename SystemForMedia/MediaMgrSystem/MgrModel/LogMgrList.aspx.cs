@@ -83,6 +83,13 @@ namespace MediaMgrSystem.MgrModel
         protected void btnClearLog_Click(object sender, EventArgs e)
         {
             GlobalUtils.LogBLLInstance.RemoveLogByDayBefore(ddDateBefore.SelectedValue).ToString();
+
+
+            ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "updateScript", "alert('删除成功！')", true);
+
+         
+
+        
         }
 
 
