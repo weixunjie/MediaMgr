@@ -107,6 +107,7 @@ namespace MediaMgrSystem
         public static ProgramBLL ProgramBLLInstance = new ProgramBLL(DbUtilsInstance);
 
 
+        public static ParamConfigBLL ParamConfigBLLInstance = new ParamConfigBLL(DbUtilsInstance);
         public static UserBLL UserBLLInstance = new UserBLL(DbUtilsInstance);
 
 

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModel\ParamConfig.cs" />
     <Compile Include="DataModel\UserInfo.cs" />
     <Compile Include="DataModel\LogInfo.cs" />
     <Compile Include="DataModel\FileAttribute.cs" />

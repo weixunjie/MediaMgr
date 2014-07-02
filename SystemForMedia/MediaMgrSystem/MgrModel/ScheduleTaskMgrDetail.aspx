@@ -16,7 +16,7 @@
 
         Sys.Application.add_load(EndRequestHandler);
 
-      
+
         function EndRequestHandler() {
 
             $("input[id$=tbSelectDate]").datepicker({
@@ -50,60 +50,61 @@
 
 
 
+    <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Conditional" ChildrenAsTriggers="false" runat="server">
+        <ContentTemplate>
 
 
 
-    <h3 style="clip: rect(auto, auto, 10px, auto)">任务明细管理</h3>
-
-    <asp:Label ID="lbMessage" runat="server" Text="" Visible="false" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
 
 
-    <section>
+            <h3 style="clip: rect(auto, auto, 10px, auto)">任务明细管理</h3>
 
-        <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
-            <p class="text-danger">
-                <asp:Literal runat="server" ID="FailureText" />
-            </p>
-        </asp:PlaceHolder>
-        <div class="form-group" style="margin-bottom: 10px">
-
-            <asp:Label runat="server" AssociatedControlID="TbName" CssClass="col-md-2 control-label" Width="107px">任务名称:</asp:Label>
-
-            <asp:TextBox runat="server" ID="TbName" CssClass="form-control" />
-
-            <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="TbName"
-                ForeColor="Red" ErrorMessage=" 名称不能为空" Height="25px" />
-
-            <asp:TextBox runat="server" ID="TbHiddenId" CssClass="form-control" Visible="False" />
-
-            <asp:TextBox runat="server" ID="TbHiddenIdSchedule" CssClass="form-control" Visible="False" />
-
-        </div>
-
-        <div class="form-group" style="margin-bottom: 10px">
-
-            <asp:Label runat="server" AssociatedControlID="CbWeek" CssClass="col-md-2 control-label" Width="107px">星期:</asp:Label>
+            <asp:Label ID="lbMessage" runat="server" Text="" Visible="false" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
 
 
-            <asp:CheckBoxList ID="CbWeek" runat="server" Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="566px" CssClass="cb">
-                <asp:ListItem Value="1">星期一</asp:ListItem>
-                <asp:ListItem Value="2">星期二</asp:ListItem>
-                <asp:ListItem Value="3">星期三</asp:ListItem>
-                <asp:ListItem Value="4">星期四</asp:ListItem>
-                <asp:ListItem Value="5">星期五</asp:ListItem>
-                <asp:ListItem Value="6">星期六</asp:ListItem>
-                <asp:ListItem Value="7">星期日</asp:ListItem>
-            </asp:CheckBoxList>
+            <section>
+
+                <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
+                    <p class="text-danger">
+                        <asp:Literal runat="server" ID="FailureText" />
+                    </p>
+                </asp:PlaceHolder>
+                <div class="form-group" style="margin-bottom: 10px">
+
+                    <asp:Label runat="server" AssociatedControlID="TbName" CssClass="col-md-2 control-label" Width="107px">任务名称:</asp:Label>
+
+                    <asp:TextBox runat="server" ID="TbName" CssClass="form-control" />
+
+                    <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="TbName"
+                        ForeColor="Red" ErrorMessage=" 名称不能为空" Height="25px" />
+
+                    <asp:TextBox runat="server" ID="TbHiddenId" CssClass="form-control" Visible="False" />
+
+                    <asp:TextBox runat="server" ID="TbHiddenIdSchedule" CssClass="form-control" Visible="False" />
+
+                </div>
+
+                <div class="form-group" style="margin-bottom: 10px">
+
+                    <asp:Label runat="server" AssociatedControlID="CbWeek" CssClass="col-md-2 control-label" Width="107px">星期:</asp:Label>
 
 
-        </div>
+                    <asp:CheckBoxList ID="CbWeek" runat="server" Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="566px" CssClass="cb">
+                        <asp:ListItem Value="1">星期一</asp:ListItem>
+                        <asp:ListItem Value="2">星期二</asp:ListItem>
+                        <asp:ListItem Value="3">星期三</asp:ListItem>
+                        <asp:ListItem Value="4">星期四</asp:ListItem>
+                        <asp:ListItem Value="5">星期五</asp:ListItem>
+                        <asp:ListItem Value="6">星期六</asp:ListItem>
+                        <asp:ListItem Value="7">星期日</asp:ListItem>
+                    </asp:CheckBoxList>
 
 
-        <div class="form-group" style="margin-bottom: 10px">
+                </div>
 
 
-            <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Conditional" ChildrenAsTriggers="false" runat="server">
-                <ContentTemplate>
+                <div class="form-group" style="margin-bottom: 10px">
+
 
 
                     <div style="float: left; width: 200px">
@@ -121,93 +122,94 @@
 
                         <asp:Button ID="btnDelSelected" Width="115px" CssClass="btn primary" Height="30px" Style="margin-right: 15px" Text="删除选中" runat="server" OnClick="btnDelSelected_Click"></asp:Button>
                         <asp:Button ID="btnAddDate" Width="88px" CssClass="btn primary" Height="30px" Style="margin-bottom: 5px" Text="添加日期" runat="server" OnClick="btnAddDate_Click"></asp:Button>
-                </ContentTemplate>
 
-                <Triggers>
-                    <asp:AsyncPostBackTrigger ControlID="btnAddDate" />
-                    <asp:AsyncPostBackTrigger ControlID="btnDelSelected" />
-                </Triggers>
-            </asp:UpdatePanel>
-
-        </div>
+                    </div>
 
 
 
 
 
-        <div class="form-group" style="margin-bottom: 10px">
+                    <div class="form-group" style="margin-bottom: 10px">
 
-            <asp:Label runat="server" AssociatedControlID="btnPreview" CssClass="col-md-2 control-label" Width="107px">节目:</asp:Label>
+                        <asp:Label runat="server" AssociatedControlID="btnPreview" CssClass="col-md-2 control-label" Width="107px">节目:</asp:Label>
 
-            <div style="height: 30px; line-height: 30px; overflow: hidden;">
-                <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddProgram" CssClass="form-control" />
+                        <div style="height: 30px; line-height: 30px; overflow: hidden;">
+                            <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddProgram" CssClass="form-control" style="margin-right:5px" />
 
-                <asp:Button ID="btnPreview" class="btn primary" Width="88px" Height="30px" Style="margin-left: 5px; margin-bottom: 10px; margin-top: 0px; padding-top: 0px" Text=" 试听" runat="server" CssClass="btn primary" OnClick="btnPreview_Click"></asp:Button>
+                         
 
+                            <asp:Button ID="btnPreview"  class="btn primary" Width="88px" Height="30px" Style="; margin-bottom: 10px;" Text=" 试听" runat="server" CssClass="btn primary" OnClick="btnPreview_Click"></asp:Button>
 
-            </div>
+                        </div>
 
-        </div>
+                    </div>
 
-        <div class="form-group" style="margin-bottom: 10px">
-
-
-            <asp:Label runat="server" AssociatedControlID="tbStartTime" CssClass="col-md-2 control-label" Width="107px">开始时间</asp:Label>
-
-            <input type="text" style="margin-top: 10px" runat="server" id="tbStartTime" name="tbStartTime" />
+                    <div class="form-group" style="margin-bottom: 10px">
 
 
-            <asp:RequiredFieldValidator ID="rfStartTime" Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbStartTime"
-                ForeColor="Red" ErrorMessage=" 开始时间不能为空" Height="25px" />
+                        <asp:Label runat="server" AssociatedControlID="tbStartTime" CssClass="col-md-2 control-label" Width="107px">开始时间</asp:Label>
 
-        </div>
-
-
-        <div class="form-group" style="margin-bottom: 10px">
-
-            <asp:Label runat="server" AssociatedControlID="tbEndTime" CssClass="col-md-2 control-label" Width="107px">结束时间</asp:Label>
-
-            <input type="text" style="margin-top: 10px" runat="server" name="tbEndTime" id="tbEndTime" />
+                        <input type="text" style="margin-top: 10px" runat="server" id="tbStartTime" name="tbStartTime" />
 
 
-            <asp:RequiredFieldValidator ID="rfEndTime" Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbEndTime"
-                ForeColor="Red" ErrorMessage=" 结束时间不能为空" Height="25px" />
+                        <asp:RequiredFieldValidator ID="rfStartTime" Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbStartTime"
+                            ForeColor="Red" ErrorMessage=" 开始时间不能为空" Height="25px" />
+
+                    </div>
 
 
-        </div>
+                    <div class="form-group" style="margin-bottom: 10px">
+
+                        <asp:Label runat="server" AssociatedControlID="tbEndTime" CssClass="col-md-2 control-label" Width="107px">结束时间</asp:Label>
+
+                        <input type="text" style="margin-top: 10px" runat="server" name="tbEndTime" id="tbEndTime" />
 
 
-        <div class="form-group" style="margin-bottom: 10px">
-
-            <asp:Label runat="server" AssociatedControlID="cbIsRepeat" CssClass="col-md-2 control-label" Width="107px">顺序播放:</asp:Label>
-
-
-            <asp:CheckBox ID="cbIsRepeat" Text="" runat="server" />
-
-        </div>
+                        <asp:RequiredFieldValidator ID="rfEndTime" Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbEndTime"
+                            ForeColor="Red" ErrorMessage=" 结束时间不能为空" Height="25px" />
 
 
-        <div class="form-group" style="margin-bottom: 10px">
+                    </div>
 
 
-            <asp:Label runat="server" AssociatedControlID="ddPriority" CssClass="col-md-2 control-label" Width="107px">优先级</asp:Label>
+                    <div class="form-group" style="margin-bottom: 10px">
 
-            <asp:DropDownList runat="server" Width="220px" ID="ddPriority" CssClass="form-control" />
-
-
-            <div style="clear: both" class="clear"></div>
-        </div>
+                        <asp:Label runat="server" AssociatedControlID="cbIsRepeat" CssClass="col-md-2 control-label" Width="107px">顺序播放:</asp:Label>
 
 
-        <div class="form-group">
+                        <asp:CheckBox ID="cbIsRepeat" Text="" runat="server" />
 
-            <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Add_Click" />
-            <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Back_Click" />
-
-        </div>
+                    </div>
 
 
-    </section>
+                    <div class="form-group" style="margin-bottom: 10px">
+
+
+                        <asp:Label runat="server" AssociatedControlID="ddPriority" CssClass="col-md-2 control-label" Width="107px">优先级</asp:Label>
+
+                        <asp:DropDownList runat="server" Width="220px" ID="ddPriority" CssClass="form-control" />
+
+
+                        <div style="clear: both" class="clear"></div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Add_Click" />
+                        <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Back_Click" />
+
+                    </div>
+            </section>
+
+        </ContentTemplate>
+
+        <Triggers>
+            <asp:AsyncPostBackTrigger ControlID="btnAddDate" />
+            <asp:AsyncPostBackTrigger ControlID="btnDelSelected" />
+            <asp:AsyncPostBackTrigger ControlID="btnPreview" />
+        </Triggers>
+    </asp:UpdatePanel>
 
 
 

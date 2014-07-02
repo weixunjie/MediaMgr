@@ -1,9 +1,81 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PreviewMP3.aspx.cs" Inherits="MediaMgrSystem.MgrModel.PreviewMP3" %>
 
+<style type="text/css">
 
-<div>
+</style>
 
-    <object id="MediaPlayer" height="64" width="260" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
+
+
+
+
+<div >
+    <object classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
+        type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." width="200" height="100">
+        <param name="AudioStream" value="-1">
+        <param name="AutoSize" value="0">
+        <param name="AutoStart" value="1">
+        <param name="AnimationAtStart" value="0">
+        <param name="AllowScan" value="-1">
+        <param name="AllowChangeDisplaySize" value="-1">
+        <param name="AutoRewind" value="0">
+        <param name="Balance" value="0">
+        <param name="BaseURL" value="">
+        <param name="BufferingTime" value="5">
+        <param name="CaptioningID" value="">
+        <param name="ClickToPlay" value="-1">
+        <param name="CursorType" value="0">
+        <param name="CurrentPosition" value="-1">
+        <param name="CurrentMarker" value="0">
+        <param name="DefaultFrame" value="">
+        <param name="DisplayBackColor" value="0">
+        <param name="DisplayForeColor" value="16777215">
+        <param name="DisplayMode" value="0">
+        <param name="DisplaySize" value="4">
+        <param name="Enabled" value="-1">
+        <param name="EnableContextMenu" value="-1">
+        <param name="EnablePositionControls" value="-1">
+        <param name="EnableFullScreenControls" value="0">
+        <param name="EnableTracker" value="-1">
+        <param name="Filename" value="<% =Request["FileUrl"].ToString() %>">
+        <param name="InvokeURLs" value="-1">
+        <param name="Language" value="-1">
+        <param name="Mute" value="0">
+        <param name="PlayCount" value="1">
+        <param name="PreviewMode" value="0">
+        <param name="Rate" value="1">
+        <param name="SAMILang" value="">
+        <param name="SAMIStyle" value="">
+        <param name="SAMIFileName" value="">
+        <param name="SelectionStart" value="-1">
+        <param name="SelectionEnd" value="-1">
+        <param name="SendOpenStateChangeEvents" value="-1">
+        <param name="SendWarningEvents" value="-1">
+        <param name="SendErrorEvents" value="-1">
+        <param name="SendKeyboardEvents" value="0">
+        <param name="SendMouseClickEvents" value="0">
+        <param name="SendMouseMoveEvents" value="0">
+        <param name="SendPlayStateChangeEvents" value="-1">
+        <param name="ShowCaptioning" value="0">
+        <param name="ShowControls" value="-1">
+        <param name="ShowAudioControls" value="-1">
+        <param name="ShowDisplay" value="0">
+        <param name="ShowGotoBar" value="0">
+        <param name="ShowPositionControls" value="">
+        <param name="ShowStatusBar" value="-1">
+        <param name="ShowTracker" value="0">
+        <param name="TransparentAtStart" value="0">
+        <param name="VideoBorderWidth" value="0">
+        <param name="VideoBorderColor" value="0">
+        <param name="VideoBorder3D" value="0">
+        <param name="Volume" value="-600">
+        <param name="WindowlessVideo" value="0">
+        <embed type="application/x-mplayer2" 
+            pluginspage="http://www.microsoft.com/Windows/Downloads/Contents/Products/MediaPlayer/"
+             name="MediaPlayer" src="<% =Request["FileUrl"].ToString() %>"
+             height="100" width="200"   showaudiocontrols="1" showtracker="0" showdisplay="1" showstatusbar="0" showgotobar="0" showcaptioning="0" autostart="1" autorewind="0" animationatstart="0" transparentatstart="0" allowchangedisplaysize="0" allowscan="0" enablecontextmenu="1" clicktoplay="1"></embed>
+    </object>
+</div>
+<%-- <object id="MediaPlayer" height="64" width="260" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
         <param name="AutoStart" value="1">
         <!--是否自动播放-->
         <param name="Balance" value="0">
@@ -48,6 +120,5 @@
         <!--SAMI语言-->
         <param name="SAMIFilename" value="">
         <!--字幕ID-->
-    </object>
+    </object>--%>
 
-</div>

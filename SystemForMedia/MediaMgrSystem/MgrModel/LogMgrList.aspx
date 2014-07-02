@@ -122,25 +122,17 @@
 
 
                     <div style="height: 30px; line-height: 30px; overflow: hidden;">
-                        <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddDateBefore" CssClass="form-control">
+                        <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddDateBefore" style="margin-right:5px" CssClass="form-control">
                             <asp:ListItem Value="1" Text="1天以前"></asp:ListItem>
                             <asp:ListItem Value="5" Text="5天以前"></asp:ListItem>
                             <asp:ListItem Value="10" Text="10天以前"></asp:ListItem>
                         </asp:DropDownList>
 
-                        <asp:Button ID="btnClearLogs" OnClientClick="return confirm('是否删除时段的日志?');"  class="btn primary" Width="88px" Height="30px" Style="margin-left: 5px; margin-bottom: 10px; margin-top: 0px; padding-top: 0px" Text=" 删除日志" runat="server" CssClass="btn primary" OnClick="btnClearLog_Click"></asp:Button>
-
-
+                        <asp:Button ID="btnClearLogs" OnClientClick="return confirm('是否删除时段的日志?');"  class="btn primary" Width="88px" Height="30px" Style="margin-bottom: 10px;" Text=" 删除日志" runat="server" CssClass="btn primary" OnClick="btnClearLog_Click"></asp:Button>
                     </div>
-
-
-
                 </div>
-
             </ContentTemplate>
         </asp:UpdatePanel>
-
-
     </section>
 
 

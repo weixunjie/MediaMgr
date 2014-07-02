@@ -18,8 +18,7 @@
 
         %>
 
-
-     
+             
 
         $.showEncoderMenu = function () {
 

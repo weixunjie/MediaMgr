@@ -95,6 +95,7 @@ namespace MediaMgrSystem.MgrModel
 
                 groupMgrSection.Visible = false;
             }
+
             //UpdatePanel1.TemplateControl.set = false;
 
         }
@@ -210,6 +211,15 @@ namespace MediaMgrSystem.MgrModel
             pi.ProgramName = this.TbProgrmeName.Text;
 
 
+
+
+            if (this.lbSelectedFiles.Items.Count <= 0)
+            {
+                ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alert", "alert('请至少选择一个文件');", true);
+
+                return;
+            }
+
             if (this.lbSelectedFiles.Items.Count > 0)
             {
                 pi.MappingFiles = new List<FileAttribute>();
@@ -218,6 +228,7 @@ namespace MediaMgrSystem.MgrModel
                     pi.MappingFiles.Add(new FileAttribute() { FileName = item.Value });
                 }
             }
+
 
 
 
@@ -231,6 +242,7 @@ namespace MediaMgrSystem.MgrModel
                 GlobalUtils.ProgramBLLInstance.AddPrograme(pi);
 
             }
+
 
             Response.Redirect("~/MgrModel/ProgramMgrList.aspx");
         }

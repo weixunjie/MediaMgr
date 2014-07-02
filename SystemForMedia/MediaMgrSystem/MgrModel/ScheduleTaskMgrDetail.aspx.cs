@@ -286,7 +286,7 @@ namespace MediaMgrSystem.MgrModel
                         sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
                 }
 
-                
+
 
             }
 
@@ -371,9 +371,15 @@ namespace MediaMgrSystem.MgrModel
 
                         string fileUrl = ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
 
-                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
+                        //string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
 
-                        Response.Write("<script language='javascript'>window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');</script>");
+                        string baseUrl= Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.IndexOf(Request.RawUrl));
+                        string playMap3Page = baseUrl+fileUrl;
+
+                        ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
+
+                        //    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
+
                         //  Response.Write("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
                     }
 

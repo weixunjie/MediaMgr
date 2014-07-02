@@ -99,7 +99,6 @@ namespace MediaMgrSystem
 
                         if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
                         {
-
                             ComuResponseBase cr = new ComuResponseBase();
 
                             cr.guidId = scheduleTaskGuidId;
@@ -198,7 +197,7 @@ namespace MediaMgrSystem
                         port = 1234 + intCID;
                     }
 
-                    cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:"+port.ToString();
+                    cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:" + port.ToString();
 
 
                     List<string> clientsIpToSend = new List<string>();
@@ -228,9 +227,10 @@ namespace MediaMgrSystem
 
 
 
+                    ParamConfig pc = GlobalUtils.ParamConfigBLLInstance.GetParamConfig();
 
-                    int intBufTime = isSchedule?5000:4000;
-         
+                    int intBufTime = isSchedule ? pc.BufferTimeForSchedule : pc.BufferTimeForManualPlay;
+
 
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
@@ -470,8 +470,8 @@ namespace MediaMgrSystem
                 {
                     cmdType = isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
                 }
-                
-          
+
+
 
                 PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime);
 

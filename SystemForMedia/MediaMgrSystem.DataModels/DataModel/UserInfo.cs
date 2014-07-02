@@ -6,23 +6,12 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class UserInfo
+    public class ParamConfig
     {
-        public String UserId { get; set; }
+        public int BufferTimeForManualPlay { get; set; }
 
-        public String UserCode { get; set; }
-
-        public String UserName { get; set; }
-
-        public String UserLevel { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public string Password
-        {
-            get;
-            set;
-        }
+        public int BufferTimeForSchedule { get; set; }
+    
 
     }
 
