@@ -68,7 +68,7 @@
 
 
 
-        <div class='container' style="padding-left: 5px">
+        <div class='container'>
 
             <div class='navbar navbar-inverse  '>
 
@@ -140,7 +140,7 @@
         </div>
 
 
-        <div class="container body-content">
+        <div class="container body-content" style="padding-left:8px">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>

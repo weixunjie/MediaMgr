@@ -100,9 +100,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             else
             {
-                String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID) values ('{0}','{1}','{2}')";
+                String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID,ISUSEDFORAUDIO,ISUSEDFORENCODER) values ('{0}','{1}','{2}','{3}','{4}')";
 
-                sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId);
+                sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0);
 
 
                 return dbUitls.ExecuteNonQuery(sqlStr);
@@ -115,9 +115,10 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int UpdateDevice(DeviceInfo di)
         {
-            String sqlStr = "UPDATE DEVICEINFO SET DEVICENAME='{0}',DEVICEIPADDRESS='{1}',GROUPID='{2}' WHERE DEVICEID={3}";
 
-            sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.DeviceId);
+            String sqlStr = "UPDATE DEVICEINFO SET DEVICENAME='{0}',DEVICEIPADDRESS='{1}',GROUPID='{2}',ISUSEDFORAUDIO='{3}',ISUSEDFORENCODER='{4}' WHERE DEVICEID={5}";
+
+            sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.DeviceId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -153,6 +154,11 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         di.DeviceName = dt.Rows[i]["DEVICENAME"].ToString();
                         di.DeviceIpAddress = dt.Rows[i]["DEVICEIPADDRESS"].ToString();
                         di.GroupId = dt.Rows[i]["GROUPID"].ToString();
+
+
+                        di.UsedToAudioBroandcast = dt.Rows[i]["ISUSEDFORAUDIO"].ToString() == "1";
+
+                        di.UsedToVideoOnline = dt.Rows[i]["ISUSEDFORENCODER"].ToString() == "1";
 
 
                         deviceInfos.Add(di);

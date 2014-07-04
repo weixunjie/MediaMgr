@@ -40,7 +40,7 @@
             </div>
 
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top:10px" >
                 <asp:Button runat="server" Text="新增通道" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
             </div>
 

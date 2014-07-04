@@ -134,6 +134,11 @@ namespace MediaMgrSystem.MgrModel
             DateTime dtEnd = DateTime.Now;
 
 
+            if (string.IsNullOrWhiteSpace(tbStartTime.Value) || string.IsNullOrWhiteSpace(tbEndTime.Value))
+            {
+                return;
+            }
+
             bool isStartTimeOk = false;
 
 
@@ -170,9 +175,7 @@ namespace MediaMgrSystem.MgrModel
                 lbMessage.Visible = true;
                 return;
             }
-
-
-
+            
             if (dtEnd <= dtStart)
             {
                 lbMessage.Text = "结束时间必须大于开始时间";
@@ -183,6 +186,7 @@ namespace MediaMgrSystem.MgrModel
 
             ScheduleTaskInfo si = new ScheduleTaskInfo();
 
+           
 
             si.ScheduleTaskSpecialDays = new List<string>();
 
@@ -373,8 +377,8 @@ namespace MediaMgrSystem.MgrModel
 
                         //string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
 
-                        string baseUrl= Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.IndexOf(Request.RawUrl));
-                        string playMap3Page = baseUrl+fileUrl;
+                        string baseUrl = Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.IndexOf(Request.RawUrl));
+                        string playMap3Page = baseUrl + fileUrl;
 
                         ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
 

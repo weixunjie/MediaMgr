@@ -20,7 +20,7 @@ namespace MediaMgrSystem.MgrModel
             {
                 Response.Redirect("~/Login.aspx");
             }
- 
+
             if (!Page.IsPostBack)
             {
 
@@ -49,8 +49,11 @@ namespace MediaMgrSystem.MgrModel
                     this.TbName.Text = di.DeviceName;
                     this.TBIPAddress.Text = di.DeviceIpAddress;
 
+                    cbFunction.Items[0].Selected = di.UsedToAudioBroandcast;
 
+                    cbFunction.Items[1].Selected = di.UsedToVideoOnline;
 
+                    
                     var found = ddGroups.Items.FindByValue(di.GroupId);
 
                     if (found != null)
@@ -61,6 +64,10 @@ namespace MediaMgrSystem.MgrModel
 
                 }
 
+                else
+                {
+                    cbFunction.Items[0].Selected = true;
+                }
 
 
             }
@@ -81,11 +88,11 @@ namespace MediaMgrSystem.MgrModel
             di.DeviceIpAddress = this.TBIPAddress.Text;
 
 
-
-
             di.GroupId = ddGroups.SelectedItem.Value;
 
+            di.UsedToAudioBroandcast = cbFunction.Items[0].Selected;
 
+            di.UsedToVideoOnline = cbFunction.Items[1].Selected;
 
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
@@ -96,11 +103,11 @@ namespace MediaMgrSystem.MgrModel
             }
             else
             {
-                if (deviceBLL.AddDevice(di)==-1)
+                if (deviceBLL.AddDevice(di) == -1)
                 {
                     lbMessage.Text = "不能添加终端，端已经达到最大数量";
                     lbMessage.Visible = true;
-              
+
                     return;
                 }
             }

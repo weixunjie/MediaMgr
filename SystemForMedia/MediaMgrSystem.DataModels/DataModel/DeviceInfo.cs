@@ -18,6 +18,10 @@ namespace MediaMgrSystem.DataModels
 
         public String GroupName { get; set; }
 
+        public bool UsedToVideoOnline { get; set; }
+
+        public bool UsedToAudioBroandcast { get; set; }
+
 
     }
 

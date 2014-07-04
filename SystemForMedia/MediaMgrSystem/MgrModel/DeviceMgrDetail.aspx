@@ -3,6 +3,23 @@
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
 
+    <style>
+        .cb td {
+            width: 230px;
+            text-align: center;
+        }
+
+        .cb label {
+            float: left;
+            display: inline-block;
+        }
+
+        .cb input {
+            float: left;
+        }
+    </style>
+
+
 
     <h3 style="clip: rect(auto, auto, 10px, auto)">设备明细管理</h3>
 
@@ -39,19 +56,32 @@
             <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="TBIPAddress"
                 ForeColor="Red" ErrorMessage=" IP地址不能为空" Height="25px" />
 
+        </div>
+
+        <div class="form-group" style="margin-bottom: 10px">
+
+            <asp:Label runat="server" AssociatedControlID="cbFunction" CssClass="col-md-2 control-label" Width="107px">功能:</asp:Label>
+
+
+            <asp:CheckBoxList ID="cbFunction" runat="server" Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="566px" CssClass="cb">
+                <asp:ListItem Value="1">音频广播</asp:ListItem>
+                <asp:ListItem Value="2">视频直播</asp:ListItem>
+
+
+            </asp:CheckBoxList>
+
 
         </div>
 
         <div class="form-group" style="margin-bottom: 10px">
 
-            <asp:Label runat="server" AssociatedControlID="TBIPAddress" CssClass="col-md-2 control-label" Width="107px">所在组:</asp:Label>
+            <asp:Label runat="server" AssociatedControlID="ddGroups" CssClass="col-md-2 control-label" Width="107px">所在组:</asp:Label>
 
             <asp:DropDownList runat="server" Width="220px" ID="ddGroups" CssClass="form-control" />
 
 
         </div>
-
-
+        
 
         <div class="form-group">
 

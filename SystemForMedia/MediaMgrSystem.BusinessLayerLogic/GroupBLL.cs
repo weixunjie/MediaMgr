@@ -87,7 +87,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
             {
                 foreach (var device in gi.Devices)
                 {
-                    String sqlStrUpdateDevice = "UPDATE DEVICEINFO SET GROUPID='-1' WHERE DEVICEID={1}";
+                    String sqlStrUpdateDevice = "UPDATE DEVICEINFO SET GROUPID='-1' WHERE DEVICEID={0}";
 
                     sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice, device.DeviceId);
 

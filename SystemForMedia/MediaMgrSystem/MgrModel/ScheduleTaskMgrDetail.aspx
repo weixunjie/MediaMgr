@@ -50,7 +50,7 @@
 
 
 
-    <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Conditional" ChildrenAsTriggers="false" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel1"  runat="server">
         <ContentTemplate>
 
 
@@ -204,11 +204,6 @@
 
         </ContentTemplate>
 
-        <Triggers>
-            <asp:AsyncPostBackTrigger ControlID="btnAddDate" />
-            <asp:AsyncPostBackTrigger ControlID="btnDelSelected" />
-            <asp:AsyncPostBackTrigger ControlID="btnPreview" />
-        </Triggers>
     </asp:UpdatePanel>
 
 
