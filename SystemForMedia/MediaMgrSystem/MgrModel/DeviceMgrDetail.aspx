@@ -79,7 +79,6 @@
 
             <asp:DropDownList runat="server" Width="220px" ID="ddGroups" CssClass="form-control" />
 
-
         </div>
         
 
@@ -87,10 +86,8 @@
 
             <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Add_Click" />
             <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Back_Click" />
-
         </div>
-
-
+        
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
             </div>
