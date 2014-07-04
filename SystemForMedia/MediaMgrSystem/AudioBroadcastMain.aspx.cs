@@ -163,9 +163,7 @@ namespace MediaMgrSystem
         {
             GlobalUtils.GroupBLLInstance.UpdateGroupEncoder(gid, cid);
         }
-
-
-   
+          
         
 
         [WebMethod]
@@ -197,9 +195,7 @@ namespace MediaMgrSystem
 
             if (gis != null && gis.Count > 0)
             {
-
                 return gis[0].EncoderId;
-
             }
 
             return string.Empty;

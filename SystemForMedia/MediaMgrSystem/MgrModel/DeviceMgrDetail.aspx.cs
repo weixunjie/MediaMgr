@@ -73,6 +73,7 @@ namespace MediaMgrSystem.MgrModel
 
         protected void Add_Click(object sender, EventArgs e)
         {
+            lbMessage.Visible = false;
             DeviceInfo di = new DeviceInfo();
 
             di.DeviceName = TbName.Text;
@@ -95,7 +96,13 @@ namespace MediaMgrSystem.MgrModel
             }
             else
             {
-                deviceBLL.AddDevice(di);
+                if (deviceBLL.AddDevice(di)==-1)
+                {
+                    lbMessage.Text = "不能添加终端，端已经达到最大数量";
+                    lbMessage.Visible = true;
+              
+                    return;
+                }
             }
 
             Response.Redirect("~/MgrModel/DeviceMgrList.aspx");

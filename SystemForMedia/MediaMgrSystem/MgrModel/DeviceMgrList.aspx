@@ -13,13 +13,15 @@
 
             <h3>设备信息管理</h3>
 
+          
+
             <section id="groupMgrSection">
                 <div class="form-horizontal">
 
                     <div class="form-group">
 
                         <div class="col-md-10">
-                            <asp:GridView ID="dvList" AllowPaging="true" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound"  OnPageIndexChanging="dvList_PageIndexChanging" >
+                            <asp:GridView ID="dvList" AllowPaging="true" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound" OnPageIndexChanging="dvList_PageIndexChanging">
                                 <Columns>
                                     <asp:BoundField DataField="DeviceId" HeaderText="编号" />
                                     <asp:BoundField DataField="DeviceName" HeaderText="名称" />

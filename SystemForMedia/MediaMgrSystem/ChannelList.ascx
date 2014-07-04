@@ -306,7 +306,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "Default.aspx/GetScheduleByChannelId",
+                url: "AudioBroadcastMain.aspx/GetScheduleByChannelId",
                 data: "{'cid':'" + currentOperChannelId + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -333,7 +333,7 @@
             $.ajax({
                 type: "POST",
                 async: true,
-                url: "Default.aspx/SaveSchedule",
+                url: "AudioBroadcastMain.aspx/SaveSchedule",
                 data: "{'cid':'" + currentOperChannelId + "',sid:'" + currentOperScheduel + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",

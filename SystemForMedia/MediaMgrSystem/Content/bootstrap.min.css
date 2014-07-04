@@ -2536,11 +2536,11 @@ table td[class*="span"], table th[class*="span"], .row-fluid table td[class*="sp
         white-space: nowrap;
     }
 
-        .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-submenu:hover > a, .dropdown-submenu:focus > a {
+        .dropdown-menu-spec > li > a:hover, .dropdown-menu-spec > li > a:focus, .dropdown-submenu:hover > a, .dropdown-submenu:focus > a {
             
-            /*background-image: linear-gradient(to bottom,#08c,#0077b3);
+            background-image: linear-gradient(to bottom,#08c,#0077b3);
             background-repeat: repeat-x;
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0077b3',GradientType=0);*/
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0077b3',GradientType=0);
         }
 
     .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {

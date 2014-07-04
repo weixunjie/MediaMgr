@@ -5,7 +5,10 @@
 
 
     <h3 style="clip: rect(auto, auto, 10px, auto)">设备明细管理</h3>
-    
+
+    <asp:Label ID="lbMessage" runat="server" Text="" Visible="false" ForeColor="Red" Font-Size="Larger" Height="30px"></asp:Label>
+
+
     <section id="groupMgrSection">
 
         <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
@@ -46,7 +49,7 @@
             <asp:DropDownList runat="server" Width="220px" ID="ddGroups" CssClass="form-control" />
 
 
-        </div>     
+        </div>
 
 
 
@@ -57,7 +60,7 @@
 
         </div>
 
-        
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
             </div>

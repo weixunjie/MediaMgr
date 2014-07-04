@@ -1,4 +1,5 @@
 ﻿using MediaMgrSystem.BusinessLayerLogic;
+using MediaMgrSystem.DataAccessLayer;
 using MediaMgrSystem.DataModels;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace MediaMgrSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Session["IsLoginPageNow"] = true;
+            //string a=EncryptUtils.DesEncrypt("30");
+            //Session["IsLoginPageNow"] = true;
         }
 
         protected void Login_Click(object sender, EventArgs e)
@@ -23,11 +25,11 @@ namespace MediaMgrSystem
             UserInfo ui = GlobalUtils.UserBLLInstance.GetUserByCritiea(tbUserName.Text, tbPassword.Text);
 
             if (ui != null)
-            {
+            {              
                 Session["UserId"] = ui.UserId;
                 Session["UserName"] = ui.UserName;
                 Session["IsSuperUser"]=ui.UserLevel=="1"?"1":null;
-                Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/AudioBroadcastMain.aspx");
             }
             else
             {

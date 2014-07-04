@@ -11,6 +11,8 @@ namespace MediaMgrSystem.DataModels
         public int BufferTimeForManualPlay { get; set; }
 
         public int BufferTimeForSchedule { get; set; }
+
+        public int MaxClientsCount { get; set; }
     
 
     }

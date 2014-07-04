@@ -12,7 +12,7 @@
 
 
 </head>
-<body  >
+<body>
 
     <form runat="server">
 
@@ -60,53 +60,76 @@
 
         <script type="text/javascript" src="/Scripts/jquery-ui-datepicker-zh-CN.js"></script>
 
-      
-        <div class='container' style="padding-left:5px" >
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.dropdown-toggle').dropdown();
+            });
+        </script>
 
-            <div class='navbar navbar-inverse  ' >
+
+
+        <div class='container' style="padding-left: 5px">
+
+            <div class='navbar navbar-inverse  '>
 
                 <div class='navbar-inner nav-collapse ' style="height: auto">
 
                     <ul class="nav navbar-nav" style="padding-left: 0px; margin-left: 0px">
-                        <li style="padding-left:0px; height:20px; vertical-align:middle">
+                        <li style="padding-left: 0px; height: 20px; vertical-align: middle">
 
 
-                            <a style="padding-left:0px; height:20px; " class="navbar-brand" runat="server">管理后台</a>
-                       
+                            <a style="padding-left: 0px; height: 20px;" class="navbar-brand" runat="server">管理后台</a>
+
 
 
                         </li>
-                 
+
                     </ul>
                     <% if (Session["UserId"] != null)
                        { %>>
                     <ul class="nav navbar-nav " style="float: right">
-                        <li><a href="/Default.aspx">主页</a></li>
+                        <li><a href="/AudioBroadcastMain.aspx">音频广播</a></li>
 
-                        <li><a href="/MgrModel/ProgramMgrList.aspx">节目管理 </a></li>
 
-                        <li><a href="/MgrModel/GroupMgrList.aspx">分组管理 </a></li>
+                        <li class="dropdown" id="accountmenu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
+                            <ul class="dropdown-menu-spec dropdown-menu "style="min-width:80px"  >
+                                <li><a href="/MgrModel/ProgramMgrList.aspx">节目管理 </a></li>
 
-                        <li><a href="/MgrModel/DeviceMgrList.aspx">设备管理</a></li>
+                               
+                                <li><a  href="/MgrModel/GroupMgrList.aspx">分组管理 </a></li>
 
-                        <li><a href="/MgrModel/EncoderMgrList.aspx">视频源管理</a></li>
+                                 
+                                <li><a href="/MgrModel/DeviceMgrList.aspx">设备管理</a></li>
 
-                        <li><a href="/MgrModel/ChannelMgrList.aspx">通道管理</a></li>
+                                  
+                                <li><a  href="/MgrModel/EncoderMgrList.aspx">视频源管理</a></li>
 
-                        <li><a href="/MgrModel/ScheduleMgrList.aspx">计划管理</a></li>
+                                 
+                                <li><a  href="/MgrModel/ChannelMgrList.aspx">通道管理</a></li>
 
-                        <% 
+                                
+                                <li><a  href="/MgrModel/ScheduleMgrList.aspx">计划管理</a></li>
+
+                                <% 
                            if (Session["IsSuperUser"] != null)
                            {
                                if (Session["IsSuperUser"].ToString() == "1")
                                {
-                        %>
+                                %>
 
-                        <li><a href="/MgrModel/LogMgrList.aspx">日志管理</a></li>
+                              
+                                <li><a  href="/MgrModel/LogMgrList.aspx">日志管理</a></li>
 
-                        <li><a href="/MgrModel/UserMgrList.aspx">用户管理</a></li>
-                        <% }
-                           } %>
+                                
+                                <li><a  href="/MgrModel/UserMgrList.aspx">用户管理</a></li>
+                                <% }
+                           }
+                                %>
+                            </ul>
+                        </li>
+                        
+
                         <li><a href="/LogOut.aspx">您好,<% =Session["UserName"].ToString() %></a></li>
 
                         <% } %>
@@ -120,8 +143,6 @@
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
-
-
         </div>
 
     </form>

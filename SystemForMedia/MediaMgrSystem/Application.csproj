@@ -234,7 +234,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Default.aspx" />
+    <Content Include="AudioBroadcastMain.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
@@ -387,12 +387,12 @@
       <DependentUpon>ChannelList.ascx</DependentUpon>
     </Compile>
     <Compile Include="GlobalUtils.cs" />
-    <Compile Include="Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="AudioBroadcastMain.aspx.cs">
+      <DependentUpon>AudioBroadcastMain.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="AudioBroadcastMain.aspx.designer.cs">
+      <DependentUpon>AudioBroadcastMain.aspx</DependentUpon>
     </Compile>
     <Compile Include="DeviceList.ascx.cs">
       <DependentUpon>DeviceList.ascx</DependentUpon>

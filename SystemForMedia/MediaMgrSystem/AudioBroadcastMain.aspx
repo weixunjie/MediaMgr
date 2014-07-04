@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="校园播放系统管理" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true"
-    CodeBehind="Default.aspx.cs" Inherits="MediaMgrSystem._Default" %>
+    CodeBehind="AudioBroadcastMain.aspx.cs" Inherits="MediaMgrSystem._Default" %>
 
 
 
@@ -31,7 +31,7 @@
         var is_popup_2nd_menu = false;
 
         var is_popup_1st_menu = false;
-        
+
 
         $(document).ready(function () {
 
@@ -39,39 +39,33 @@
             $.connection.hub.start();
 
             chat.connection.stateChanged(function (change) {
-                if (change.newState === $.signalR.connectionState.disconnected) {                    
+                if (change.newState === $.signalR.connectionState.disconnected) {
                     chat = $.connection.MediaMgrHub;
                     $.connection.hub.start();
-                 
-                    
+
                 }
                 else if (change.newState === $.signalR.connectionState.connected) {
-                   
+
                 }
             });
             chat.client.sendRefreshDeviceMessge = function (result) {
-                 
                 loadDeviceList();
-
             }
 
             chat.client.sendRefreshLogMessge = function (result) {
-
                 loadLogList();
-
             }
 
             loadDeviceList();
             loadLogList();
 
-     
-     
-            function loadDeviceList()
-            {
+
+
+            function loadDeviceList() {
                 $.ajax({
                     async: false,
                     type: "POST",
-                    url: "Default.aspx/RangerUserControl",
+                    url: "AudioBroadcastMain.aspx/RangerUserControl",
                     data: "{'controlName':'DeviceList'}",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
@@ -88,7 +82,7 @@
                 $.ajax({
                     async: false,
                     type: "POST",
-                    url: "Default.aspx/RangerUserControl",
+                    url: "AudioBroadcastMain.aspx/RangerUserControl",
                     data: "{'controlName':'LogList'}",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
@@ -106,7 +100,7 @@
     </script>
 
 
-    <div style="width: 250px; height: 160%; float: left; margin-left:10px; text-align: center">
+    <div style="width: 250px; height: 160%; float: left; margin-left: 10px; text-align: center">
 
         <channelList:ChannelList ID="cList" runat="server" />
 
@@ -125,7 +119,7 @@
     <div style="clear: both;">
     </div>
 
-    
+
     <div id="divforLogs" style="margin-left: 390px">
 
         <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>

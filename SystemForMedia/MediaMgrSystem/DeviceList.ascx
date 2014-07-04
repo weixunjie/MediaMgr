@@ -21,8 +21,26 @@
 
 
 
-    string deviceIds = string.Empty; for (int i = 1; i <= 1; i++) { deviceIds = deviceIds + "#deviceMenu" + i.ToString() + ","; }; deviceIds = deviceIds.TrimEnd(',');
-    string imgGroupShowIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { if (dGroups[i].GroupId == "-1") { continue; } imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ","; }; imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
+    string deviceIds = string.Empty;
+    string imgGroupShowIds = string.Empty;
+    int tmpDeviceIndex = 0;
+    for (int i = 0; i < dGroups.Count; i++)
+    {
+        if (dGroups[i] != null && dGroups[i].Devices != null && dGroups[i].Devices.Count > 0)
+        {
+
+            foreach (var di in dGroups[i].Devices)
+            {
+                tmpDeviceIndex++;
+                deviceIds = deviceIds + "#deviceMenu" + tmpDeviceIndex + ",";
+            }
+        }
+
+        if (dGroups[i].GroupId == "-1") { continue; } imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ",";
+    };
+
+    deviceIds = deviceIds.TrimEnd(',');
+    imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
 
     string btnMenuChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMenuChannelSelIds = btnMenuChannelSelIds + "#btnMenuChannelSel" + channels[i].ChannelId + ","; }; btnMenuChannelSelIds = btnMenuChannelSelIds.TrimEnd(',');
 
@@ -48,7 +66,7 @@
                 $.ajax({
                     type: "POST",
                     async: false,
-                    url: "Default.aspx/SaveGroupChannelAndEncoder",
+                    url: "AudioBroadcastMain.aspx/SaveGroupChannelAndEncoder",
                     data: "{'cid':'" + selectedChannelId + "',gid:'" + selectedGroupId + "','eid':'" + selectedEncoderId + "'}",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
@@ -72,7 +90,7 @@
 
 
         $("#btnSingleGroupChooseChannel").click(function (e) {
-                   
+
             $("#deviceListSingleGroupChooseEncoderMenu").hide();
 
             is_popup_2nd_menu = true;
@@ -83,7 +101,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "Default.aspx/GetChannelByGroupId",
+                url: "AudioBroadcastMain.aspx/GetChannelByGroupId",
                 data: "{'gid':'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -107,7 +125,7 @@
             $.ajax({
                 type: "POST",
                 async: true,
-                url: "Default.aspx/SaveGroupChannel",
+                url: "AudioBroadcastMain.aspx/SaveGroupChannel",
                 data: "{'cid':'" + currentOperChannel + "',gid:'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -130,8 +148,7 @@
         $("#btnSingleGroupChooseEncoder").click(function (e) {
 
 
-
-     
+            
             $("#deviceListSingleGroupChooseChannelMenu").hide()
 
 
@@ -144,7 +161,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "Default.aspx/GetEncoderByGroupId",
+                url: "AudioBroadcastMain.aspx/GetEncoderByGroupId",
                 data: "{'gid':'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -171,7 +188,7 @@
             $.ajax({
                 type: "POST",
                 async: true,
-                url: "Default.aspx/SaveGroupEncoder",
+                url: "AudioBroadcastMain.aspx/SaveGroupEncoder",
                 data: "{'cid':'" + currentOperEncoder + "',gid:'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -192,14 +209,10 @@
 
         $.showGroupClickMenu = function () {
 
+                        $("<%= imgGroupShowIds %>").click(function (e) {
 
-            $("<%= imgGroupShowIds %>").click(function (e) {
 
-
-                $("#deviceListSingleGroupClickMenuBox").hide();
-                $("#deviceListSingleGroupChooseChannelMenu").hide()
-            
-                $("#deviceListSingleGroupChooseEncoderMenu").hide();
+                hideAllNenus();
 
                 currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
 
@@ -221,18 +234,61 @@
             $(document).click(function () {
 
                 if (!is_popup_1st_menu && !is_popup_2nd_menu) {
-                    $("#deviceListSingleGroupClickMenuBox").hide();
-                    $("#deviceListSingleGroupChooseChannelMenu").hide()
-                    $("#encoderListEncoderClickMenuBox").hide();
-                    $("#channelListChannelClickMenuBox").hide();
-                    $("#channelListChannelChooseScheduleMenu").hide()
-                    $("#deviceListSingleGroupChooseEncoderMenu").hide();
+
+                    hideAllNenus();
                 }
             });
 
         }
 
+        function hideAllNenus() {
+            $("#deviceListSingleGroupClickMenuBox").hide();
+            $("#deviceListSingleGroupChooseChannelMenu").hide()
+            $("#encoderListEncoderClickMenuBox").hide();
+            $("#channelListChannelClickMenuBox").hide();
+            $("#channelListChannelChooseScheduleMenu").hide()
+            $("#deviceListSingleGroupChooseEncoderMenu").hide();
+            $("#deviceListSingleDeviceMenu").hide();
+
+        }
+
         $.showGroupClickMenu();
+
+
+        $.showSingleDeviceClickMenu = function () {
+            
+            $("<%= deviceIds %>").click(function (e) {
+
+
+                hideAllNenus();
+
+                currentOperGroup = e.currentTarget.id.replace("deviceMenu", "");
+
+                is_popup_1st_menu = true;
+
+                var x = $(this).offset().left;
+                var y = $(this).offset().top + $(this).height() + 2;
+
+
+                $("#deviceListSingleDeviceMenu").show().css("left", x).css("top", y);
+
+
+            });
+
+            $("<%= deviceIds %>").mouseout(function (e) {
+                is_popup_1st_menu = false;
+            });
+
+            $(document).click(function () {
+
+                if (!is_popup_1st_menu && !is_popup_2nd_menu) {
+                    hideAllNenus();
+                }
+            });
+
+        }
+
+        $.showSingleDeviceClickMenu();
 
 
 
@@ -261,7 +317,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "Default.aspx/SaveDeviceGroup",
+                url: "AudioBroadcastMain.aspx/SaveDeviceGroup",
                 data: "{'deivceId':'" + a + "','groupId':'<% =dGroups[i].GroupId %>'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -309,7 +365,7 @@
         <thead>
             <tr>
 
-                    <th style="line-height:30px">
+                <th style="line-height: 30px">
                     <div class="row" style="margin-left: 0px">
 
                         <div class="pull-left"><%=dGroups[l].GroupName %></div>
@@ -348,9 +404,11 @@
                                                if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                {
                                                    srcName = "Images/ic_image_device_offline.png";
-                                               }
+                                               }                                  
                                                
                                             %>
+
+
 
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
@@ -384,7 +442,7 @@
         <thead>
             <tr>
 
-                <th style="line-height:30px">
+                <th style="line-height: 30px">
                     <div class="row" style="margin-left: 0px">
 
                         <div class="pull-left">分组信息</div>
@@ -551,6 +609,14 @@
         <li><a class="btn  btn-default" style="margin-bottom: 3px; font-weight: normal" name="<% =encoders[i].EncoderName %>" id="btnMenuEncoderSel<% =encoders[i].EncoderId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =encoders[i].EncoderName %></a></li>
         <%}%>
     </ul>
+
+    <ul class="dropdown-menu" role="menu"
+        aria-labelledby="dropdownMenu" id="deviceListSingleDeviceMenu">
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnOpenDevice" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开设备</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnCloseDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭设备</a></li>
+
+    </ul>
+
 
     <!-- save sort order here which can be retrieved on server on postback -->
 

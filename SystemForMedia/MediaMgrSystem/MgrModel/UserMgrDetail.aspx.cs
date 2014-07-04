@@ -47,17 +47,10 @@ namespace MediaMgrSystem.MgrModel
                     UserInfo ui = GlobalUtils.UserBLLInstance.GetUserById(id);
 
                     this.tbUserCode.Text = ui.UserCode;
-                    this.tbName.Text = ui.UserName;
-
-
-
+                    this.tbName.Text = ui.UserName;              
                     tbPassword.Attributes.Add("value", ui.Password);
-
                     tbConfimedPass.Attributes.Add("value", ui.Password);
-
-
                     this.chIsAcitve.Checked = ui.IsActive;
-
                     this.ddUserLevel.SelectedValue = ui.UserLevel;
 
                 }
@@ -97,8 +90,7 @@ namespace MediaMgrSystem.MgrModel
 
             ui.Password = tbPassword.Text;
 
-
-
+            
             if (!string.IsNullOrEmpty(tbHiddenId.Text))
             {
                 ui.UserId = tbHiddenId.Text;

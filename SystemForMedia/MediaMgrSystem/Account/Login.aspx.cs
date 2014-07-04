@@ -20,7 +20,7 @@ namespace MediaMgrSystem.Account
             if (UserName.Text == "admin")
             {
                 Session["UserName"] = UserName;
-                Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/AudioBroadcastMain.aspx");
             }
         }
     }

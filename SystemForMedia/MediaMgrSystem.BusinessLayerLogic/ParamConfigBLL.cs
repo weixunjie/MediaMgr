@@ -40,7 +40,34 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                     string tmpBufferTimeForSchedule = dt.Rows[0]["BufferTimeForSchedule"].ToString();
 
+                    string tmpMaxClientsCount = dt.Rows[0]["MaxClientsCount"].ToString();
+
                     int tmp;
+
+
+                    if (!string.IsNullOrWhiteSpace(tmpMaxClientsCount))
+                    {
+                        try
+                        {
+                            string plainMaxClientCount = EncryptUtils.DesDecrypt(tmpMaxClientsCount);
+
+
+                            if (int.TryParse(plainMaxClientCount, out tmp))
+                            {
+
+                                pc.MaxClientsCount = tmp;
+
+                            }
+
+
+                        }
+                        catch (Exception ex)
+                        {
+                            pc.MaxClientsCount = 10;
+                        }
+                    }
+
+
 
                     if (int.TryParse(tmpBufferTimeForManualPlay, out tmp))
                     {

@@ -22,12 +22,9 @@ namespace MediaMgrSystem
         }
 
 
-
-
         protected override void OnAfterConnect(IHub hub)
-        {
-
-
+        {           
+                      
 
             SingalConnectedClient sc = new SingalConnectedClient();
             SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.PC;
@@ -37,8 +34,7 @@ namespace MediaMgrSystem
 
             string strIdentify = string.Empty;
 
-
-
+           
 
             if (hub.Context.QueryString["clientType"] != null)
             {
@@ -65,7 +61,6 @@ namespace MediaMgrSystem
                 else if (type == "WINDOWSSERVICE")
                 {
                     singalRClientConnectionType = SingalRClientConnectionType.WINDOWSSERVICE;
-
 
                 }
             }
@@ -127,7 +122,7 @@ namespace MediaMgrSystem
             if (sc.ConnectionType == SingalRClientConnectionType.ANDROID)
             {
 
-
+             
                 List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(sc.ConnectionIdentify);
 
                 if (dis != null && dis.Count > 0)
@@ -146,7 +141,6 @@ namespace MediaMgrSystem
                 }
 
                 SendRefreshNotice(hub);
-
 
             }
 
