@@ -134,6 +134,8 @@ namespace MediaMgrSystem
         public static string ChannelManuallyPlayingChannelName = string.Empty;
 
 
+        public static bool ChannelManuallyPlayingIsRepeat = false;
+
         public static string CurrentVideoGuidId = string.Empty;
 
         public static string VideoServerIPAddress = string.Empty;

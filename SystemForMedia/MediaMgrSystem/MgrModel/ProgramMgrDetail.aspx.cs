@@ -81,7 +81,7 @@ namespace MediaMgrSystem.MgrModel
             groupMgrSection.Visible = true;
 
 
-            updateProcess.AssociatedUpdatePanelID = null;
+            ss.Visible = false;
 
 
         }
@@ -93,6 +93,7 @@ namespace MediaMgrSystem.MgrModel
             if (!Page.IsPostBack)
             {
 
+                ss.Visible = true;
                 groupMgrSection.Visible = false;
             }
 

@@ -3,7 +3,7 @@
 <script src="<%=ResolveUrl("Scripts/channelScheduleLogic.js")%>" type="text/javascript"></script>
 
 <style>
-     .notactive {
+    .notactive {
         pointer-events: none;
         cursor: default;
     }
@@ -15,7 +15,7 @@
     var currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
     var currentPlayPIds = '<% =GetIsPlayingPIds() %>';
     var boolIsPlaying = '<% = GetIsPlaying() %>';
-
+    var boolIsRepeat = '<% = GetIsChannelManuallyPlayingIsRepeat() %>';
 
     $(document).ready(function () {
 
@@ -58,7 +58,7 @@
 
         function setButtonStatus(type) {
 
-   
+
             //All disable
             if (type == "AllDisabled") {
                 $("#btnChannelControlPlay").attr("disabled", true);
@@ -103,7 +103,7 @@
 
             }
             else {
-           
+
                 $("#btnChannelControlRepeat").removeClass("notactive");
                 $("#btnChannelControlStop").attr("src", "Images/ic_image_stop.png");
 
@@ -261,15 +261,16 @@
 
         $("#btnChannelControlPlay").click(function () {
 
-
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null);
+                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0");
 
                 //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
 
                 $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
             }
+
+            boolIsRepeat = false;
 
         })
 
@@ -279,9 +280,11 @@
             //string commandType, string channelId, string scheduleGuidId)
 
             setButtonStatus("Stop");
-            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "");
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false);
 
             $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
+
+            boolIsRepeat = false;
 
 
         })
@@ -289,7 +292,21 @@
 
         $("#btnChannelControlRepeat").click(function () {
 
-            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, false, "");
+
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, false, "", boolIsRepeat);
+
+
+            boolIsRepeat = !boolIsRepeat;
+
+
+            if (boolIsRepeat) {
+                $("#divChannelInfo").html(currentOperChannelName + "开启偱环播放");
+            }
+            else {
+                $("#divChannelInfo").html(currentOperChannelName + "关闭偱环播放");
+            }
+
+
 
         })
 
@@ -471,7 +488,7 @@
 
                 <h4 style="text-align: left; margin-top: 0px">可选节目</h4>
 
-                <select  multiple="multiple" style="height: 190px; width: 150px;" id="lbAvaiableProgram">
+                <select multiple="multiple" style="height: 190px; width: 150px;" id="lbAvaiableProgram">
 
                     <%--      <%  foreach (var pi in allProgramInfos)
                     { %>

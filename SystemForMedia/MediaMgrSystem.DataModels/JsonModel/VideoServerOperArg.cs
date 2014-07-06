@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class VideoServerOperArg 
+    public class VideoServerOperArg
     {
 
         public List<string> streamSrcs
@@ -21,7 +21,7 @@ namespace MediaMgrSystem.DataModels
             set;
         }
 
-        public string udpBroadcastAddress 
+        public string udpBroadcastAddress
         {
             get;
             set;
@@ -34,6 +34,12 @@ namespace MediaMgrSystem.DataModels
         }
 
 
+        public int isRepeat
+        {
+            get;
+            set;
+
+        }
         public string buffer
         {
             get;

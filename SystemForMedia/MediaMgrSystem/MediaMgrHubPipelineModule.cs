@@ -14,7 +14,6 @@ namespace MediaMgrSystem
     public class MediaMgrHubPipelineModule : HubPipelineModule
     {
 
-
         public MediaMgrHubPipelineModule()
         {
 

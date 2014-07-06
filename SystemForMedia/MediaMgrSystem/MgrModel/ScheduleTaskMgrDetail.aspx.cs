@@ -67,6 +67,7 @@ namespace MediaMgrSystem.MgrModel
 
                     tbEndTime.Value = si.ScheduleTaskEndTime;
 
+                    cbIsRepeat.Checked = si.IsRepeat == "1";
 
                     this.lbSelectedDate.Items.Clear();
 
@@ -175,7 +176,7 @@ namespace MediaMgrSystem.MgrModel
                 lbMessage.Visible = true;
                 return;
             }
-            
+
             if (dtEnd <= dtStart)
             {
                 lbMessage.Text = "结束时间必须大于开始时间";
@@ -186,7 +187,7 @@ namespace MediaMgrSystem.MgrModel
 
             ScheduleTaskInfo si = new ScheduleTaskInfo();
 
-           
+
 
             si.ScheduleTaskSpecialDays = new List<string>();
 
@@ -207,6 +208,9 @@ namespace MediaMgrSystem.MgrModel
             si.StrDays = "";
             si.StrWeeks = "";
             si.StrSpecialDaysToWeeks = "";
+
+
+            si.IsRepeat = cbIsRepeat.Checked ? "1" : "0";
 
             foreach (ListItem lv in lbSelectedDate.Items)
             {
@@ -338,7 +342,16 @@ namespace MediaMgrSystem.MgrModel
             }
             else
             {
-                GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
+                if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskIsRunning(si.ScheduleTaskId))
+                {
+                    lbMessage.Text = "计划任务运行中，不能修改。";
+                    lbMessage.Visible = true;
+                    return;
+                }
+                else
+                {
+                    GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
+                }
             }
 
             Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);

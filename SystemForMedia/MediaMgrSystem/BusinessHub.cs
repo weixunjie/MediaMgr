@@ -26,20 +26,25 @@ namespace MediaMgrSystem
         /// 2: repeat
         /// </summary>
         /// <param name="commandType"></param>
-        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId)
+        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId,bool isRepeat)
         {
+            GlobalUtils.ChannelManuallyPlayingIsRepeat = isRepeat;
             SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "");
 
         }
 
-        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId)
+        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId, string isRepeat)
         {
-            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "");
+            GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
+            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
         }
 
 
         public void SendMessageToMgrServer(string data, string connectionId)
         {
+
+            System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
+            System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
 
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
 
@@ -50,6 +55,7 @@ namespace MediaMgrSystem
                 string strOperResult = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
+                    System.Diagnostics.Debug.WriteLine("CommandQueues " + que.GuidIdStr + " " + que.IpAddressStr + " " + que.ScheduledTime);
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
@@ -127,9 +133,9 @@ namespace MediaMgrSystem
             Thread.Sleep((int)objs[5]);
             System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString());
 
-            SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString());
+            SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(),(string)objs[6]=="1");
 
-         
+
         }
 
 
@@ -140,11 +146,11 @@ namespace MediaMgrSystem
             Thread.Sleep((int)objs[5]);
             System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString());
 
-            SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(),true, Clients, objs[3].ToString(), objs[4].ToString());
+            SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
         }
 
 
-        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime)
+        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat)
         {
 
             object[] objs = new object[7];
@@ -154,7 +160,8 @@ namespace MediaMgrSystem
             objs[3] = guid;
             objs[4] = scheduleTime;
 
-         
+            objs[6] = isRepeat;
+
             //Play
             if (cmdType == "1")
             {
@@ -171,8 +178,15 @@ namespace MediaMgrSystem
 
                     objs[5] = toSleep;
 
-                    new Thread(ThreadToRunStartTask).Start(objs);
                 }
+                else
+                {
+                    objs[5] = 0;
+
+                }
+
+
+                new Thread(ThreadToRunStartTask).Start(objs);
 
             }
             //Stop
@@ -186,15 +200,20 @@ namespace MediaMgrSystem
 
                 int offSet = schduleTicks - nowTicks;
                 if (offSet > 0)
-                {         
+                {
 
                     objs[5] = offSet;
-                    new Thread(ThreadToRunStopTask).Start(objs);
-                
 
                 }
+                else
+                {
+                    objs[5] = 0;
+                }
 
-                
+
+                new Thread(ThreadToRunStopTask).Start(objs);
+
+
             }
         }
 

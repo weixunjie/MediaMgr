@@ -32,6 +32,8 @@ namespace MediaMgrSystem.DataModels
 
         public String StrDays { get; set; }
 
+        public String IsRepeat { get; set; }
+
         public String StrSpecialDaysToWeeks { get; set; }
 
 

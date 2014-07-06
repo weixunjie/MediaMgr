@@ -39,10 +39,30 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
+        public bool CheckScheduleTaskIsRunning(string schduduleTaskId)
+        {
+
+            String sqlStr = "SELECT * FROM SCHEDULETASKINFO WHERE ISRUNNING=1 AND SCHEDULETASKID= " + schduduleTaskId;
+
+            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
+
+            if (dt != null)
+            {
+                if (dt.Rows.Count > 0)
+                {
+
+                    return true;
+                }
+            }
+
+            return false;
+
+
+        }
         public bool CheckScheduleTaskTimeIsOverLap(string schduduleId, string startTimeToCheck, string endTimeToCheck, string exceptTaskId, string sqlCheckWks)
         {
 
-            
+
 
             String sqlStr = "SELECT * FROM SCHEDULETASKINFO WHERE ((CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>=CONVERT(DATETIME,'{0}') "
             + " AND  CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)<=CONVERT(DATETIME,'{0}')) OR "
@@ -61,14 +81,19 @@ namespace MediaMgrSystem.BusinessLayerLogic
                 sqlStr = sqlStr + " AND SCHEDULETASKID<>'" + exceptTaskId + "'";
             }
 
-            List<ScheduleTaskInfo> lists = GetTasksList(sqlStr);
+            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
-            if (lists != null && lists.Count > 0)
+            if (dt != null)
             {
-                return true;
+                if (dt.Rows.Count > 0)
+                {
+
+                    return true;
+                }
             }
 
             return false;
+
         }
 
 
@@ -175,11 +200,11 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddSchdeulTask(ScheduleTaskInfo si)
         {
-            String sqlStr = "INSERT INTO SCHEDULETASKINFO(SCHEDULEID,SCHEDULETASKSTARTTIME,SCHEDULETASKENDTIME,SCHEDULETASKPROGARMID,SCHEDULETASKPRIORITY,SCHEDULETASKWEEKS,SCHEDULETASKSPECIALDAYS,SCHEDULETASKNAME,SCHEDULETASKSPECIALDAYSTOWEEKS,ISRUNNING) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',0)";
+            String sqlStr = "INSERT INTO SCHEDULETASKINFO(SCHEDULEID,SCHEDULETASKSTARTTIME,SCHEDULETASKENDTIME,SCHEDULETASKPROGARMID,SCHEDULETASKPRIORITY,SCHEDULETASKWEEKS,SCHEDULETASKSPECIALDAYS,SCHEDULETASKNAME,SCHEDULETASKSPECIALDAYSTOWEEKS,ISRUNNING,ISREPEAT) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8},{9}',0)";
 
 
 
-            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks);
+            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -187,11 +212,11 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int UpdateScheduleTask(ScheduleTaskInfo si)
         {
-            String sqlStr = "UPDATE SCHEDULETASKINFO SET SCHEDULEID='{0}',SCHEDULETASKSTARTTIME='{1}',SCHEDULETASKENDTIME='{2}',SCHEDULETASKPROGARMID='{3}',SCHEDULETASKPRIORITY='{4}',SCHEDULETASKWEEKS='{5}',SCHEDULETASKSPECIALDAYS='{6}',SCHEDULETASKNAME='{7}',SCHEDULETASKSPECIALDAYSTOWEEKS='{8}' WHERE SCHEDULETASKID={9}";
+            String sqlStr = "UPDATE SCHEDULETASKINFO SET SCHEDULEID='{0}',SCHEDULETASKSTARTTIME='{1}',SCHEDULETASKENDTIME='{2}',SCHEDULETASKPROGARMID='{3}',SCHEDULETASKPRIORITY='{4}',SCHEDULETASKWEEKS='{5}',SCHEDULETASKSPECIALDAYS='{6}',SCHEDULETASKNAME='{7}',SCHEDULETASKSPECIALDAYSTOWEEKS='{8}',ISREPEAT={9} WHERE SCHEDULETASKID={10}";
 
 
 
-            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks,si.ScheduleTaskId);
+            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat, si.ScheduleTaskId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -222,6 +247,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                         si.ScheduleTaskName = dt.Rows[i]["SCHEDULETASKNAME"].ToString();
 
+                        si.IsRepeat = dt.Rows[i]["IsRepeat"].ToString();
 
 
 

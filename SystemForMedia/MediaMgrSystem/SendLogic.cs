@@ -20,11 +20,13 @@ namespace MediaMgrSystem
 
 
 
-        public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime)
+        public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isRepeat)
         {
+
 
             lock (GlobalUtils.PublicObjectForLock)
             {
+
                 bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
 
                 string errorrNotOpenVideoSvr = "视频服务器未开启";
@@ -67,7 +69,6 @@ namespace MediaMgrSystem
 
                         }
                     }
-
 
                 }
 
@@ -167,6 +168,7 @@ namespace MediaMgrSystem
 
                     cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
 
+                    cmdToVideoSvr.arg.isRepeat = isRepeat ? 1 : 0;
 
                     GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
 
@@ -178,12 +180,22 @@ namespace MediaMgrSystem
 
                     cmdToVideoSvr.arg.streamSrcs = new List<string>();
 
+
+                    int maxBitRate = 0;
+
+                    int outBitRate = 0;
+
                     foreach (var pi in pids)
                     {
                         if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
                         {
                             foreach (var file in pi.MappingFiles)
                             {
+                                if (!string.IsNullOrWhiteSpace(file.BitRate) && int.TryParse(file.BitRate, out outBitRate))
+                                {
+                                    maxBitRate = outBitRate > maxBitRate ? outBitRate : maxBitRate;
+                                }
+
                                 cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
                             }
                         }
@@ -206,7 +218,8 @@ namespace MediaMgrSystem
 
                     VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
 
-                    CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend);
+                    CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend,maxBitRate);
+
 
 
                     QueueCommandType type = QueueCommandType.NONE;
@@ -217,6 +230,7 @@ namespace MediaMgrSystem
                     }
                     else
                     {
+                        GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
                         type = QueueCommandType.MANAULLYPLAY;
                     }
 
@@ -224,7 +238,6 @@ namespace MediaMgrSystem
 
 
                     GlobalUtils.VideoSvrArg = cmdToVideoSvr.arg;
-
 
 
                     ParamConfig pc = GlobalUtils.ParamConfigBLLInstance.GetParamConfig();
@@ -235,7 +248,6 @@ namespace MediaMgrSystem
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
                     System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
-
 
 
 
@@ -447,6 +459,13 @@ namespace MediaMgrSystem
 
                 cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
 
+
+                if (!isSchedule)
+                {
+                    GlobalUtils.ChannelManuallyPlayingIsRepeat = !GlobalUtils.ChannelManuallyPlayingIsRepeat;
+                    cmdToVideoSvr.arg.isRepeat = GlobalUtils.ChannelManuallyPlayingIsRepeat ? 1 : 0;
+                }
+
                 List<string> clientsIpToSend = new List<string>();
 
                 List<string> clientsConectionIdToSend = new List<string>();
@@ -468,6 +487,7 @@ namespace MediaMgrSystem
                 }
                 else
                 {
+
                     cmdType = isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
                 }
 
@@ -504,6 +524,7 @@ namespace MediaMgrSystem
 
                 if (!isSchedule)
                 {
+
                     GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
                     GlobalUtils.ChannelManuallyPlayingPids = null;
                     GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
@@ -610,7 +631,7 @@ namespace MediaMgrSystem
 
 
         private static void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
-            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend)
+            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend,int maxBitRate)
         {
 
             VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
@@ -627,7 +648,9 @@ namespace MediaMgrSystem
 
             if (pids != null && pids.Count > 0)
             {
-                dataSendToAndroidClient.arg.bitRate = pids[0].MappingFiles[0].BitRate;
+
+
+                dataSendToAndroidClient.arg.bitRate = maxBitRate.ToString();
 
                 dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
 

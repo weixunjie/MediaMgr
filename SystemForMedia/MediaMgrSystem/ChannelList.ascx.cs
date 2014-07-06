@@ -12,7 +12,7 @@ using MediaMgrSystem.BusinessLayerLogic;
 namespace MediaMgrSystem
 {
     public partial class ChannelList : System.Web.UI.UserControl
-    {        
+    {
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -45,25 +45,30 @@ namespace MediaMgrSystem
             return GlobalUtils.ChannelManuallyPlayingChannelName;
         }
 
+        public string GetIsChannelManuallyPlayingIsRepeat()
+        {
+            return GlobalUtils.ChannelManuallyPlayingIsRepeat.ToString().ToLower();
+        }
+
 
         public List<ChannelInfo> GetAllChannels()
         {
             List<ChannelInfo> channels = GlobalUtils.ChannelBLLInstance.GetAllChannels();
 
             return channels;
-                
+
         }
 
 
         public List<ProgramInfo> GetAllPrograms()
         {
             List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetAllProgram();
-           
+
 
             return pis;
 
         }
 
-    
+
     }
 }

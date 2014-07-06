@@ -12,26 +12,25 @@
 
     <asp:ScriptManager ID="ScriptManager1" runat="server">
     </asp:ScriptManager>
-    
+
+
 
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <h3 style="clip: rect(auto, auto, 10px, auto)">节目明细管理</h3>
 
-            <span style="color: #FF6666;">
-                <asp:Button ID="LoadData" runat="server" Text="Button" OnClick="LoadData_Click" Style="display: none" /></span>
+            <div runat="server" id="ss">
+            <img src="/Images/ic_image_loading.gif" style="width: 25px; height: 25px; margin-right: 5px" />
+            正在加载节目文件数据...
+    </div>
 
 
 
-            <asp:UpdateProgress ID="updateProcess" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
-
-                <ProgressTemplate>
-                    <img src="/Images/ic_image_loading.gif" style="width:25px; height:25px; margin-right:5px" /> 正在加载节目文件数据...
+                <span style="color: #FF6666;">
+                    <asp:Button ID="LoadData" runat="server" Text="Button" OnClick="LoadData_Click" Style="display: none" /></span>
 
 
-                </ProgressTemplate>
-            </asp:UpdateProgress>
 
 
 
@@ -101,6 +100,4 @@
 
         </ContentTemplate>
     </asp:UpdatePanel>
-
-
 </asp:Content>

@@ -31,6 +31,15 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
         
         /// <summary>
+        /// ss control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ss;
+        
+        /// <summary>
         /// LoadData control.
         /// </summary>
         /// <remarks>
@@ -38,15 +47,6 @@ namespace MediaMgrSystem.MgrModel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button LoadData;
-        
-        /// <summary>
-        /// updateProcess control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdateProgress updateProcess;
         
         /// <summary>
         /// groupMgrSection control.
