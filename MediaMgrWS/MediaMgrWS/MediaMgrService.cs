@@ -46,7 +46,8 @@ namespace MediaMgrWS
         private bool _isConnected = false;
 
 
-
+        private const int ADVANCED_START_SECS = 15;
+        private const int ADVANCED_STOP_SECS = 15;
         private object lockObject = new object();
 
         private object lockFlag = new object();
@@ -95,10 +96,12 @@ namespace MediaMgrWS
             string sqlStr = "SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
                           " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>CONVERT(DATETIME,'{0}') " +
                           " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
-                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) AND ISRUNNING<>1 ";
+                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) AND ISRUNNING<>1 " +
+                           " AND (LASTRUNDATE IS NULL OR LASTRUNDATE='' OR ( DATEDIFF(S, LASTRUNDATE,GETDATE())>" + ADVANCED_START_SECS.ToString() + "))";
 
             CheckTask(sqlStr, true);
         }
+
 
 
         private void CheckTask(string sqlStr, bool isCheckStart)
@@ -155,17 +158,11 @@ namespace MediaMgrWS
                             string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
                             string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
 
+                            string strIsRepeat = dt.Rows[i]["IsRepeat"].ToString();
                             TimeSpan tsOffset = dtRunTime.Subtract(DateTime.Parse(dtNow));
 
-                            //Schedule to play: send 5s in advance
-                            //Scehdue to stop: send 1s in advance
-                            int andvanceSec = 5;
-
-                            if (isCheckStart)
-                            {
-                                andvanceSec = 8;
-                            }
-
+                            int andvanceSec = isCheckStart ? ADVANCED_START_SECS : ADVANCED_STOP_SECS;
+                        
 
                             if (tsOffset.TotalSeconds <= andvanceSec && tsOffset.TotalMilliseconds > 0)
                             {
@@ -194,15 +191,13 @@ namespace MediaMgrWS
 
                                         if (!isCheckStart)
                                         {
-
-
-
                                             string[] strPids = new string[0];
-                                            //Stop
-                                            hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck);
 
-                                            UpdateRunningStatus(false, strScheduleTaskId);
+                                            hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck, strIsRepeat);
+
+                                            UpdateRunningStatus(false, strScheduleTaskId,true);
                                             System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
+
 
                                         }
 
@@ -220,12 +215,12 @@ namespace MediaMgrWS
                                             if (!string.IsNullOrEmpty(cid) && strPids != null && strPids.Length > 0)
                                             {
 
+                                                hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck, strIsRepeat);
 
-                                                hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck);
-
-                                                UpdateRunningStatus(true, strScheduleTaskId);
-
+                                                UpdateRunningStatus(true, strScheduleTaskId,true);
                                                 System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
+
+
                                             }
 
 
@@ -245,7 +240,7 @@ namespace MediaMgrWS
             }
         }
 
-      
+
 
 
 
@@ -254,8 +249,8 @@ namespace MediaMgrWS
             string sqlStr = " SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
                           " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)>CONVERT(DATETIME,'{0}') " +
                           " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
-                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) AND ISRUNNING=1 ";
-
+                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) AND ISRUNNING=1 " +
+            " AND (LASTSTOPDATE IS NULL OR LASTSTOPDATE='' OR ( DATEDIFF(S, LASTSTOPDATE,GETDATE())>" + ADVANCED_STOP_SECS.ToString() + "))";
 
             CheckTask(sqlStr, false);
         }
@@ -306,11 +301,23 @@ namespace MediaMgrWS
 
         }
 
-        private void UpdateRunningStatus(bool isRunning, string schduelTaskId)
+        private void UpdateRunningStatus(bool isRunning, string schduelTaskId, bool isUpdateTime = false)
         {
-            string sqlUpdate = " UPDATE DBO.SCHEDULETASKINFO SET ISRUNNING={0} WHERE  SCHEDULETASKID={1} ";
+            string sqlUpdate = " UPDATE DBO.SCHEDULETASKINFO SET ISRUNNING={0}{1} WHERE  SCHEDULETASKID={2} ";
 
-            sqlUpdate = string.Format(sqlUpdate, isRunning ? 1 : 0, schduelTaskId);
+            string updateStr=string.Empty;
+            if (isRunning)
+            {
+                 updateStr=",LASTRUNDATE=GETDATE()";
+               
+            }
+            else
+            {
+                 updateStr=",LASTSTOPDATE=GETDATE()";
+            }
+
+
+            sqlUpdate = string.Format(sqlUpdate, isRunning ? 1 : 0,isUpdateTime?updateStr:"", schduelTaskId);
 
             dbUitls.ExecuteNonQuery(sqlUpdate);
         }
