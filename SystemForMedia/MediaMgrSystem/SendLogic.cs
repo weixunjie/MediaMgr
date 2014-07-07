@@ -218,7 +218,7 @@ namespace MediaMgrSystem
 
                     VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
 
-                    CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend,maxBitRate);
+                    CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDatraToSend, maxBitRate);
 
 
 
@@ -254,6 +254,8 @@ namespace MediaMgrSystem
                     string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
                     hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
 
+
+                    System.Diagnostics.Debug.WriteLine("Paly json To Android client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss S"));
                     TimeSpan afterSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
                     double offsetTotalMilliseconds = afterSendToAllClient.Subtract(beforeSendToAllClient).Duration().TotalMilliseconds;
@@ -277,6 +279,7 @@ namespace MediaMgrSystem
 
                     }
 
+                    System.Diagnostics.Debug.WriteLine("Paly json To video Server: " + jsonData + DateTime.Now.ToString("HH:mm:ss S"));
                     System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
 
@@ -382,7 +385,7 @@ namespace MediaMgrSystem
                         }
 
                         GlobalUtils.CommandQueues.Remove(item);
-                        System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                      //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
                     }
 
                 }
@@ -496,7 +499,6 @@ namespace MediaMgrSystem
                 PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime);
 
 
-
                 System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
                 string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
@@ -504,6 +506,8 @@ namespace MediaMgrSystem
                 if (!string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
                 {
                     hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+
+                    System.Diagnostics.Debug.WriteLine("STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss S"));
                 }
                 else
                 {
@@ -517,6 +521,8 @@ namespace MediaMgrSystem
                 string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
 
                 hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+
+                System.Diagnostics.Debug.WriteLine("STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss S"));
 
                 System.Diagnostics.Debug.WriteLine("Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
@@ -631,7 +637,7 @@ namespace MediaMgrSystem
 
 
         private static void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
-            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend,int maxBitRate)
+            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out VideoOperAndriodClientCommand dataToSend, int maxBitRate)
         {
 
             VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();

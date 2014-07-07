@@ -18,14 +18,6 @@
 
     <script type="text/javascript">
 
-
-        var currentOperDeviceDevice;
-        var currentOperGroupDevice;
-        var opDevices = new Array()
-        var opGuidIds = new Array()
-        var opSleepTimers = new Array();
-        var opSleepGuidIds = new Array()
-        var strclientIdentify;
         var chat;
 
         var is_popup_2nd_menu = false;

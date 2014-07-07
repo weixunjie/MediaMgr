@@ -56,6 +56,8 @@
             // $("#divLogs").append('<br/>' + result);
         }
 
+
+
         function setButtonStatus(type) {
 
 
@@ -104,7 +106,7 @@
             }
             else {
 
-                $("#btnChannelControlRepeat").removeClass("notactive");
+                $("#btnChannelControlStop").removeClass("notactive");
                 $("#btnChannelControlStop").attr("src", "Images/ic_image_stop.png");
 
             }
@@ -124,6 +126,41 @@
 
 
         }
+
+        $("#btnChannelControlPlay").mouseout(function (e) {
+                      
+            if ($(this).attr("disabled") == "disabled") {
+                $(this).attr("src", "Images/ic_image_play_disabled.png");
+
+            }
+            else {
+                $(this).attr("src", "Images/ic_image_play.png");
+            }
+        });
+
+        $("#btnChannelControlStop").mouseout(function (e) {
+
+            if ($(this).attr("disabled") == "disabled") {
+                $(this).attr("src", "Images/ic_image_stop_disabled.png");
+
+            }
+            else {
+                $(this).attr("src", "Images/ic_image_stop.png");
+            }
+        });
+
+
+
+        $("#btnChannelControlRepeat").mouseout(function (e) {
+
+            if ($(this).attr("disabled") == "disabled") {
+                $(this).attr("src", "Images/ic_image_repeat_disabled.png");
+
+            }
+            else {
+                $(this).attr("src", "Images/ic_image_repeat.png");
+            }
+        });
 
 
         $("#btnChooseProgram").click(function (e) {
@@ -456,7 +493,7 @@
 
         <li class="channelControlButtonLI">
 
-            <img src="Images/ic_image_play.png" id="btnChannelControlPlay" onmouseout='this.src="Images/ic_image_play.png"' onmouseover='this.src="Images/ic_image_play_hover.png"' onmousedown='this.src="Images/ic_image_play_hover.png"' class="channelControlButtonImage" />
+            <img src="Images/ic_image_play.png" id="btnChannelControlPlay" onmouseover='this.src="Images/ic_image_play_hover.png"' onmousedown='this.src="Images/ic_image_play_hover.png"' class="channelControlButtonImage" />
 
         </li>
 

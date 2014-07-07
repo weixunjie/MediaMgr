@@ -26,7 +26,7 @@ namespace MediaMgrSystem
         /// 2: repeat
         /// </summary>
         /// <param name="commandType"></param>
-        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId,bool isRepeat)
+        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId, bool isRepeat)
         {
             GlobalUtils.ChannelManuallyPlayingIsRepeat = isRepeat;
             SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "");
@@ -43,8 +43,8 @@ namespace MediaMgrSystem
         public void SendMessageToMgrServer(string data, string connectionId)
         {
 
-            System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
-            System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
+           // System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
+           // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
 
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
 
@@ -55,7 +55,7 @@ namespace MediaMgrSystem
                 string strOperResult = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
-                    System.Diagnostics.Debug.WriteLine("CommandQueues " + que.GuidIdStr + " " + que.IpAddressStr + " " + que.ScheduledTime);
+                   // System.Diagnostics.Debug.WriteLine("CommandQueues " + que.GuidIdStr + " " + que.IpAddressStr + " " + que.ScheduledTime);
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
@@ -130,10 +130,13 @@ namespace MediaMgrSystem
 
             object[] objs = para as object[];
 
-            Thread.Sleep((int)objs[5]);
-            System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString());
 
-            SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(),(string)objs[6]=="1");
+            System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss S"));
+
+            Thread.Sleep((int)objs[5]);
+
+
+            SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
 
 
         }
@@ -143,8 +146,10 @@ namespace MediaMgrSystem
         {
             object[] objs = para as object[];
 
+            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString()+"->"+ DateTime.Now.ToString("HH:mm:ss S") );
+
             Thread.Sleep((int)objs[5]);
-            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString());
+            
 
             SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
         }
