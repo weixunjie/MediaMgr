@@ -3,6 +3,12 @@
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
 
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+
+    
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
     <h3 style="clip: rect(auto, auto, 10px, auto)">计划明细管理</h3>
 
 
@@ -74,7 +80,7 @@
                             <asp:BoundField DataField="StrDays" HeaderText="特别日期" />
 
 
-                            <asp:TemplateField HeaderText="操作" ItemStyle-Width="135px">
+                            <asp:TemplateField HeaderText="操作" ItemStyle-Width="125px">
                                 <ItemTemplate>
                                     <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("ScheduleTaskId")%>' runat="server" />
                                     <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("ScheduleTaskId")%>' CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />
@@ -95,6 +101,7 @@
         </div>
     </section>
 
-
+            </ContentTemplate>
+        </asp:UpdatePanel>
 
 </asp:Content>

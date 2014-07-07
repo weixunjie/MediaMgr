@@ -128,7 +128,7 @@
         }
 
         $("#btnChannelControlPlay").mouseout(function (e) {
-                      
+
             if ($(this).attr("disabled") == "disabled") {
                 $(this).attr("src", "Images/ic_image_play_disabled.png");
 

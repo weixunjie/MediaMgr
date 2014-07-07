@@ -53,6 +53,13 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
+
+                if (GlobalUtils.ScheduleBLLInstance.CheckProgrameIsUsing(e.CommandArgument.ToString()))
+                {
+                    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForProgameList", "alert('节目被计划任务使用中，不能删除');", true);
+                    return;
+                }
+
                 GlobalUtils.ProgramBLLInstance.RemoveProgram(e.CommandArgument.ToString());
                 BindListData();
             }

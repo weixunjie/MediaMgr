@@ -11,7 +11,7 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ScheduleMgrDetail : System.Web.UI.Page
     {
-    
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -20,9 +20,9 @@ namespace MediaMgrSystem.MgrModel
                 {
                     Response.Redirect("~/Login.aspx");
                 }
-       
 
-                List<ProgramInfo> allProgram =GlobalUtils.ProgramBLLInstance.GetAllProgram();
+
+                List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
 
 
@@ -95,6 +95,13 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
+                if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskIsRunning(e.CommandArgument.ToString()))
+                {
+
+                    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForSheduleDetail", "alert('计划任务运行中，不能删除');", true);
+              
+                    return;
+                }
                 GlobalUtils.ScheduleBLLInstance.RemoveSchdeulTask(e.CommandArgument.ToString());
                 BindTaskListData();
 

@@ -338,20 +338,21 @@ namespace MediaMgrSystem.MgrModel
             {
                 si.ScheduleTaskId = TbHiddenId.Text;
 
-                GlobalUtils.ScheduleBLLInstance.UpdateScheduleTask(si);
-            }
-            else
-            {
                 if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskIsRunning(si.ScheduleTaskId))
                 {
                     lbMessage.Text = "计划任务运行中，不能修改。";
                     lbMessage.Visible = true;
                     return;
                 }
-                else
-                {
-                    GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
-                }
+
+                GlobalUtils.ScheduleBLLInstance.UpdateScheduleTask(si);
+            }
+            else
+            {
+
+
+                GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
+
             }
 
             Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);

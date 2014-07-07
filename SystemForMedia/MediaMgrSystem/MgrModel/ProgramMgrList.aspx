@@ -2,52 +2,63 @@
 
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-   
-        <h3>节目信息管理</h3>
+
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
 
 
-        <section id="groupMgrSection">
-            <div class="form-horizontal">
-
-                <div class="form-group">
-
-                    <div class="col-md-10">
-                        <asp:GridView ID="dvGroupList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
-                            <Columns>
-                                <asp:BoundField DataField="ProgramId" HeaderText="节目编号" />
-                                <asp:BoundField DataField="ProgramName" HeaderText="节目名称" />
-
-                                <asp:TemplateField HeaderText="操作" ItemStyle-Width="135px">
-                                    <ItemTemplate>
-                                        <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("ProgramId")%>' runat="server" />
-                                        <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("ProgramId")%>'  CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />
-                                    </ItemTemplate>
 
 
-                                </asp:TemplateField>
-                            </Columns>
-                            <RowStyle HorizontalAlign="Center" />
-                        </asp:GridView>               
-                    
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+
+            <h3>节目信息管理</h3>
 
 
-                    </div>              
+            <section id="groupMgrSection">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+
+                        <div class="col-md-10">
+                            <asp:GridView ID="dvGroupList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
+                                <Columns>
+                                    <asp:BoundField DataField="ProgramId" HeaderText="节目编号" />
+                                    <asp:BoundField DataField="ProgramName" HeaderText="节目名称" />
+
+                                    <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">
+                                        <ItemTemplate>
+                                            <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("ProgramId")%>' runat="server" />
+                                            <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("ProgramId")%>' CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />
+                                        </ItemTemplate>
+
+
+                                    </asp:TemplateField>
+                                </Columns>
+                                <RowStyle HorizontalAlign="Center" />
+                            </asp:GridView>
+
+
+
+                        </div>
+
+                    </div>
+
 
                 </div>
 
 
-            </div>
 
-            
-            
-            <div class="form-group" style="margin-top:10px">
-               
+                <div class="form-group" style="margin-top: 10px">
+
                     <asp:Button runat="server" Text="新增节目" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
 
-            </div>
-        </section>
+                </div>
+            </section>
 
 
+        </ContentTemplate>
+    </asp:UpdatePanel>
 
 </asp:Content>
 

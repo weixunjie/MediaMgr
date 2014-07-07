@@ -14,9 +14,7 @@ namespace MediaMgrSystem.MgrModel
 
         protected void LoadData_Click(object sender, EventArgs e)
         {
-
-
-
+                       
             if (Session["UserId"] == null)
             {
                 Response.Redirect("~/Login.aspx");

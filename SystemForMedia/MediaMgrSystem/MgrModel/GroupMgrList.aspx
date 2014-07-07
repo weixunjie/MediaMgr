@@ -17,7 +17,7 @@
                             <asp:BoundField DataField="GroupId" HeaderText="分组编号" />
                             <asp:BoundField DataField="GroupName" HeaderText="分组名称" />
 
-                            <asp:TemplateField HeaderText="操作" ItemStyle-Width="135px">
+                            <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">
                                 <ItemTemplate>
                                     <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("GroupId")%>' runat="server" />
                                     <asp:Button ID="Button2" CssClass="btn btn-default" Text="删除" CommandArgument='<%# Eval("GroupId")%>' CommandName="Del" runat="server" OnClientClick="return confirm('是否删除该记录?');" />
