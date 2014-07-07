@@ -46,8 +46,8 @@ namespace MediaMgrWS
         private bool _isConnected = false;
 
 
-        private const int ADVANCED_START_SECS = 15;
-        private const int ADVANCED_STOP_SECS = 15;
+        private const int ADVANCED_START_SECS = 12;
+        private const int ADVANCED_STOP_SECS = 8;
         private object lockObject = new object();
 
         private object lockFlag = new object();
