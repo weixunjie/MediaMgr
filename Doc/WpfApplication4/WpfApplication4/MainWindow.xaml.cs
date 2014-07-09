@@ -19,13 +19,20 @@ namespace WpfApplication4
 {
 
 
-    public class ComunicationBase
+    public class ComunicationBase1
     {
         public string guidId
         {
             get;
             set;
         }
+
+        public int commandType
+        {
+            get;
+            set;
+        }
+
 
     }
 
@@ -43,6 +50,46 @@ namespace WpfApplication4
             set;
         }
         public string message
+        {
+            get;
+            set;
+        }
+
+    }
+
+    public class ReceiveCommand : ComunicationBase1
+    {
+
+        public ReceiveCommandBaseArg arg
+        {
+            get;
+            set;
+        }
+
+    }
+
+    public class ReceiveCommandBaseArg
+    {
+
+        public string streamName
+        {
+            get;
+            set;
+        }
+
+
+    }
+
+
+    public class ComunicationBase
+    {
+        public string guidId
+        {
+            get;
+            set;
+        }
+
+        public int commandType
         {
             get;
             set;
@@ -125,9 +172,9 @@ namespace WpfApplication4
                 Dispatcher.Invoke(
 new Action(() =>
 {
-    lbLog.Items.Add(a.guidId+"  "+DateTime.Now.ToString("hh:mm:ss"));
+    lbLog.Items.Add(a.guidId + "  " + DateTime.Now.ToString("hh:mm:ss"));
 
-    hubProxy.Invoke("SendMessageToMgrServer", Newtonsoft.Json.JsonConvert.SerializeObject(cb),hubConnection.ConnectionId);
+    hubProxy.Invoke("SendMessageToMgrServer", Newtonsoft.Json.JsonConvert.SerializeObject(cb), hubConnection.ConnectionId);
 }));
 
 
@@ -187,7 +234,7 @@ new Action(() =>
             }
             if (obj.NewState == ConnectionState.Disconnected)
             {
-              
+
             }
         }
 
@@ -200,6 +247,21 @@ new Action(() =>
         {
             Connetion("ANDROID", ss.Text);
             //    hubConnection.Stop();
+
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+
+
+            ReceiveCommand rec = new ReceiveCommand();
+            rec.guidId = Guid.NewGuid().ToString();
+            rec.commandType = 114;
+            rec.arg = new ReceiveCommandBaseArg();
+            rec.arg.streamName = tbSstreamname.Text;
+
+            hubProxy.Invoke("SendMessageToMgrServer", Newtonsoft.Json.JsonConvert.SerializeObject(rec), hubConnection.ConnectionId);
+
 
         }
     }
