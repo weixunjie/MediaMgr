@@ -43,11 +43,47 @@ namespace MediaMgrSystem
         public void SendMessageToMgrServer(string data, string connectionId)
         {
 
-           // System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
-           // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
+            // System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
+            // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
+
+
+            //            {"guidId":"2847f884-a55b-4375-aca4-a7f2f2df08b9","commandType":"114","arg":{ streamName": "12345678" }
+            //命令为：114
+            //arg表示参数数据
+            //    streamName流名称
+
+
+
+            ReceiveCommand rc = JsonConvert.DeserializeObject<ReceiveCommand>(data);
+
+            if (rc != null || !string.IsNullOrWhiteSpace(rc.commandType.ToString()))
+            {               
+                lock (GlobalUtils.PublicObjectForLock)
+                {
+                    if (rc != null && rc.commandType == CommandTypeEnum.STREAMSFINISHED)
+                    {
+                        if (rc.arg != null && !string.IsNullOrWhiteSpace(rc.arg.streamName))
+                        {
+                            string channelId = rc.arg.streamName.Replace(GlobalUtils.StreamNameBase, "");
+
+                            if (GlobalUtils.IsChannelManuallyPlaying)
+                            {
+                                if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
+                                {
+                                    SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "",false);
+
+                                    Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放完毕停止", "1024");
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
 
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
-
             lock (GlobalUtils.PublicObjectForLock)
             {
                 string matchIPAddress = string.Empty; ;
@@ -55,7 +91,7 @@ namespace MediaMgrSystem
                 string strOperResult = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
-                   // System.Diagnostics.Debug.WriteLine("CommandQueues " + que.GuidIdStr + " " + que.IpAddressStr + " " + que.ScheduledTime);
+                    // System.Diagnostics.Debug.WriteLine("CommandQueues " + que.GuidIdStr + " " + que.IpAddressStr + " " + que.ScheduledTime);
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
@@ -146,10 +182,10 @@ namespace MediaMgrSystem
         {
             object[] objs = para as object[];
 
-            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString()+"->"+ DateTime.Now.ToString("HH:mm:ss S") );
+            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss S"));
 
             Thread.Sleep((int)objs[5]);
-            
+
 
             SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
         }

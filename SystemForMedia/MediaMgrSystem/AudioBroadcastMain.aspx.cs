@@ -84,21 +84,7 @@ namespace MediaMgrSystem
             return result;
         }
 
-        [WebMethod]
-        public static string CheckTimeOutForOperation(string GuidId)
-        {
-            System.Threading.Thread.Sleep(5000);
-
-
-            JsonString js = new JsonString();
-            js.StrValue = GuidId;
-
-            List<JsonString> strs = new List<JsonString>();
-            strs.Add(js);
-            return Newtonsoft.Json.JsonConvert.SerializeObject(strs);
-
-
-        }
+   
 
         [WebMethod]
         public static void SaveDeviceGroup(string deivceId, string groupId)

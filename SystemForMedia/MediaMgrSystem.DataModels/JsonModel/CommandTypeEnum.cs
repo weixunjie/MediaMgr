@@ -13,5 +13,11 @@ namespace MediaMgrSystem.DataModels
 
         REPEATPLAY = 113,
 
+
+        STREAMSFINISHED = 114,
+
+
+
+
     }
 }

@@ -86,6 +86,7 @@ namespace MediaMgrSystem
 
         public static object PublicObjectForLock = new object();
 
+        public static string StreamNameBase="1234567890";
         public static object objectLockSchduleQueueItem = new object();
 
         private static object objForLock = new object();

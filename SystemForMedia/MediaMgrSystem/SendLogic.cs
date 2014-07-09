@@ -176,7 +176,7 @@ namespace MediaMgrSystem
                     cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
 
 
-                    cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
+                    cmdToVideoSvr.arg.streamName = GlobalUtils.StreamNameBase + channelId;
 
                     cmdToVideoSvr.arg.streamSrcs = new List<string>();
 
@@ -385,14 +385,14 @@ namespace MediaMgrSystem
                         }
 
                         GlobalUtils.CommandQueues.Remove(item);
-                      //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                        //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
                     }
 
                 }
             }
         }
 
-        public static void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime)
+        public static void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isSendToVideoSvr = true)
         {
 
             bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
@@ -434,7 +434,7 @@ namespace MediaMgrSystem
 
             else
             {
-                SendOutStopRepeatCommandToServerAndClient(channelId, channelName, isWantToStop, hub, isSchedule, scheduleTime);
+                SendOutStopRepeatCommandToServerAndClient(channelId, channelName, isWantToStop, hub, isSchedule, scheduleTime,isSendToVideoSvr);
             }
 
 
@@ -443,7 +443,7 @@ namespace MediaMgrSystem
         }
 
         private static void SendOutStopRepeatCommandToServerAndClient(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub,
-             bool isSchedule, string scheduleTime)
+             bool isSchedule, string scheduleTime, bool isSendToVideoSvr = true)
         {
 
             lock (GlobalUtils.PublicObjectForLock)
@@ -460,7 +460,7 @@ namespace MediaMgrSystem
 
                 cmdToVideoSvr.arg = new VideoServerOperArg();
 
-                cmdToVideoSvr.arg.streamName = "1234567890" + channelId;
+                cmdToVideoSvr.arg.streamName = GlobalUtils.StreamNameBase + channelId;
 
 
                 if (!isSchedule)
@@ -475,11 +475,15 @@ namespace MediaMgrSystem
 
                 VideoOperAndriodClientCommand clientsDataToSend = new VideoOperAndriodClientCommand();
 
-                CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDataToSend);
+                if (isWantToStop)
+                {
+
+                    CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out clientsDataToSend);
 
 
-                clientsDataToSend.arg = new VideoOperAndriodClientArg();
+                    clientsDataToSend.arg = new VideoOperAndriodClientArg();
 
+                }
 
                 QueueCommandType cmdType = QueueCommandType.NONE;
 
@@ -496,7 +500,7 @@ namespace MediaMgrSystem
 
 
 
-                PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime);
+                PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime,isSendToVideoSvr);
 
 
                 System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
@@ -505,9 +509,12 @@ namespace MediaMgrSystem
 
                 if (!string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
                 {
-                    hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+                    if (isSendToVideoSvr)
+                    {
+                        hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
 
-                    System.Diagnostics.Debug.WriteLine("STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss S"));
+                        System.Diagnostics.Debug.WriteLine("STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss S"));
+                    }
                 }
                 else
                 {
@@ -518,11 +525,15 @@ namespace MediaMgrSystem
 
 
 
-                string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
+                if (isWantToStop)
+                {
 
-                hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+                    string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
 
-                System.Diagnostics.Debug.WriteLine("STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss S"));
+                    hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+
+                    System.Diagnostics.Debug.WriteLine("STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss S"));
+                }
 
                 System.Diagnostics.Debug.WriteLine("Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
 
@@ -623,15 +634,23 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime)
+        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime, bool isSendToVideoSvr = true)
         {
             long currentTicks = DateTime.Now.Ticks;
 
-            GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
-
-            foreach (var ip in clientIps)
+            if (isSendToVideoSvr)
             {
-                GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandType = cmdType });
+
+                GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
+            }
+
+            //NO need send to client when is repeat operation.
+            if (cmdType != QueueCommandType.MANAULLYREPEAT)
+            {
+                foreach (var ip in clientIps)
+                {
+                    GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandType = cmdType });
+                }
             }
         }
 

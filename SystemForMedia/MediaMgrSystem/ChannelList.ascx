@@ -52,8 +52,8 @@
 
                 setButtonStatus("Stop");
                 $("#divChannelInfo").html(result);
-            }
-            // $("#divLogs").append('<br/>' + result);
+            }       
+ 
         }
 
 
