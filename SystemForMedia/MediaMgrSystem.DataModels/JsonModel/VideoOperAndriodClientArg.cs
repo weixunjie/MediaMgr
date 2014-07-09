@@ -6,24 +6,32 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class ComuResponseBase
+    public class VideoOperAndriodClientArg
     {
-        public string guidId
+        public List<string> streamSrcs
         {
             get;
             set;
         }
 
-        public string errorCode
+        public string streamName { get; set; }
+        public string udpBroadcastAddress
         {
             get;
             set;
         }
-        public string message
+
+        public int mediaType
         {
             get;
             set;
-        }  
+        }
+
+        public string bitRate
+        {
+            get;
+            set;
+        }
 
     }
 }

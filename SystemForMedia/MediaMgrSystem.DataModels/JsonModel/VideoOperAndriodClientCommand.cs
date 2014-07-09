@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class VideoOperCommand : ComunicationBase
+    public class VideoOperAndriodClientCommand : ComunicationBase
     {
-        public VideoOperArg arg
+        public VideoOperAndriodClientArg arg
         {
             get;
             set;

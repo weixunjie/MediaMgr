@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class GroupInfo
+    public class ReceiveCommandBaseArg 
     {
-        public String GroupId { get; set; }
 
-        public String GroupName { get; set; }
-
-
-        public List<DeviceInfo> Devices { get; set; }
+        public string streamName
+        {
+            get;
+            set;
+        }
 
 
     }

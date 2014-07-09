@@ -6,18 +6,14 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class VideoServerRegModel : ComunicationBase
+    public class ReceiveCommand : ComunicationBase
     {
-        public string IpAddress
+
+        public ReceiveCommandBaseArg arg
         {
             get;
             set;
         }
 
-        public string ConnectionId
-        {
-            get;
-            set;
-        }
     }
 }

@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class VideoResponse : ComuResponseBase
+    public enum SingalRClientConnectionType
     {
-        public string deviceIP
-        {
-            get;
-            set;
-        }
-
+        PC,
+        ANDROID,
+        VEDIOSERVER,
+        ENCODERDEVICE,
+        WINDOWSSERVICE
     }
 }
