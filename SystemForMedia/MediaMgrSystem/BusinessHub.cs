@@ -167,7 +167,7 @@ namespace MediaMgrSystem
             object[] objs = para as object[];
 
 
-            System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss S"));
+            System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff"));
 
             Thread.Sleep((int)objs[5]);
 
@@ -182,7 +182,7 @@ namespace MediaMgrSystem
         {
             object[] objs = para as object[];
 
-            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss S"));
+            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff"));
 
             Thread.Sleep((int)objs[5]);
 

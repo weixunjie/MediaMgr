@@ -247,7 +247,7 @@ namespace MediaMgrSystem
 
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
-                    System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+                    System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
 
 
 
@@ -255,7 +255,7 @@ namespace MediaMgrSystem
                     hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
 
 
-                    System.Diagnostics.Debug.WriteLine("Paly json To Android client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss S"));
+                    System.Diagnostics.Debug.WriteLine("Paly json To Android client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff"));
                     TimeSpan afterSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
                     double offsetTotalMilliseconds = afterSendToAllClient.Subtract(beforeSendToAllClient).Duration().TotalMilliseconds;
@@ -279,8 +279,8 @@ namespace MediaMgrSystem
 
                     }
 
-                    System.Diagnostics.Debug.WriteLine("Paly json To video Server: " + jsonData + DateTime.Now.ToString("HH:mm:ss S"));
-                    System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+                    System.Diagnostics.Debug.WriteLine("Paly json To video Server: " + jsonData + DateTime.Now.ToString("HH:mm:ss fff"));
+                    System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
 
 
 
@@ -503,7 +503,7 @@ namespace MediaMgrSystem
                 PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime,isSendToVideoSvr);
 
 
-                System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+                System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
 
                 string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
 
@@ -513,7 +513,7 @@ namespace MediaMgrSystem
                     {
                         hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
 
-                        System.Diagnostics.Debug.WriteLine("STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss S"));
+                        System.Diagnostics.Debug.WriteLine("STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss fff"));
                     }
                 }
                 else
@@ -532,10 +532,10 @@ namespace MediaMgrSystem
 
                     hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
 
-                    System.Diagnostics.Debug.WriteLine("STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss S"));
+                    System.Diagnostics.Debug.WriteLine("STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff"));
                 }
 
-                System.Diagnostics.Debug.WriteLine("Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss S") + " Channel Id:" + channelId);
+                System.Diagnostics.Debug.WriteLine("Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
 
                 new Thread(ProcessTimeOutRequest).Start(hub);
 
@@ -738,114 +738,9 @@ namespace MediaMgrSystem
             {
                 ipsNeedToSend = new List<string>();
                 idsNeedToSend = new List<string>();
-            }
-        }
+            }       }
 
-
-        //public static void SendPlayCommand(string channelId, string[] programeIds, IHubConnectionContext hub,bool isScheduled)
-        //{
-        //    string errorrNotOpenVideoSvr = "视频服务器未开启";
-        //    if (GlobalUtils.IsChannelPlaying && !isSendToSvr)
-        //    {
-        //        List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-        //        hub.Clients(alPCIds).sendResultBrowserClient("正在播放中,请先停止", "200");
-        //        return;
-        //    }
-
-
-        //    if (string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId) && !isSendToSvr)
-        //    {
-        //        List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
-        //        hub.Clients(alPCIds).sendResultBrowserClient(errorrNotOpenVideoSvr, "200");
-        //        hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200");
-        //        return;
-        //    }
-        //    else
-        //    {
-
-        //        VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
-
-        //        cmdToVideoSvr.commandType = CommandTypeEnum.PLAYVEDIO;
-
-
-        //        List<ProgramInfo> pids = GlobalUtils.ProgramBLLInstance.GetProgramByIds(programeIds);
-
-
-        //        cmdToVideoSvr.arg = new VideoServerOperArg();
-
-
-        //        cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
-
-
-        //        GlobalUtils.CurrentVideoGuidId = Guid.NewGuid().ToString();
-
-
-        //        cmdToVideoSvr.guidId = GlobalUtils.CurrentVideoGuidId;
-        //        cmdToVideoSvr.arg.buffer = "0";
-        //        cmdToVideoSvr.arg.streamName = "123456790";
-
-
-
-
-        //        cmdToVideoSvr.arg.streamSrcs = new List<string>();
-
-        //        foreach (var pi in pids)
-        //        {
-        //            if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
-        //            {
-        //                foreach (var file in pi.MappingFiles)
-        //                {
-        //                    cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
-        //                }
-        //            }
-        //        }
-
-        //        int intCID = 0;
-
-        //        int port = 0;
-        //        if (int.TryParse(channelId, out intCID))
-        //        {
-        //            port = 1001 + intCID;
-        //        }
-
-        //        cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:1234";// +port.ToString();
-        //        cmdToVideoSvr.arg.streamName = "123456790" + port.ToString();
-
-        //        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId);
-
-        //        PushQueue("播放视频");
-
-        //        GlobalUtils.VideoSvrArg = cmdToVideoSvr.arg;
-
-        //        if (!isSendToSvr)
-        //        {
-        //            string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-        //            GlobalUtils.ReadyToSentSVRData = jsonData;
-        //        }
-        //       // string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-
-        //        if (isSendToSvr)
-        //        {
-        //            hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(GlobalUtils.ReadyToSentSVRData);
-        //        }             
-
-
-
-        //        string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalUtils.ReadyToSentClientData);
-
-
-        //        if (!isSendToSvr)
-        //        {             
-        //            hub.Clients(GlobalUtils.ReadyToSentClientIds).sendMessageToClient(jsonDataToClient);
-        //        }
-
-        //      //  
-
-        //        GlobalUtils.IsChannelPlaying = true;
-        //    }
-
-
-        //}
+     
 
 
     }
