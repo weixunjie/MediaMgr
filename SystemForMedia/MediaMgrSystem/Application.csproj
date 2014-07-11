@@ -159,6 +159,7 @@
     <Content Include="Account\LoginOut.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Bundle.config" />
+    <Content Include="Content\RemoteControlDevicesListStyle.css" />
     <Content Include="Dlls\ffmpeg.exe" />
     <Content Include="Dlls\FFMPEGWrapper.dll" />
     <Content Include="Images\ic_image_loading.gif" />
@@ -208,6 +209,9 @@
     <Content Include="MgrModel\DeviceMgrList.aspx" />
     <Content Include="MgrModel\ProgramMgrDetail.aspx" />
     <Content Include="MgrModel\ProgramMgrList.aspx" />
+    <Content Include="RemoteControlSys\RemoteControlMain.aspx" />
+    <Content Include="RemoteControlSys\RemoteDeviceList.ascx" />
+    <Content Include="RemoteControlSys\RemoveControlLogList.ascx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\html5.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -375,6 +379,27 @@
     </Compile>
     <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.designer.cs">
       <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoteControlMain.aspx.cs">
+      <DependentUpon>RemoteControlMain.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoteControlMain.aspx.designer.cs">
+      <DependentUpon>RemoteControlMain.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoteDeviceList.ascx.cs">
+      <DependentUpon>RemoteDeviceList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoteDeviceList.ascx.designer.cs">
+      <DependentUpon>RemoteDeviceList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoveControlLogList.ascx.cs">
+      <DependentUpon>RemoveControlLogList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoveControlLogList.ascx.designer.cs">
+      <DependentUpon>RemoveControlLogList.ascx</DependentUpon>
     </Compile>
     <Compile Include="SendLogic.cs" />
     <Compile Include="BusinessHub.cs" />

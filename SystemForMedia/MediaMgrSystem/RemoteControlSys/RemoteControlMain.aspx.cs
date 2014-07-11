@@ -14,9 +14,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace MediaMgrSystem
-{
-
-    public partial class _Default : Page
+{  
+    public partial class RemoteControlMain : Page
     {
 
         protected void Page_Load(object sender, EventArgs e)
@@ -41,7 +40,7 @@ namespace MediaMgrSystem
             StringBuilder build = new StringBuilder();
             HtmlTextWriter htmlWriter = new HtmlTextWriter(new StringWriter(build));
             UserControl uc = new UserControl();
-            Control ctrl = uc.LoadControl(controlName + ".ascx");
+            Control ctrl = uc.LoadControl(@"RemoteControlSys\"+controlName + ".ascx");
             htmlWriter.Flush();
             string result;
             try

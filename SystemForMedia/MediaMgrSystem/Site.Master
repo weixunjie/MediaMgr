@@ -36,6 +36,7 @@
         <link rel="stylesheet" href="/Content/dateTimePicker.css" type="text/css" />
 
 
+        <link rel="stylesheet" href="/Content/RemoteControlDevicesListStyle.css" type="text/css" />
 
 
         <script type="text/javascript" src="/Scripts/jquery-1.10.2.js"></script>
@@ -89,6 +90,8 @@
                        { %>>
                     <ul class="nav navbar-nav " style="float: right">
                         <li><a href="/AudioBroadcastMain.aspx">音频广播</a></li>
+
+                            <li><a href="RemoteControlSys/RemoteControlMain.aspx">物联控制</a></li>
 
 
                         <li class="dropdown" id="accountmenu">
