@@ -384,7 +384,7 @@
 
             <tr>
                 <td>
-                    <div style="height: 380px">
+                    <div >
                         <ul id="groupDeviceList<%=groupIndex %>" class="remoteControlDeviceListULStyle">
                             <%
                            deviceIndex++;
@@ -421,11 +421,11 @@
                                                 <div class="col-md-4">
                                                     <p style="text-align: center">
 
-                                                        <% string src8Name = "../Images/ic_image_device.png";
+                                                        <% string src8Name = "../Images/ic_image_ac.png";
 
                                                            if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                            {
-                                                               src8Name = "../Images/ic_image_device_offline.png";
+                                                               src8Name = "../Images/ic_image_ac.png";
                                                            }                                  
                                                
                                                         %>
@@ -434,7 +434,7 @@
                                                         <img id="devic99889eMenu<% =deviceIndex.ToString() %>" src="<%=src8Name %>" style="width: 50px; height: 50px" />
                                                     </p>
                                                     <p style="text-align: center">
-                                                        <% =dGroups[l].Devices[k].DeviceName %>
+                                                        空调
                                                     </p>
                                                 </div>
                                             </td>
@@ -443,11 +443,11 @@
                                                 <div class="col-md-4">
                                                     <p style="text-align: center">
 
-                                                        <% string src88Name = "../Images/ic_image_device.png";
+                                                        <% string src88Name = "../Images/ic_image_computer.png";
 
                                                            if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                            {
-                                                               src88Name = "../Images/ic_image_device_offline.png";
+                                                               src88Name = "../Images/ic_image_computer.png";
                                                            }                                  
                                                
                                                         %>
@@ -457,7 +457,7 @@
                                                         <img id="devi88c999eMenu<% =deviceIndex.ToString() %>" src="<%=src88Name %>" style="width: 50px; height: 50px" />
                                                     </p>
                                                     <p style="text-align: center">
-                                                        <% =dGroups[l].Devices[k].DeviceName %>
+                                                       电脑
                                                     </p>
                                                 </div>
                                             </td>
@@ -466,21 +466,21 @@
                                                 <div class="col-md-4">
                                                     <p style="text-align: center">
 
-                                                        <% string src888Name = "../Images/ic_image_device.png";
+                                                        <% string src888Name = "../Images/ic_image_light.png";
 
                                                            if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                            {
-                                                               src888Name = "../Images/ic_image_device_offline.png";
+                                                               src888Name = "../Images/ic_image_light.png";
                                                            }                                  
                                                
                                                         %>
 
 
 
-                                                        <img id="devic99999eMenu<% =deviceIndex.ToString() %>" src="<%=src88Name %>" style="width: 50px; height: 50px" />
+                                                        <img id="devic99999eMenu<% =deviceIndex.ToString() %>" src="<%=src888Name %>" style="width: 50px; height: 50px" />
                                                     </p>
                                                     <p style="text-align: center">
-                                                        <% =dGroups[l].Devices[k].DeviceName %>
+                                                       灯
                                                     </p>
                                                 </div>
                                             </td>
@@ -492,20 +492,20 @@
                                                 <div class="col-md-4">
                                                     <p style="text-align: center">
 
-                                                        <% string sr99c89Name = "../Images/ic_image_device.png";
+                                                        <% string sr99c89Name = "../Images/ic_image_projector.png";
 
                                                            if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                            {
-                                                               sr99c89Name = "../Images/ic_image_device_offline.png";
+                                                               sr99c89Name = "../Images/ic_image_projector.png";
                                                            }                                  
                                                
                                                         %>
 
 
-                                                        <img id="dev99ic99889eMenu<% =deviceIndex.ToString() %>" src="<%=src8Name %>" style="width: 50px; height: 50px" />
+                                                        <img id="dev99ic99889eMenu<% =deviceIndex.ToString() %>" src="<%=sr99c89Name %>" style="width: 50px; height: 50px" />
                                                     </p>
                                                     <p style="text-align: center">
-                                                        <% =dGroups[l].Devices[k].DeviceName %>
+                                                       投影仪
                                                     </p>
                                                 </div>
                                             </td>
@@ -518,7 +518,7 @@
 
                                                            if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                            {
-                                                               src88Name = "../Images/ic_image_device_offline.png";
+                                                               dsaf = "../Images/ic_image_device_offline.png";
                                                            }                                  
                                                
                                                         %>
@@ -528,7 +528,7 @@
                                                         <img id="dev88i88c999eMenu<% =deviceIndex.ToString() %>" src="<%=dsaf %>" style="width: 50px; height: 50px" />
                                                     </p>
                                                     <p style="text-align: center">
-                                                        <% =dGroups[l].Devices[k].DeviceName %>
+                                                        其他
                                                     </p>
                                                 </div>
                                             </td>
@@ -541,17 +541,16 @@
 
                                                            if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                            {
-                                                               src888Name = "../Images/ic_image_device_offline.png";
+                                                               src88999998Name = "../Images/ic_image_device_offline.png";
                                                            }                                  
                                                
                                                         %>
-
-
+                                                        
 
                                                         <img id="devic988889999eMenu<% =deviceIndex.ToString() %>" src="<%=src88999998Name %>" style="width: 50px; height: 50px" />
                                                     </p>
                                                     <p style="text-align: center">
-                                                        <% =dGroups[l].Devices[k].DeviceName %>
+                                                        其他
                                                     </p>
                                                 </div>
                                             </td>

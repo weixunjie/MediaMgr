@@ -162,7 +162,11 @@
     <Content Include="Content\RemoteControlDevicesListStyle.css" />
     <Content Include="Dlls\ffmpeg.exe" />
     <Content Include="Dlls\FFMPEGWrapper.dll" />
+    <Content Include="Images\ic_image_ac.png" />
+    <Content Include="Images\ic_image_computer.png" />
+    <Content Include="Images\ic_image_light.png" />
     <Content Include="Images\ic_image_loading.gif" />
+    <Content Include="Images\ic_image_projector.png" />
     <Content Include="LogOut.aspx" />
     <Content Include="LogList.ascx" />
     <Content Include="EncoderList.ascx" />

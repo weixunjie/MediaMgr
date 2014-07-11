@@ -416,7 +416,7 @@
 
 <ul class="dropdown-menu" role="menu"
     aria-labelledby="dropdownMenu" id="channelListChannelClickMenuBox">
-    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">计划选择</a></li>
+    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false" style="text-align:left" ><img src="Images/ic_image_stop.png" style="width:20px; line-height:20px;  margin:0px; margin-right:5px"></img>计划选择</a></li>
     <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
 
 </ul>
@@ -518,7 +518,7 @@
 
     <div id="dialogForChooseProgram" style="width: auto" class="modal hide">
         <div class="modal-header">
-            <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭">&times;</a><h3>节目选择</h3>
+            <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭"> &times;</a><h3>节目选择</h3>
         </div>
         <div class="modal-body">
             <div style="float: left; height: 200px; width: 150px;">
