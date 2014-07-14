@@ -43,8 +43,8 @@ namespace MediaMgrSystem
         public void SendMessageToMgrServer(string data, string connectionId)
         {
 
-            // System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
-            // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
+            System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
+            System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
 
 
             //            {"guidId":"2847f884-a55b-4375-aca4-a7f2f2df08b9","commandType":"114","arg":{ streamName": "12345678" }

@@ -69,7 +69,7 @@
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
 
-                <div class="form-group" style="margin-bottom: 30px">
+                <div class="form-group" style="margin-top:10px">
 
                     <asp:Button runat="server" Text="查询日志" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Search_Click" />
 
@@ -77,7 +77,7 @@
                 
 
 
-                <div class="form-horizontal">
+                <div class="form-horizontal" style="margin-top:20px" >
 
                     <div class="form-group">
 
@@ -115,10 +115,10 @@
                 </div>
 
 
-                <div class="form-group" style="margin-top: 15px">
+                <div class="form-group" style="margin-top:20px" >
 
 
-                    <asp:Label runat="server" AssociatedControlID="ddDateBefore" CssClass="col-md-2 control-label" Width="107px">日志删除:</asp:Label>
+                    <asp:Label runat="server"  AssociatedControlID="ddDateBefore" CssClass="col-md-2 control-label" Width="107px">日志删除:</asp:Label>
 
 
                     <div style="height: 30px; line-height: 30px; overflow: hidden;">

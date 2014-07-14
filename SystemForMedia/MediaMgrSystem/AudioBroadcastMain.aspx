@@ -98,7 +98,7 @@
 
         <div style="margin-top: 20px">
 
-            <encoderList:EncoderList ID="EncoderList" runat="server" />
+           <%-- <encoderList:EncoderList ID="EncoderList" runat="server" />--%>
 
         </div>
     </div>

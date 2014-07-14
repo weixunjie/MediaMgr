@@ -159,7 +159,6 @@
     <Content Include="Account\LoginOut.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Bundle.config" />
-    <Content Include="Content\RemoteControlDevicesListStyle.css" />
     <Content Include="Dlls\ffmpeg.exe" />
     <Content Include="Dlls\FFMPEGWrapper.dll" />
     <Content Include="Images\ic_image_ac.png" />

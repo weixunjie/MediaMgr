@@ -434,7 +434,7 @@ namespace MediaMgrSystem
 
             else
             {
-                SendOutStopRepeatCommandToServerAndClient(channelId, channelName, isWantToStop, hub, isSchedule, scheduleTime,isSendToVideoSvr);
+                SendOutStopRepeatCommandToServerAndClient(channelId, channelName, isWantToStop, hub, isSchedule, scheduleTime, isSendToVideoSvr);
             }
 
 
@@ -500,7 +500,7 @@ namespace MediaMgrSystem
 
 
 
-                PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime,isSendToVideoSvr);
+                PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime, isSendToVideoSvr);
 
 
                 System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
@@ -541,13 +541,16 @@ namespace MediaMgrSystem
 
                 if (!isSchedule)
                 {
+                    if (isWantToStop)
+                    {
 
-                    GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
-                    GlobalUtils.ChannelManuallyPlayingPids = null;
-                    GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
-                    GlobalUtils.IsChannelManuallyPlaying = false;
+                        GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
+                        GlobalUtils.ChannelManuallyPlayingPids = null;
+                        GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
+                        GlobalUtils.IsChannelManuallyPlaying = false;
 
-                    GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动停止成功");
+                        GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动停止成功");
+                    }
                 }
                 else
                 {
@@ -738,9 +741,10 @@ namespace MediaMgrSystem
             {
                 ipsNeedToSend = new List<string>();
                 idsNeedToSend = new List<string>();
-            }       }
+            }
+        }
 
-     
+
 
 
     }

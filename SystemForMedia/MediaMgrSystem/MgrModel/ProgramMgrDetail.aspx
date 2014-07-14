@@ -21,7 +21,7 @@
             <h3 style="clip: rect(auto, auto, 10px, auto)">节目明细管理</h3>
 
             <div runat="server" id="ss">
-            <img src="/Images/ic_image_loading.gif" style="width: 25px; height: 25px; margin-right: 5px" />
+            <img src="<%=ResolveUrl("~/Images/ic_image_loading.gif") %>" style="width: 25px; height: 25px; margin-right: 5px" />
             正在加载节目文件数据...
     </div>
 

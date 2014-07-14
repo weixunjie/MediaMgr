@@ -34,14 +34,14 @@
 
         <link rel="stylesheet" href=<% =ResolveUrl("~/Content/dateTimePicker.css") %> type="text/css"  />
 
-        <link rel="stylesheet" href=<% =ResolveUrl("~/Content/RemoteControlDevicesListStyle.css") %> type="text/css"  />
+    
 
 
 
 
         <script type="text/javascript" src= <%=ResolveUrl("~/Scripts/jquery-1.10.2.js") %> ></script>
 
-        <script type="text/javascript" src= <%=ResolveUrl("~/Scripts/jquery-1.6.4.min.js") %> ></script>
+        <script type="text/javascript" src= <%=ResolveUrl("~/Scripts/jquery-1.10.2.min.js") %> ></script>
 
          <script type="text/javascript" src= <%=ResolveUrl("~/Scripts/jquery.signalR-2.0.3.min.js") %> ></script>
 
@@ -90,30 +90,30 @@
                     <% if (Session["UserId"] != null)
                        { %>>
                     <ul class="nav navbar-nav " style="float: right">
-                        <li><a href="/AudioBroadcastMain.aspx">音频广播</a></li>
+                        <li><a href="<%=ResolveUrl("~/AudioBroadcastMain.aspx") %>">音频广播</a></li>
 
-                            <li><a href="RemoteControlSys/RemoteControlMain.aspx">物联控制</a></li>
+                     <%--       <li><a href="RemoteControlSys/RemoteControlMain.aspx">物联控制</a></li>--%>
 
 
                         <li class="dropdown" id="accountmenu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
                             <ul class="dropdown-menu-spec dropdown-menu "style="min-width:80px"  >
-                                <li><a href="/MgrModel/ProgramMgrList.aspx">节目管理 </a></li>
+                                <li><a href="<%=ResolveUrl("~/MgrModel/ProgramMgrList.aspx") %>">节目管理 </a></li>
 
                                
-                                <li><a  href="/MgrModel/GroupMgrList.aspx">分组管理 </a></li>
+                                <li><a  href="<%=ResolveUrl("~/MgrModel/GroupMgrList.aspx") %>">分组管理 </a></li>
 
                                  
-                                <li><a href="/MgrModel/DeviceMgrList.aspx">设备管理</a></li>
+                                <li><a href="<%=ResolveUrl("~/MgrModel/DeviceMgrList.aspx") %>">设备管理</a></li>
 
                                   
-                                <li><a  href="/MgrModel/EncoderMgrList.aspx">视频源管理</a></li>
+                       <%--         <li><a  href="<%=ResolveUrl("~/MgrModel/EncoderMgrList.aspx") %>">视频源管理</a></li>--%>
 
                                  
-                                <li><a  href="/MgrModel/ChannelMgrList.aspx">通道管理</a></li>
+                                <li><a  href="<%=ResolveUrl("~/MgrModel/ChannelMgrList.aspx") %>">通道管理</a></li>
 
                                 
-                                <li><a  href="/MgrModel/ScheduleMgrList.aspx">计划管理</a></li>
+                                <li><a  href="<%=ResolveUrl("~/MgrModel/ScheduleMgrList.aspx") %>">计划管理</a></li>
 
                                 <% 
                            if (Session["IsSuperUser"] != null)
@@ -123,10 +123,10 @@
                                 %>
 
                               
-                                <li><a  href="/MgrModel/LogMgrList.aspx">日志管理</a></li>
+                                <li><a  href="<%=ResolveUrl("~/MgrModel/LogMgrList.aspx") %>">日志管理</a></li>
 
                                 
-                                <li><a  href="/MgrModel/UserMgrList.aspx">用户管理</a></li>
+                                <li><a  href="<%=ResolveUrl("~/MgrModel/UserMgrList.aspx") %>" >用户管理</a></li>
                                 <% }
                            }
                                 %>
@@ -134,7 +134,7 @@
                         </li>
                         
 
-                        <li><a href="/LogOut.aspx">您好,<% =Session["UserName"].ToString() %></a></li>
+                        <li><a href="href="<%=ResolveUrl("~/LogOut.aspx") %>">您好,<% =Session["UserName"].ToString() %></a></li>
 
                         <% } %>
                     </ul>

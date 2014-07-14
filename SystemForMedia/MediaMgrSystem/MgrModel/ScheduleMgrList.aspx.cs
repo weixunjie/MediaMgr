@@ -54,11 +54,11 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskIsByScheduleId(e.CommandArgument.ToString()))
-                {
-                    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForSheduleList", "alert('有计划任务运行中，不能删除该计划');", true);
-                    return;
-                }
+                //if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskIsByScheduleId(e.CommandArgument.ToString()))
+                //{
+                //    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForSheduleList", "alert('有计划任务运行中，不能删除该计划');", true);
+                //    return;
+                //}
 
                 GlobalUtils.ScheduleBLLInstance.RemoveSchedule(e.CommandArgument.ToString());
                 BindListData();

@@ -90,24 +90,24 @@
 
 
             if ($("#btnChannelControlPlay").attr("disabled") == "disabled") {
-                $("#btnChannelControlPlay").attr("src", "Images/ic_image_play_disabled.png");
+                $("#btnChannelControlPlay").attr("src", "<%=ResolveUrl("~/Images/ic_image_play_disabled.png") %>" );
                 $("#btnChannelControlPlay").addClass("notactive");
             }
             else {
-                $("#btnChannelControlPlay").attr("src", "Images/ic_image_play.png");
+                $("#btnChannelControlPlay").attr("src", "<%=ResolveUrl("~/Images/ic_image_play.png") %>" );
                 $("#btnChannelControlPlay").removeClass("notactive");
             }
 
 
             if ($("#btnChannelControlStop").attr("disabled") == "disabled") {
-                $("#btnChannelControlStop").attr("src", "Images/ic_image_stop_disabled.png");
+                $("#btnChannelControlStop").attr("src", "<%=ResolveUrl("~/Images/ic_image_stop_disabled.png") %>");
                 $("#btnChannelControlStop").addClass("notactive");
 
             }
             else {
 
                 $("#btnChannelControlStop").removeClass("notactive");
-                $("#btnChannelControlStop").attr("src", "Images/ic_image_stop.png");
+                $("#btnChannelControlStop").attr("src","<%=ResolveUrl("~/Images/ic_image_stop.png") %>");
 
             }
 
@@ -115,12 +115,12 @@
             if ($("#btnChannelControlRepeat").attr("disabled") == "disabled") {
 
                 $("#btnChannelControlRepeat").addClass("notactive");
-                $("#btnChannelControlRepeat").attr("src", "Images/ic_image_repeat_disabled.png");
+                $("#btnChannelControlRepeat").attr("src", "<%=ResolveUrl("~/Images/ic_image_repeat_disabled.png") %>");
 
             }
             else {
                 $("#btnChannelControlRepeat").removeClass("notactive");
-                $("#btnChannelControlRepeat").attr("src", "Images/ic_image_repeat.png");
+                $("#btnChannelControlRepeat").attr("src", "<%=ResolveUrl("~/Images/ic_image_repeat.png") %>");
 
             }
 
@@ -297,7 +297,7 @@
 
 
         $("#btnChannelControlPlay").click(function () {
-
+                   
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
                 chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0");
@@ -416,7 +416,7 @@
 
 <ul class="dropdown-menu" role="menu"
     aria-labelledby="dropdownMenu" id="channelListChannelClickMenuBox">
-    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false" style="text-align:left" ><img src="Images/ic_image_stop.png" style="width:20px; line-height:20px;  margin:0px; margin-right:5px"></img>计划选择</a></li>
+    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false" >计划选择</a></li>
     <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
 
 </ul>

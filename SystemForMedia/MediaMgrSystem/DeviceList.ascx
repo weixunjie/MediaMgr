@@ -399,11 +399,11 @@
                                     <div class="col-md-4">
                                         <p style="text-align: center">
 
-                                            <% string srcName = "Images/ic_image_device.png";
+                                            <% string srcName = ResolveUrl("~/Images/ic_image_device.png");
 
                                                if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                                                {
-                                                   srcName = "Images/ic_image_device_offline.png";
+                                                   srcName = ResolveUrl("~/Images/ic_image_device_offline.png");
                                                }                                  
                                                
                                             %>

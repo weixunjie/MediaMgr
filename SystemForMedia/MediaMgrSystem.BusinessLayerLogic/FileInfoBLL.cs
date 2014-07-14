@@ -59,8 +59,15 @@ namespace MediaMgrSystem.BusinessLayerLogic
                 FileInfo[] fiArray = di.GetFiles();
                 if (fiArray != null && fiArray.Length > 0)
                 {
+
+
                     foreach(var fi in fiArray)
                     {
+                        if (fi.Extension.ToUpper().EndsWith("META"))
+                        {
+                            continue;
+                        }
+
                         FileAttribute fa=GetFileInfoByFile(fi.Name);
                         if (fa != null)
                         {
