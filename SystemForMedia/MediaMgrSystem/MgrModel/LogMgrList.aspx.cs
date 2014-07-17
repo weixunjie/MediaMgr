@@ -58,12 +58,7 @@ namespace MediaMgrSystem.MgrModel
 
         }
 
-        //[WebMethod]
-        //public static string RemoveLogsByDaysBefore(string dayBefore)
-        //{
-        //    return GlobalUtils.LogBLLInstance.RemoveLogByDayBefore(dayBefore).ToString();
-        //}
-
+       
 
         protected void dvList_RowCommand(object sender, GridViewCommandEventArgs e)
         {

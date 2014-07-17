@@ -162,6 +162,7 @@
     <Content Include="Dlls\ffmpeg.exe" />
     <Content Include="Dlls\FFMPEGWrapper.dll" />
     <Content Include="Images\ic_image_ac.png" />
+    <Content Include="Images\ic_image_class_room.png" />
     <Content Include="Images\ic_image_computer.png" />
     <Content Include="Images\ic_image_light.png" />
     <Content Include="Images\ic_image_loading.gif" />
@@ -212,6 +213,7 @@
     <Content Include="MgrModel\DeviceMgrList.aspx" />
     <Content Include="MgrModel\ProgramMgrDetail.aspx" />
     <Content Include="MgrModel\ProgramMgrList.aspx" />
+    <Content Include="RemoteControlSys\RemoteControlDetailList.aspx" />
     <Content Include="RemoteControlSys\RemoteControlMain.aspx" />
     <Content Include="RemoteControlSys\RemoteDeviceList.ascx" />
     <Content Include="RemoteControlSys\RemoveControlLogList.ascx" />
@@ -382,6 +384,13 @@
     </Compile>
     <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.designer.cs">
       <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoteControlDetailList.aspx.cs">
+      <DependentUpon>RemoteControlDetailList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RemoteControlSys\RemoteControlDetailList.aspx.designer.cs">
+      <DependentUpon>RemoteControlDetailList.aspx</DependentUpon>
     </Compile>
     <Compile Include="RemoteControlSys\RemoteControlMain.aspx.cs">
       <DependentUpon>RemoteControlMain.aspx</DependentUpon>

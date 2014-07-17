@@ -1,25 +1,30 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeBehind="RemoteDeviceList.ascx.cs" Inherits="MediaMgrSystem.RemoteDeviceList" %>
 
 
+<style>
+    .cb td {
+        width: 100px;
+        text-align: center;
+    }
+
+    .cb label {
+        float: left;
+        display: inline-block;
+    }
+
+    .cb input {
+        float: left;
+    }
+</style>
+
 <script type="text/javascript">
 
 
-    var currentOperGroup;
 
-    $(document).unbind();
-
-    $(document).ready(function () {
-
-        <%  
+    <%  
 
     
-    List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroupsIncludeDefaultGroup();
-    List<MediaMgrSystem.DataModels.ChannelInfo> channels = GetAllChannels();
-
-    List<MediaMgrSystem.DataModels.EncoderInfo> encoders = GetAllEncoders();
-
-
-
+    List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();
 
     string deviceIds = string.Empty;
     string imgGroupShowIds = string.Empty;
@@ -42,225 +47,138 @@
     deviceIds = deviceIds.TrimEnd(',');
     imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
 
-    string btnMenuChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMenuChannelSelIds = btnMenuChannelSelIds + "#btnMenuChannelSel" + channels[i].ChannelId + ","; }; btnMenuChannelSelIds = btnMenuChannelSelIds.TrimEnd(',');
 
-    string btnMenuEncoderSelIds = string.Empty; for (int i = 0; i < encoders.Count; i++) { btnMenuEncoderSelIds = btnMenuEncoderSelIds + "#btnMenuEncoderSel" + encoders[i].EncoderId + ","; }; btnMenuEncoderSelIds = btnMenuEncoderSelIds.TrimEnd(',');
-    
-             %>
+        %>
 
 
+    var currentOperGroup;
 
-        $("#btnConfirmedBatchGroupOperation").click(function (e) {
-
-
-            $("#dialogForBatchGrouplbAvaiableGroups option:selected").each(function () {
+    $(document).unbind();
 
 
-                var selectedGroupId = $(this).val();
 
-                var selectedChannelId = $('#ddBatchSelectChannel option:selected').val();
+    $(document).ready(function () {
 
-                var selectedEncoderId = $('#ddBatchSelectVideoSorce option:selected').val();
-
-
-                $.ajax({
-                    type: "POST",
-                    async: false,
-                    url: "AudioBroadcastMain.aspx/SaveGroupChannelAndEncoder",
-                    data: "{'cid':'" + selectedChannelId + "',gid:'" + selectedGroupId + "','eid':'" + selectedEncoderId + "'}",
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (msg) {
-
-
-                    }
-                });
-
-            })
-
-
-            $('#dialogForBatchGroup').modal('hide');
-        });
 
         $("#btnBatchGroupOperation").click(function (e) {
+
+            var x = $(this).offset().left;
+            var y = $(this).offset().top + $(this).height() + 10;
+
+            is_popup_1st_menu = true;
+
+            $("#groupListBatchMenu").show().css("left", x).css("top", y);
+
+
+        });
+
+        $("#groupListBacthMenuSchedule").click(function (e) {
+
+
+            $("#divPlanTime").css("display", "block");
+
+            $("#divPlanWeeks").css("display", "block");
+
+            $("#batchGroupRightDiv").css("height", "460px");
+
+            $("#dialogForBatchGrouplbAvaiableGroups").css("height", "440px");
+
+            is_popup_1st_menu = false;
+            $("#groupListBatchMenu").hide;
+            $('#dialogForBatchGroup').modal('show');
+        });
+
+        $("#groupListBacthMenuManual").click(function (e) {
+
+
+            $("#divPlanTime").css("display", "none");
+
+            $("#divPlanWeeks").css("display", "none");
+
+
+            $("#batchGroupRightDiv").css("height", "330px");
+
+            $("#dialogForBatchGrouplbAvaiableGroups").css("height", "310px");
+
+            is_popup_1st_menu = false;
+            $("#groupListBatchMenu").hide;
 
             $('#dialogForBatchGroup').modal('show');
         });
 
 
 
-        $("#btnSingleGroupChooseChannel").click(function (e) {
+        function hideAllMenus() {
 
-            $("#deviceListSingleGroupChooseEncoderMenu").hide();
-
-            is_popup_2nd_menu = true;
-
-            var x = $(this).offset().left + $("#deviceListSingleGroupChooseChannelMenu").width() + 6;
-            var y = $(this).offset().top;
-
-            $.ajax({
-                type: "POST",
-                async: false,
-                url: "AudioBroadcastMain.aspx/GetChannelByGroupId",
-                data: "{'gid':'" + currentOperGroup + "'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-                    $("<% =btnMenuChannelSelIds%>").css("font-weight", "normal");
-                    $("#btnMenuChannelSel" + msg.d).css("font-weight", "bold");
-
-                }
-            });
-
-            $("#deviceListSingleGroupChooseChannelMenu").show().css("left", x).css("top", y);
-        });
-
-
-        $("<% =btnMenuChannelSelIds%>").click(function (e) {
-
-
-            var currentOperChannel = e.currentTarget.id.replace("btnMenuChannelSel", "");
-
-            $.ajax({
-                type: "POST",
-                async: true,
-                url: "AudioBroadcastMain.aspx/SaveGroupChannel",
-                data: "{'cid':'" + currentOperChannel + "',gid:'" + currentOperGroup + "'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-                }
-            });
-
-
-            is_popup_2nd_menu = false;
-            is_popup_1st_menu = false;
-
-        });
-
-
-        $("#btnSingleGroupChooseChannel").mouseout(function (e) {
-            is_popup_2nd_menu = false;
-        });
-
-        $("#btnSingleGroupChooseEncoder").click(function (e) {
-
-
-
-            $("#deviceListSingleGroupChooseChannelMenu").hide()
-
-
-            is_popup_2nd_menu = true;
-
-            var x = $(this).offset().left + $("#deviceListSingleGroupChooseEncoderMenu").width() + 6;
-            var y = $(this).offset().top;
-
-
-            $.ajax({
-                type: "POST",
-                async: false,
-                url: "AudioBroadcastMain.aspx/GetEncoderByGroupId",
-                data: "{'gid':'" + currentOperGroup + "'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-                    $("<% =btnMenuEncoderSelIds%>").css("font-weight", "normal");
-                    $("#btnMenuEncoderSel" + msg.d).css("font-weight", "bold");
-
-                }
-            });
-
-
-            $("#deviceListSingleGroupChooseEncoderMenu").show().css("left", x).css("top", y);
-
-
-        });
-
-
-
-        $("<% =btnMenuEncoderSelIds%>").click(function (e) {
-
-            var currentOperEncoder = e.currentTarget.id.replace("btnMenuEncoderSel", "");
-
-            $.ajax({
-                type: "POST",
-                async: true,
-                url: "AudioBroadcastMain.aspx/SaveGroupEncoder",
-                data: "{'cid':'" + currentOperEncoder + "',gid:'" + currentOperGroup + "'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-                }
-            });
-
-            is_popup_2nd_menu = false;
-            is_popup_1st_menu = false;
-
-        });
-
-        $("#btnSingleGroupChooseEncoder").mouseout(function (e) {
-            is_popup_2nd_menu = false;
-        });
-
-
-        $.showGroupClickMenu = function () {
-
-            $("<%= imgGroupShowIds %>").click(function (e) {
-
-
-                hideAllNenus();
-
-                currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
-
-                is_popup_1st_menu = true;
-
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
-
-
-                $("#deviceListSingleGroupClickMenuBox").show().css("left", x).css("top", y);
-
-
-            });
-
-            $("<%= imgGroupShowIds %>").mouseout(function (e) {
-                is_popup_1st_menu = false;
-            });
-
-            $(document).click(function () {
-
-                if (!is_popup_1st_menu && !is_popup_2nd_menu) {
-
-                    hideAllNenus();
-                }
-            });
-
-        }
-
-        function hideAllNenus() {
-            $("#deviceListSingleGroupClickMenuBox").hide();
-            $("#deviceListSingleGroupChooseChannelMenu").hide()
-            $("#encoderListEncoderClickMenuBox").hide();
-            $("#channelListChannelClickMenuBox").hide();
-            $("#channelListChannelChooseScheduleMenu").hide()
-            $("#deviceListSingleGroupChooseEncoderMenu").hide();
             $("#deviceListSingleDeviceMenu").hide();
+            $("#deviceListSingleDeviceSubMenu").hide();
+            $("#groupListBatchMenu").hide();
 
         }
 
-        $.showGroupClickMenu();
 
+        $("#deviceListSingleDeviceMenuBtnType2,#deviceListSingleDeviceMenuBtnType3,#deviceListSingleDeviceMenuBtnType4,#deviceListSingleDeviceMenuBtnType5").click(function (e) {
+
+
+            is_popup_2nd_menu = true;
+
+
+            $("#liDeviceListSingleDeviceSubMenuBtnChangeParam").css("display", "none");
+
+            var x = $(this).offset().left + $("#deviceListSingleDeviceMenu").width() + 6;
+            var y = $(this).offset().top;
+
+            $("#deviceListSingleDeviceSubMenu").show().css("left", x).css("top", y);
+
+
+        });
+
+        $("#deviceListSingleDeviceMenuBtnType1").click(function (e) {
+
+
+            is_popup_2nd_menu = true;
+
+
+            $("#liDeviceListSingleDeviceSubMenuBtnChangeParam").css("display", "block");
+
+            var x = $(this).offset().left + $("#deviceListSingleDeviceMenu").width() + 6;
+            var y = $(this).offset().top;
+
+            $("#deviceListSingleDeviceSubMenu").show().css("left", x).css("top", y);
+
+
+        });
+
+
+        $("#deviceListSingleDeviceSubMenuBtnOpen").click(function (e) {
+
+
+            hideAllMenus();
+            is_popup_2nd_menu = false;
+
+        });
+
+        $("#deviceListSingleDeviceSubMenuBtnClose").click(function (e) {
+
+            hideAllMenus();
+            is_popup_2nd_menu = false;
+
+        });
+
+        $("#deviceListSingleDeviceSubMenuBtnChangeParam").click(function (e) {
+            $('#dialogOperationAC').modal('show');
+
+            hideAllMenus();
+            is_popup_2nd_menu = false;
+
+        });
 
         $.showSingleDeviceClickMenu = function () {
 
             $("<%= deviceIds %>").click(function (e) {
 
 
-                hideAllNenus();
+                hideAllMenus();
 
                 currentOperGroup = e.currentTarget.id.replace("deviceMenu", "");
 
@@ -268,7 +186,6 @@
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
-
 
                 $("#deviceListSingleDeviceMenu").show().css("left", x).css("top", y);
 
@@ -282,7 +199,7 @@
             $(document).click(function () {
 
                 if (!is_popup_1st_menu && !is_popup_2nd_menu) {
-                    hideAllNenus();
+                    hideAllMenus();
                 }
             });
 
@@ -291,60 +208,12 @@
         $.showSingleDeviceClickMenu();
 
 
-
-        <%
-               
-     
-    string groupDeviceListIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { groupDeviceListIds = groupDeviceListIds + "#groupDeviceList" + i.ToString() + ","; }; groupDeviceListIds = groupDeviceListIds.TrimEnd(','); %>
-
-
-        $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='remoteControlDevicPplaceHolder'><div></div></li>" });
-
-        function saveOrder() {
-
-
-            <%  for (int i = 0; i < dGroups.Count; i++)
-                {
-                     %>
-
-            var stringData = "";
-            $("#groupDeviceList<%=i.ToString()%> li").map(function () {
-                stringData += $(this).data("itemid") + ",";
-            })
-            var a = stringData;
-
-
-            $.ajax({
-                type: "POST",
-                async: false,
-                url: "AudioBroadcastMain.aspx/SaveDeviceGroup",
-                data: "{'deivceId':'" + a + "','groupId':'<% =dGroups[i].GroupId %>'}",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function (msg) {
-
-
-                }
-            });
-
-
-            <% 
-                }
-           %>
-
-        };
-
-
-
     });
 
 
 </script>
 
-
 <div>
-
-
 
     <% 
         int deviceIndex = 0;
@@ -356,6 +225,11 @@
            
     %>
 
+
+    <h3  class="pull-left" style="clip: rect(auto, auto, 10px, auto)">物联设备明细查看</h3>
+
+
+    <div class="pull-right"><a class="btn  btn-success" data-content="">批量操作</a></div>
 
 
     <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 5px;">
@@ -369,10 +243,7 @@
                     <div class="row" style="margin-left: 0px">
 
                         <div class="pull-left"><%=dGroups[l].GroupName %></div>
-                        <% if (dGroups[l].GroupId != "-1")
-                           {  %>
-                        <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
-                        <% }  %>
+
                     </div>
 
                 </th>
@@ -384,267 +255,59 @@
 
             <tr>
                 <td>
-                    <div >
-                        <ul id="groupDeviceList<%=groupIndex %>" class="remoteControlDeviceListULStyle">
+
+                    <div style="height: 90px">
+                        <ul id="groupDeviceList<%=groupIndex %>" class="deviceULStyle">
                             <%
-                           deviceIndex++;
-                           if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)
-                           {
-                               for (int k = 0; k < dGroups[l].Devices.Count; k++) %>
-                            <%    {
+            deviceIndex++;
+            if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)
+            {
+                for (int k = 0; k < dGroups[l].Devices.Count; k++)
+                {
                             %>
+
                             <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>">
 
-                                <table class="table table-bordered table-striped; " style="overflow: auto; height: auto;">
-
-
-
-                                    <thead style="border-radius:0px" >
-                                        <tr >
-
-                                            <th colspan="3" style="border-bottom-left-radius:0px" >
-
-
-                                                <div style="text-align:center" >教室1</div>
-
-
-                                            </th>
-
-                                        </tr>
-                                    </thead>
-
-
-
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="col-md-4">
-                                                    <p style="text-align: center">
-
-                                                        <% string src8Name = "../Images/ic_image_ac.png";
-
-                                                           if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                           {
-                                                               src8Name = "../Images/ic_image_ac.png";
-                                                           }                                  
-                                               
-                                                        %>
-
-
-                                                        <img id="devic99889eMenu<% =deviceIndex.ToString() %>" src="<%=src8Name %>" style="width: 50px; height: 50px" />
-                                                    </p>
-                                                    <p style="text-align: center">
-                                                        空调
-                                                    </p>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="col-md-4">
-                                                    <p style="text-align: center">
-
-                                                        <% string src88Name = "../Images/ic_image_computer.png";
-
-                                                           if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                           {
-                                                               src88Name = "../Images/ic_image_computer.png";
-                                                           }                                  
-                                               
-                                                        %>
-
-
-
-                                                        <img id="devi88c999eMenu<% =deviceIndex.ToString() %>" src="<%=src88Name %>" style="width: 50px; height: 50px" />
-                                                    </p>
-                                                    <p style="text-align: center">
-                                                       电脑
-                                                    </p>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="col-md-4">
-                                                    <p style="text-align: center">
-
-                                                        <% string src888Name = "../Images/ic_image_light.png";
-
-                                                           if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                           {
-                                                               src888Name = "../Images/ic_image_light.png";
-                                                           }                                  
-                                               
-                                                        %>
-
-
-
-                                                        <img id="devic99999eMenu<% =deviceIndex.ToString() %>" src="<%=src888Name %>" style="width: 50px; height: 50px" />
-                                                    </p>
-                                                    <p style="text-align: center">
-                                                       灯
-                                                    </p>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td>
-                                                <div class="col-md-4">
-                                                    <p style="text-align: center">
-
-                                                        <% string sr99c89Name = "../Images/ic_image_projector.png";
-
-                                                           if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                           {
-                                                               sr99c89Name = "../Images/ic_image_projector.png";
-                                                           }                                  
-                                               
-                                                        %>
-
-
-                                                        <img id="dev99ic99889eMenu<% =deviceIndex.ToString() %>" src="<%=sr99c89Name %>" style="width: 50px; height: 50px" />
-                                                    </p>
-                                                    <p style="text-align: center">
-                                                       投影仪
-                                                    </p>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="col-md-4">
-                                                    <p style="text-align: center">
-
-                                                        <% string dsaf = "../Images/ic_image_device.png";
-
-                                                           if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                           {
-                                                               dsaf = "../Images/ic_image_device_offline.png";
-                                                           }                                  
-                                               
-                                                        %>
-
-
-
-                                                        <img id="dev88i88c999eMenu<% =deviceIndex.ToString() %>" src="<%=dsaf %>" style="width: 50px; height: 50px" />
-                                                    </p>
-                                                    <p style="text-align: center">
-                                                        其他
-                                                    </p>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="col-md-4">
-                                                    <p style="text-align: center">
-
-                                                        <% string src88999998Name = "../Images/ic_image_device.png";
-
-                                                           if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                           {
-                                                               src88999998Name = "../Images/ic_image_device_offline.png";
-                                                           }                                  
-                                               
-                                                        %>
-                                                        
-
-                                                        <img id="devic988889999eMenu<% =deviceIndex.ToString() %>" src="<%=src88999998Name %>" style="width: 50px; height: 50px" />
-                                                    </p>
-                                                    <p style="text-align: center">
-                                                        其他
-                                                    </p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <%--    <div class="row" style="margin-left: 0px">
+                                <div class="row" style="margin-left: 0px">
                                     <div class="col-md-4">
-
-                                        <div style="float: left; height: 160px">
-
-
-                                            <p style="text-align: center">
-
-                                                <% string srcName = "../Images/ic_image_device.png";
-
-                                                   if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                                   {
-                                                       srcName = "../Images/ic_image_device_offline.png";
-                                                   }                                  
-                                               
-                                                %>
-
-
-
-                                                <img id="device7Menu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
-                                            </p>
-                                        </div>
-                                        <p style="text-align: center">
-                                            <% =dGroups[l].Devices[k].DeviceName %>
-                                        </p>
-
                                         <p style="text-align: center">
 
-                                            <% string src77Name = "../Images/ic_image_device.png";
+                                            <% 
+                                                
+                    string srcName = ResolveUrl("~/Images/ic_image_device.png");
 
-                                               if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                               {
-                                                    src77Name = "../Images/ic_image_device_offline.png";
-                                               }                                  
+                    if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
+                    {
+                        srcName = ResolveUrl("~/Images/ic_image_device_offline.png");
+                    }                                  
                                                
                                             %>
 
 
-
-                                            <img id="device9Menu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
-                                        </p>
-                                        <p style="text-align: center">
-                                            <% =dGroups[l].Devices[k].DeviceName %>
-                                        </p>
-
-                                    </div>
-
-
-
-                                    <div class="col-md-4">
-                                        <p style="text-align: center">
-
-                                            <% string src8Name = "../Images/ic_image_device.png";
-
-                                               if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                               {
-                                                   src8Name = "../Images/ic_image_device_offline.png";
-                                               }                                  
-                                               
-                                            %>
-
-
-
-                                            <img id="devic999eMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
+                                            <img id="deviceMenu<% =deviceIndex.ToString() %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p style="text-align: center">
                                             <% =dGroups[l].Devices[k].DeviceName %>
                                         </p>
                                     </div>
-
-                                </div>--%>
+                                </div>
 
                             </li>
 
-
                             <%  }
-                           } %>
+            } %>
                         </ul>
 
+
                     </div>
+
                 </td>
             </tr>
         </tbody>
     </table>
 
     <%
-                           groupIndex++;
+            groupIndex++;
         } %>
 
 
@@ -666,7 +329,6 @@
             </tr>
         </thead>
 
-        <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
 
         <tbody>
 
@@ -676,21 +338,18 @@
                         <ul id="deviceGroupList" class="deviceULStyle">
                             <%          
          
-                                for (int k = 0; k < dGroups.Count; k++) %>
-                            <%    {
-                                      if (dGroups[k].GroupId == "-1")
-                                      {
-                                          continue;
-                                      }
+                                for (int k = 0; k < dGroups.Count; k++)
+                                {                                     
+                            
                             %>
+
                             <li data-itemid="<%=dGroups[k].GroupId %>">
 
                                 <div class="row" style="margin-left: 0px">
                                     <div class="col-md-4">
                                         <p style="text-align: center">
 
-
-                                            <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/ic_image_group.png" style="width: 50px; height: 50px" />
+                                            <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="<%= ResolveUrl("~/Images/ic_image_group.png") %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p id="ptext" style="text-align: center">
                                             <% =dGroups[k].GroupName %>
@@ -699,7 +358,6 @@
                                 </div>
 
                             </li>
-
 
                             <%  }
                             %>
@@ -713,21 +371,68 @@
     </table>
 
 
+    <div id="dialogOperationAC" style="width: auto" class="modal hide">
+        <div class="modal-header">
+            <a class="close" onclick=" $('#dialogOperationAC').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">空调操作</h3>
+        </div>
+        <div class="modal-body" style="max-height: 500px">
+
+            <div style="height: 160px; width: 240px;">
+                <h4 style="text-align: left; margin-top: 0px">空调参数</h4>
+
+                <div>
+
+                    <p>
+                        空调温度
+                    </p>
+
+
+                    <div style="height: 40px">
+                        <input type="text" style="width: 220px" id="tbForSingleDeviceACTempure" />
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <p>
+                        空调模式:
+                    </p>
+
+
+                    <div style="height: 40px">
+                        <asp:DropDownList runat="server" Width="235px" ID="DDForSingleDeviceACMode">
+                            <asp:ListItem Value="1">制冷</asp:ListItem>
+                            <asp:ListItem Value="2">制热</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <a id="btnConfirmedACOperation" class="btn primary">确认</a>
+        </div>
+    </div>
 
     <div id="dialogForBatchGroup" style="width: auto" class="modal hide">
         <div class="modal-header">
-            <a class="close" onclick=" $('#dialogForBatchGroup').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">分组</h3>
+            <a class="close" onclick=" $('#dialogForBatchGroup').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">设备操作</h3>
         </div>
-        <div class="modal-body">
-            <div style="float: left; height: 185px; width: 160px; margin-right: 10px">
+        <div class="modal-body" style="max-height: 500px">
+            <div style="float: left; height: auto; width: 160px; margin-right: 10px">
 
                 <h4 style="text-align: left; margin-top: 0px">可选组</h4>
 
-                <select size="4" multiple="multiple" style="height: 160px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
+                <select size="4" multiple="multiple" style="height: 450px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
 
                     <% foreach (var di in dGroups)
                        {
-                           if (di.GroupId == "-1") { continue; } %>
+                    %>
                     <option value="<%= di.GroupId %>"><%= di.GroupName %></option>
 
                     <% 
@@ -736,50 +441,106 @@
                 </select>
             </div>
 
-
-            <div style="float: left; height: 220px; width: 220px;">
+            <div id="batchGroupRightDiv" style="float: left; height: 460px; width: 300px;">
                 <h4 style="text-align: left; margin-top: 0px">批量操作</h4>
 
                 <div>
-                    <div class="batchOperationLableStyle">
-                        <p>
-                            通道选择
-                        </p>
+                    <p>
+                        设备
+                    </p>
+                    <div style="height: 80px">
+
+                        <asp:CheckBoxList ID="cbScheduleDevice" runat="server" Height="40px" RepeatColumns="3" RepeatDirection="Horizontal" Width="300px" CssClass="cb">
+                            <asp:ListItem Value="1">空调</asp:ListItem>
+                            <asp:ListItem Value="2">电视</asp:ListItem>
+                            <asp:ListItem Value="3">投影仪</asp:ListItem>
+                            <asp:ListItem Value="4">电脑</asp:ListItem>
+                            <asp:ListItem Value="5">灯</asp:ListItem>
+                        </asp:CheckBoxList>
                     </div>
-                    <select id="ddBatchSelectChannel" style="width: 220px">
 
-                        <% foreach (var ci in channels)
-                           { %>
-                        <option value="<%= ci.ChannelId %>"><%= ci.ChannelName %></option>
-
-                        <% 
-                           }
-                        %>
-                    </select>
                 </div>
+
                 <div>
-                    <div class="batchOperationLableStyle">
-                        <p>
-                            视频源选择:
-                        </p>
+
+                    <p>
+                        空调温度
+                    </p>
+
+
+                    <div style="height: 40px">
+                        <input type="text" style="width: 220px" id="tbACTempure" />
                     </div>
-                    <select id="ddBatchSelectVideoSorce" style="width: 220px" name="selectTest">
-
-                        <%  foreach (var ei in encoders)
-                            { %>
-                        <option value="<%= ei.EncoderId %>"><% =ei.EncoderName %></option>
-                        <% } %>
-                    </select>
-                </div>
-
-                <div style="vertical-align: middle">
-
-
-                    <input type="checkbox" id="ckcBatchOpenVideoSource" style="float: left; vertical-align: middle" />
-                    <label for="ckcBatchOpenVideoSource" style="line-height: 21px">&nbsp;打开视频源</label>
-                    <br />
 
                 </div>
+
+                <div>
+
+                    <p>
+                        空调模式:
+                    </p>
+
+
+                    <div style="height: 40px">
+                        <asp:DropDownList runat="server" Width="235px" ID="ddACMode">
+                            <asp:ListItem Value="1">制冷</asp:ListItem>
+                            <asp:ListItem Value="2">制热</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <p>
+                        打开/关闭:
+                    </p>
+
+                    <div style="height: 40px">
+
+                        <asp:DropDownList runat="server" Width="235px" Height="30px" ID="ddOpenClose">
+                            <asp:ListItem Value="1">打开</asp:ListItem>
+                            <asp:ListItem Value="3">关闭</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+
+                </div>
+
+
+                <div id="divPlanTime">
+
+                    <p>
+                        计划时间:
+                    </p>
+
+
+                    <div>
+                        <input type="text" runat="server" style="width: 220px" id="tbScheduleTime" />
+                    </div>
+                </div>
+
+                <div id="divPlanWeeks">
+
+                    <p>
+                        计划星期:
+                    </p>
+
+                    <div>
+                        <asp:CheckBoxList ID="cbScheduleWeeks" runat="server" Height="40px" RepeatColumns="7" RepeatDirection="Horizontal" Width="300px" CssClass="cb">
+                            <asp:ListItem Value="1">一</asp:ListItem>
+                            <asp:ListItem Value="2">二</asp:ListItem>
+                            <asp:ListItem Value="3">三</asp:ListItem>
+                            <asp:ListItem Value="4">四</asp:ListItem>
+                            <asp:ListItem Value="5">五</asp:ListItem>
+                            <asp:ListItem Value="6">六</asp:ListItem>
+                            <asp:ListItem Value="7">日</asp:ListItem>
+                        </asp:CheckBoxList>
+                    </div>
+
+                </div>
+
+
+
 
             </div>
 
@@ -793,43 +554,32 @@
 
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="deviceListSingleGroupClickMenuBox">
-        <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通通选择</a></li>
-        <li><a class="btn" id="btnSingleGroupChooseEncoder" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">视频源选择</a></li>
+        aria-labelledby="dropdownMenu" id="deviceListSingleDeviceSubMenu">
+        <li><a class="btn" id="deviceListSingleDeviceSubMenuBtnOpen" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceSubMenuBtnClose" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭</a></li>
 
-    </ul>
+        <li id="liDeviceListSingleDeviceSubMenuBtnChangeParam"><a class="btn" id="deviceListSingleDeviceSubMenuBtnChangeParam" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">更改参数</a></li>
 
-    <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="deviceListSingleGroupChooseChannelMenu">
-
-        <% 
-            for (int i = 0; i < channels.Count; i++)
-            { 
-        %>
-        <li><a class="btn" style="margin-bottom: 3px; font-weight: normal" name="<% =channels[i].ChannelName %>" id="btnMenuChannelSel<% =channels[i].ChannelId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =channels[i].ChannelName %></a></li>
-        <%}%>
-    </ul>
-
-    <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="deviceListSingleGroupChooseEncoderMenu">
-
-        <% 
-            for (int i = 0; i < encoders.Count; i++)
-            { 
-        %>
-        <li><a class="btn  btn-default" style="margin-bottom: 3px; font-weight: normal" name="<% =encoders[i].EncoderName %>" id="btnMenuEncoderSel<% =encoders[i].EncoderId %>" data-backdrop="static" data-dismiss="modal" data-keyboard="false"><% =encoders[i].EncoderName %></a></li>
-        <%}%>
     </ul>
 
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="deviceListSingleDeviceMenu">
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnOpenDevice" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开设备</a></li>
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnCloseDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭设备</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnType1" data-itemid="1" data-backdrop="static" data-dismiss="modal" data-keyboard="false">空调</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnType2" data-itemid="2" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">电视</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnType3" data-itemid="3" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">投影仪</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnType4" data-itemid="4" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">电脑</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnType5" data-itemid="5" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">灯</a></li>
 
     </ul>
 
 
-    <!-- save sort order here which can be retrieved on server on postback -->
+    <ul class="dropdown-menu" role="menu"
+        aria-labelledby="dropdownMenu" id="groupListBatchMenu">
+        <li><a class="btn" id="groupListBacthMenuManual" data-backdrop="static" data-dismiss="modal" data-keyboard="false">手工操作</a></li>
+        <li><a class="btn" id="groupListBacthMenuSchedule" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">计划调度</a></li>
+
+    </ul>
+
 
 
 

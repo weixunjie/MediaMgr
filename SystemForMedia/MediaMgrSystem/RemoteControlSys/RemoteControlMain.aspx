@@ -12,6 +12,7 @@
 
     <script type="text/javascript">
 
+    
         var chat;
 
         var is_popup_2nd_menu = false;
@@ -34,17 +35,19 @@
 
                 }
             });
-            chat.client.sendRefreshDeviceMessge = function (result) {
-                loadDeviceList();
-            }
+
 
             chat.client.sendRefreshLogMessge = function (result) {
                 loadLogList();
             }
 
+            chat.client.sendRefreshDeviceMessge = function (result) {
+                loadDeviceList();
+            }
+
             loadDeviceList();
             loadLogList();
-            
+
 
             function loadDeviceList() {
                 $.ajax({
@@ -86,7 +89,7 @@
 
 
 
-    <div id="divForDevice" ">
+    <div id="divForDevice">
 
         <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>
@@ -95,7 +98,7 @@
     </div>
 
 
-    <div id="divforLogs" >
+    <div id="divforLogs">
 
         <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>

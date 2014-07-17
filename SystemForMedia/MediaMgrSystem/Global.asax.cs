@@ -26,7 +26,34 @@ namespace MediaMgrSystem
 
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0, 0, 6);
 
+            
         }
+
+        void Application_Error(object sender, EventArgs e)
+        {
+            //获取到HttpUnhandledException异常，这个异常包含一个实际出现的异常
+            Exception ex = Server.GetLastError();
+            //实际发生的异常
+            Exception iex = ex.InnerException;
+
+            string errorMsg = String.Empty;
+            string particular = String.Empty;
+            if (iex != null)
+            {
+                errorMsg = iex.Message;
+                particular = iex.StackTrace;
+            }
+            else
+            {
+                errorMsg = ex.Message;
+                particular = ex.StackTrace;
+            }
+
+            GlobalUtils.AddLogs(null,"程序异常:" , errorMsg);
+      
+        }
+
+        
 
     }
 }

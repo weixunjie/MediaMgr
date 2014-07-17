@@ -91,7 +91,7 @@ namespace MediaMgrSystem
                 string strOperResult = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
-                    // System.Diagnostics.Debug.WriteLine("CommandQueues " + que.GuidIdStr + " " + que.IpAddressStr + " " + que.ScheduledTime);
+                    
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)

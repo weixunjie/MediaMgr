@@ -5,8 +5,10 @@ using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Web;
 
@@ -86,7 +88,9 @@ namespace MediaMgrSystem
 
         public static object PublicObjectForLock = new object();
 
-        public static string StreamNameBase="1234567890";
+        public static object LogForLock = new object();
+
+        public static string StreamNameBase = "1234567890";
         public static object objectLockSchduleQueueItem = new object();
 
         private static object objForLock = new object();
@@ -376,26 +380,97 @@ namespace MediaMgrSystem
 
         }
 
-        public static void AddLogs(IHubConnectionContext hub, string logName, string logDesp)
+        private static void WriteErroLogs(string str)
         {
+            StreamWriter sw = null;
             try
             {
-                LogBLLInstance.AddLog(logName, logDesp);
-
-                List<String> alPCIds = GetAllPCDeviceConnectionIds();
-
-                hub.Clients(alPCIds).sendRefreshLogMessge();
-            }
-            catch (Exception ex)
-            {
-                if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
+                string logPath = @"d:\MediaSysMgrLogError.txt";
+                if (!File.Exists(logPath))
                 {
-                    LogBLLInstance.AddLog("程序异常", ex.Message);
+
+                    File.Create(logPath);
                 }
 
+                sw = new StreamWriter(logPath, true);
+
+                sw.WriteLine(str);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (sw != null)
+                {
+                    sw.Close();
+                }
             }
         }
 
+        public static void WriteDebugLogs(string str)
+        {
+
+        }
+
+
+
+        public static void AddLogs(IHubConnectionContext hub, string logName, string logDesp)
+        {
+            object[] objs = new object[3];
+
+            objs[0] = hub;
+
+            objs[1] = logName;
+
+            objs[2] = logDesp;
+
+
+            new Thread(ThreadToAddLogsTask).Start(objs);
+
+        }
+
+
+        private static void ThreadToAddLogsTask(object para)
+        {
+
+        
+
+            lock (LogForLock)
+            {
+                object[] objs = para as object[];
+
+
+                IHubConnectionContext hub = objs[0] as IHubConnectionContext;
+
+                string logName = objs[1] as string;
+
+                string logDesp = objs[2] as string;
+
+                try
+                {
+                    LogBLLInstance.AddLog(logName, logDesp);
+
+                    List<String> alPCIds = GetAllPCDeviceConnectionIds();
+
+                    if (hub != null)
+                    {
+                        hub.Clients(alPCIds).sendRefreshLogMessge();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
+                    {
+
+                        WriteErroLogs("程序异常" + ex.Message);                     
+                    }
+
+                }
+            }
+
+
+        }
 
         public static List<string> GetAllAndriodsDeviceConnectionIds()
         {

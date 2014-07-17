@@ -18,6 +18,13 @@
 
     <script type="text/javascript">
 
+
+        var sess_pollInterval = 60000;
+        var sess_expirationMinutes = 20;
+        var sess_warningMinutes = 19;
+        var sess_intervalID;
+        var sess_lastActivity;
+
         var chat;
 
         var is_popup_2nd_menu = false;
@@ -25,7 +32,54 @@
         var is_popup_1st_menu = false;
 
 
+        // proces session time out
+
+
+        initSession();
+
+        function initSession() {
+      
+            sess_lastActivity = new Date();
+            sessSetInterval();
+            $(document).bind('keypress.session', function (ed, e) {
+                sessKeyPressed(ed, e);
+            });
+        }
+        function sessSetInterval() {
+            sess_intervalID = setInterval('sessInterval()', sess_pollInterval);
+        }
+        function sessClearInterval() {
+            clearInterval(sess_intervalID);
+
+        }
+        function sessKeyPressed(ed, e) {
+            sess_lastActivity = new Date();
+        }
+        function sessLogOut() {
+            window.location.href = "<%=ResolveUrl("~/LogOut.aspx") %>";
+        }
+
+        function sessInterval() {
+            var now = new Date();
+
+            //get milliseconds of differneces
+            var diff = now - sess_lastActivity;
+            //get minutes between differences
+            var diffMins = (diff / 1000 / 60);
+            if (diffMins >= sess_warningMinutes) {
+                sessClearInterval();
+                sessLogOut();
+            }
+
+        }
+
+
+        // end proces session time out
+
+
         $(document).ready(function () {
+
+     
 
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
@@ -40,6 +94,7 @@
 
                 }
             });
+
             chat.client.sendRefreshDeviceMessge = function (result) {
                 loadDeviceList();
             }

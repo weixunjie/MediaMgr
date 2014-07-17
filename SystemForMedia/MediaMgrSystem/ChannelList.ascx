@@ -52,8 +52,8 @@
 
                 setButtonStatus("Stop");
                 $("#divChannelInfo").html(result);
-            }       
- 
+            }
+
         }
 
 
@@ -90,11 +90,11 @@
 
 
             if ($("#btnChannelControlPlay").attr("disabled") == "disabled") {
-                $("#btnChannelControlPlay").attr("src", "<%=ResolveUrl("~/Images/ic_image_play_disabled.png") %>" );
+                $("#btnChannelControlPlay").attr("src", "<%=ResolveUrl("~/Images/ic_image_play_disabled.png") %>");
                 $("#btnChannelControlPlay").addClass("notactive");
             }
             else {
-                $("#btnChannelControlPlay").attr("src", "<%=ResolveUrl("~/Images/ic_image_play.png") %>" );
+                $("#btnChannelControlPlay").attr("src", "<%=ResolveUrl("~/Images/ic_image_play.png") %>");
                 $("#btnChannelControlPlay").removeClass("notactive");
             }
 
@@ -107,7 +107,7 @@
             else {
 
                 $("#btnChannelControlStop").removeClass("notactive");
-                $("#btnChannelControlStop").attr("src","<%=ResolveUrl("~/Images/ic_image_stop.png") %>");
+                $("#btnChannelControlStop").attr("src", "<%=ResolveUrl("~/Images/ic_image_stop.png") %>");
 
             }
 
@@ -293,11 +293,10 @@
             }
 
         })
-
-
+        
 
         $("#btnChannelControlPlay").click(function () {
-                   
+
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
                 chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0");
@@ -416,7 +415,7 @@
 
 <ul class="dropdown-menu" role="menu"
     aria-labelledby="dropdownMenu" id="channelListChannelClickMenuBox">
-    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false" >计划选择</a></li>
+    <li><a class="btn" id="btnChooseSchedule" data-backdrop="static" data-dismiss="modal" data-keyboard="false">计划选择</a></li>
     <li><a class="btn" id="btnChooseProgram" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">播放节目</a></li>
 
 </ul>
@@ -518,7 +517,7 @@
 
     <div id="dialogForChooseProgram" style="width: auto" class="modal hide">
         <div class="modal-header">
-            <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭"> &times;</a><h3>节目选择</h3>
+            <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭">&times;</a><h3>节目选择</h3>
         </div>
         <div class="modal-body">
             <div style="float: left; height: 200px; width: 150px;">
@@ -562,10 +561,8 @@
 
             <div style="float: left; height: 200px; width: 150px;">
                 <h4 style="text-align: left; margin-top: 0px">已选节目</h4>
-
                 <select size="4" style="height: 190px; width: 150px;" multiple="multiple" id="lbSelectedProgram">
                 </select>
-
             </div>
 
         </div>

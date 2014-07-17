@@ -18,17 +18,11 @@ namespace MediaMgrSystem
         {
         }
 
-        public List<GroupInfo> GetAllGroupsIncludeDefaultGroup()
+        public List<GroupInfo> GetAllGroups()
         {
             List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
 
-            GroupInfo groupDefault = new GroupInfo();
-
-            groupDefault.GroupId = "-1";
-            groupDefault.GroupName = "默认分组";
-            groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroup("-1");
-
-            gis.Insert(0, groupDefault);
+       
 
             return gis;
 

@@ -148,7 +148,10 @@ namespace MediaMgrSystem
 
             GlobalUtils.AddConnection(sc);
 
-            System.Diagnostics.Debug.WriteLine("Someone Connected: Connected Id" + hub.Context.ConnectionId);
+            string str="Someone Connected: Connected Id" + hub.Context.ConnectionId;
+            System.Diagnostics.Debug.WriteLine(str);
+
+            GlobalUtils.WriteDebugLogs(str);
 
 
         }
@@ -165,8 +168,10 @@ namespace MediaMgrSystem
         {
             DateTime dt = DateTime.UtcNow;
 
-            System.Diagnostics.Debug.WriteLine("DISConnected: Connected Id" + hub.Context.ConnectionId);
+            string str="DISConnected: Connected Id" + hub.Context.ConnectionId;
+            System.Diagnostics.Debug.WriteLine(str);
 
+            GlobalUtils.WriteDebugLogs(str);
             if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
             {
                 GlobalUtils.VideoServerIPAddress = string.Empty; ;

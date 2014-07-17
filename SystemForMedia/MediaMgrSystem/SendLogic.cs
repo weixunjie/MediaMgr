@@ -247,15 +247,20 @@ namespace MediaMgrSystem
 
                     TimeSpan beforeSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
-                    System.Diagnostics.Debug.WriteLine("Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
+                    string logs = "Play Command Send Bfore " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
+                    System.Diagnostics.Debug.WriteLine(logs);
 
+                    GlobalUtils.WriteDebugLogs(logs);
 
 
                     string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDatraToSend);
                     hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
 
 
-                    System.Diagnostics.Debug.WriteLine("Paly json To Android client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff"));
+                    logs = "Paly json To Android client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff");
+
+                    System.Diagnostics.Debug.WriteLine(logs);
+                    GlobalUtils.WriteDebugLogs(logs);
                     TimeSpan afterSendToAllClient = new TimeSpan(DateTime.Now.Ticks);
 
                     double offsetTotalMilliseconds = afterSendToAllClient.Subtract(beforeSendToAllClient).Duration().TotalMilliseconds;
@@ -279,10 +284,12 @@ namespace MediaMgrSystem
 
                     }
 
-                    System.Diagnostics.Debug.WriteLine("Paly json To video Server: " + jsonData + DateTime.Now.ToString("HH:mm:ss fff"));
-                    System.Diagnostics.Debug.WriteLine("Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
-
-
+                    string str = "Paly json To video Server: " + jsonData + DateTime.Now.ToString("HH:mm:ss fff");
+                    System.Diagnostics.Debug.WriteLine(str);
+                    GlobalUtils.WriteDebugLogs(str);
+                    str = "Play Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
+                    System.Diagnostics.Debug.WriteLine(str);
+                    GlobalUtils.WriteDebugLogs(str);
 
 
                     new Thread(ProcessTimeOutRequest).Start(hub);
@@ -503,7 +510,9 @@ namespace MediaMgrSystem
                 PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime, isSendToVideoSvr);
 
 
-                System.Diagnostics.Debug.WriteLine("Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
+                string str = "Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
+                System.Diagnostics.Debug.WriteLine(str);
+                GlobalUtils.WriteDebugLogs(str);
 
                 string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
 
@@ -512,8 +521,9 @@ namespace MediaMgrSystem
                     if (isSendToVideoSvr)
                     {
                         hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
-
-                        System.Diagnostics.Debug.WriteLine("STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss fff"));
+                        str = "STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss fff");
+                        System.Diagnostics.Debug.WriteLine(str);
+                        GlobalUtils.WriteDebugLogs(str);
                     }
                 }
                 else
@@ -532,11 +542,16 @@ namespace MediaMgrSystem
 
                     hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
 
-                    System.Diagnostics.Debug.WriteLine("STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff"));
+                    str = "STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff");
+                    System.Diagnostics.Debug.WriteLine(str);
+                    GlobalUtils.WriteDebugLogs(str);
                 }
 
-                System.Diagnostics.Debug.WriteLine("Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId);
 
+
+                str = "Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
+                System.Diagnostics.Debug.WriteLine(str);
+                System.Diagnostics.Debug.WriteLine(str);
                 new Thread(ProcessTimeOutRequest).Start(hub);
 
                 if (!isSchedule)
