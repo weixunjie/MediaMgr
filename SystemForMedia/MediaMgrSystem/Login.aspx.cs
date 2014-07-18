@@ -17,8 +17,7 @@ namespace MediaMgrSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
-
-
+            
 
             HaspFeature feature = HaspFeature.FromFeature(1);
 
@@ -42,21 +41,15 @@ namespace MediaMgrSystem
 
             if (HaspStatus.StatusOk != status)
             {
-                //handle error
+                lbMessage.Visible = true;
+                lbMessage.Text = "请插入加密狗";
+
+                return;
+                
             }
 
 
 
-            // Please note that there is no need to call
-            // a logout function explicitly - although it is
-            // recommended. The garbage collector will perform
-            // the logout when disposing the object.
-            // If you need more control over the logout procedure
-            // perform one of the more advanced tasks.
-           // return hasp.IsLoggedIn() ? hasp : null;
-
-            //string a=EncryptUtils.DesEncrypt("30");
-            //Session["IsLoginPageNow"] = true;
         }
 
         protected void Login_Click(object sender, EventArgs e)
@@ -74,6 +67,9 @@ namespace MediaMgrSystem
             else
             {
                 lbMessage.Visible = true;
+
+        
+                lbMessage.Text = "登录失败";
                 //Response.Write("<script>alert('登录失败');</script>");
 
             }
