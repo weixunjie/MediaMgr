@@ -24,7 +24,7 @@ namespace MediaMgrSystem
         {
 
 
-            lock (GlobalUtils.PublicObjectForLock)
+            lock (GlobalUtils.PublicObjectForLockPlay)
             {
 
                 bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
@@ -304,7 +304,6 @@ namespace MediaMgrSystem
 
                         GlobalUtils.IsChannelManuallyPlaying = true;
 
-
                         GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放成功");
 
                     }
@@ -452,8 +451,9 @@ namespace MediaMgrSystem
         private static void SendOutStopRepeatCommandToServerAndClient(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub,
              bool isSchedule, string scheduleTime, bool isSendToVideoSvr = true)
         {
+            
 
-            lock (GlobalUtils.PublicObjectForLock)
+            lock (GlobalUtils.PublicObjectForLockStop)
             {
                 VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
 

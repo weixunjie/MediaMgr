@@ -86,7 +86,11 @@ namespace MediaMgrSystem
     public static class GlobalUtils
     {
 
-        public static object PublicObjectForLock = new object();
+        public static object PublicObjectForLockPlay = new object();
+
+        public static object PublicObjectForLockStop = new object();
+
+        public static object PublicObjectForLockClientMsg = new object();
 
         public static object LogForLock = new object();
 
@@ -410,7 +414,7 @@ namespace MediaMgrSystem
 
         public static void WriteDebugLogs(string str)
         {
-
+           // AddLogs(null, "调试日志", str);
         }
 
 

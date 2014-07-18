@@ -7,9 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>校园播放系统管理</title>
-
-
-
+    
 
 </head>
 <body>
@@ -35,9 +33,7 @@
         <link rel="stylesheet" href='<% =ResolveUrl("~/Content/dateTimePicker.css") %>' type="text/css" />
 
 
-
-
-
+        
 
         <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery-1.10.2.js") %>'></script>
 
@@ -92,8 +88,7 @@
                     <ul class="nav navbar-nav " style="float: right">
                         <li><a href="<%=ResolveUrl("~/AudioBroadcastMain.aspx") %>">音频广播</a></li>
 
-                        <li><a href="RemoteControlSys/RemoteControlMain.aspx">物联控制</a></li>
-
+                   
 
                         <li class="dropdown" id="accountmenu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>

@@ -57,8 +57,8 @@ namespace MediaMgrSystem
             ReceiveCommand rc = JsonConvert.DeserializeObject<ReceiveCommand>(data);
 
             if (rc != null || !string.IsNullOrWhiteSpace(rc.commandType.ToString()))
-            {               
-                lock (GlobalUtils.PublicObjectForLock)
+            {
+                lock (GlobalUtils.PublicObjectForLockClientMsg)
                 {
                     if (rc != null && rc.commandType == CommandTypeEnum.STREAMSFINISHED)
                     {
@@ -70,7 +70,7 @@ namespace MediaMgrSystem
                             {
                                 if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
                                 {
-                                    SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "",false);
+                                    SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", false);
 
                                     Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放完毕停止", "1024");
                                 }
@@ -84,14 +84,14 @@ namespace MediaMgrSystem
             }
 
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
-            lock (GlobalUtils.PublicObjectForLock)
+            lock (GlobalUtils.PublicObjectForLockClientMsg)
             {
                 string matchIPAddress = string.Empty; ;
                 String removeGuid = string.Empty;
                 string strOperResult = string.Empty;
                 foreach (var que in GlobalUtils.CommandQueues)
                 {
-                    
+
                     if (cb != null && cb.errorCode != null)
                     {
                         if (que.GuidIdStr == cb.guidId)
@@ -164,30 +164,55 @@ namespace MediaMgrSystem
         private void ThreadToRunStartTask(object para)
         {
 
-            object[] objs = para as object[];
+            try
+            {
+                object[] objs = para as object[];
+
+                string aa = "Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
+
+                Thread.Sleep((int)objs[5]);
 
 
-            System.Diagnostics.Debug.WriteLine("Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff"));
+                
+                SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
 
-            Thread.Sleep((int)objs[5]);
+            }
+            catch (Exception ex)
+            {
 
+                GlobalUtils.AddLogs(null, "程序异常:", ex.Message);
 
-            SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
-
+            }
 
         }
 
 
         private void ThreadToRunStopTask(object para)
         {
-            object[] objs = para as object[];
 
-            System.Diagnostics.Debug.WriteLine("Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff"));
+            try
+            {
+                object[] objs = para as object[];
 
-            Thread.Sleep((int)objs[5]);
+                string aa = "Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
+
+                Thread.Sleep((int)objs[5]);
 
 
-            SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
+                SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
+
+            }
+            catch (Exception ex)
+            {
+
+                GlobalUtils.AddLogs(null, "程序异常:", ex.Message);
+
+            }
+
         }
 
 
