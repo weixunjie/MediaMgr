@@ -19,6 +19,21 @@
 
         function EndRequestHandler() {
 
+
+            $('input[id$=tbStartTime]').timepicker({
+                timeFormat: 'hh:mm:ss',
+         
+                showSecond: true
+              
+            });
+
+            $("input[id$=tbEndTime]").timepicker({
+                timeFormat: 'hh:mm:ss',
+
+                showSecond: true
+            });
+
+
             $("input[id$=tbSelectDate]").datepicker({
                 dateFormat: "yy-mm-dd", changeYear: true,
                 changeMonth: true,

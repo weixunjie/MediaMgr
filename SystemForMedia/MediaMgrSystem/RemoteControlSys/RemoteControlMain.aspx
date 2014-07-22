@@ -36,7 +36,6 @@
                 }
             });
 
-
             chat.client.sendRefreshLogMessge = function (result) {
                 loadLogList();
             }
@@ -75,9 +74,7 @@
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
-
                         $("#divforLogs").html(msg.d);
-
                     }
                 });
 

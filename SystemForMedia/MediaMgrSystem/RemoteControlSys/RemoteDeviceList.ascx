@@ -21,8 +21,21 @@
 
 
 
+
+
+
+    var dialogScheduleDevice = "<%= cbScheduleDevice.ClientID %>";
+
+    var dialogddACMode = "<%= ddACMode.ClientID %>";
+
+    var dialogddOpenClose = "<%= this.ddOpenClose.ClientID %>";
+
+    var dialogcbScheduleWeeks = "<%= this.cbScheduleWeeks.ClientID %>";
+
     <%  
 
+    
+ 
     
     List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();
 
@@ -59,6 +72,12 @@
 
     $(document).ready(function () {
 
+
+        $("input[id$=tbScheduleTime]").timepicker({
+            timeFormat: 'hh:mm:ss',
+
+            showSecond: true
+        });
 
         $("#btnBatchGroupOperation").click(function (e) {
 
@@ -149,6 +168,13 @@
 
         });
 
+        $("#deviceListSingleDeviceMenuBtnType1,#deviceListSingleDeviceMenuBtnType2,#deviceListSingleDeviceMenuBtnType3,#deviceListSingleDeviceMenuBtnType4,#deviceListSingleDeviceMenuBtnType5").mouseout(function (e) {
+            is_popup_1st_menu = false;
+        });
+
+        $("#deviceListSingleDeviceSubMenuBtnOpen,#deviceListSingleDeviceSubMenuBtnClose,#deviceListSingleDeviceSubMenuBtnChangeParam").mouseout(function (e) {
+            is_popup_2nd_menu = false;
+        });
 
         $("#deviceListSingleDeviceSubMenuBtnOpen").click(function (e) {
 
@@ -157,6 +183,7 @@
             is_popup_2nd_menu = false;
 
         });
+
 
         $("#deviceListSingleDeviceSubMenuBtnClose").click(function (e) {
 
@@ -207,6 +234,55 @@
 
         $.showSingleDeviceClickMenu();
 
+        $("#btnConfirmedBatchGroupOperation").click(function (e) {
+
+
+
+
+            var strDevices = "";
+            $("input[name^='cbScheduleDevice']").each(function () {
+
+                if ($(this)[0].checked) {
+                    strDevices += $(this).val() + ",";
+                }
+            });
+
+
+            var strWeeks = "";
+
+            $("input[name^='dialogcbScheduleWeeks']").each(function () {
+
+                if ($(this)[0].checked) {
+                    strWeeks += $(this).val() + ",";
+                }
+            });
+
+
+
+            alert($("#" + dialogddACMode).val());
+
+            var tbScheduleTimeValue = $("#tbScheduleTime").val();
+            if (tbScheduleTimeValue == "")
+            {
+                alert("pw pw ");
+            }
+            debugger;
+            var tbACTempureValue = $("#tbACTempure").val();
+
+
+                            
+
+            if (!(/^(\+|-)?\d+$/.test(tbACTempureValue)) || tbACTempureValue < 0) {
+
+                alert("数量必须是正整数！");
+                return;
+
+            }
+
+        });
+
+      
+
 
     });
 
@@ -226,7 +302,7 @@
     %>
 
 
-    <h3  class="pull-left" style="clip: rect(auto, auto, 10px, auto)">物联设备明细查看</h3>
+    <h3 class="pull-left" style="clip: rect(auto, auto, 10px, auto)">物联设备明细查看</h3>
 
 
     <div class="pull-right"><a class="btn  btn-success" data-content="">批量操作</a></div>
@@ -475,7 +551,6 @@
                 </div>
 
                 <div>
-
                     <p>
                         空调模式:
                     </p>

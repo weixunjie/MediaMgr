@@ -95,7 +95,7 @@ namespace MediaMgrSystem
         public static object LogForLock = new object();
 
         public static string StreamNameBase = "1234567890";
-        public static object objectLockSchduleQueueItem = new object();
+        public static object ObjectLockQueueItem = new object();
 
         private static object objForLock = new object();
 
@@ -414,7 +414,7 @@ namespace MediaMgrSystem
 
         public static void WriteDebugLogs(string str)
         {
-           // AddLogs(null, "调试日志", str);
+            AddLogs(null, "调试日志", str);
         }
 
 

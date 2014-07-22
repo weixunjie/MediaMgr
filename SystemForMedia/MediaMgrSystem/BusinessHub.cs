@@ -58,7 +58,7 @@ namespace MediaMgrSystem
 
             if (rc != null || !string.IsNullOrWhiteSpace(rc.commandType.ToString()))
             {
-                lock (GlobalUtils.PublicObjectForLockClientMsg)
+                lock (GlobalUtils.ObjectLockQueueItem)
                 {
                     if (rc != null && rc.commandType == CommandTypeEnum.STREAMSFINISHED)
                     {
@@ -84,7 +84,7 @@ namespace MediaMgrSystem
             }
 
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
-            lock (GlobalUtils.PublicObjectForLockClientMsg)
+            lock (GlobalUtils.ObjectLockQueueItem)
             {
                 string matchIPAddress = string.Empty; ;
                 String removeGuid = string.Empty;
@@ -161,123 +161,134 @@ namespace MediaMgrSystem
             }
         }
 
-        private void ThreadToRunStartTask(object para)
-        {
+        //private void ThreadToRunStartTask(object para)
+        //{
 
-            try
-            {
-                object[] objs = para as object[];
+        //    try
+        //    {
+        //        object[] objs = para as object[];
 
-                string aa = "Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff");
-                System.Diagnostics.Debug.WriteLine(aa);
-                GlobalUtils.WriteDebugLogs(aa);
+        //        string aa = "Play wait for... " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff");
+        //        System.Diagnostics.Debug.WriteLine(aa);
+        //        GlobalUtils.WriteDebugLogs(aa);
 
-                Thread.Sleep((int)objs[5]);
+        //        Thread.Sleep((int)objs[5]);
 
 
                 
-                SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
+        //        SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
 
-            }
-            catch (Exception ex)
-            {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                GlobalUtils.AddLogs(null, "程序异常:", ex.Message);
+        //        GlobalUtils.AddLogs(null, "程序异常:", ex.Message);
 
-            }
+        //    }
 
-        }
-
-
-        private void ThreadToRunStopTask(object para)
-        {
-
-            try
-            {
-                object[] objs = para as object[];
-
-                string aa = "Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff");
-                System.Diagnostics.Debug.WriteLine(aa);
-                GlobalUtils.WriteDebugLogs(aa);
-
-                Thread.Sleep((int)objs[5]);
+        //}
 
 
-                SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
+        //private void ThreadToRunStopTask(object para)
+        //{
 
-            }
-            catch (Exception ex)
-            {
+        //    try
+        //    {
+        //        object[] objs = para as object[];
 
-                GlobalUtils.AddLogs(null, "程序异常:", ex.Message);
+        //        string aa = "Stop wait for....  " + objs[5].ToString() + "->" + DateTime.Now.ToString("HH:mm:ss fff");
+        //        System.Diagnostics.Debug.WriteLine(aa);
+        //        GlobalUtils.WriteDebugLogs(aa);
 
-            }
+        //        Thread.Sleep((int)objs[5]);
 
-        }
+        //        SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        GlobalUtils.AddLogs(null, "程序异常:", ex.Message);
+
+        //    }
+
+        //}
 
 
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat)
         {
 
-            object[] objs = new object[7];
-            objs[0] = channelId;
-            objs[1] = channelName;
-            objs[2] = pid;
-            objs[3] = guid;
-            objs[4] = scheduleTime;
+            //object[] objs = new object[7];
+            //objs[0] = channelId;
+            //objs[1] = channelName;
+            //objs[2] = pid;
+            //objs[3] = guid;
+            //objs[4] = scheduleTime;
 
-            objs[6] = isRepeat;
+            //objs[6] = isRepeat;
 
             //Play
             if (cmdType == "1")
             {
-                int intBufTime = 5000;
-                int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
+                //int intBufTime = 5000;
+                //int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
 
-                int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
-
-
-                int offSet = schduleTicks - nowTicks;
-                if (offSet > intBufTime)
-                {
-                    int toSleep = offSet - intBufTime;
-
-                    objs[5] = toSleep;
-
-                }
-                else
-                {
-                    objs[5] = 0;
-
-                }
+                //int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
 
 
-                new Thread(ThreadToRunStartTask).Start(objs);
+                //int offSet = schduleTicks - nowTicks;
+                //if (offSet > intBufTime)
+                //{
+                //    int toSleep = offSet - intBufTime;
+
+                //    objs[5] = toSleep;
+
+                //}
+                //else
+                //{
+                //    objs[5] = 0;
+
+                //}
+
+                string aa = "Play recveid and before to call send " + DateTime.Now.ToString("HH:mm:ss fff");
+                      System.Diagnostics.Debug.WriteLine(aa);
+                       GlobalUtils.WriteDebugLogs(aa);
+
+             //   SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
+                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat=="1");
+               // new Thread(ThreadToRunStartTask).Start(objs);
 
             }
             //Stop
             else if (cmdType == "2")
             {
 
-                int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
+                //int nowTicks = DateTime.Now.Minute * 60000 + DateTime.Now.Second * 1000 + DateTime.Now.Millisecond;
 
-                int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
-
-
-                int offSet = schduleTicks - nowTicks;
-                if (offSet > 0)
-                {
-
-                    objs[5] = offSet;
-
-                }
-                else
-                {
-                    objs[5] = 0;
-                }
+                //int schduleTicks = (DateTime.Now.Minute + 1) * 60000;
 
 
-                new Thread(ThreadToRunStopTask).Start(objs);
+                //int offSet = schduleTicks - nowTicks;
+                //if (offSet > 0)
+                //{
+
+                //    objs[5] = offSet;
+
+                //}
+                //else
+                //{
+                //    objs[5] = 0;
+                //}
+
+                string aa = "Stop recveid and before to call send " + DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
+
+                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients,guid, scheduleTime);
+
+              //  SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
+
+               // new Thread(ThreadToRunStopTask).Start(objs);
 
 
             }

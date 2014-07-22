@@ -27,28 +27,29 @@ namespace MediaMgrSystem
             GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 120, 0);
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0, 0, 6);
 
-
-            System.Timers.Timer timer = new System.Timers.Timer(60 * 60 * 1000);
-
-
-            timer.AutoReset = true;
-
-            timer.Enabled = true;
-
-            timer.Elapsed += timer_Elapsed;
-
-
         }
 
-        void timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            lock (GlobalUtils.PublicObjectForLockClientMsg)
-            {
-                IHubConnectionContext allClients = GlobalHost.ConnectionManager.GetHubContext("MediaMgrHub").Clients;
-                allClients.All.sendKeepAlive("KeepAlive");
-            }
+        //    System.Timers.Timer timer = new System.Timers.Timer(60 * 60 * 1000);
 
-        }
+
+        //    timer.AutoReset = true;
+
+        //    timer.Enabled = true;
+
+        //    timer.Elapsed += timer_Elapsed;
+
+
+        //}
+
+        //void timer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    lock (GlobalUtils.PublicObjectForLockClientMsg)
+        //    {
+        //        IHubConnectionContext allClients = GlobalHost.ConnectionManager.GetHubContext("MediaMgrHub").Clients;
+        //        allClients.All.sendKeepAlive("KeepAlive");
+        //    }
+
+        //}
 
         void Application_Error(object sender, EventArgs e)
         {

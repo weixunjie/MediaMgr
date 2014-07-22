@@ -143,14 +143,13 @@ namespace MediaMgrSystem.MgrModel
             bool isStartTimeOk = false;
 
 
-            if (tbStartTime.Value.Length == 5 && tbStartTime.Value.IndexOf(":") == 2)
-            {
-                if (DateTime.TryParse(tbStartTime.Value, out dtStart))
-                {
 
-                    isStartTimeOk = true;
-                }
+            if (DateTime.TryParse(tbStartTime.Value, out dtStart))
+            {
+
+                isStartTimeOk = true;
             }
+
 
             if (!isStartTimeOk)
             {
@@ -161,14 +160,13 @@ namespace MediaMgrSystem.MgrModel
 
 
             bool isEndTimeOk = false;
-            if (tbEndTime.Value.Length == 5 && tbEndTime.Value.IndexOf(":") == 2)
-            {
-                if (DateTime.TryParse(tbEndTime.Value, out dtEnd))
-                {
 
-                    isEndTimeOk = true;
-                }
+            if (DateTime.TryParse(tbEndTime.Value, out dtEnd))
+            {
+
+                isEndTimeOk = true;
             }
+
 
             if (!isEndTimeOk)
             {
@@ -293,9 +291,6 @@ namespace MediaMgrSystem.MgrModel
                         sqlWeekInSpecDaysWeek +
                         sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
                 }
-
-
-
             }
 
             if (!string.IsNullOrWhiteSpace(si.StrSpecialDaysToWeeks))

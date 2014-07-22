@@ -19,13 +19,24 @@ namespace MediaMgrSystem
     {
 
 
-
         public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isRepeat)
         {
 
+            string aa = "Play before PublicObjectForLockPlay viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+            System.Diagnostics.Debug.WriteLine(aa);
+            GlobalUtils.WriteDebugLogs(aa);
 
             lock (GlobalUtils.PublicObjectForLockPlay)
             {
+                aa = "Play After PublicObjectForLockPlay viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
+
+
+                aa = "WS ID= "+ GlobalUtils.WindowsServiceConnectionId +" "+"VS ID"+GlobalUtils.VideoServerConnectionId+ DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
+
 
                 bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
 
@@ -346,7 +357,7 @@ namespace MediaMgrSystem
         {
             Thread.Sleep(4000);
 
-            lock (GlobalUtils.objectLockSchduleQueueItem)
+            lock (GlobalUtils.ObjectLockQueueItem)
             {
                 IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
                 List<QueueItem> queueToRemoved = new List<QueueItem>();
@@ -407,8 +418,16 @@ namespace MediaMgrSystem
 
             string videoSvrId = GlobalUtils.GetVideoServerConnectionIds();
 
+
+            string aa = "STOP WS ID= " + GlobalUtils.WindowsServiceConnectionId + " " + "VS ID" + GlobalUtils.VideoServerConnectionId + DateTime.Now.ToString("HH:mm:ss fff");
+            System.Diagnostics.Debug.WriteLine(aa);
+            GlobalUtils.WriteDebugLogs(aa);
+
             if (string.IsNullOrWhiteSpace(videoSvrId))
             {
+                 aa = "Stop no viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
 
                 if (isSchedule)
                 {
@@ -432,7 +451,6 @@ namespace MediaMgrSystem
                 {
                     List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                     hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200");
-
                     GlobalUtils.AddLogs(hub, "手动操作", channelName + "停止播放操作失败，" + errorrNotOpenVideoSvr + scheduleTime);
                 }
 
@@ -440,6 +458,7 @@ namespace MediaMgrSystem
 
             else
             {
+                
                 SendOutStopRepeatCommandToServerAndClient(channelId, channelName, isWantToStop, hub, isSchedule, scheduleTime, isSendToVideoSvr);
             }
 
@@ -451,10 +470,17 @@ namespace MediaMgrSystem
         private static void SendOutStopRepeatCommandToServerAndClient(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub,
              bool isSchedule, string scheduleTime, bool isSendToVideoSvr = true)
         {
-            
 
+            string aa = "Stop before PublicObjectForLockStop viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+            System.Diagnostics.Debug.WriteLine(aa);
+            GlobalUtils.WriteDebugLogs(aa);
             lock (GlobalUtils.PublicObjectForLockStop)
             {
+
+                aa = "Stop after PublicObjectForLockStop viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
+
                 VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
 
                 cmdToVideoSvr.commandType = isWantToStop ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
@@ -654,20 +680,24 @@ namespace MediaMgrSystem
 
         private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime, bool isSendToVideoSvr = true)
         {
-            long currentTicks = DateTime.Now.Ticks;
-
-            if (isSendToVideoSvr)
+            lock (GlobalUtils.ObjectLockQueueItem)
             {
 
-                GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
-            }
+                long currentTicks = DateTime.Now.Ticks;
 
-            //NO need send to client when is repeat operation.
-            if (cmdType != QueueCommandType.MANAULLYREPEAT)
-            {
-                foreach (var ip in clientIps)
+                if (isSendToVideoSvr)
                 {
-                    GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandType = cmdType });
+
+                    GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.VideoServerIPAddress, GuidIdStr = GlobalUtils.CurrentVideoGuidId, CommandType = cmdType });
+                }
+
+                //NO need send to client when is repeat operation.
+                if (cmdType != QueueCommandType.MANAULLYREPEAT)
+                {
+                    foreach (var ip in clientIps)
+                    {
+                        GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = GlobalUtils.CurrentClientGuidId, CommandType = cmdType });
+                    }
                 }
             }
         }

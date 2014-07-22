@@ -65,7 +65,7 @@
                     for (int k = 0; k < dGroups[l].Devices.Count; k++)
                     { %>
 
-                                <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>" style="float: left; display: block; width: 160px; height: 230px; margin-right: 10px; margin-top:5px">
+                                <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>" style="float: left; display: block; width: 260px; height: 180px; margin-right: 10px; margin-top:5px">
 
                                     <table class="table table-bordered table-striped; " style="overflow: auto; height: auto;">
 
@@ -94,15 +94,14 @@
                                                     </div>
                                                 </td>
 
-                                            </tr>
-
-                                            <tr>
-                                                <td>
+                                                 <td>
                                                     <div class="col-md-4">
                                                         空调: 打开中, 
                                                         
                                                     </div>
                                                 </td>
+
+                                          
 
                                             </tr>
 
@@ -114,10 +113,7 @@
                                                     </div>
                                                 </td>
 
-                                            </tr>
-
-                                            <tr>
-                                                <td>
+                                                 <td>
                                                     <div class="col-md-4">
                                                         空调: 打开中, 
                                                     
@@ -126,8 +122,10 @@
 
                                             </tr>
 
+                                        
+
                                             <tr>
-                                                <td>
+                                                <td colspan="2">
                                                     <div class="col-md-4">
                                                         空调: 打开中, 
                                                    
