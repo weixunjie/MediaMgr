@@ -46,8 +46,8 @@ namespace MediaMgrWS
         private bool _isConnected = false;
 
 
-        private const int ADVANCED_START_SECS = 12;
-        private const int ADVANCED_STOP_SECS = 8;
+        private const int ADVANCED_START_SECS = 5;
+        private const int ADVANCED_STOP_SECS = 1;
         private object lockObject = new object();
 
         private object lockFlag = new object();
@@ -101,12 +101,10 @@ namespace MediaMgrWS
 
             CheckTask(sqlStr, true);
         }
-
-
+        
 
         private void CheckTask(string sqlStr, bool isCheckStart)
         {
-
             try
             {
                 string strWeek = DateTime.Now.DayOfWeek.ToString();
@@ -137,10 +135,10 @@ namespace MediaMgrWS
 
                 }
 
-                string dtMins = DateTime.Now.ToString("1900-01-01 HH:mm");
+                string dtMinsSec = DateTime.Now.ToString("1900-01-01 HH:mm:ss");
 
 
-                sqlStr = String.Format(sqlStr, dtMins, DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
+                sqlStr = String.Format(sqlStr, dtMinsSec, DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
 
                 DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
@@ -197,7 +195,6 @@ namespace MediaMgrWS
 
                                             UpdateRunningStatus(false, strScheduleTaskId,true);
                                             System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
-
 
                                         }
 
@@ -362,7 +359,10 @@ namespace MediaMgrWS
                 {
                     _isConnected = false;
                 }
-                System.Threading.Thread.Sleep(500);
+
+
+                System.Threading.Thread.Sleep(10000);
+
 
                 if (!_isConnected)
                 {
