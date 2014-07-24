@@ -31,8 +31,7 @@ namespace MediaMgrSystem.MgrModel
 
             if (!Page.IsPostBack)
             {
-
-
+                
 
                 ddUserLevel.SelectedIndex = 0;
 
@@ -46,8 +45,22 @@ namespace MediaMgrSystem.MgrModel
 
                     UserInfo ui = GlobalUtils.UserBLLInstance.GetUserById(id);
 
+                    if (ui.UserId == Session["UserId"].ToString() && Session["UserCode"].ToString().ToUpper() == "ADMIN")
+                    {
+                        tbUserCode.Enabled = false;
+                        chIsAcitve.Enabled = false;
+                        ddUserLevel.Enabled = false;
+                    }
+                    else
+                    {
+                        tbUserCode.Enabled = true;
+                        chIsAcitve.Enabled = true;
+                        ddUserLevel.Enabled = true;
+                    }
+
+
                     this.tbUserCode.Text = ui.UserCode;
-                    this.tbName.Text = ui.UserName;              
+                    this.tbName.Text = ui.UserName;
                     tbPassword.Attributes.Add("value", ui.Password);
                     tbConfimedPass.Attributes.Add("value", ui.Password);
                     this.chIsAcitve.Checked = ui.IsActive;
@@ -90,7 +103,7 @@ namespace MediaMgrSystem.MgrModel
 
             ui.Password = tbPassword.Text;
 
-            
+
             if (!string.IsNullOrEmpty(tbHiddenId.Text))
             {
                 ui.UserId = tbHiddenId.Text;

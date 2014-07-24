@@ -37,7 +37,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public UserInfo GetUserById(string userID)
         {
-            String sqlStr = "SELECT * FROM USERINFO WHERE USERID='{0}' AND USERCODE<>'Admin'";
+            String sqlStr = "SELECT * FROM USERINFO WHERE USERID='{0}' ";
 
             sqlStr = string.Format(sqlStr, userID);
 
@@ -63,10 +63,18 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-   
-        public int RemoveUser(string channelId)
+        public List<UserInfo> GetAllUsesWithAdmin()
         {
-            String sqlStr = "DELETE FROM USERINFO WHERE  USERID=" + channelId+" AND USERCODE<>'Admin'";
+
+            String sqlStr = "SELECT * FROM USERINFO ";
+
+            return GetUserList(sqlStr);
+
+        }
+   
+        public int RemoveUser(string userId)
+        {
+            String sqlStr = "DELETE FROM USERINFO WHERE  USERID=" + userId+" AND USERCODE<>'Admin'";
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 

@@ -21,7 +21,17 @@ namespace MediaMgrSystem
 
         public List<ScheduleInfo> GetAllSchedules()
         {
-            return GlobalUtils.ScheduleBLLInstance.GetAllSchedules();
+            List<ScheduleInfo> results= GlobalUtils.ScheduleBLLInstance.GetAllSchedules();
+
+            ScheduleInfo si = new ScheduleInfo();
+            si.ScheduleId = "-1";
+
+            si.ScheduleName = "取消计划";
+
+            results.Add(si);
+
+            return results;
+
 
         }
 

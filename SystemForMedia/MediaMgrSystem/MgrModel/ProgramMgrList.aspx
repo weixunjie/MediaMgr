@@ -23,7 +23,14 @@
                         <div class="col-md-10">
                             <asp:GridView ID="dvGroupList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
                                 <Columns>
-                                    <asp:BoundField DataField="ProgramId" HeaderText="节目编号" />
+                                    <asp:BoundField DataField="ProgramId" Visible="false" HeaderText="节目编号" />
+
+                                     <asp:TemplateField HeaderText="编号">
+                                        <ItemTemplate>
+                                            <%# this.dvGroupList.PageIndex * this.dvGroupList.PageSize + Container.DataItemIndex + 1%>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+
                                     <asp:BoundField DataField="ProgramName" HeaderText="节目名称" />
 
                                     <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">

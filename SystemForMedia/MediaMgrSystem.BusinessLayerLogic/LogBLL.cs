@@ -47,6 +47,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int RemoveLogByDayBefore(string strDayBefore)
         {
+            if (strDayBefore == "0")
+            {
+                ///delete all
+                return dbUitls.ExecuteNonQuery("DELETE FROM LOGINFO");
+            }
+
             int intDayBefore;
             if (int.TryParse(strDayBefore, out intDayBefore))
             {

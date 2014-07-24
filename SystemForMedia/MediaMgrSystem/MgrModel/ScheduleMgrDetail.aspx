@@ -62,9 +62,16 @@
             <div class="form-group">
 
                 <div class="col-md-10">
-                    <asp:GridView ID="dvTaskList" runat="server" AutoGenerateColumns="False" Width="857px" OnRowCommand="dvTaskList_RowCommand" OnRowDataBound="dvTaskList_RowDataBound">
+                    <asp:GridView ID="dvTaskList"  AllowPaging="True" runat="server" AutoGenerateColumns="False" Width="857px" OnRowCommand="dvTaskList_RowCommand" OnRowDataBound="dvTaskList_RowDataBound"   OnPageIndexChanging="dvTaskList_PageIndexChanging">
                         <Columns>
-                            <asp:BoundField DataField="ScheduleTaskId" HeaderText="编号" />
+                            <asp:BoundField DataField="ScheduleTaskId" Visible="false" HeaderText="编号" />
+
+                               <asp:TemplateField HeaderText="编号">
+                                        <ItemTemplate>
+                                            <%# this.dvTaskList.PageIndex * this.dvTaskList.PageSize + Container.DataItemIndex + 1%>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+
                             <asp:BoundField DataField="ScheduleTaskName" HeaderText="名称" />
 
                             <asp:BoundField DataField="ScheduleTaskStartTime" HeaderText="开始时间" />

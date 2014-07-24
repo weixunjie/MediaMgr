@@ -101,8 +101,9 @@ namespace MediaMgrSystem
 
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
-        public static List<SingalConnectedClient> AllConnectedClients = new List<SingalConnectedClient>();
+        //public static List<SingalConnectedClient> AllConnectedClients = new List<SingalConnectedClient>();
 
+        public static SingalConnectedClientsBLL SingalConnectedClientsBLLIntance = new SingalConnectedClientsBLL(GlobalUtils.DbUtilsInstance);
 
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
 
@@ -129,8 +130,7 @@ namespace MediaMgrSystem
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
-
-
+        
 
         public static bool IsChannelManuallyPlaying = false;
 
@@ -144,19 +144,6 @@ namespace MediaMgrSystem
 
 
         public static bool ChannelManuallyPlayingIsRepeat = false;
-
-        public static string CurrentVideoGuidId = string.Empty;
-
-        public static string VideoServerIPAddress = string.Empty;
-
-        public static string VideoServerConnectionId = string.Empty;
-
-        public static string WindowsServiceConnectionId = string.Empty;
-
-
-        public static string CurrentClientGuidId = string.Empty;
-
-        public static object VideoSvrArg = null;
 
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
@@ -177,28 +164,48 @@ namespace MediaMgrSystem
             lock (objForLock)
             {
 
-                if (AllConnectedClients != null)
-                {
-                    int removeIndex = -1;
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
-                    {
-                        if (AllConnectedClients[i].ConnectionId == connectionId)
-                        {
-                            removeIndex = i;
-                            break;
-                        }
-                    }
+                SingalConnectedClientsBLLIntance.DeleteSingalConnectedClientById(connectionId);
+                //if (AllConnectedClients != null)
+                //{
+                //    int removeIndex = -1;
+                //    for (int i = 0; i < AllConnectedClients.Count; i++)
+                //    {
+                //        if (AllConnectedClients[i].ConnectionId == connectionId)
+                //        {
+                //            removeIndex = i;
+                //            break;
+                //        }
+                //    }
 
-                    if (removeIndex >= 0)
-                    {
-                        AllConnectedClients.RemoveAt(removeIndex);
+                //    if (removeIndex >= 0)
+                //    {
+                //        AllConnectedClients.RemoveAt(removeIndex);
 
-                    }
-                }
+                //    }
+                //}
             }
 
             return true;
 
+        }
+
+        public static string WindowsServiceConnectionId
+        {
+            get
+            {
+
+                return GetWindowsServiceConnectionIds();
+            }
+        }
+
+
+        public static string VideoServerConnectionId
+        {
+            get
+            {
+
+                return GetVideoServerConnectionIds();
+            }
         }
 
         public static string GetVideoServerConnectionIds()
@@ -208,16 +215,14 @@ namespace MediaMgrSystem
 
             lock (objForLock)
             {
-                if (AllConnectedClients != null)
+
+                List<SingalConnectedClient> scs = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByType(SingalRClientConnectionType.VEDIOSERVER.ToString());
+
+                if (scs != null && scs.Count >= 1)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
-                    {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER)
-                        {
-                            result = AllConnectedClients[i].ConnectionId;
-                        }
-                    }
+                    result = scs[0].ConnectionId;
                 }
+
             }
 
             return result;
@@ -228,83 +233,77 @@ namespace MediaMgrSystem
         public static string GetWindowsServiceConnectionIds()
         {
 
+
             string result = string.Empty;
 
             lock (objForLock)
             {
-                if (AllConnectedClients != null)
+
+                List<SingalConnectedClient> scs = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByType(SingalRClientConnectionType.WINDOWSSERVICE.ToString());
+
+                if (scs != null && scs.Count >= 1)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
-                    {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.WINDOWSSERVICE)
-                        {
-                            result = AllConnectedClients[i].ConnectionId;
-                        }
-                    }
+                    result = scs[0].ConnectionId;
                 }
+
             }
 
             return result;
 
-
         }
+       
 
         public static void AddConnection(SingalConnectedClient client)
         {
             lock (objForLock)
             {
-                AllConnectedClients.Add(client);
+                SingalConnectedClientsBLLIntance.AddSingalConnectedClient(client);
             }
 
         }
 
 
-        public static bool CheckIfVideoServer(string strIdentifies)
-        {
-            bool result = false;
+        //public static bool CheckIfVideoServer(string strIdentifies)
+        //{
+        //    bool result = false;
 
-            lock (objForLock)
-            {
+        //    lock (objForLock)
+        //    {
 
-                if (AllConnectedClients != null)
-                {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
-                    {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER &&
-                            strIdentifies == AllConnectedClients[i].ConnectionIdentify)
-                        {
-                            result = true;
-                            break;
-                        }
-                    }
-                }
+        //        if (AllConnectedClients != null)
+        //        {
+        //            for (int i = 0; i < AllConnectedClients.Count; i++)
+        //            {
+        //                if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.VEDIOSERVER &&
+        //                    strIdentifies == AllConnectedClients[i].ConnectionIdentify)
+        //                {
+        //                    result = true;
+        //                    break;
+        //                }
+        //            }
+        //        }
 
-            }
+        //    }
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
         public static string GetIdentifyByConectionId(string connId)
         {
-            List<string> results = new List<string>();
 
             lock (objForLock)
             {
 
-                if (AllConnectedClients != null)
+                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(connId);
+
+                if (sc != null)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
-                    {
-                        if (AllConnectedClients[i].ConnectionId == connId)
-                        {
-                            return AllConnectedClients[i].ConnectionIdentify;
-                        }
-                    }
+                    return sc.ConnectionIdentify;
                 }
             }
 
-            return "";
+            return string.Empty;
         }
 
         public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies)
@@ -314,16 +313,20 @@ namespace MediaMgrSystem
             lock (objForLock)
             {
 
-                if (AllConnectedClients != null)
+                List<SingalConnectedClient> scs = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetifies(strIdentifies);
+
+                if (scs != null)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    foreach (var sc in scs)
                     {
-                        if (strIdentifies.Contains(AllConnectedClients[i].ConnectionIdentify))
+                        if (sc != null)
                         {
-                            results.Add(AllConnectedClients[i].ConnectionId);
+                            results.Add(sc.ConnectionId);
                         }
                     }
+
                 }
+
             }
 
             return results;
@@ -340,15 +343,18 @@ namespace MediaMgrSystem
             lock (objForLock)
             {
 
-                if (AllConnectedClients != null)
+                List<SingalConnectedClient> scs = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByType(SingalRClientConnectionType.PC.ToString());
+
+                if (scs != null)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    foreach (var sc in scs)
                     {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.PC)
+                        if (sc != null)
                         {
-                            results.Add(AllConnectedClients[i].ConnectionId);
+                            results.Add(sc.ConnectionId);
                         }
                     }
+
                 }
             }
 
@@ -367,16 +373,14 @@ namespace MediaMgrSystem
             lock (objForLock)
             {
 
-                if (AllConnectedClients != null)
+                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(SingalRClientConnectionType.PC.ToString());
+
+
+                if (sc != null)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
-                    {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.ANDROID && AllConnectedClients[i].ConnectionId == id)
-                        {
-                            return true;
-                        }
-                    }
+                    return sc.ConnectionType == SingalRClientConnectionType.ANDROID;                   
                 }
+
             }
 
 
@@ -438,7 +442,7 @@ namespace MediaMgrSystem
         private static void ThreadToAddLogsTask(object para)
         {
 
-        
+
 
             lock (LogForLock)
             {
@@ -467,7 +471,7 @@ namespace MediaMgrSystem
                     if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
                     {
 
-                        WriteErroLogs("程序异常" + ex.Message);                     
+                        WriteErroLogs("程序异常" + ex.Message);
                     }
 
                 }
@@ -484,17 +488,21 @@ namespace MediaMgrSystem
 
             lock (objForLock)
             {
+                List<SingalConnectedClient> scs = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByType(SingalRClientConnectionType.ANDROID.ToString());
 
-                if (AllConnectedClients != null)
+                if (scs != null)
                 {
-                    for (int i = 0; i < AllConnectedClients.Count; i++)
+                    foreach (var sc in scs)
                     {
-                        if (AllConnectedClients[i].ConnectionType == SingalRClientConnectionType.ANDROID)
+                        if (sc != null)
                         {
-                            results.Add(AllConnectedClients[i].ConnectionId);
+                            results.Add(sc.ConnectionId);
                         }
                     }
+
                 }
+
+           
             }
 
 

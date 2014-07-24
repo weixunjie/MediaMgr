@@ -12,7 +12,6 @@ namespace MediaMgrSystem.MgrModel
     public partial class DeviceMgrList : System.Web.UI.Page
     {
 
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UserId"] == null)
@@ -63,11 +62,12 @@ namespace MediaMgrSystem.MgrModel
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                List<GroupInfo> result= GlobalUtils.GroupBLLInstance.GetGroupById(e.Row.Cells[2].Text);
-                e.Row.Cells[2].Text = "默认分组";
+                TableCell groupCell = e.Row.Cells[3];
+                List<GroupInfo> result= GlobalUtils.GroupBLLInstance.GetGroupById(groupCell.Text);
+                groupCell.Text = "默认分组";
                 if (result != null && result.Count > 0)
                 {
-                    e.Row.Cells[2].Text = result[0].GroupName;
+                    groupCell.Text = result[0].GroupName;
                 }
             }
         }

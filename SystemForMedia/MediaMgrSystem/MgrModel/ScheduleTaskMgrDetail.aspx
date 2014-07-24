@@ -189,7 +189,7 @@
 
                     <div class="form-group" style="margin-bottom: 10px">
 
-                        <asp:Label runat="server" AssociatedControlID="cbIsRepeat" CssClass="col-md-2 control-label" Width="107px">顺序播放:</asp:Label>
+                        <asp:Label runat="server" AssociatedControlID="cbIsRepeat" CssClass="col-md-2 control-label" Width="107px">循环播放:</asp:Label>
 
 
                         <asp:CheckBox ID="cbIsRepeat" Text="" runat="server" />

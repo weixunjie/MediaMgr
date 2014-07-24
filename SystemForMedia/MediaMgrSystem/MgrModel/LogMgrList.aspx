@@ -84,7 +84,14 @@
                         <div class="col-md-10">
                             <asp:GridView ID="dvList" AllowPaging="True" runat="server" AutoGenerateColumns="False" Width="850" OnRowCommand="dvList_RowCommand" OnPageIndexChanging="dvList_PageIndexChanging">
                                 <Columns>
-                                    <asp:BoundField DataField="LogId" ItemStyle-Width="50px" HeaderText="编号"></asp:BoundField>
+                                    <asp:BoundField DataField="LogId" Visible="false" ItemStyle-Width="50px" HeaderText="编号"></asp:BoundField>
+
+                                                <asp:TemplateField HeaderText="编号">
+                                        <ItemTemplate>
+                                            <%# this.dvList.PageIndex * this.dvList.PageSize + Container.DataItemIndex + 1%>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+
                                     <asp:BoundField DataField="LogName" ItemStyle-Width="100px" HeaderText="名称"></asp:BoundField>
                                     <asp:BoundField DataField="LogDesp" ItemStyle-Width="380px" HeaderText="描述" />
                                     <asp:BoundField DataField="LogDate" ItemStyle-Width="160px" HeaderText="时间"></asp:BoundField>
@@ -123,6 +130,7 @@
 
                     <div style="height: 30px; line-height: 30px; overflow: hidden;">
                         <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddDateBefore" style="margin-right:5px" CssClass="form-control">
+                            <asp:ListItem Value="0" Text="全部"></asp:ListItem>
                             <asp:ListItem Value="1" Text="1天以前"></asp:ListItem>
                             <asp:ListItem Value="5" Text="5天以前"></asp:ListItem>
                             <asp:ListItem Value="10" Text="10天以前"></asp:ListItem>

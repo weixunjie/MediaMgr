@@ -113,22 +113,29 @@ namespace MediaMgrSystem.MgrModel
             Response.Redirect("~/MgrModel/ScheduleTaskMgrDetail.aspx?sid=" + TbHiddenId.Text);
         }
 
+        protected void dvTaskList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+
+            dvTaskList.PageIndex = e.NewPageIndex;
+            BindTaskListData();
+        }
+
         protected void dvTaskList_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 try
                 {
-                    List<ProgramInfo> result = GlobalUtils.ProgramBLLInstance.GetProgramById(e.Row.Cells[5].Text);
+                    List<ProgramInfo> result = GlobalUtils.ProgramBLLInstance.GetProgramById(e.Row.Cells[6].Text);
 
                     if (result != null && result.Count > 0)
                     {
-                        e.Row.Cells[5].Text = result[0].ProgramName;
+                        e.Row.Cells[6].Text = result[0].ProgramName;
                     }
                 }
                 catch { }
 
-                string strWeeks = e.Row.Cells[6].Text;
+                string strWeeks = e.Row.Cells[7].Text;
 
                 strWeeks = strWeeks.Replace("1", "一");
 
@@ -143,7 +150,7 @@ namespace MediaMgrSystem.MgrModel
 
                 strWeeks = strWeeks.Replace("7", "日");
 
-                e.Row.Cells[6].Text = strWeeks;
+                e.Row.Cells[7].Text = strWeeks;
 
 
 

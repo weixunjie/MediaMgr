@@ -285,6 +285,7 @@ namespace MediaMgrSystem.MgrModel
             }
             else
             {
+
                 if (!string.IsNullOrWhiteSpace(sqlWeekInScheduleWeek))
                 {
                     sqlCheckWeeks = "AND " + "(" +
@@ -305,6 +306,7 @@ namespace MediaMgrSystem.MgrModel
 
             if (!string.IsNullOrWhiteSpace(si.StrDays))
             {
+               
                 si.StrDays = si.StrDays.TrimEnd(',');
             }
 

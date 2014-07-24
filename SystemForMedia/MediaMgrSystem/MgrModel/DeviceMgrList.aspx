@@ -23,7 +23,14 @@
                         <div class="col-md-10">
                             <asp:GridView ID="dvList" AllowPaging="true" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound" OnPageIndexChanging="dvList_PageIndexChanging">
                                 <Columns>
-                                    <asp:BoundField DataField="DeviceId" HeaderText="编号" />
+                                    <asp:BoundField DataField="DeviceId"  Visible="false" HeaderText="编号" />
+
+                                           <asp:TemplateField HeaderText="编号">
+                                <ItemTemplate>
+                                    <%# this.dvList.PageIndex * this.dvList.PageSize + Container.DataItemIndex + 1%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
                                     <asp:BoundField DataField="DeviceName" HeaderText="名称" />
 
                                     <asp:BoundField DataField="GroupId" HeaderText="所在分组" />

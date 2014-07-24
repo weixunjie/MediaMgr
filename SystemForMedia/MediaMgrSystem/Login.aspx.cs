@@ -32,6 +32,7 @@ namespace MediaMgrSystem
             if (ui != null)
             {
                 Session["UserId"] = ui.UserId;
+                Session["UserCode"] = ui.UserCode;
                 Session["UserName"] = ui.UserName;
                 Session["IsSuperUser"] = ui.UserLevel == "1" ? "1" : null;
                 Response.Redirect("~/AudioBroadcastMain.aspx");

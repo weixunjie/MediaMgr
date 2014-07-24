@@ -57,8 +57,7 @@ namespace MediaMgrSystem.MgrModel
             dvList.DataBind();
 
         }
-
-       
+               
 
         protected void dvList_RowCommand(object sender, GridViewCommandEventArgs e)
         {

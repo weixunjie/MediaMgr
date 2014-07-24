@@ -14,7 +14,13 @@
                 <div class="col-md-10">
                     <asp:GridView ID="dvGroupList" runat="server" AllowPaging="True" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
                         <Columns>
-                            <asp:BoundField DataField="GroupId" HeaderText="分组编号" />
+                            <asp:BoundField DataField="GroupId" Visible="false" HeaderText="分组编号" />
+
+                            <asp:TemplateField HeaderText="编号">
+                                <ItemTemplate>
+                                    <%# this.dvGroupList.PageIndex * this.dvGroupList.PageSize + Container.DataItemIndex + 1%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:BoundField DataField="GroupName" HeaderText="分组名称" />
 
                             <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">
@@ -30,17 +36,17 @@
                             </asp:TemplateField>
                         </Columns>
                         <RowStyle HorizontalAlign="Center" />
-                    </asp:GridView>              
+                    </asp:GridView>
 
-                </div>     
+                </div>
 
             </div>
 
 
         </div>
 
-        <div class="form-group" style="margin-top:10px">
-           <asp:Button runat="server" Text="新增组" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
+        <div class="form-group" style="margin-top: 10px">
+            <asp:Button runat="server" Text="新增组" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
         </div>
     </section>
 

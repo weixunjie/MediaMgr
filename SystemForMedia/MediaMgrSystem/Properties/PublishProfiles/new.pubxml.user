@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\alvin.wei\Desktop\test\rrr</_PublishTargetUrl>
+    <_PublishTargetUrl>http://localhost/MediaMgrDemo</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="Account/Login.aspx">
@@ -43,10 +43,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/09/2014 14:01:42</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.BusinessLayerLogic.dll">
-      <publishTime>07/22/2014 14:25:29</publishTime>
+      <publishTime>07/24/2014 11:39:54</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.BusinessLayerLogic.pdb">
-      <publishTime>07/22/2014 14:25:29</publishTime>
+      <publishTime>07/24/2014 11:39:54</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataAccessLayer.dll">
       <publishTime>07/22/2014 14:25:29</publishTime>
@@ -55,16 +55,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/22/2014 14:25:29</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.dll">
-      <publishTime>07/22/2014 14:25:29</publishTime>
+      <publishTime>07/23/2014 10:41:07</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.pdb">
-      <publishTime>07/22/2014 14:25:28</publishTime>
+      <publishTime>07/23/2014 10:41:07</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>07/22/2014 14:25:31</publishTime>
+      <publishTime>07/24/2014 13:40:16</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>07/22/2014 14:25:31</publishTime>
+      <publishTime>07/24/2014 13:40:16</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
       <publishTime>07/09/2014 16:51:48</publishTime>
@@ -292,28 +292,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/09/2014 16:49:41</publishTime>
     </File>
     <File Include="MgrModel/ChannelMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:03</publishTime>
     </File>
     <File Include="MgrModel/DeviceMgrDetail.aspx">
       <publishTime>07/09/2014 16:49:41</publishTime>
     </File>
     <File Include="MgrModel/DeviceMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:10</publishTime>
     </File>
     <File Include="MgrModel/EncoderMgrDetail.aspx">
       <publishTime>07/09/2014 16:49:41</publishTime>
     </File>
     <File Include="MgrModel/EncoderMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:10</publishTime>
     </File>
     <File Include="MgrModel/GroupMgrDetail.aspx">
       <publishTime>07/09/2014 16:49:41</publishTime>
     </File>
     <File Include="MgrModel/GroupMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:10</publishTime>
     </File>
     <File Include="MgrModel/LogMgrList.aspx">
-      <publishTime>07/15/2014 15:15:06</publishTime>
+      <publishTime>07/23/2014 17:37:11</publishTime>
     </File>
     <File Include="MgrModel/PreviewMP3.aspx">
       <publishTime>07/09/2014 16:49:41</publishTime>
@@ -322,13 +322,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/15/2014 15:15:06</publishTime>
     </File>
     <File Include="MgrModel/ProgramMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:10</publishTime>
     </File>
     <File Include="MgrModel/ScheduleMgrDetail.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:11</publishTime>
     </File>
     <File Include="MgrModel/ScheduleMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:11</publishTime>
     </File>
     <File Include="MgrModel/ScheduleTaskMgrDetail.aspx">
       <publishTime>07/21/2014 14:34:47</publishTime>
@@ -337,7 +337,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/09/2014 16:49:41</publishTime>
     </File>
     <File Include="MgrModel/UserMgrList.aspx">
-      <publishTime>07/09/2014 16:49:41</publishTime>
+      <publishTime>07/23/2014 17:37:10</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>07/09/2014 16:49:52</publishTime>
@@ -346,10 +346,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/21/2014 16:51:41</publishTime>
     </File>
     <File Include="RemoteControlSys/RemoteControlMain.aspx">
-      <publishTime>07/16/2014 10:45:16</publishTime>
+      <publishTime>07/22/2014 16:48:08</publishTime>
     </File>
     <File Include="RemoteControlSys/RemoteDeviceList.ascx">
-      <publishTime>07/16/2014 13:56:47</publishTime>
+      <publishTime>07/22/2014 18:28:35</publishTime>
     </File>
     <File Include="RemoteControlSys/RemoveControlLogList.ascx">
       <publishTime>07/16/2014 10:20:51</publishTime>

@@ -203,11 +203,10 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-
         public List<ScheduleTaskInfo> GetAllScheduleTaksByScheduleId(string id)
         {
 
-            String sqlStr = "SELECT * FROM SCHEDULETASKINFO WHERE SCHEDULEID='" + id + "'";
+            String sqlStr = "SELECT * FROM SCHEDULETASKINFO WHERE SCHEDULEID='" + id + "' order by ScheduleTaskStartTime ";
 
             return GetTasksList(sqlStr);
 

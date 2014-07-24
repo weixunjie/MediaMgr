@@ -19,6 +19,7 @@ namespace MediaMgrSystem.MgrModel
             {
                 Response.Redirect("~/Login.aspx");
             }
+
             else
             {
                 if (Session["IsSuperUser"] != null)
@@ -30,6 +31,7 @@ namespace MediaMgrSystem.MgrModel
 
                 }
             }
+
             if (!Page.IsPostBack)
             {
                 BindListData();
@@ -48,7 +50,17 @@ namespace MediaMgrSystem.MgrModel
 
         private void BindListData()
         {
-            List<UserInfo> data = GlobalUtils.UserBLLInstance.GetAllUses();
+
+            List<UserInfo> data = null;
+
+            if (Session["UserCode"] != null && Session["UserCode"].ToString().ToUpper() == "ADMIN")
+            {
+                data = GlobalUtils.UserBLLInstance.GetAllUsesWithAdmin();
+            }
+            else
+            {
+                data = GlobalUtils.UserBLLInstance.GetAllUses();
+            }
 
             dvList.DataSource = data;
             dvList.DataBind();
@@ -65,8 +77,17 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                GlobalUtils.ProgramBLLInstance.RemoveProgram(e.CommandArgument.ToString());
-                BindListData();
+                string userId = e.CommandArgument.ToString();
+
+                if (userId == Session["UserId"].ToString() && Session["UserCode"].ToString().ToUpper() == "ADMIN")
+                {
+                    Response.Write("<script>alert('不能删除系统管理员');</script>");
+                }
+                else
+                {
+                    GlobalUtils.ProgramBLLInstance.RemoveProgram(userId);
+                    BindListData();
+                }
             }
         }
 
@@ -76,12 +97,12 @@ namespace MediaMgrSystem.MgrModel
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
 
-                string userLevel = e.Row.Cells[3].Text;
+                string userLevel = e.Row.Cells[4].Text;
 
-                e.Row.Cells[3].Text = userLevel == "1" ? "超级用户" : "普通用户";
-                string isActive = e.Row.Cells[4].Text;
+                e.Row.Cells[4].Text = userLevel == "1" ? "超级用户" : "普通用户";
+                string isActive = e.Row.Cells[5].Text;
 
-                e.Row.Cells[4].Text = isActive == "1" ? "是" : "否";
+                e.Row.Cells[5].Text = isActive == "1" ? "是" : "否";
             }
 
         }
