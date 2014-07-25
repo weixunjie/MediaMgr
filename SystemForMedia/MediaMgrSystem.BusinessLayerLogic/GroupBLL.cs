@@ -35,12 +35,23 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public List<GroupInfo> GetAllGroups()
         {
-
             String sqlStr = "SELECT * FROM GroupInfo";
 
             return GetGroupList(sqlStr);
 
         }
+
+        public List<GroupInfo> GetAllGroupsByBusinessType(BusinessType bType)
+        {
+            String sqlStr = "SELECT * FROM GroupInfo";
+
+            return GetGroupList(sqlStr,bType);
+
+        }
+
+        
+
+
 
         public int RemoveGroup(string goupId)
         {
@@ -150,7 +161,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
-        protected List<GroupInfo> GetGroupList(string sqlStr)
+        protected List<GroupInfo> GetGroupList(string sqlStr,BusinessType bType=BusinessType.ALL)
         {
             List<GroupInfo> groups = new List<GroupInfo>();
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
@@ -167,7 +178,15 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         gi.GroupName = dt.Rows[i]["GROUPNAME"].ToString();
                         gi.ChannelId = dt.Rows[i]["CHANNELID"].ToString();
                         gi.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
-                        gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
+
+                        if (bType == BusinessType.ALL)
+                        {
+                            gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
+                        }
+                        else
+                        {
+                            gi.Devices = deviceBLL.GetAllDevicesByGroupWithFilter(gi.GroupId, bType);
+                        }
                         groups.Add(gi);
                     }
                 }

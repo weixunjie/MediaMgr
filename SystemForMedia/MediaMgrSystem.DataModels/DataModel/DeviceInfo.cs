@@ -20,6 +20,8 @@ namespace MediaMgrSystem.DataModels
 
         public bool UsedToVideoOnline { get; set; }
 
+        public bool UsedToRemoteControl { get; set; }
+
         public bool UsedToAudioBroandcast { get; set; }
 
 

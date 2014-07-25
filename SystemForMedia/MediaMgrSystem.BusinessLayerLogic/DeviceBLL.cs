@@ -34,6 +34,30 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public List<DeviceInfo> GetAllDevicesByGroupWithFilter(string groupId, BusinessType bType)
+        {
+            String sqlStr = "SELECT * FROM DEVICEINFO WHERE GROUPID='" + groupId + "'";
+
+            string strAnd = string.Empty; ;
+            switch (bType)
+            {
+                case BusinessType.AUDITBROADCAST:
+                    strAnd = " AND ISUSEDFORAUDIO=1";
+                    break;
+                case BusinessType.VIDEOONLINE:
+                    strAnd = " AND ISUSEDFORENCODER=1";
+                    break;
+
+                case BusinessType.REMOVECONTROL:
+                    strAnd = " AND ISUSEDFORREMOTECONTROL=1";
+                    break;
+
+            }
+
+            return GetDeviceList(sqlStr + strAnd);
+
+        }
+
         public List<DeviceInfo> GetADevicesById(string id)
         {
 
@@ -100,9 +124,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             else
             {
-                String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID,ISUSEDFORAUDIO,ISUSEDFORENCODER) values ('{0}','{1}','{2}','{3}','{4}')";
+                String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID,ISUSEDFORAUDIO,ISUSEDFORENCODER,ISUSEDFORREMOTECONTROL) values ('{0}','{1}','{2}','{3}','{4}','{5}')";
 
-                sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0);
+                sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.UsedToRemoteControl ? 1 : 0);
 
 
                 return dbUitls.ExecuteNonQuery(sqlStr);
@@ -116,9 +140,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public int UpdateDevice(DeviceInfo di)
         {
 
-            String sqlStr = "UPDATE DEVICEINFO SET DEVICENAME='{0}',DEVICEIPADDRESS='{1}',GROUPID='{2}',ISUSEDFORAUDIO='{3}',ISUSEDFORENCODER='{4}' WHERE DEVICEID={5}";
+            String sqlStr = "UPDATE DEVICEINFO SET DEVICENAME='{0}',DEVICEIPADDRESS='{1}',GROUPID='{2}',ISUSEDFORAUDIO='{3}',ISUSEDFORENCODER='{4}', ISUSEDFORREMOTECONTROL='{5}' WHERE DEVICEID={6}";
 
-            sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.DeviceId);
+            sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.UsedToRemoteControl ? 1 : 0, di.DeviceId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -160,6 +184,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                         di.UsedToVideoOnline = dt.Rows[i]["ISUSEDFORENCODER"].ToString() == "1";
 
+                        di.UsedToRemoteControl = dt.Rows[i]["ISUSEDFORREMOTECONTROL"].ToString() == "1";
 
                         deviceInfos.Add(di);
                     }
