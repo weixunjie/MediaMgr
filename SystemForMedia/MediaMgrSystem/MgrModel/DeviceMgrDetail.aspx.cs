@@ -53,6 +53,7 @@ namespace MediaMgrSystem.MgrModel
 
                     cbFunction.Items[1].Selected = di.UsedToVideoOnline;
 
+                    cbFunction.Items[2].Selected = di.UsedToRemoteControl;
                     
                     var found = ddGroups.Items.FindByValue(di.GroupId);
 
@@ -94,7 +95,9 @@ namespace MediaMgrSystem.MgrModel
 
             di.UsedToVideoOnline = cbFunction.Items[1].Selected;
 
+            di.UsedToRemoteControl = cbFunction.Items[2].Selected;
 
+            
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
                 di.DeviceId = TbHiddenId.Text;

@@ -20,9 +20,8 @@ namespace MediaMgrSystem
 
         public List<GroupInfo> GetAllGroups()
         {
-            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
-
-       
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.REMOVECONTROL);
+                   
 
             return gis;
 
@@ -32,18 +31,6 @@ namespace MediaMgrSystem
         public bool CheckDeviceIsOnline(string ipAddress)
         {
             return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }).Count > 0;
-
-        }
-
-        public List<ChannelInfo> GetAllChannels()
-        {
-            return GlobalUtils.ChannelBLLInstance.GetAllChannels();
-
-        }
-
-        public List<EncoderInfo> GetAllEncoders()
-        {
-            return GlobalUtils.EncoderBLLInstance.GetAllEncoders();
 
         }
 

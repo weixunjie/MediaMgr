@@ -69,8 +69,7 @@ namespace MediaMgrSystem.MgrModel
         }
 
         protected void dvList_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-          
+        {          
             dvList.PageIndex = e.NewPageIndex;
             BindListData();
         }
@@ -78,10 +77,7 @@ namespace MediaMgrSystem.MgrModel
         protected void btnClearLog_Click(object sender, EventArgs e)
         {
             GlobalUtils.LogBLLInstance.RemoveLogByDayBefore(ddDateBefore.SelectedValue).ToString();
-
-
             ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "updateScript", "alert('删除成功！')", true);
-
          
 
         

@@ -80,7 +80,6 @@
         $(document).ready(function () {
 
      
-
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
 

@@ -66,7 +66,7 @@
             <asp:CheckBoxList ID="cbFunction" runat="server" Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="566px" CssClass="cb">
                 <asp:ListItem Value="1">音频广播</asp:ListItem>
                 <asp:ListItem Value="2">视频直播</asp:ListItem>
-
+                <asp:ListItem Value="3">物联管理</asp:ListItem>                
 
             </asp:CheckBoxList>
 

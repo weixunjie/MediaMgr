@@ -29,8 +29,7 @@ namespace MediaMgrSystem.MgrModel
 
         protected void Add_Click(object sender, EventArgs e)
         {
-
-            // ListBox1.Items.RemoveAt(1);
+        
             Response.Redirect("~/MgrModel/DeviceMgrDetail.aspx");
         }
 

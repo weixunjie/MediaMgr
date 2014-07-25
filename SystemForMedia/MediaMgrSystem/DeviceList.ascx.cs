@@ -22,6 +22,25 @@ namespace MediaMgrSystem
         {
             List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
 
+            if (gis != null && gis.Count > 0)
+            {
+                for (int i = 0; i < gis.Count; i++)
+                {
+                    ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelById(gis[i].ChannelId);
+
+                    if (ci != null)
+                    {
+                        gis[i].ChannelName = ci.ChannelName;
+                    }
+                    else
+                    {
+                        gis[i].ChannelName = "无关联";
+                    }
+
+                }
+            }
+
+
             GroupInfo groupDefault = new GroupInfo();
 
             groupDefault.GroupId = "-1";

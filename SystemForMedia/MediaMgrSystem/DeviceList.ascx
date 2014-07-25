@@ -148,7 +148,7 @@
         $("#btnSingleGroupChooseEncoder").click(function (e) {
 
 
-            
+
             $("#deviceListSingleGroupChooseChannelMenu").hide()
 
 
@@ -209,7 +209,7 @@
 
         $.showGroupClickMenu = function () {
 
-                        $("<%= imgGroupShowIds %>").click(function (e) {
+            $("<%= imgGroupShowIds %>").click(function (e) {
 
 
                 hideAllNenus();
@@ -256,7 +256,7 @@
 
 
         $.showSingleDeviceClickMenu = function () {
-            
+
             $("<%= deviceIds %>").click(function (e) {
 
 
@@ -369,10 +369,15 @@
                     <div class="row" style="margin-left: 0px">
 
                         <div class="pull-left"><%=dGroups[l].GroupName %></div>
+
+                     
                         <% if (dGroups[l].GroupId != "-1")
                            {  %>
                         <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
                         <% }  %>
+
+                           <div class="pull-right" style="margin:0px;margin-right:30px;  padding:0px; font-weight:normal" >通道：<% =dGroups[l].ChannelName %></div>
+
                     </div>
 
                 </th>

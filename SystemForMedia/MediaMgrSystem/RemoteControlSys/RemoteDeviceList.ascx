@@ -91,6 +91,14 @@
 
         });
 
+
+        $("#btnBatchGroupOperation").mouseout(function (e) {
+                       
+            is_popup_1st_menu = false;
+
+        });
+
+
         $("#groupListBacthMenuSchedule").click(function (e) {
 
 
@@ -205,6 +213,7 @@
             $("<%= deviceIds %>").click(function (e) {
 
 
+               
                 hideAllMenus();
 
                 currentOperGroup = e.currentTarget.id.replace("deviceMenu", "");
@@ -231,6 +240,13 @@
             });
 
         }
+
+
+        $("#btnDeviceStatus").click(function (e) {
+
+            window.open(" <%= ResolveUrl("~/RemoteControlSys/RemoteControlDetailList.aspx")%>");
+
+        });
 
         $.showSingleDeviceClickMenu();
 
@@ -262,15 +278,14 @@
             alert($("#" + dialogddACMode).val());
 
             var tbScheduleTimeValue = $("#tbScheduleTime").val();
-            if (tbScheduleTimeValue == "")
-            {
+            if (tbScheduleTimeValue == "") {
                 alert("pw pw ");
             }
-            debugger;
+
             var tbACTempureValue = $("#tbACTempure").val();
 
 
-                            
+
 
             if (!(/^(\+|-)?\d+$/.test(tbACTempureValue)) || tbACTempureValue < 0) {
 
@@ -279,7 +294,7 @@
 
             }
 
-        });      
+        });
 
 
     });
@@ -288,6 +303,12 @@
 </script>
 
 <div>
+
+    <h3 class="pull-left" style="clip: rect(auto, auto, 10px, auto)">物联设备控制</h3>
+
+
+    <div class="pull-right" style="margin-right: 10px"><a id="btnDeviceStatus" class="btn  btn-success" data-content="">设备状态</a></div>
+
 
     <% 
         int deviceIndex = 0;
@@ -299,11 +320,6 @@
            
     %>
 
-
-    <h3 class="pull-left" style="clip: rect(auto, auto, 10px, auto)">物联设备明细查看</h3>
-
-
-    <div class="pull-right"><a class="btn  btn-success" data-content="">批量操作</a></div>
 
 
     <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 5px;">
@@ -333,7 +349,7 @@
                     <div style="height: 90px">
                         <ul id="groupDeviceList<%=groupIndex %>" class="deviceULStyle">
                             <%
-            deviceIndex++;
+        
             if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)
             {
                 for (int k = 0; k < dGroups[l].Devices.Count; k++)
@@ -353,9 +369,12 @@
                     if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
                     {
                         srcName = ResolveUrl("~/Images/ic_image_device_offline.png");
-                    }                                  
-                                               
+                    }
+
+                    deviceIndex++;
+                     
                                             %>
+
 
 
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" src="<%=srcName %>" style="width: 50px; height: 50px" />

@@ -30,8 +30,7 @@ namespace MediaMgrSystem.MgrModel
             }
 
             if (!Page.IsPostBack)
-            {
-                
+            {                
 
                 ddUserLevel.SelectedIndex = 0;
 

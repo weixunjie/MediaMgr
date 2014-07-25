@@ -21,22 +21,14 @@ namespace MediaMgrSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            //if (Session["UserId"] == null)
-            //{
-            //    Response.Redirect("~/Login.aspx");
-            //}
+            
 
         }
-
-        public string getDataTime()
-        {
-            return DateTime.Now.ToString("HH:mm:ss");
-
-        }
+             
 
         public List<GroupInfo> GetAllGroups()
         {
-            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.ALL);
 
             return gis;
 
