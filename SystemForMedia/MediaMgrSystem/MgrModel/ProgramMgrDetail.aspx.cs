@@ -47,7 +47,7 @@ namespace MediaMgrSystem.MgrModel
 
             string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
 
-            string mpgExePath = Server.MapPath(@"\Dlls");
+            string mpgExePath = Server.MapPath(@"~\Dlls");
 
 
             List<FileAttribute> faAvaibles = GlobalUtils.FileInfoBLLInstance.GetAllDiskFiles(fileBasePath, mpgExePath);

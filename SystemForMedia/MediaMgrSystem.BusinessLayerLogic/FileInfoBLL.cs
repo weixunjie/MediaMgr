@@ -39,8 +39,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         fi.FileName = dt.Rows[i]["FILENAME"].ToString();
 
                         fi.BitRate = dt.Rows[i]["BITRATE"].ToString();
-                   
-                        result=fi;
+
+                        result = fi;
                     }
                 }
             }
@@ -54,21 +54,21 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             DirectoryInfo di = new DirectoryInfo(filePath);
 
-            if (di!=null)
+            if (di != null)
             {
                 FileInfo[] fiArray = di.GetFiles();
                 if (fiArray != null && fiArray.Length > 0)
                 {
 
 
-                    foreach(var fi in fiArray)
+                    foreach (var fi in fiArray)
                     {
                         if (fi.Extension.ToUpper().EndsWith("META"))
                         {
                             continue;
                         }
 
-                        FileAttribute fa=GetFileInfoByFile(fi.Name);
+                        FileAttribute fa = GetFileInfoByFile(fi.Name);
                         if (fa != null)
                         {
                             result.Add(fa);
@@ -76,14 +76,15 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         else
                         {
                             fa = new FileAttribute();
+                            
                             fa.BitRate = GetBitRateByFileName(fi.FullName, mpegPath).ToString();
                             fa.FileName = fi.Name;
                             AddFileInfo(fa);
                             result.Add(fa);
                         }
                     }
-                    
- 
+
+
                 }
             }
 
@@ -101,19 +102,14 @@ namespace MediaMgrSystem.BusinessLayerLogic
             //  string output = FFMPEG.Execute("c:\ffmpeg.exe");
 
             double result = 0;
-            try
-            {
-              
-                FFMPEG.FFMPEGExecutableFilePath = mpegPath + @"\ffmpeg.exe";
 
-                VideoFile videoFile = new VideoFile(fileFullName);
+            FFMPEG.FFMPEGExecutableFilePath = mpegPath + @"\ffmpeg.exe";
 
-                result = videoFile.AudioBitRate;
-            }
-            catch
-            {
+            VideoFile videoFile = new VideoFile(fileFullName);
 
-            }
+            result = videoFile.AudioBitRate;
+
+
 
             return result;
 
