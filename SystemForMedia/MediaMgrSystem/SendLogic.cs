@@ -706,7 +706,7 @@ namespace MediaMgrSystem
                 if (isSendToVideoSvr)
                 {
 
-                    GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = "", GuidIdStr = severGuidId, CommandType = cmdType });
+                    GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.GetVideoServerConnectionIdentify(), GuidIdStr = severGuidId, CommandType = cmdType });
                 }
 
                 //NO need send to client when is repeat operation.

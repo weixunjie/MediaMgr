@@ -1,1 +1,0 @@
-alter  table  dbo.DeviceInfo add  isUsedForRemoteControl int

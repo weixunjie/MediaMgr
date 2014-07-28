@@ -78,8 +78,8 @@ namespace MediaMgrSystem.MgrModel
         {
             GlobalUtils.LogBLLInstance.RemoveLogByDayBefore(ddDateBefore.SelectedValue).ToString();
             ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "updateScript", "alert('删除成功！')", true);
-         
 
+            BindListData();
         
         }
 

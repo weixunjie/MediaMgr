@@ -93,7 +93,7 @@ namespace MediaMgrSystem
 
                     }
 
-
+                                     
 
                     GlobalUtils.AddLogs(hub.Clients, "系统提示", "视频服务器已连接");
 

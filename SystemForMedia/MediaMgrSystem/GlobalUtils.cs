@@ -230,6 +230,28 @@ namespace MediaMgrSystem
 
         }
 
+        public static string GetVideoServerConnectionIdentify()
+        {
+
+            string result = string.Empty;
+
+            lock (objForLock)
+            {
+
+                List<SingalConnectedClient> scs = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByType(SingalRClientConnectionType.VEDIOSERVER.ToString());
+
+                if (scs != null && scs.Count >= 1)
+                {
+                    result = scs[0].ConnectionIdentify;
+                }
+
+            }
+
+            return result;
+
+
+        }
+
         public static string GetWindowsServiceConnectionIds()
         {
 
@@ -418,7 +440,7 @@ namespace MediaMgrSystem
 
         public static void WriteDebugLogs(string str)
         {
-            AddLogs(null, "调试日志", str);
+           // AddLogs(null, "调试日志", str);
         }
 
 

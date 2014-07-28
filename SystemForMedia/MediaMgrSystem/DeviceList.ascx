@@ -376,7 +376,7 @@
                         <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
                         <% }  %>
 
-                           <div class="pull-right" style="margin:0px;margin-right:30px;  padding:0px; font-weight:normal" >通道：<% =dGroups[l].ChannelName %></div>
+                         
 
                     </div>
 
