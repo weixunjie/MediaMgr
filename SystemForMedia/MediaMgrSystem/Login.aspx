@@ -5,7 +5,7 @@
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="/Scripts/html5.js"></script>
+      <script src="<% =ResolveUrl("~/Scripts/html5.js") %>"></script>
     <![endif]-->
 
     <style>
