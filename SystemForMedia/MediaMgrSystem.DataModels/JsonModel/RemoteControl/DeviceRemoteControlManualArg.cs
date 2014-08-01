@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class ReceiveCommandBaseArg 
+    public class DeviceRemoteControlManualArg
     {
-
-        public string streamName
+        public string devicesType
         {
             get;
             set;
         }
 
-        
-
+        public DeviceRemoteControlACParam paramsData
+        {
+            get;
+            set;
+        }
 
     }
 }

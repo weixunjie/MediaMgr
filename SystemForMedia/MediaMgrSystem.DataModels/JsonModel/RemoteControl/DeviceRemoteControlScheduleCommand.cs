@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class ReceiveCommandBaseArg 
+    public class DeviceRemoteControlScheduleCommand : ComunicationBase
     {
-
-        public string streamName
+        public DeviceRemoteControlScheduleArg arg
         {
             get;
             set;
-        }
+        }      
 
-        
-
+           
 
     }
 }

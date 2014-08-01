@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class ReceiveCommandBaseArg 
+    public class ReceiveRemovoteDeivceCommand : ComunicationBase
     {
 
-        public string streamName
+        public List<ReceiveRemovoteDeivceStatus> status
         {
             get;
             set;
         }
 
-        
-
-
+     
     }
 }
