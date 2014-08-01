@@ -5,6 +5,8 @@
     <Grid>
         <Button Content="VSrver" HorizontalAlignment="Left" Margin="209,256,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
         <TextBox x:Name="ss" HorizontalAlignment="Left" Height="23" Margin="95,168,0,0" TextWrapping="Wrap" Text="192.168.1.10" VerticalAlignment="Top" Width="412"/>
+
+        <TextBox x:Name="tbAddress" HorizontalAlignment="Left" Height="23" Margin="46,10,0,0" TextWrapping="Wrap" Text="http://10.50.70.52/WebJs/" VerticalAlignment="Top" Width="412"/>
         <Button Content="ADROID" HorizontalAlignment="Left" Margin="412,256,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
         <ListBox x:Name="lbLog" HorizontalAlignment="Left" Height="100" Margin="46,52,0,0" VerticalAlignment="Top" Width="441"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="46,256,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>

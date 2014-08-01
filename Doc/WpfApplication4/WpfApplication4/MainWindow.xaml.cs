@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -122,6 +123,7 @@ namespace WpfApplication4
         HubConnection hubConnection;
         DateTime currentTime;
 
+        bool isSVR = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -135,10 +137,11 @@ namespace WpfApplication4
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Connetion("VIDEOSERVER", "192.168.1.54");
+            isSVR = true;
+            DOConnetion("VIDEOSERVER", "192.168.1.54");
         }
 
-        private void Connetion(string str, string ipa)
+        private void DOConnetion(string str, string ipa)
         {
             timer.Interval = TimeSpan.FromMilliseconds(40);
 
@@ -146,7 +149,7 @@ namespace WpfApplication4
 
 
 
-            hubConnection = new HubConnection("http://localhost:19671/", "clientIdentify=" + ipa + "&clientType=" + str);
+            hubConnection = new HubConnection(tbAddress.Text, "clientIdentify=" + ipa + "&clientType=" + str);
 
 
             hubProxy = hubConnection.CreateHubProxy("MediaMgrHub");
@@ -154,9 +157,21 @@ namespace WpfApplication4
             hubConnection.Start();
 
 
-            hubConnection.Received += hubConnection_Received;
+            hubProxy.On<string>("sendKeepAlive", (i) =>
+            {
 
-            hubConnection.StateChanged += hubConnection_StateChanged;
+
+
+                Dispatcher.Invoke(
+new Action(() =>
+{
+    lbLog.Items.Add(i + "  " + DateTime.Now.ToString("MM/dd HH:mm:ss"));
+
+}));
+
+
+
+            });
 
 
             hubProxy.On<string>("sendMessageToClient", (i) =>
@@ -172,7 +187,7 @@ namespace WpfApplication4
                 Dispatcher.Invoke(
 new Action(() =>
 {
-    lbLog.Items.Add(a.guidId + "  " + DateTime.Now.ToString("hh:mm:ss"));
+    lbLog.Items.Add(a.guidId + "  " + DateTime.Now.ToString("MM/dd HH:mm:ss"));
 
     hubProxy.Invoke("SendMessageToMgrServer", Newtonsoft.Json.JsonConvert.SerializeObject(cb), hubConnection.ConnectionId);
 }));
@@ -180,6 +195,13 @@ new Action(() =>
 
 
             });
+
+
+
+
+
+            hubConnection.StateChanged += hubConnection_StateChanged;
+
 
         }
 
@@ -223,36 +245,76 @@ new Action(() =>
         {
             if (obj.NewState == ConnectionState.Connected)
             {
-                //VideoServerRegModel a = new VideoServerRegModel();
-                //a.commandType = 130;
-                //a.ConnectionId = hubConnection.ConnectionId;
-                //a.IpAddress = "sss";
-                //a.guidId = Guid.NewGuid().ToString();
 
-                //hubProxy.Invoke("sendMessageToMgrServer", Newtonsoft.Json.JsonConvert.SerializeObject(a));
+                Dispatcher.Invoke(
+new Action(() =>
+{
+    lbLog.Items.Add(" CONNECTED " + DateTime.Now.ToString("MM/dd HH:mm:ss"));
+
+
+}));
+
 
             }
             if (obj.NewState == ConnectionState.Disconnected)
             {
 
+                Dispatcher.Invoke(
+new Action(() =>
+{
+    lbLog.Items.Add(" DISCONNECTED " + DateTime.Now.ToString("MM/dd HH:mm:ss"));
+
+
+
+    new Thread(RunReConnection).Start();
+
+
+
+}));
+
+    
             }
         }
 
-        void hubConnection_Received(string obj)
+
+        private void RunReConnection()
         {
 
+            System.Threading.Thread.Sleep(10000);
+
+
+            Dispatcher.Invoke(
+       new Action(() =>
+       {
+           lbLog.Items.Add(" DISCONNECTED " + DateTime.Now.ToString("MM/dd HH:mm:ss"));
+
+
+           System.Threading.Thread.Sleep(10000);
+
+           if (isSVR)
+           {
+
+               DOConnetion("VIDEOSERVER", "192.168.1.54");
+           }
+           else
+           {
+               DOConnetion("ANDROID", ss.Text);
+           }
+
+
+       }));
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Connetion("ANDROID", ss.Text);
+            isSVR = false;
+            DOConnetion("ANDROID", ss.Text);
             //    hubConnection.Stop();
 
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
 
             ReceiveCommand rec = new ReceiveCommand();
             rec.guidId = Guid.NewGuid().ToString();
