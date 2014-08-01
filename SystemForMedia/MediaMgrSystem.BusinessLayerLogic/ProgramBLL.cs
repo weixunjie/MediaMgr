@@ -85,7 +85,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             GetMappingValues(pi, out mapFiles);
 
-            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles);
+            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles.Replace("'", "''"));
 
             int result = dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -120,7 +120,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             GetMappingValues(pi, out mapFiles);
 
-            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles, pi.ProgramId);
+            sqlStr = String.Format(sqlStr, pi.ProgramName, mapFiles.Replace("'", "''"), pi.ProgramId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 

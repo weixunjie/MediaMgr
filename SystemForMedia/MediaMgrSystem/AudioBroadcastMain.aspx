@@ -79,8 +79,6 @@
 
         $(document).ready(function () {
 
-     
-            debugger;
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
 

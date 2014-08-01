@@ -23,7 +23,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public FileAttribute GetFileInfoByFile(string fileName)
         {
-            String sqlStr = "SELECT * FROM FILEINFO WHERE FILENAME='" + fileName + "'";
+            String sqlStr = "SELECT * FROM FILEINFO WHERE FILENAME='" + fileName.Replace("'","''") + "'";
 
             FileAttribute result = null;
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
@@ -122,7 +122,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
             String sqlStr = "INSERT INTO FILEINFO(FILENAME,BITRATE) values ('{0}','{1}')";
 
 
-            sqlStr = String.Format(sqlStr, fa.FileName, fa.BitRate);
+            sqlStr = String.Format(sqlStr, fa.FileName.Replace("'","''"), fa.BitRate);
 
 
             return dbUitls.ExecuteNonQuery(sqlStr);
