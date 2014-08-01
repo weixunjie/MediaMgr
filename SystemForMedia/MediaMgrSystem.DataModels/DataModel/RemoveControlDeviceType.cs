@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public enum SingalRClientConnectionType
+    public enum RemoveControlDeviceType
     {
-        PC,
-        ANDROID,
-        REMOTECONTORLDEVICE,
-        VEDIOSERVER,
-        ENCODERDEVICE,
-        WINDOWSSERVICE
+        NONE,
+        AC=1,
+        TV=2,
+        PROJECTOR=3,
+        COMPUTER=4,
+        LIGHT=5
+
+
     }
 }
