@@ -34,22 +34,22 @@ namespace MediaMgrSystem.BusinessLayerLogic
         {
             string ids = string.Empty;
 
-            if (pids!=null && pids.Length>0)
+            if (pids != null && pids.Length > 0)
             {
-                foreach(var str in pids)
+                foreach (var str in pids)
                 {
-                    ids = ids + "'"+str + "',";
+                    ids = ids + "'" + str + "',";
 
                 }
 
-               ids= ids.TrimEnd(',');
+                ids = ids.TrimEnd(',');
             }
 
             if (!string.IsNullOrWhiteSpace(ids))
             {
 
 
-                String sqlStr = "SELECT * FROM PROGRAMINFO WHERE PROGRAMID in (" +ids+")" ;
+                String sqlStr = "SELECT * FROM PROGRAMINFO WHERE PROGRAMID in (" + ids + ")";
 
                 return GetProgramList(sqlStr, true);
             }
@@ -162,8 +162,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                                     FileAttribute tmp = fileInfoBLL.GetFileInfoByFile(fa.FileName);
 
-                                    fa.BitRate = tmp.BitRate;
+                                    if (tmp != null)
+                                    {
+                                        fa.BitRate = tmp.BitRate;
+                                    }
+                                    else
+                                    {
+                                        fa.BitRate = "0";
+                                    }
                                     pi.MappingFiles.Add(fa);
+
                                 }
                             }
                         }

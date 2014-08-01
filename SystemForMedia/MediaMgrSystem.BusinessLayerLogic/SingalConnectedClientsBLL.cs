@@ -56,9 +56,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return GetAllClientList(sqlStr);
         }
 
-        public string  GetSingalConnectedClientsByIndetify(string strIndetify)
-        {           
-            String sqlStr = "SELECT * FROM SINGALCONNECTEDCLIENTS WHERE ConnectionIdentify ='" + strIndetify + "'";
+        public string  GetSingalConnectedClientsByIndetify(string strIndetify,string scType)
+        {
+            String sqlStr = "SELECT * FROM SINGALCONNECTEDCLIENTS WHERE ConnectionIdentify ='" + strIndetify + "' AND CONNECTIONTYPE='"+scType+"'";
 
             List<SingalConnectedClient> scs= GetAllClientList(sqlStr);
 

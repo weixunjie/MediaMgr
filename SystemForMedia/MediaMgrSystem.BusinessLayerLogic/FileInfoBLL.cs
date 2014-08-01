@@ -99,7 +99,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         private double GetBitRateByFileName(string fileFullName, string mpegPath)
         {
-            //  string output = FFMPEG.Execute("c:\ffmpeg.exe");
+
 
             double result = 0;
 

@@ -26,6 +26,14 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public List<LogInfo> GetTop3RemoveControlLogsLogs()
+        {
+
+            String sqlStr = "SELECT TOP 3 * FROM LOGINFO WHERE LOGNAME='物联网控制' ORDER by LOGDATE DESC";
+
+            return GetLogList(sqlStr);
+
+        }
 
         public List<LogInfo> GetLogsByCriteria(string name, string dataBefore, string dateAfter)
         {
