@@ -17,7 +17,12 @@ namespace MediaMgrSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            
+            IList<GroupInfo> gis = new List<GroupInfo>();
+
+            gis.Add(new GroupInfo { GroupId = "1", GroupName = "ff" });
+            gis.Add(new GroupInfo { GroupId = "1", GroupName = "ff" });
+
+          string a=  Newtonsoft.Json.JsonConvert.SerializeObject(gis);
 
 
 

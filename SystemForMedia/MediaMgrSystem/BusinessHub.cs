@@ -40,17 +40,160 @@ namespace MediaMgrSystem
         }
 
 
+        public void SendRemoteControlByGroups(string externalPointIds, string groupIds, bool isOpen, string acMode, string acTempure, string scheduleTime, string strWeeks, bool isSchduled)
+        {
+            RemoteControlLogic.SendRemoteControlByGroups(Clients, externalPointIds, groupIds, isOpen, acMode, acTempure, scheduleTime, strWeeks, isSchduled);
+            // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
+            // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
+        }
+
+        public void sendRemoteControlBySingleDevice(string externalPointId, string deviceIP, bool isOpen, string acMode, string acTempure)
+        {
+
+            RemoteControlLogic.SendRemoteControlBySingleDevice(Clients, externalPointId, deviceIP, isOpen, acMode, acTempure);
+
+            // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
+            // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
+        }
+
+
+        public void SendRemoteControlToMgrServer(string data, string connectionId)
+        {
+            lock (GlobalUtils.PublicObjectForLockRemoteControlRecievedMsg)
+            {
+                System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
+
+
+
+                ReceiveRemovoteDeivceCommand rc = JsonConvert.DeserializeObject<ReceiveRemovoteDeivceCommand>(data);
+
+                if (rc != null || !string.IsNullOrWhiteSpace(rc.commandType.ToString()))
+                {
+
+                    if (rc != null && rc.commandType == CommandTypeEnum.REMOTECONTRLSENDSTATUS)
+                    {
+                        if (rc.status != null && rc.status.Count > 0)
+                        {
+                            string strIP = GlobalUtils.GetIdentifyByConectionId(connectionId);
+                            foreach (var sta in rc.status)
+                            {
+                                if (sta != null)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(sta.deviceType))
+                                    {
+                                        RemoveControlDeviceType type = RemoveControlDeviceType.NONE;
+                                        if (Enum.TryParse(sta.deviceType, out type))
+                                        {
+                                            GlobalUtils.RemoteDeviceStatusBLLInstance.DeleteByClientIdentifyAndType(strIP, type);
+                                            GlobalUtils.RemoteDeviceStatusBLLInstance.AddStatus(new RemoteDeviceStatus { ACMode = sta.acMode, ACTempature = sta.acTemperature, ClientIdentify = strIP, DeviceOpenedStatus = sta.isOpen == "1", DeviceType = type });
+                                        }
+                                    }
+
+
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
+                lock (GlobalUtils.RemoteControlCommandQueues)
+                {
+                    string matchIPAddress = string.Empty; ;
+                    String removeGuid = string.Empty;
+                    string strOperResult = string.Empty;
+                    foreach (var que in GlobalUtils.RemoteControlCommandQueues)
+                    {
+
+                        if (cb != null && cb.errorCode != null)
+                        {
+                            if (que.GuidIdStr == cb.guidId)
+                            {
+
+                                strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
+
+
+
+
+                                matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
+                                strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
+
+
+
+                                string strCmdType = RemoteControlLogic.GetCommandText(que.CommandType, que.ExternalIds);
+
+
+                                GlobalUtils.AddLogs(Clients, "物联网控制", strCmdType + " " + strOperResult);
+
+
+                                if (cb.errorCode == "0" && que.CommandType == QueueCommandType.REMOTECONTROLMANULCLOSE && que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN)
+                                {
+                                    //更新状态列表
+                                    if (!string.IsNullOrWhiteSpace(que.ExternalIds))
+                                    {
+                                        string[] ids = que.ExternalIds.TrimEnd(',').Split(',');
+
+                                        if (ids != null && ids.Length > 0)
+                                        {
+                                            for (int i = 0; i < ids.Length; i++)
+                                            {
+                                                string id = ids[i];
+                                                if (!string.IsNullOrWhiteSpace(id))
+                                                {
+
+                                                    RemoveControlDeviceType type = RemoveControlDeviceType.NONE;
+                                                    if (Enum.TryParse(id, out type))
+                                                    {
+                                                        GlobalUtils.RemoteDeviceStatusBLLInstance.DeleteByClientIdentifyAndType(matchIPAddress, type);
+                                                        GlobalUtils.RemoteDeviceStatusBLLInstance.AddStatus(new RemoteDeviceStatus { ACMode = "", ACTempature = "", ClientIdentify = matchIPAddress, DeviceOpenedStatus = que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN, DeviceType = type });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+
+
+                    if (!string.IsNullOrEmpty(matchIPAddress) && !string.IsNullOrEmpty(removeGuid))
+                    {
+                        RemoteControlQueueItem removedItem = null;
+                        foreach (var que in GlobalUtils.RemoteControlCommandQueues)
+                        {
+                            if (que.GuidIdStr == removeGuid && que.IpAddressStr == matchIPAddress)
+                            {
+                                removedItem = que;
+                                break;
+                            }
+                        }
+                        if (removedItem != null)
+                        {
+                            GlobalUtils.RemoteControlCommandQueues.Remove(removedItem);
+                        }
+                    }
+                }
+
+            }
+
+
+
+
+        }
+
         public void SendMessageToMgrServer(string data, string connectionId)
         {
 
             System.Diagnostics.Debug.WriteLine(data + "  " + connectionId);
             System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
-
-
-            //            {"guidId":"2847f884-a55b-4375-aca4-a7f2f2df08b9","commandType":"114","arg":{ streamName": "12345678" }
-            //命令为：114
-            //arg表示参数数据
-            //    streamName流名称
 
 
 
@@ -175,7 +318,7 @@ namespace MediaMgrSystem
         //        Thread.Sleep((int)objs[5]);
 
 
-                
+
         //        SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
 
         //    }
@@ -251,12 +394,12 @@ namespace MediaMgrSystem
                 //}
 
                 string aa = "Play recveid and before to call send " + DateTime.Now.ToString("HH:mm:ss fff");
-                      System.Diagnostics.Debug.WriteLine(aa);
-                       GlobalUtils.WriteDebugLogs(aa);
+                System.Diagnostics.Debug.WriteLine(aa);
+                GlobalUtils.WriteDebugLogs(aa);
 
-             //   SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
-                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat=="1");
-               // new Thread(ThreadToRunStartTask).Start(objs);
+                //   SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
+                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1");
+                // new Thread(ThreadToRunStartTask).Start(objs);
 
             }
             //Stop
@@ -284,11 +427,11 @@ namespace MediaMgrSystem
                 System.Diagnostics.Debug.WriteLine(aa);
                 GlobalUtils.WriteDebugLogs(aa);
 
-                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients,guid, scheduleTime);
+                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime);
 
-              //  SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
+                //  SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
 
-               // new Thread(ThreadToRunStopTask).Start(objs);
+                // new Thread(ThreadToRunStopTask).Start(objs);
 
 
             }

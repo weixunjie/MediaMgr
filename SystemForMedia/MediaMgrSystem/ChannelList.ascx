@@ -300,9 +300,7 @@
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
                 chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0");
-
-                //  $("#divChannelInfo").html("通道:" + currentOperChannelName + "发出给终端");
-
+          
                 $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
             }
 

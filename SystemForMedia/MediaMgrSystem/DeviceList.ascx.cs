@@ -22,24 +22,7 @@ namespace MediaMgrSystem
         {
             List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
 
-            if (gis != null && gis.Count > 0)
-            {
-                for (int i = 0; i < gis.Count; i++)
-                {
-                    ChannelInfo ci = GlobalUtils.ChannelBLLInstance.GetChannelById(gis[i].ChannelId);
-
-                    if (ci != null)
-                    {
-                        gis[i].ChannelName = ci.ChannelName;
-                    }
-                    else
-                    {
-                        gis[i].ChannelName = "无关联";
-                    }
-
-                }
-            }
-
+          
 
             GroupInfo groupDefault = new GroupInfo();
 
@@ -56,7 +39,7 @@ namespace MediaMgrSystem
 
         public bool CheckDeviceIsOnline(string ipAddress)
         {
-            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }).Count > 0;
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress },SingalRClientConnectionType.REMOTECONTORLDEVICE).Count > 0;
 
         }
 

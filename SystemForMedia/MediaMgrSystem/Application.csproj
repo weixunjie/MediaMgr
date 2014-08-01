@@ -416,6 +416,7 @@
     <Compile Include="RemoteControlSys\RemoveControlLogList.ascx.designer.cs">
       <DependentUpon>RemoveControlLogList.ascx</DependentUpon>
     </Compile>
+    <Compile Include="RemoteControlLogic.cs" />
     <Compile Include="SendLogic.cs" />
     <Compile Include="BusinessHub.cs" />
     <Compile Include="MediaMgrHubPipelineModule.cs" />

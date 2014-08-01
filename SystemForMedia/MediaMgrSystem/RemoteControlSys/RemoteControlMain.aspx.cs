@@ -20,7 +20,6 @@ namespace MediaMgrSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
  
         }
 
@@ -31,6 +30,7 @@ namespace MediaMgrSystem
             StringBuilder build = new StringBuilder();
             HtmlTextWriter htmlWriter = new HtmlTextWriter(new StringWriter(build));
             UserControl uc = new UserControl();
+            
             Control ctrl = uc.LoadControl(@"RemoteControlSys\"+controlName + ".ascx");
             htmlWriter.Flush();
             string result;

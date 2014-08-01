@@ -21,7 +21,43 @@ namespace MediaMgrSystem
         MANAULLYSTOP,
         MANAULLYREPEAT,
         SCHEDULEPLAY,
-        SCHEDULESTOP
+        SCHEDULESTOP,
+
+        REMOTECONTROLMANULOPEN,
+        REMOTECONTROLMANULCLOSE,
+        REMOTECONTROLSCHEDULEOPEN,
+        REMOTECONTROLSCHEDULECLOSE,
+    }
+
+    public class RemoteControlQueueItem
+    {
+        public string IpAddressStr
+        { 
+            get;
+            set; 
+        }
+
+        public QueueCommandType CommandType
+        { get; set; }
+
+        public string GuidIdStr
+        {
+            get;
+            set;
+        }
+
+        public string ExternalIds
+        {
+            get;
+            set;
+        }
+
+        public long PushTicks
+        {
+            get;
+            set;
+        }
+     
     }
     public class QueueItem
     {
@@ -86,6 +122,9 @@ namespace MediaMgrSystem
     public static class GlobalUtils
     {
 
+        public static object PublicObjectForLockRemoteControl = new object();
+
+        public static object PublicObjectForLockRemoteControlRecievedMsg = new object();
         public static object PublicObjectForLockPlay = new object();
 
         public static object PublicObjectForLockStop = new object();
@@ -96,18 +135,20 @@ namespace MediaMgrSystem
 
         public static string StreamNameBase = "1234567890";
         public static object ObjectLockQueueItem = new object();
-
+        public static object ObjectLockRemoteControlQueueItem = new object();
         private static object objForLock = new object();
 
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
-        //public static List<SingalConnectedClient> AllConnectedClients = new List<SingalConnectedClient>();
 
         public static SingalConnectedClientsBLL SingalConnectedClientsBLLIntance = new SingalConnectedClientsBLL(GlobalUtils.DbUtilsInstance);
 
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
 
+        public static RemoteDeviceStatusBLL RemoteDeviceStatusBLLInstance = new RemoteDeviceStatusBLL(GlobalUtils.DbUtilsInstance);
 
+
+        public static List<RemoteDeviceStatus> AllRemoteDeviceStatus = new List<RemoteDeviceStatus>();
         public static ScheduleBLL ScheduleBLLInstance = new ScheduleBLL(DbUtilsInstance);
 
         public static ChannelBLL ChannelBLLInstance = new ChannelBLL(DbUtilsInstance);
@@ -130,7 +171,7 @@ namespace MediaMgrSystem
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
-        
+
 
         public static bool IsChannelManuallyPlaying = false;
 
@@ -147,6 +188,8 @@ namespace MediaMgrSystem
 
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
+
+        public static List<RemoteControlQueueItem> RemoteControlCommandQueues = new List<RemoteControlQueueItem>();
 
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
 
@@ -165,24 +208,7 @@ namespace MediaMgrSystem
             {
 
                 SingalConnectedClientsBLLIntance.DeleteSingalConnectedClientById(connectionId);
-                //if (AllConnectedClients != null)
-                //{
-                //    int removeIndex = -1;
-                //    for (int i = 0; i < AllConnectedClients.Count; i++)
-                //    {
-                //        if (AllConnectedClients[i].ConnectionId == connectionId)
-                //        {
-                //            removeIndex = i;
-                //            break;
-                //        }
-                //    }
 
-                //    if (removeIndex >= 0)
-                //    {
-                //        AllConnectedClients.RemoveAt(removeIndex);
-
-                //    }
-                //}
             }
 
             return true;
@@ -207,6 +233,7 @@ namespace MediaMgrSystem
                 return GetVideoServerConnectionIds();
             }
         }
+
 
         public static string GetVideoServerConnectionIds()
         {
@@ -273,7 +300,7 @@ namespace MediaMgrSystem
             return result;
 
         }
-       
+
 
         public static void AddConnection(SingalConnectedClient client)
         {
@@ -328,7 +355,7 @@ namespace MediaMgrSystem
             return string.Empty;
         }
 
-        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies)
+        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies, SingalRClientConnectionType scType)
         {
             List<string> results = new List<string>();
 
@@ -343,7 +370,10 @@ namespace MediaMgrSystem
                     {
                         if (sc != null)
                         {
-                            results.Add(sc.ConnectionId);
+                            if (sc.ConnectionType == scType)
+                            {
+                                results.Add(sc.ConnectionId);
+                            }
                         }
                     }
 
@@ -400,7 +430,31 @@ namespace MediaMgrSystem
 
                 if (sc != null)
                 {
-                    return sc.ConnectionType == SingalRClientConnectionType.ANDROID;                   
+                    return sc.ConnectionType == SingalRClientConnectionType.ANDROID;
+                }
+
+            }
+
+
+            return false;
+
+        }
+
+        public static bool CheckIfConnectionIdIsRemoteControlDevice(string id)
+        {
+
+
+            List<string> results = new List<string>();
+
+            lock (objForLock)
+            {
+
+                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(SingalRClientConnectionType.PC.ToString());
+
+
+                if (sc != null)
+                {
+                    return sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE;
                 }
 
             }
@@ -440,67 +494,37 @@ namespace MediaMgrSystem
 
         public static void WriteDebugLogs(string str)
         {
-           // AddLogs(null, "调试日志", str);
+            // AddLogs(null, "调试日志", str);
         }
 
 
 
         public static void AddLogs(IHubConnectionContext hub, string logName, string logDesp)
         {
-            object[] objs = new object[3];
 
-            objs[0] = hub;
-
-            objs[1] = logName;
-
-            objs[2] = logDesp;
-
-
-            new Thread(ThreadToAddLogsTask).Start(objs);
-
-        }
-
-
-        private static void ThreadToAddLogsTask(object para)
-        {
-
-
-
-            lock (LogForLock)
+            try
             {
-                object[] objs = para as object[];
+                LogBLLInstance.AddLog(logName, logDesp);
 
+                List<String> alPCIds = GetAllPCDeviceConnectionIds();
 
-                IHubConnectionContext hub = objs[0] as IHubConnectionContext;
-
-                string logName = objs[1] as string;
-
-                string logDesp = objs[2] as string;
-
-                try
+                if (hub != null)
                 {
-                    LogBLLInstance.AddLog(logName, logDesp);
-
-                    List<String> alPCIds = GetAllPCDeviceConnectionIds();
-
-                    if (hub != null)
-                    {
-                        hub.Clients(alPCIds).sendRefreshLogMessge();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
-                    {
-
-                        WriteErroLogs("程序异常" + ex.Message);
-                    }
-
+                    hub.Clients(alPCIds).sendRefreshLogMessge();
                 }
             }
+            catch (Exception ex)
+            {
+                if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
+                {
 
+                    WriteErroLogs("程序异常" + ex.Message);
+                }
+
+            }
 
         }
+
 
         public static List<string> GetAllAndriodsDeviceConnectionIds()
         {
@@ -524,7 +548,7 @@ namespace MediaMgrSystem
 
                 }
 
-           
+
             }
 
 
@@ -551,6 +575,9 @@ namespace MediaMgrSystem
 
                 case QueueCommandType.SCHEDULESTOP:
                     return "结束播放计划运行时";
+
+                case QueueCommandType.REMOTECONTROLMANULCLOSE:
+                    return "手工打开设备操作";
 
 
             }

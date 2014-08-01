@@ -16,7 +16,9 @@
 
     
             List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();
-
+            GetAllStatus();
+            
+            
 
     
         %>
@@ -64,8 +66,7 @@
                 {
                     for (int k = 0; k < dGroups[l].Devices.Count; k++)
                     { %>
-
-                                <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>" style="float: left; display: block; width: 260px; height: 150px; margin-right: 10px; margin-top:5px">
+                                <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>" style="float: left; display: block; width: 260px; height: 150px; margin-right: 10px; margin-top: 5px">
 
                                     <table class="table table-bordered table-striped; " style="overflow: auto; height: auto;">
 
@@ -75,7 +76,7 @@
 
                                                 <th colspan="3" style="border-bottom-left-radius: 0px">
 
-                                                    <div style="text-align: left;">教室1</div>
+                                                    <div style="text-align: left;"><%=dGroups[l].Devices[k].DeviceName %></div>
 
 
                                                 </th>
@@ -88,50 +89,73 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <div class="col-md-4" style="color:blue" >
-                                                       空调: <b>  已打开</b>
-                                                      
+
+                                                    <% 
+                        string colorText;
+                        string statusText;
+                        statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.AC, out colorText);
+                       
+                                                    %>
+
+                                                    <div class="col-md-4" style="color: <%=colorText %>">
+                                                        空调:  <b><%=statusText %></b>
+
                                                     </div>
+
                                                 </td>
-
-                                                 <td>
-                                                    <div class="col-md-4">
-                                                           电脑: <b>  已关闭</b>
-                                                        
-                                                    </div>
-                                                </td>
-
-                                          
-
-                                            </tr>
-
-                                            <tr>
                                                 <td>
-                                                    <div class="col-md-4">
-                                                        空调: 打开中, 
-                                                     
+
+                                                    <% 
+                     
+                        statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.COMPUTER, out colorText);
+                       
+                                                    %>
+
+                                                    <div class="col-md-4" style="color: <%=colorText %>">
+                                                        电脑: <b><%=statusText %></b>
+
                                                     </div>
                                                 </td>
 
-                                                 <td>
-                                                    <div class="col-md-4">
-                                                        空调: 打开中, 
-                                                    
+                                                <td>
+
+                                                    <%statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.LIGHT, out colorText);
+                       
+                                                    %>
+
+                                                    <div class="col-md-4" style="color: <%=colorText %>">
+                                                        灯: <b><%=statusText %></b>
+
                                                     </div>
                                                 </td>
 
                                             </tr>
 
-                                        
+
 
                                             <tr>
-                                                <td colspan="2">
-                                                    <div class="col-md-4">
-                                                        空调: 打开中, 
-                                                   
+
+                                                <td>
+                                                    <%statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.TV, out colorText);
+                       
+                                                    %>
+
+                                                    <div class="col-md-4" style="color: <%=colorText %>">
+                                                        电视: <b><%=statusText %></b>
+
                                                     </div>
                                                 </td>
 
+                                                <td colspan="2">
+                                                    <%statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.PROJECTOR, out colorText);
+                       
+                                                    %>
+
+                                                    <div class="col-md-4" style="  color: <%=colorText %>">
+                                                        投影: <b><%=statusText %></b>
+
+                                                    </div>
+                                                </td>
                                             </tr>
 
 
@@ -145,7 +169,7 @@
 
 
                                 <%  }
-                                   }
+                }
                                 %>
                             </ul>
 

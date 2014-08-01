@@ -24,19 +24,20 @@
 
 
 
-    var dialogScheduleDevice = "<%= cbScheduleDevice.ClientID %>";
-
     var dialogddACMode = "<%= ddACMode.ClientID %>";
 
     var dialogddOpenClose = "<%= this.ddOpenClose.ClientID %>";
 
     var dialogcbScheduleWeeks = "<%= this.cbScheduleWeeks.ClientID %>";
 
+
+
+    var dialogForSingleDeviceACMode = "<%= this.ddForSingleDeviceACMode.ClientID %>";
+
     <%  
 
     
- 
-    
+     
     List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();
 
     string deviceIds = string.Empty;
@@ -64,8 +65,8 @@
         %>
 
 
-    var currentOperGroup;
 
+    var currentOperDevice;
     $(document).unbind();
 
 
@@ -93,15 +94,18 @@
 
 
         $("#btnBatchGroupOperation").mouseout(function (e) {
-                       
+
             is_popup_1st_menu = false;
 
         });
 
 
+        var isBatchSchedule = false;
+
         $("#groupListBacthMenuSchedule").click(function (e) {
 
 
+            isBatchSchedule = true;
             $("#divPlanTime").css("display", "block");
 
             $("#divPlanWeeks").css("display", "block");
@@ -118,6 +122,7 @@
         $("#groupListBacthMenuManual").click(function (e) {
 
 
+            isBatchSchedule = false;
             $("#divPlanTime").css("display", "none");
 
             $("#divPlanWeeks").css("display", "none");
@@ -129,7 +134,6 @@
 
             is_popup_1st_menu = false;
             $("#groupListBatchMenu").hide;
-
             $('#dialogForBatchGroup').modal('show');
         });
 
@@ -144,11 +148,14 @@
         }
 
 
+        var currentExternalPointId;
+
         $("#deviceListSingleDeviceMenuBtnType2,#deviceListSingleDeviceMenuBtnType3,#deviceListSingleDeviceMenuBtnType4,#deviceListSingleDeviceMenuBtnType5").click(function (e) {
 
 
             is_popup_2nd_menu = true;
 
+            currentExternalPointId = e.currentTarget.id.replace("deviceListSingleDeviceMenuBtnType", "");
 
             $("#liDeviceListSingleDeviceSubMenuBtnChangeParam").css("display", "none");
 
@@ -163,6 +170,7 @@
         $("#deviceListSingleDeviceMenuBtnType1").click(function (e) {
 
 
+            currentExternalPointId = "1";
             is_popup_2nd_menu = true;
 
 
@@ -190,18 +198,26 @@
             hideAllMenus();
             is_popup_2nd_menu = false;
 
+            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId,  currentOperDevice,true,"", "");
+
+            
+
         });
 
 
         $("#deviceListSingleDeviceSubMenuBtnClose").click(function (e) {
 
+
             hideAllMenus();
             is_popup_2nd_menu = false;
+            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId, currentOperDevice,false,"", "");
+
+
 
         });
 
         $("#deviceListSingleDeviceSubMenuBtnChangeParam").click(function (e) {
-            $('#dialogOperationAC').modal('show');
+            $('#dialogOperationACForSingleDevice').modal('show');
 
             hideAllMenus();
             is_popup_2nd_menu = false;
@@ -213,11 +229,14 @@
             $("<%= deviceIds %>").click(function (e) {
 
 
-               
+
                 hideAllMenus();
 
-                currentOperGroup = e.currentTarget.id.replace("deviceMenu", "");
+               // currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
 
+                currentOperDevice = $(this).data("itemid");
+
+              
                 is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
@@ -250,18 +269,91 @@
 
         $.showSingleDeviceClickMenu();
 
+
+        $("#btnConfirmedSingleACOperation").click(function (e) {
+
+            var tbForSingleDeviceACTempureValue = $("#tbForSingleDeviceACTempure").val();
+
+
+
+            if (!(/^(\+|-)?\d+$/.test(tbForSingleDeviceACTempureValue)) || tbForSingleDeviceACTempureValue < 0 || tbForSingleDeviceACTempureValue > 45) {
+
+                alert("请输入正确的空调温度");
+                return;
+
+            }
+
+            var strSingleACMode = $('#' + dialogForSingleDeviceACMode + ' option:selected').val();
+
+
+
+
+            $('#dialogOperationACForSingleDevice').modal('hide');
+            debugger;
+            
+            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId,  currentOperDevice,true, strSingleACMode, tbForSingleDeviceACTempureValue);
+
+
+        });
+        
+
         $("#btnConfirmedBatchGroupOperation").click(function (e) {
 
 
+            var strGroupIds = "";
+            $("#dialogForBatchGrouplbAvaiableGroups option:selected").each(function () {
 
 
-            var strDevices = "";
+                strGroupIds += $(this).val() + ",";
+
+
+            })
+
+
+            if (strGroupIds == "") {
+                alert('请选择分组');
+           
+                return
+                //alert($("#" + dialogddACMode).val());
+            }
+
+
+            var strExternalPointIds = "";
             $("input[name^='cbScheduleDevice']").each(function () {
 
                 if ($(this)[0].checked) {
-                    strDevices += $(this).val() + ",";
+                    strExternalPointIds += $(this).val() + ",";
                 }
             });
+
+            if (strExternalPointIds == "") {
+                alert('请选择设备');
+                return
+                //alert($("#" + dialogddACMode).val());
+            }
+
+
+            var tbACTempureValue = $("#tbACTempure").val();
+
+
+
+            if (!(/^(\+|-)?\d+$/.test(tbACTempureValue)) || tbACTempureValue < 0 || tbACTempureValue > 45) {
+
+                alert("请输入正确的空调温度");
+                return;
+
+            }
+
+
+            var tbScheduleTimeValue = $("#tbScheduleTime").val();
+            if (tbScheduleTimeValue == "") {
+                if (isBatchSchedule) {
+                    alert("计划时间不能为空");
+                    return
+                }
+            }
+
+
 
 
             var strWeeks = "";
@@ -273,26 +365,20 @@
                 }
             });
 
-
-
-            alert($("#" + dialogddACMode).val());
-
-            var tbScheduleTimeValue = $("#tbScheduleTime").val();
-            if (tbScheduleTimeValue == "") {
-                alert("pw pw ");
+            if (strWeeks == "") {
+                if (isBatchSchedule) {
+                    alert("请选择计划周期。");
+                    return
+                }
             }
+            var strACMode = $('#' + dialogddACMode + ' option:selected').val();
 
-            var tbACTempureValue = $("#tbACTempure").val();
+            var strOpenOrClose = $('#' + dialogddOpenClose + ' option:selected').val();
 
 
 
-
-            if (!(/^(\+|-)?\d+$/.test(tbACTempureValue)) || tbACTempureValue < 0) {
-
-                alert("数量必须是正整数！");
-                return;
-
-            }
+            hubForRemoteControl.server.sendRemoteControlByGroups(strExternalPointIds, strGroupIds, strOpenOrClose == "1", strACMode, tbACTempureValue, tbScheduleTimeValue, strWeeks, isBatchSchedule);
+            $('#dialogForBatchGroup').modal('hide');
 
         });
 
@@ -375,9 +461,9 @@
                      
                                             %>
 
+                                            
 
-
-                                            <img id="deviceMenu<% =deviceIndex.ToString() %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
+                                            <img id="deviceMenu<% =deviceIndex.ToString() %>" data-itemid="<% =dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p style="text-align: center">
                                             <% =dGroups[l].Devices[k].DeviceName %>
@@ -464,9 +550,9 @@
     </table>
 
 
-    <div id="dialogOperationAC" style="width: auto" class="modal hide">
+    <div id="dialogOperationACForSingleDevice" style="width: auto" class="modal hide">
         <div class="modal-header">
-            <a class="close" onclick=" $('#dialogOperationAC').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">空调操作</h3>
+            <a class="close" onclick=" $('#dialogOperationACForSingleDevice').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">空调操作</h3>
         </div>
         <div class="modal-body" style="max-height: 500px">
 
@@ -494,7 +580,7 @@
 
 
                     <div style="height: 40px">
-                        <asp:DropDownList runat="server" Width="235px" ID="DDForSingleDeviceACMode">
+                        <asp:DropDownList runat="server" Width="235px" ID="ddForSingleDeviceACMode">
                             <asp:ListItem Value="1">制冷</asp:ListItem>
                             <asp:ListItem Value="2">制热</asp:ListItem>
                         </asp:DropDownList>
@@ -508,7 +594,7 @@
         </div>
 
         <div class="modal-footer">
-            <a id="btnConfirmedACOperation" class="btn primary">确认</a>
+            <a id="btnConfirmedSingleACOperation" class="btn primary">确认</a>
         </div>
     </div>
 
@@ -591,8 +677,8 @@
                     <div style="height: 40px">
 
                         <asp:DropDownList runat="server" Width="235px" Height="30px" ID="ddOpenClose">
-                            <asp:ListItem Value="1">打开</asp:ListItem>
-                            <asp:ListItem Value="3">关闭</asp:ListItem>
+                            <asp:ListItem Value="0">打开</asp:ListItem>
+                            <asp:ListItem Value="1">关闭</asp:ListItem>
                         </asp:DropDownList>
                     </div>
 

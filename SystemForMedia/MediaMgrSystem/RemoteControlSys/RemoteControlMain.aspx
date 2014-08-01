@@ -13,7 +13,7 @@
     <script type="text/javascript">
 
     
-        var chat;
+        var hubForRemoteControl;
 
         var is_popup_2nd_menu = false;
 
@@ -22,12 +22,12 @@
 
         $(document).ready(function () {
 
-            chat = $.connection.MediaMgrHub;
+            hubForRemoteControl = $.connection.MediaMgrHub;
             $.connection.hub.start();
 
-            chat.connection.stateChanged(function (change) {
+            hubForRemoteControl.connection.stateChanged(function (change) {
                 if (change.newState === $.signalR.connectionState.disconnected) {
-                    chat = $.connection.MediaMgrHub;
+                    hubForRemoteControl = $.connection.MediaMgrHub;
                     $.connection.hub.start();
 
                 }
@@ -36,11 +36,11 @@
                 }
             });
 
-            chat.client.sendRefreshLogMessge = function (result) {
+            hubForRemoteControl.client.sendRefreshLogMessge = function (result) {
                 loadLogList();
             }
 
-            chat.client.sendRefreshDeviceMessge = function (result) {
+            hubForRemoteControl.client.sendRefreshRemoteControlDeviceMessge = function (result) {
                 loadDeviceList();
             }
 

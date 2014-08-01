@@ -80,6 +80,7 @@
         $(document).ready(function () {
 
      
+            debugger;
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
 
@@ -94,7 +95,7 @@
                 }
             });
 
-            chat.client.sendRefreshDeviceMessge = function (result) {
+            chat.client.sendRefreshAudioDeviceMessge = function (result) {
                 loadDeviceList();
             }
 

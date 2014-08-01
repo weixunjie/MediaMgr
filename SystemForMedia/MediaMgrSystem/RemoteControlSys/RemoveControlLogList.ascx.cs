@@ -18,9 +18,9 @@ namespace MediaMgrSystem
             
         }
 
-        public List<LogInfo> GetTop3Logs()
+        public List<LogInfo> GetTop3RemoveControlLogsLogs()
         {
-            List<LogInfo> datas = GlobalUtils.LogBLLInstance.GetTop3Logs();
+            List<LogInfo> datas = GlobalUtils.LogBLLInstance.GetTop3RemoveControlLogsLogs();
             return datas;         
                 
         }

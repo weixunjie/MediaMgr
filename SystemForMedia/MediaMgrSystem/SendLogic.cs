@@ -798,7 +798,7 @@ namespace MediaMgrSystem
             if (needSentClientIpAddresses.Count > 0)
             {
                 ipsNeedToSend = needSentClientIpAddresses;
-                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses);
+                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses,SingalRClientConnectionType.ANDROID);
             }
             else
             {

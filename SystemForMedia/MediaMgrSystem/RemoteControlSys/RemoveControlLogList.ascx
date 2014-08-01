@@ -8,7 +8,7 @@
     $(document).ready(function () {
 
 
-        <%   List<MediaMgrSystem.DataModels.LogInfo> top3Logs = GetTop3Logs();
+        <%   List<MediaMgrSystem.DataModels.LogInfo> top3Logs = GetTop3RemoveControlLogsLogs();
 
 
           

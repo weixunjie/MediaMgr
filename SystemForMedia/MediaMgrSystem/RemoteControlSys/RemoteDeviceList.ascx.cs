@@ -20,8 +20,7 @@ namespace MediaMgrSystem
 
         public List<GroupInfo> GetAllGroups()
         {
-            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.REMOVECONTROL);
-                   
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.REMOVECONTROL);                   
 
             return gis;
 
@@ -30,7 +29,7 @@ namespace MediaMgrSystem
 
         public bool CheckDeviceIsOnline(string ipAddress)
         {
-            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }).Count > 0;
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress },SingalRClientConnectionType.REMOTECONTORLDEVICE).Count > 0;
 
         }
 

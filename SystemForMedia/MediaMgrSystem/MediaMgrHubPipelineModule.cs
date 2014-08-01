@@ -64,6 +64,12 @@ namespace MediaMgrSystem
                         singalRClientConnectionType = SingalRClientConnectionType.WINDOWSSERVICE;
 
                     }
+                    else if (type == "REMOTECONTORLDEVICE")
+                    {
+                        singalRClientConnectionType = SingalRClientConnectionType.REMOTECONTORLDEVICE;
+
+                    }
+
                 }
 
                 if (hub.Context.QueryString["clientIdentify"] != null)
@@ -118,10 +124,10 @@ namespace MediaMgrSystem
 
                 }
 
-                if (sc.ConnectionType == SingalRClientConnectionType.ANDROID)
+                if (sc.ConnectionType == SingalRClientConnectionType.ANDROID ||
+                    sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
                 {
-
-
+                    
                     List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(sc.ConnectionIdentify);
 
                     if (dis != null && dis.Count > 0)
@@ -135,25 +141,29 @@ namespace MediaMgrSystem
                         di.DeviceName = sc.ConnectionIdentify;
                         di.GroupId = "-1";
                         di.UsedToAudioBroandcast = true;
-
                         di.UsedToVideoOnline = false;
+
+                        di.UsedToRemoteControl = sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE;
 
                         GlobalUtils.DeviceBLLInstance.AddDevice(di);
 
                     }
 
 
-                    string extingCid = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(strIdentify);
+                    string extingCid = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(strIdentify, sc.ConnectionType.ToString());
 
                     if (!string.IsNullOrEmpty(extingCid))
                     {
                         GlobalUtils.RemoveConnectionByConnectionId(extingCid);
                     }
 
-
-                    SendRefreshNotice(hub);
+                    if (sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
+                    {
+                        SendRefreshAudioDeviceNotice(hub);
+                    }
 
                 }
+
 
                 GlobalUtils.AddConnection(sc);
 
@@ -170,13 +180,22 @@ namespace MediaMgrSystem
 
         }
 
-        private void SendRefreshNotice(IHub hub)
+        private void SendRefreshAudioDeviceNotice(IHub hub)
         {
 
             List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
 
-            hub.Clients.Clients(ids).sendRefreshDeviceMessge();
+            hub.Clients.Clients(ids).sendRefreshAudioDeviceMessge();
         }
+
+        private void SendRefreshRemoteControlDeviceNotice(IHub hub)
+        {
+
+            List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+            hub.Clients.Clients(ids).sendRefreshRemoteControlDeviceMessge();
+        }
+
 
         protected override void OnAfterDisconnect(IHub hub)
         {
@@ -191,7 +210,6 @@ namespace MediaMgrSystem
                 if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
                 {
 
-
                     GlobalUtils.AddLogs(hub.Clients, "系统异常", "视频服务器断开连接");
 
                 }
@@ -199,16 +217,19 @@ namespace MediaMgrSystem
                 if (hub.Context.ConnectionId == GlobalUtils.WindowsServiceConnectionId)
                 {
 
-
                     GlobalUtils.AddLogs(hub.Clients, "系统异常", "后台计划服务断开连接");
-
                 }
 
                 if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId))
                 {
-                    SendRefreshNotice(hub);
+                    SendRefreshAudioDeviceNotice(hub);
                 }
-
+                 if (GlobalUtils.CheckIfConnectionIdIsRemoteControlDevice(hub.Context.ConnectionId))
+                {
+                    SendRefreshRemoteControlDeviceNotice(hub);
+                }
+                
+                
                 GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);
             }
             catch (Exception ex)
