@@ -288,7 +288,7 @@
             
 
             $('#dialogOperationACForSingleDevice').modal('hide');
-       
+
             
             hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId,  currentOperDevice,true, strSingleACMode, tbForSingleDeviceACTempureValue);
 

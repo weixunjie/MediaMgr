@@ -19,7 +19,7 @@ namespace MediaMgrSystem
     {
 
 
-        public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isRepeat)
+        public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isRepeat, string strScheduleTaskPriority = "")
         {
 
             try
@@ -58,26 +58,41 @@ namespace MediaMgrSystem
 
                         foreach (var sTask in GlobalUtils.RunningSchudules)
                         {
-                            //优先手工播放
+
                             if (sTask.ChannelId == channelId)
-                            {
-                                // SendStopRoRepeatCommand("1", hub, sTask.GuidId, channelId,);
-
-                                SendStopRoRepeatCommand(channelId, channelName, true, hub, sTask.GuidId, sTask.RunningTime);
-                                ComuResponseBase cr = new ComuResponseBase();
-
-                                cr.guidId = scheduleTaskGuidId;
-
-                                cr.errorCode = "202";
-
-                                cr.message = "计划停止，优先手工播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
+                            { //优先手工播放/如何不是打铃的话
+                                if (sTask.Priority != "1")
+                                {
+                                    // SendStopRoRepeatCommand("1", hub, sTask.GuidId, channelId,);
 
 
-                                GlobalUtils.AddLogs(hub, "计划任务", GlobalUtils.ChannelManuallyPlayingChannelName + "计划已停止，优先手工播放,运行时间：" + sTask.RunningTime);
+                                    SendStopRoRepeatCommand(channelId, channelName, true, hub, sTask.GuidId, sTask.RunningTime);
+                                    ComuResponseBase cr = new ComuResponseBase();
 
-                                hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                                    cr.guidId = scheduleTaskGuidId;
 
-                                break;
+                                    cr.errorCode = "202";
+
+                                    cr.message = "计划停止，优先手工播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
+
+
+                                    GlobalUtils.AddLogs(hub, "计划任务", GlobalUtils.ChannelManuallyPlayingChannelName + "计划已停止，优先手工播放,运行时间：" + sTask.RunningTime);
+
+                                    hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                                    //等待2秒再发给终端
+                                    Thread.Sleep(2000);
+                                    break;
+                                }
+                                //如何是打铃的话,不能进行手工播放
+                                else
+                                {
+                                    List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                                    GlobalUtils.AddLogs(hub, "手动操作", channelName + "通道正在进行计划，不能手工播放");
+                                    hub.Clients(alPCIds).sendManualPlayStatus("通道正在进行计划，不能手工播放", "200");
+                                    return;
+                                }
+
 
 
                             }
@@ -88,20 +103,33 @@ namespace MediaMgrSystem
 
                     if (isSchedule && GlobalUtils.IsChannelManuallyPlaying && channelId == GlobalUtils.ChannelManuallyPlayingChannelId)
                     {
-                        //优先手工播放
-                        ComuResponseBase cr = new ComuResponseBase();
 
-                        cr.guidId = scheduleTaskGuidId;
+                        if (strScheduleTaskPriority != "1")
+                        {
+                            //优先手工播放
+                            ComuResponseBase cr = new ComuResponseBase();
 
-                        cr.errorCode = "202";
+                            cr.guidId = scheduleTaskGuidId;
 
-                        cr.message = "计划失败，优先手动播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
+                            cr.errorCode = "202";
 
-                        GlobalUtils.AddLogs(hub, "计划任务", channelName + "播放计划失败，优先手工播放，运行时间：" + scheduleTime);
+                            cr.message = "计划失败，优先手动播放(通道名称+" + GlobalUtils.ChannelManuallyPlayingChannelName + ")";
 
-                        hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                            GlobalUtils.AddLogs(hub, "计划任务", channelName + "播放计划失败，优先手工播放，运行时间：" + scheduleTime);
 
-                        return;
+                            hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+
+                            return;
+                        }
+                        else
+                        {
+                            //优先级高的计划，结束手工播放
+                            SendStopRoRepeatCommand(channelId, channelName, true, hub, "", "");
+                            GlobalUtils.AddLogs(hub, "手工播放", channelName + "手工播放停止，优先计划");
+                            hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放停止，优先计划", "1024");
+                            //等待2秒再发给终端
+                            Thread.Sleep(2000);
+                        }
                     }
 
 
@@ -322,7 +350,7 @@ namespace MediaMgrSystem
                         }
                         else
                         {
-                            GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = scheduleTime });
+                            GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { Priority = strScheduleTaskPriority, ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = scheduleTime });
                             System.Diagnostics.Debug.WriteLine("Add Schedule Task " + channelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
 
                             ComuResponseBase cr = new ComuResponseBase();
@@ -344,6 +372,10 @@ namespace MediaMgrSystem
 
 
                         }
+
+                        List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                        hub.Clients(ids).sendRefreshAudioDeviceMessge();
                     }
 
                 }
@@ -422,7 +454,7 @@ namespace MediaMgrSystem
             }
         }
 
-        public static void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isSendToVideoSvr = true)
+        public static void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isSendToVideoSvr = true, string strScheduleTaskPriority = "")
         {
             try
             {
@@ -678,7 +710,13 @@ namespace MediaMgrSystem
                     }
 
 
+
+
                 }
+
+                List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                hub.Clients(ids).sendRefreshAudioDeviceMessge();
             }
 
         }
@@ -696,7 +734,7 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime,  string severGuidId,string clientGuidId, bool isSendToVideoSvr = true)
+        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true)
         {
             lock (GlobalUtils.ObjectLockQueueItem)
             {
@@ -798,7 +836,7 @@ namespace MediaMgrSystem
             if (needSentClientIpAddresses.Count > 0)
             {
                 ipsNeedToSend = needSentClientIpAddresses;
-                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses,SingalRClientConnectionType.ANDROID);
+                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses, SingalRClientConnectionType.ANDROID);
             }
             else
             {

@@ -117,6 +117,12 @@ namespace MediaMgrSystem
             get;
             set;
         }
+
+        public string Priority
+        {
+            get;
+            set;
+        }
     }
 
     public static class GlobalUtils
@@ -355,6 +361,26 @@ namespace MediaMgrSystem
             return string.Empty;
         }
 
+        public static  bool CheckIfPlaying()
+        {
+           
+            if (IsChannelManuallyPlaying)
+            {
+                return true;
+            }
+            else
+            {
+                if (RunningSchudules != null && RunningSchudules.Count > 0)
+                {
+                    return true;
+                }
+ 
+            }            
+
+            return false;
+
+        }
+
         public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies, SingalRClientConnectionType scType)
         {
             List<string> results = new List<string>();
@@ -425,7 +451,7 @@ namespace MediaMgrSystem
             lock (objForLock)
             {
 
-                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(SingalRClientConnectionType.PC.ToString());
+                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(id);
 
 
                 if (sc != null)
@@ -449,7 +475,7 @@ namespace MediaMgrSystem
             lock (objForLock)
             {
 
-                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(SingalRClientConnectionType.PC.ToString());
+                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(id);
 
 
                 if (sc != null)

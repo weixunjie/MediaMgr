@@ -23,8 +23,7 @@ namespace MediaMgrSystem.MgrModel
 
 
                 List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllProgram();
-
-
+                
 
 
                 divTask.Visible = false;

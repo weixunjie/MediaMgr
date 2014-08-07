@@ -21,13 +21,13 @@
                     <div class="form-group">
 
                         <div class="col-md-10">
-                            <asp:GridView ID="dvGroupList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
+                            <asp:GridView ID="dvProgameList" AllowPaging="True"  runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvProgameList_RowCommand" OnPageIndexChanging="dvProgameList_PageIndexChanging">
                                 <Columns>
                                     <asp:BoundField DataField="ProgramId" Visible="false" HeaderText="节目编号" />
 
                                      <asp:TemplateField HeaderText="编号">
                                         <ItemTemplate>
-                                            <%# this.dvGroupList.PageIndex * this.dvGroupList.PageSize + Container.DataItemIndex + 1%>
+                                            <%# this.dvProgameList.PageIndex * this.dvProgameList.PageSize + Container.DataItemIndex + 1%>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 

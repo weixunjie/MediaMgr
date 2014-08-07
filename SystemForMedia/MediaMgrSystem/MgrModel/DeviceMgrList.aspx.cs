@@ -52,6 +52,13 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
+
+                if (GlobalUtils.CheckIfPlaying())
+                {
+                    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForDeviceList", "alert('设备正在使用，不能删除');", true);
+                    return;
+                }
+
                 GlobalUtils.DeviceBLLInstance.RemoveDevice(e.CommandArgument.ToString());
                 BindListData();
             }

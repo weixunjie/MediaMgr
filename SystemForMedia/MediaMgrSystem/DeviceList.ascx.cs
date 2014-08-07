@@ -37,9 +37,15 @@ namespace MediaMgrSystem
         }
 
 
+        public bool CheckIfPlaying( )
+        {
+            return GlobalUtils.CheckIfPlaying();
+
+        }
+
         public bool CheckDeviceIsOnline(string ipAddress)
         {
-            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress },SingalRClientConnectionType.REMOTECONTORLDEVICE).Count > 0;
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }, SingalRClientConnectionType.ANDROID).Count > 0;
 
         }
 

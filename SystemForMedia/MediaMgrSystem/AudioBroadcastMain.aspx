@@ -79,6 +79,7 @@
 
         $(document).ready(function () {
 
+
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
 
@@ -98,6 +99,7 @@
             }
 
             chat.client.sendRefreshLogMessge = function (result) {
+                //debugger;
                 loadLogList();
             }
 

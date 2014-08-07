@@ -31,12 +31,12 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
         
         /// <summary>
-        /// dvGroupList control.
+        /// dvProgameList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView dvGroupList;
+        protected global::System.Web.UI.WebControls.GridView dvProgameList;
     }
 }

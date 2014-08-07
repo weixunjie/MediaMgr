@@ -39,12 +39,12 @@ namespace MediaMgrSystem.MgrModel
         {
             List<ProgramInfo> programes = GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
-            dvGroupList.DataSource = programes;
-            dvGroupList.DataBind();
+            dvProgameList.DataSource = programes;
+            dvProgameList.DataBind();
 
         }
 
-        protected void dvGroupList_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void dvProgameList_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Edit")
             {
@@ -54,15 +54,21 @@ namespace MediaMgrSystem.MgrModel
             else if (e.CommandName == "Del")
             {
 
-                //if (GlobalUtils.ScheduleBLLInstance.CheckProgrameIsUsing(e.CommandArgument.ToString()))
-                //{
-                //    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForProgameList", "alert('节目被计划任务使用中，不能删除');", true);
-                //    return;
-                //}
+                if (GlobalUtils.ScheduleBLLInstance.CheckProgrameIsUsing(e.CommandArgument.ToString()))
+                {
+                    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForProgameList", "alert('节目被计划任务使用中，不能删除');", true);
+                    return;
+                }
 
                 GlobalUtils.ProgramBLLInstance.RemoveProgram(e.CommandArgument.ToString());
                 BindListData();
             }
+        }
+
+        protected void dvProgameList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            dvProgameList.PageIndex = e.NewPageIndex;
+            BindListData();
         }
     }
 }

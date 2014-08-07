@@ -173,6 +173,13 @@ namespace MediaMgrSystem.MgrModel
 
         protected void Add_Click(object sender, EventArgs e)
         {
+
+            if (GlobalUtils.CheckIfPlaying())
+            {
+                ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForGroupDetail", "alert('分组正在使用，不能修改');", true);
+                return;
+            }
+
             GroupInfo gi = new GroupInfo();
 
             gi.GroupName = TbGroupName.Text;

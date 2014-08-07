@@ -82,6 +82,14 @@ namespace MediaMgrSystem.MgrModel
         protected void Add_Click(object sender, EventArgs e)
         {
             lbMessage.Visible = false;
+            if (GlobalUtils.CheckIfPlaying())
+            {
+                lbMessage.Visible = true;
+                lbMessage.Text = "分组正在使用，不能修改";
+                return;                    
+            }
+
+           
             DeviceInfo di = new DeviceInfo();
 
             di.DeviceName = TbName.Text;

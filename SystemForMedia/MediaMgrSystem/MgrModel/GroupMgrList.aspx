@@ -3,6 +3,14 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
+       <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+
+
+
+
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
     <h3>分组信息管理</h3>
 
 
@@ -50,8 +58,8 @@
         </div>
     </section>
 
-
-
+            </ContentTemplate>
+        </asp:UpdatePanel>
 </asp:Content>
 
 <%--<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">

@@ -12,7 +12,7 @@
     $(document).ready(function () {
 
 
-   
+
         <%  
 
     
@@ -301,8 +301,9 @@
     string groupDeviceListIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { groupDeviceListIds = groupDeviceListIds + "#groupDeviceList" + i.ToString() + ","; }; groupDeviceListIds = groupDeviceListIds.TrimEnd(','); %>
 
 
-        $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
-
+        <% if (!CheckIfPlaying()){ %>
+            $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+         <% } %>
         function saveOrder() {
 
 

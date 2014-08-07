@@ -358,7 +358,7 @@ namespace MediaMgrSystem
         //}
 
 
-        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat)
+        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat,string priority)
         {
 
             //object[] objs = new object[7];
@@ -398,7 +398,7 @@ namespace MediaMgrSystem
                 GlobalUtils.WriteDebugLogs(aa);
 
                 //   SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
-                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1");
+                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1",priority);
                 // new Thread(ThreadToRunStartTask).Start(objs);
 
             }
@@ -427,7 +427,7 @@ namespace MediaMgrSystem
                 System.Diagnostics.Debug.WriteLine(aa);
                 GlobalUtils.WriteDebugLogs(aa);
 
-                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime);
+                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime,true,priority);
 
                 //  SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
 

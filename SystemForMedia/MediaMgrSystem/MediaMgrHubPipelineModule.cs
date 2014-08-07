@@ -102,7 +102,7 @@ namespace MediaMgrSystem
                                      
 
                     GlobalUtils.AddLogs(hub.Clients, "系统提示", "视频服务器已连接");
-
+                  
 
                 }
 
@@ -119,8 +119,7 @@ namespace MediaMgrSystem
 
                     GlobalUtils.AddLogs(hub.Clients, "系统提示", "后台计划服务已连接");
 
-
-
+             
 
                 }
 
@@ -159,9 +158,13 @@ namespace MediaMgrSystem
 
                     if (sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
                     {
-                        SendRefreshAudioDeviceNotice(hub);
+                        SendRefreshRemoteControlDeviceNotice(hub);
                     }
 
+                    if (sc.ConnectionType == SingalRClientConnectionType.ANDROID)
+                    {
+                        SendRefreshAudioDeviceNotice(hub);
+                    }
                 }
 
 
@@ -209,14 +212,14 @@ namespace MediaMgrSystem
                 GlobalUtils.WriteDebugLogs(str);
                 if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
                 {
-
+                    SendRefreshAudioDeviceNotice(hub);
                     GlobalUtils.AddLogs(hub.Clients, "系统异常", "视频服务器断开连接");
 
                 }
 
                 if (hub.Context.ConnectionId == GlobalUtils.WindowsServiceConnectionId)
                 {
-
+                    SendRefreshAudioDeviceNotice(hub);
                     GlobalUtils.AddLogs(hub.Clients, "系统异常", "后台计划服务断开连接");
                 }
 

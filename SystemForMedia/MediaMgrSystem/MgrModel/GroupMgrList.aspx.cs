@@ -54,6 +54,12 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
+                if (GlobalUtils.CheckIfPlaying())
+                {
+                    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForGroupList", "alert('分组正在使用，不能删除');", true);
+                    return;
+                }
+
                 groupBLL.RemoveGroup(e.CommandArgument.ToString());
                 BindListData();
             }
