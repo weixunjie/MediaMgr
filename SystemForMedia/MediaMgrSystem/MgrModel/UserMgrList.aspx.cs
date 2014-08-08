@@ -100,11 +100,21 @@ namespace MediaMgrSystem.MgrModel
                 string userLevel = e.Row.Cells[4].Text;
 
                 e.Row.Cells[4].Text = userLevel == "1" ? "超级用户" : "普通用户";
-                string isActive = e.Row.Cells[5].Text;
-
-                e.Row.Cells[5].Text = isActive == "1" ? "是" : "否";
+                string strIsActive = e.Row.Cells[5].Text;
+                if (!string.IsNullOrWhiteSpace(strIsActive))
+                {
+                    e.Row.Cells[5].Text = strIsActive.ToUpper() == "TRUE" ? "是" : "否";
+                }
             }
 
         }
+
+        protected void dvList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            dvList.PageIndex = e.NewPageIndex;
+            BindListData();
+        }
+
+       
     }
 }

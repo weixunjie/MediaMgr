@@ -64,7 +64,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
         {
             String sqlStr = "DELETE FROM GROUPINFO WHERE GROUPID=" + goupId;
 
-            return dbUitls.ExecuteNonQuery(sqlStr);
+
+            String strUpdateDeviceToDefaultGroup = "UPDATE DEVICEINFO SET GROUPID='-1' WHERE GROUPID=" + goupId;
+
+             dbUitls.ExecuteNonQuery(sqlStr);
+
+             return dbUitls.ExecuteNonQuery(strUpdateDeviceToDefaultGroup);
 
         }
 

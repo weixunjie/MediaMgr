@@ -12,13 +12,13 @@
             <div class="form-group">
 
                 <div class="col-md-10">
-                    <asp:GridView ID="dvList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound">
+                    <asp:GridView ID="dvList" runat="server" AllowPaging="true" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound"  OnPageIndexChanging="dvList_PageIndexChanging">
                         <Columns>
                             <asp:BoundField DataField="UserId" HeaderText="" Visible="false" />
 
                             <asp:TemplateField HeaderText="编号">
                                 <ItemTemplate>
-                                    <%# this.dvList.PageIndex * this.dvList.PageSize + Container.DataItemIndex + 1%>
+                                    <%# Container.DataItemIndex + 1%>
                                 </ItemTemplate>
                             </asp:TemplateField>
 

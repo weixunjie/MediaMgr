@@ -95,7 +95,7 @@
             });
 
             chat.client.sendRefreshAudioDeviceMessge = function (result) {
-                loadDeviceList();
+                loadDeviceList(true);
             }
 
             chat.client.sendRefreshLogMessge = function (result) {
@@ -103,23 +103,40 @@
                 loadLogList();
             }
 
-            loadDeviceList();
+            loadDeviceList(false);
             loadLogList();
 
 
 
-            function loadDeviceList() {
+            function loadDeviceList(loadSync) {        
+
+
+                //$.ajax({
+                //    async: false,
+                //    type: "POST",
+                //    url: "AudioBroadcastMain.aspx/RangerUserControl",
+                //    data: "{'controlName':'DeviceList'}",
+
+                //    contentType: "text/plain",
+                //    success: function (msg) {
+
+                //        debugger
+                //        $("#divForDevice").html(msg.d);
+
+                //    }
+                //});
+
+
                 $.ajax({
-                    async: false,
-                    type: "POST",
-                    url: "AudioBroadcastMain.aspx/RangerUserControl",
-                    data: "{'controlName':'DeviceList'}",
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (msg) {
-
-                        $("#divForDevice").html(msg.d);
-
+                    url: "AudioLogic.ashx",
+                    contentType: "text/plain",
+                    cache: false,
+                    async: loadSync,
+                    data: null,
+                    type: "GET",
+                    success: function (data) {
+                       
+                        $("#divForDevice").html(data);
                     }
                 });
 
@@ -160,7 +177,7 @@
 
     <div id="divForDevice" style="margin-left: 390px">
 
-        <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
+        
     </div>
 
     <div style="clear: both;">

@@ -276,6 +276,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Fakes Include="Fakes\Microsoft.AspNet.SignalR.Core.fakes" />
     <Content Include="ClassDiagram1.cd" />
+    <Content Include="AudioLogic.ashx" />
     <None Include="Scripts\_references.js" />
     <Content Include="Site.Master" />
     <Content Include="ViewSwitcher.ascx" />
@@ -311,6 +312,9 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AudioLogic.ashx.cs">
+      <DependentUpon>AudioLogic.ashx</DependentUpon>
+    </Compile>
     <Compile Include="LogOut.aspx.cs">
       <DependentUpon>LogOut.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

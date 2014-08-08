@@ -20,13 +20,13 @@
             <div class="form-group">
 
                 <div class="col-md-10">
-                    <asp:GridView ID="dvGroupList" runat="server" AllowPaging="True" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
+                    <asp:GridView ID="dvGroupList" runat="server" AllowPaging="True" AutoGenerateColumns="False" Width="557px"  OnPageIndexChanging="dvGroupList_PageIndexChanging" OnRowCommand="dvGroupList_RowCommand">
                         <Columns>
                             <asp:BoundField DataField="GroupId" Visible="false" HeaderText="分组编号" />
 
                             <asp:TemplateField HeaderText="编号">
                                 <ItemTemplate>
-                                    <%# this.dvGroupList.PageIndex * this.dvGroupList.PageSize + Container.DataItemIndex + 1%>
+                                    <%# Container.DataItemIndex + 1%>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="GroupName" HeaderText="分组名称" />

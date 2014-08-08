@@ -81,12 +81,40 @@
 
             //Stop disable stop and repeta, enabled palying
             if (type == "Stop") {
+
+                            
                 $("#btnChannelControlPlay").attr("disabled", false);
 
                 $("#btnChannelControlStop").attr("disabled", true);
 
                 $("#btnChannelControlRepeat").attr("disabled", true);
+
+          
+
             }
+
+            if (type == "StopAndDelayStart") {
+
+
+
+                $("#btnChannelControlPlay").attr("disabled", true);
+
+                $("#btnChannelControlStop").attr("disabled", true);
+
+                $("#btnChannelControlRepeat").attr("disabled", true);
+
+
+
+                $(function () {
+                    setTimeout(function () {
+                        setButtonStatus("Stop");
+                    }, 2500);
+                })
+
+
+
+            }
+
 
 
             if ($("#btnChannelControlPlay").attr("disabled") == "disabled") {
@@ -313,8 +341,14 @@
 
             //string commandType, string channelId, string scheduleGuidId)
 
-            setButtonStatus("Stop");
+            setButtonStatus("StopAndDelayStart");
+
+
             chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false);
+
+
+        
+
 
             $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
 

@@ -64,5 +64,11 @@ namespace MediaMgrSystem.MgrModel
             }
         }
 
+        protected void dvList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            dvList.PageIndex = e.NewPageIndex;
+            BindListData();
+        }
+
     }
 }

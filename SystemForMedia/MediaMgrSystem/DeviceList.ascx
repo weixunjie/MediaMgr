@@ -298,7 +298,7 @@
         <%
                
      
-    string groupDeviceListIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { groupDeviceListIds = groupDeviceListIds + "#groupDeviceList" + i.ToString() + ","; }; groupDeviceListIds = groupDeviceListIds.TrimEnd(','); %>
+    string groupDeviceListIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { groupDeviceListIds = groupDeviceListIds + "#groupDeviceList" + dGroups[i].GroupId + ","; }; groupDeviceListIds = groupDeviceListIds.TrimEnd(','); %>
 
 
         <% if (!CheckIfPlaying()){ %>
@@ -306,23 +306,24 @@
          <% } %>
         function saveOrder() {
 
+         
+         
+            var a = $(this).data("itemid");
 
-            <%  for (int i = 0; i < dGroups.Count; i++)
-                {
-                     %>
+            
+            var groupId = $(this)[0].parentNode.id;
 
-            var stringData = "";
-            $("#groupDeviceList<%=i.ToString()%> li").map(function () {
-                stringData += $(this).data("itemid") + ",";
-            })
-            var a = stringData;
+            if (groupId != null)
+            {
+                groupId = groupId.replace("groupDeviceList","");
+            }
 
 
             $.ajax({
                 type: "POST",
                 async: false,
                 url: "AudioBroadcastMain.aspx/SaveDeviceGroup",
-                data: "{'deivceId':'" + a + "','groupId':'<% =dGroups[i].GroupId %>'}",
+                data: "{'deivceId':'" + a + "','groupId':'" + groupId + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (msg) {
@@ -332,9 +333,7 @@
             });
 
 
-            <% 
-                }
-           %>
+         
 
         };
 
@@ -394,7 +393,7 @@
             <tr>
                 <td>
                     <div style="height: 90px">
-                        <ul id="groupDeviceList<%=groupIndex %>" class="deviceULStyle">
+                        <ul id="groupDeviceList<%=dGroups[l].GroupId %>" class="deviceULStyle">
                             <%
                            deviceIndex++;
                            if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)

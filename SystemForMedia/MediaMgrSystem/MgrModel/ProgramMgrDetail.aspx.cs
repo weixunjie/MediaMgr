@@ -45,6 +45,8 @@ namespace MediaMgrSystem.MgrModel
 
 
 
+       
+
             string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
 
             string mpgExePath = Server.MapPath(@"~\Dlls");
@@ -70,12 +72,16 @@ namespace MediaMgrSystem.MgrModel
 
                     if (!isFound)
                     {
-                        this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileName, Value = fa.FileName });
+                        this.lbAvaibleFiles.Items.Add(new ListItem() {  Text = fa.FileName, Value = fa.FileName });                       
+
                     }
 
                 }
             }
 
+
+            AddToopTip();
+         
             groupMgrSection.Visible = true;
 
 
@@ -84,6 +90,22 @@ namespace MediaMgrSystem.MgrModel
 
         }
 
+        private void AddToopTip()
+        {
+            
+            for (int i = 0; i < lbAvaibleFiles.Items.Count; i++)
+            {
+                lbAvaibleFiles.Items[i].Attributes.Add("title", lbAvaibleFiles.Items[i].Value);
+            }
+
+
+            for (int i = 0; i <this.lbSelectedFiles.Items.Count; i++)
+            {
+                lbSelectedFiles.Items[i].Attributes.Add("title", lbSelectedFiles.Items[i].Value);
+            }
+
+
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -125,7 +147,10 @@ namespace MediaMgrSystem.MgrModel
                     }
                 }
 
+                AddToopTip();
+
             }
+       
 
 
         }
@@ -146,7 +171,10 @@ namespace MediaMgrSystem.MgrModel
                 lbAvaibleFiles.Items.Clear();
 
 
+                AddToopTip();
             }
+
+
 
         }
 
@@ -177,7 +205,11 @@ namespace MediaMgrSystem.MgrModel
                     }
                 }
 
+                AddToopTip();
+
             }
+
+       
         }
 
         protected void btnAllToLeft_Click(object sender, EventArgs e)
@@ -194,6 +226,9 @@ namespace MediaMgrSystem.MgrModel
                 }
 
                 lbSelectedFiles.Items.Clear();
+
+
+                AddToopTip();
 
             }
         }

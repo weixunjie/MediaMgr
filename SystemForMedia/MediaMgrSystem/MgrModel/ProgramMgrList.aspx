@@ -27,7 +27,7 @@
 
                                      <asp:TemplateField HeaderText="编号">
                                         <ItemTemplate>
-                                            <%# this.dvProgameList.PageIndex * this.dvProgameList.PageSize + Container.DataItemIndex + 1%>
+                                            <%# Container.DataItemIndex + 1%>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 

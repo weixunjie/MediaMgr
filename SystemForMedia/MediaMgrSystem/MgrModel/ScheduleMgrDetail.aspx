@@ -68,7 +68,7 @@
 
                                <asp:TemplateField HeaderText="编号">
                                         <ItemTemplate>
-                                            <%# this.dvTaskList.PageIndex * this.dvTaskList.PageSize + Container.DataItemIndex + 1%>
+                                            <%# Container.DataItemIndex + 1%>
                                         </ItemTemplate>
                                     </asp:TemplateField>
 

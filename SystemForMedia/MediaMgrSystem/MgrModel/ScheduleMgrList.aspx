@@ -17,13 +17,13 @@
 
                     <div class="form-group">
                         <div class="col-md-10">
-                            <asp:GridView ID="dvList" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand">
+                            <asp:GridView ID="dvList" runat="server" AllowPaging="true" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnPageIndexChanging="dvList_PageIndexChanging">
                                 <Columns>
                                     <asp:BoundField DataField="ScheduleId" Visible="false" HeaderText="编号" />
 
                                     <asp:TemplateField HeaderText="编号">
                                         <ItemTemplate>
-                                            <%# this.dvList.PageIndex * this.dvList.PageSize + Container.DataItemIndex + 1%>
+                                            <%# Container.DataItemIndex + 1%>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="ScheduleName" HeaderText="名称" />
