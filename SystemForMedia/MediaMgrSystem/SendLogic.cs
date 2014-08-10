@@ -157,7 +157,6 @@ namespace MediaMgrSystem
                         {
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
 
-
                             GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放失败, " + errorrNotOpenVideoSvr);
 
                             hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200");
@@ -275,7 +274,7 @@ namespace MediaMgrSystem
                             type = QueueCommandType.MANAULLYPLAY;
                         }
 
-                        PushQueue(type, clientsIpToSend, isSchedule, channelName, scheduleTime, cmdToVideoSvr.guidId, clientsDatraToSend.guidId);
+                        PushQueue(type, clientsIpToSend, isSchedule, channelId, channelName, scheduleTaskGuidId, scheduleTime, cmdToVideoSvr.guidId, clientsDatraToSend.guidId);
 
 
                         // cmdToVideoSvr.arg;
@@ -350,7 +349,7 @@ namespace MediaMgrSystem
                         }
                         else
                         {
-                            GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { Priority = strScheduleTaskPriority, ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = scheduleTime });
+                            GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { ChannelName=channelName, Priority = strScheduleTaskPriority, ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = scheduleTime });
                             System.Diagnostics.Debug.WriteLine("Add Schedule Task " + channelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
 
                             ComuResponseBase cr = new ComuResponseBase();
@@ -458,7 +457,6 @@ namespace MediaMgrSystem
         {
             try
             {
-
                 bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
 
                 string errorrNotOpenVideoSvr = "视频服务器未开启";
@@ -500,12 +498,10 @@ namespace MediaMgrSystem
                         hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200");
                         GlobalUtils.AddLogs(hub, "手动操作", channelName + "停止播放操作失败，" + errorrNotOpenVideoSvr + scheduleTime);
                     }
-
                 }
 
                 else
                 {
-
                     SendOutStopRepeatCommandToServerAndClient(channelId, channelName, isWantToStop, hub, isSchedule, scheduleTime, isSendToVideoSvr);
                 }
 
@@ -585,7 +581,7 @@ namespace MediaMgrSystem
 
 
 
-                PushQueue(cmdType, clientsIpToSend, isSchedule, channelName, scheduleTime, cmdToVideoSvr.guidId, clientsDataToSend.guidId, isSendToVideoSvr);
+                PushQueue(cmdType, clientsIpToSend, isSchedule, channelId, channelName,string.Empty, scheduleTime, cmdToVideoSvr.guidId, clientsDataToSend.guidId, isSendToVideoSvr);
 
 
                 string str = "Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
@@ -734,7 +730,7 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelName, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true)
+        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled,string channelId, string channelName, string scheduleGuid, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true)
         {
             lock (GlobalUtils.ObjectLockQueueItem)
             {
@@ -744,7 +740,7 @@ namespace MediaMgrSystem
                 if (isSendToVideoSvr)
                 {
 
-                    GlobalUtils.CommandQueues.Add(new QueueItem() { IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.GetVideoServerConnectionIdentify(), GuidIdStr = severGuidId, CommandType = cmdType });
+                    GlobalUtils.CommandQueues.Add(new QueueItem() { ChannelId=channelId, ScheduleGuid=severGuidId, IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.GetVideoServerConnectionIdentify(), GuidIdStr = severGuidId, CommandType = cmdType });
                 }
 
                 //NO need send to client when is repeat operation.
@@ -752,7 +748,7 @@ namespace MediaMgrSystem
                 {
                     foreach (var ip in clientIps)
                     {
-                        GlobalUtils.CommandQueues.Add(new QueueItem() { ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType });
+                        GlobalUtils.CommandQueues.Add(new QueueItem() { ChannelId = channelId, ScheduleGuid = severGuidId, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType });
                     }
                 }
             }

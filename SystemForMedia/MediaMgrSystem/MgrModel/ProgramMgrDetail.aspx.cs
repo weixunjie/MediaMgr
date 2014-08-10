@@ -14,7 +14,7 @@ namespace MediaMgrSystem.MgrModel
 
         protected void LoadData_Click(object sender, EventArgs e)
         {
-                       
+
             if (Session["UserId"] == null)
             {
                 Response.Redirect("~/Login.aspx");
@@ -45,7 +45,7 @@ namespace MediaMgrSystem.MgrModel
 
 
 
-       
+
 
             string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
 
@@ -72,7 +72,7 @@ namespace MediaMgrSystem.MgrModel
 
                     if (!isFound)
                     {
-                        this.lbAvaibleFiles.Items.Add(new ListItem() {  Text = fa.FileName, Value = fa.FileName });                       
+                        this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileName, Value = fa.FileName });
 
                     }
 
@@ -81,7 +81,7 @@ namespace MediaMgrSystem.MgrModel
 
 
             AddToopTip();
-         
+
             groupMgrSection.Visible = true;
 
 
@@ -92,14 +92,14 @@ namespace MediaMgrSystem.MgrModel
 
         private void AddToopTip()
         {
-            
+
             for (int i = 0; i < lbAvaibleFiles.Items.Count; i++)
             {
                 lbAvaibleFiles.Items[i].Attributes.Add("title", lbAvaibleFiles.Items[i].Value);
             }
 
 
-            for (int i = 0; i <this.lbSelectedFiles.Items.Count; i++)
+            for (int i = 0; i < this.lbSelectedFiles.Items.Count; i++)
             {
                 lbSelectedFiles.Items[i].Attributes.Add("title", lbSelectedFiles.Items[i].Value);
             }
@@ -150,7 +150,7 @@ namespace MediaMgrSystem.MgrModel
                 AddToopTip();
 
             }
-       
+
 
 
         }
@@ -209,7 +209,7 @@ namespace MediaMgrSystem.MgrModel
 
             }
 
-       
+
         }
 
         protected void btnAllToLeft_Click(object sender, EventArgs e)
@@ -245,8 +245,6 @@ namespace MediaMgrSystem.MgrModel
             pi.ProgramName = this.TbProgrmeName.Text;
 
 
-
-
             if (this.lbSelectedFiles.Items.Count <= 0)
             {
                 ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alert", "alert('请至少选择一个文件');", true);
@@ -254,11 +252,40 @@ namespace MediaMgrSystem.MgrModel
                 return;
             }
 
+
+
+            string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
+
+            string mpgExePath = Server.MapPath(@"~\Dlls");
+
+
             if (this.lbSelectedFiles.Items.Count > 0)
             {
                 pi.MappingFiles = new List<FileAttribute>();
                 foreach (ListItem item in lbSelectedFiles.Items)
                 {
+
+                    if (item.Value.ToUpper().EndsWith(".MP4") || item.Value.ToUpper().EndsWith(".FLV"))
+                    {
+                        string vFormat = GlobalUtils.FileInfoBLLInstance.GetVideoFormatByFileName(fileBasePath + @"\" + item.Value, mpgExePath);
+
+                        if (!string.IsNullOrWhiteSpace(vFormat))
+                        {
+                            if (vFormat.ToUpper() != "H264")
+                            {
+                                ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alert", "alert('" + item.Value + "文件为不支持视频的格式');", true);
+
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alert", "alert('" + item.Value + "文件为不支持视频的格式');", true);
+                            return;
+                        }
+
+                    }
+
                     pi.MappingFiles.Add(new FileAttribute() { FileName = item.Value });
                 }
             }

@@ -23,7 +23,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public FileAttribute GetFileInfoByFile(string fileName)
         {
-            String sqlStr = "SELECT * FROM FILEINFO WHERE FILENAME='" + fileName.Replace("'","''") + "'";
+            String sqlStr = "SELECT * FROM FILEINFO WHERE FILENAME='" + fileName.Replace("'", "''") + "'";
 
             FileAttribute result = null;
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
@@ -68,6 +68,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
                             continue;
                         }
 
+                        if (!fi.Extension.ToUpper().EndsWith("MP4") && !fi.Extension.ToUpper().EndsWith("MP3") && !fi.Extension.ToUpper().EndsWith("FLV"))
+                        {
+                            continue;
+                        }
+
+
                         FileAttribute fa = GetFileInfoByFile(fi.Name);
                         if (fa != null)
                         {
@@ -76,7 +82,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         else
                         {
                             fa = new FileAttribute();
-                            
+
                             fa.BitRate = GetBitRateByFileName(fi.FullName, mpegPath).ToString();
                             fa.FileName = fi.Name;
                             AddFileInfo(fa);
@@ -100,7 +106,6 @@ namespace MediaMgrSystem.BusinessLayerLogic
         private double GetBitRateByFileName(string fileFullName, string mpegPath)
         {
 
-
             double result = 0;
 
             FFMPEG.FFMPEGExecutableFilePath = mpegPath + @"\ffmpeg.exe";
@@ -115,6 +120,44 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public string GetVideoFormatByFileName(string fileFullName, string mpegPath)
+        {
+
+            string strLongVideoFormat = string.Empty;
+
+            FFMPEG.FFMPEGExecutableFilePath = mpegPath + @"\ffmpeg.exe";
+
+            VideoFile videoFile = new VideoFile(fileFullName);
+
+            strLongVideoFormat = videoFile.VideoFormat;
+
+
+            if (!string.IsNullOrWhiteSpace(strLongVideoFormat))
+            {
+
+                int intCons = strLongVideoFormat.IndexOf("(");
+
+                if (intCons > 0)
+                {
+                    strLongVideoFormat = strLongVideoFormat.Substring(0, intCons);
+
+                }
+
+
+                string[] longVideoFormatArrage = strLongVideoFormat.Split(':');
+
+                if (longVideoFormatArrage != null && longVideoFormatArrage.Length >= 2)
+                {
+                    return longVideoFormatArrage[1].Trim();
+                }
+
+            }
+
+            return string.Empty;
+
+
+        }
+
 
 
         public int AddFileInfo(FileAttribute fa)
@@ -122,7 +165,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
             String sqlStr = "INSERT INTO FILEINFO(FILENAME,BITRATE) values ('{0}','{1}')";
 
 
-            sqlStr = String.Format(sqlStr, fa.FileName.Replace("'","''"), fa.BitRate);
+            sqlStr = String.Format(sqlStr, fa.FileName.Replace("'", "''"), fa.BitRate);
 
 
             return dbUitls.ExecuteNonQuery(sqlStr);

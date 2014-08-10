@@ -97,6 +97,18 @@ namespace MediaMgrSystem
             set;
         }
 
+        public string ScheduleGuid
+        {
+            get;
+            set;
+        }
+
+        public string ChannelId
+        {
+            get;
+            set;
+        }
+
         public bool IsVideoServer
         {
             get;
@@ -118,6 +130,11 @@ namespace MediaMgrSystem
             set;
         }
 
+        public string ChannelName
+        {
+            get;
+            set;
+        }
         public string Priority
         {
             get;
