@@ -34,6 +34,53 @@ namespace MediaMgrWS
 
     }
 
+    public class EncoderInfo
+    {
+
+    
+        public String EncoderId { get; set; }
+
+        public String EncoderName { get; set; }
+
+        public String BaudRate { get; set; }
+
+        public String ClientIdentify { get; set; }
+
+        public String Priority { get; set; }
+    }
+
+    public class EncoderOpenReponseArg
+    {
+        public string udpBroadcastAddress
+        {
+            get;
+            set;
+        }
+
+        public string streamName
+        {
+            get;
+            set;
+
+        }
+        public string baudRate
+        {
+            get;
+            set;
+
+        }
+        // ":"udp://229.0.0.1:5000", “”:”123789101”,   ”:”100”} 
+    }
+    public class EncoderOpenReponse : ComuResponse
+    {
+
+        public EncoderOpenReponseArg arg
+        {
+            get;
+            set;
+        }
+    }
+
     public class ComuResponse
     {
         public string guidId
@@ -106,6 +153,22 @@ namespace MediaMgrWS
 
     }
 
+    public class RunningEncoder
+    {
+        public string ClientIdentify { get; set; }
+        public string Priority { get; set; }
+
+        public string GroupIds { get; set; }
+    }
+
+    public class ToEncoderCommand
+    {
+        public string ClientIdentify { get; set; }
+        public string GuidId { get; set; }
+
+    }
+
+
 
 
     public class CommandResponse
@@ -163,8 +226,10 @@ namespace MediaMgrWS
         private Timer aTimerCheckStopSchedule;
 
         private IHubProxy hubProxy;
-
+        private object lockEncoderCommand = new object();
         private List<SocketClients> allEncoderClient = new List<SocketClients>();
+
+        private List<ToEncoderCommand> allQueueCommandToEncoder = new List<ToEncoderCommand>();
 
 
 
@@ -214,6 +279,111 @@ namespace MediaMgrWS
 
             CheckTask(sqlStr, true);
         }
+
+
+        private void UpdateRunningEncoder(RunningEncoder re)
+        {
+            string sqlStr = "DELETE FROM RUNNINGENCODER WHERE CLIENTIDENTIFY='" + re.ClientIdentify + "'";
+
+            dbUitls.ExecuteNonQuery(sqlStr);
+
+            sqlStr = "INSERT INTO  RUNNINGENCODER(CLIENTIDENTIFY,PRIORITY) VALUES ('{0}','{1}','{2}')";
+
+            dbUitls.ExecuteNonQuery(string.Format(sqlStr, re.ClientIdentify, re.Priority, re.GroupIds));
+
+
+        }
+
+        private void RemoveRunningEncoder(string clientIdentify)
+        {
+            string sqlStr = "DELETE FROM RUNNINGENCODER WHERE CLIENTIDENTIFY='" + clientIdentify + "'";
+
+            dbUitls.ExecuteNonQuery(sqlStr);
+
+        }
+
+        protected EncoderInfo GetEncoderList(string clientIdentify)
+        {
+            string sqlStr = "selecT * from EncoderInfo where clientIdentify='" + clientIdentify + "'";
+            EncoderInfo ei = new EncoderInfo();
+            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
+
+            if (dt != null)
+            {
+                if (dt.Rows.Count > 0)
+                {
+
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+
+                        ei.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
+                        ei.EncoderName = dt.Rows[i]["ENCODERNAME"].ToString();
+                        ei.ClientIdentify = dt.Rows[i]["CLIENTIDENTIFY"].ToString();
+                        ei.BaudRate = dt.Rows[i]["BAUDRATE"].ToString();
+                        ei.Priority = dt.Rows[i]["PRIORITY"].ToString();
+
+                        break;
+                    }
+                }
+            }
+
+            return ei;
+
+        }
+
+
+        private List<RunningEncoder> GetAllEncoderRunning()
+        {
+            string sqlStr = "select * from RunningEncoder";
+
+            List<RunningEncoder> res = new List<RunningEncoder>();
+
+            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
+
+            if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    RunningEncoder re = new RunningEncoder();
+                    re.ClientIdentify = dt.Rows[i]["ClientIdentify"].ToString();
+                    re.Priority = dt.Rows[i]["Priority"].ToString();
+                    res.Add(re);
+                }
+            }
+
+            return res;
+
+
+        }
+
+        private RunningEncoder CheckIfEncoderRunning(string clientIdentify)
+        {
+            string sqlStr = "select * from RunningEncoder where clientIdentify='" + clientIdentify + "'";
+
+            RunningEncoder re = new RunningEncoder();
+
+            DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
+
+            if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    re.ClientIdentify = dt.Rows[i]["ClientIdentify"].ToString();
+                    re.Priority = dt.Rows[i]["Priority"].ToString();
+                    re.GroupIds = dt.Rows[i]["GroupIds"].ToString();
+
+
+                    break;
+                }
+            }
+
+            return re;
+
+
+        }
+
+
+
 
 
         private void CheckTask(string sqlStr, bool isCheckStart)
@@ -472,6 +642,25 @@ namespace MediaMgrWS
             catch (Exception exc) { }
         }
 
+
+        public SocketClients GetConnectedEcoderSocket(string clientIdentify)
+        {
+            SocketClients sc = null;
+            lock (lockClients)
+            {
+                sc = null;
+                foreach (var c in allEncoderClient)
+                {
+                    if (c.ClientIdentify == clientIdentify)
+                    {
+                        sc = c;
+                        break;
+                    }
+                }
+            }
+
+            return sc;
+        }
         public void ReceiveCallback(IAsyncResult ar)
         {
             try
@@ -503,72 +692,207 @@ namespace MediaMgrWS
 
                         EncoderOperationCommand epc = Newtonsoft.Json.JsonConvert.DeserializeObject<EncoderOperationCommand>(content);
 
-                        if (epc != null && epc.groupIds != null && epc.groupIds.Count > 0)
+
+                        if (epc.commandType == CommandTypeEnum.ENCODEROPEN)
                         {
 
-                        }
-                        else
-                        {
-                            EncoderCommandBase ecb = Newtonsoft.Json.JsonConvert.DeserializeObject<EncoderCommandBase>(content);
-                            if (ecb != null && ecb.commandType == CommandTypeEnum.ENCODERREG)
+                            if (epc != null && epc.groupIds != null && epc.groupIds.Count > 0)
                             {
+                                string groupIds = string.Empty;
 
-                                lock (lockClients)
+                                foreach (var g in epc.groupIds)
                                 {
-                                    SocketClients objToRemoved = null;
-                                    foreach (var c in allEncoderClient)
+                                    groupIds += g + ",";
+                                }
+
+
+                                EncoderInfo ei = GetEncoderList(epc.clientIdentify);
+
+                                if (ei != null)
+                                {
+                                    RunningEncoder re = CheckIfEncoderRunning(epc.clientIdentify);
+                                    List<RunningEncoder> reAllRunning = GetAllEncoderRunning();
+
+                                    bool isHighPriorityRunning = false;
+                                    if (reAllRunning != null && reAllRunning.Count > 0)
                                     {
-                                        if (c.ClientIdentify == ecb.clientIdentify)
+                                        foreach (var r in reAllRunning)
                                         {
-                                            objToRemoved = c;
-                                            break;
+                                            if (int.Parse(r.Priority) > int.Parse(ei.Priority))
+                                            {
+
+                                                isHighPriorityRunning = true;
+                                                break;
+                                            }
                                         }
                                     }
 
-                                    if (objToRemoved != null)
+                                    if (re != null)
                                     {
-                                        allEncoderClient.Remove(objToRemoved);
+                                        ComuResponse cr = new ComuResponse();
+                                        cr.errorCode = "110";
+                                        cr.message = "已经打开";
+                                        cr.guidId = epc.guidId;
+                                        SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cr), handler);
+
                                     }
+                                    else if (isHighPriorityRunning)
+                                    {
+                                        ComuResponse cr = new ComuResponse();
+                                        cr.errorCode = "111";
+                                        cr.message = "优先级低，不能打开";
+                                        cr.guidId = epc.guidId;
+                                        SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cr), handler);
+                                    }
+                                    else
+                                    {
 
-                                    allEncoderClient.Add(new SocketClients() { ClientIdentify = ecb.clientIdentify, SokcetInstance = handler });
+                                        foreach (var r in reAllRunning)
+                                        {
+                                            StopEncoder(epc.guidId, epc.clientIdentify, r.GroupIds, true);
+
+
+                                        }
+
+                                        EncoderOpenReponse eor = new EncoderOpenReponse();
+
+                                        eor.arg = new EncoderOpenReponseArg();
+                                        eor.arg.baudRate = ei.BaudRate;
+                                        eor.arg.streamName = "1234567890" + ei.EncoderId;
+                                        eor.arg.udpBroadcastAddress = "udp://229.0.0.1:300" + ei.EncoderId;
+
+                                        eor.guidId = epc.guidId;
+                                        eor.errorCode = "0";
+
+                                        UpdateRunningEncoder(new RunningEncoder() { ClientIdentify = re.ClientIdentify, GroupIds = groupIds, Priority = re.Priority });
+                                        SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor), handler);
+
+                                        hubProxy.Invoke("sendEncoderTaskControlOpen", groupIds.TrimEnd(','), epc.clientIdentify, ei.BaudRate, eor.arg.streamName, eor.arg.udpBroadcastAddress);
+                                    }
                                 }
 
-                                EncoderSendGroupsInfoCommand cmd = new EncoderSendGroupsInfoCommand();
-                                cmd.commandType = CommandTypeEnum.ENCODERSENDGROUPSINFO;
-                                cmd.guidId = Guid.NewGuid().ToString();
-                                cmd.groups = new List<GroupInfo>();
-                                cmd.groups.Add(new GroupInfo { groupId = "1", groupName = "f" });
-                                cmd.groups.Add(new GroupInfo { groupId = "3", groupName = "bf" });
-
-                                foreach (var c in allEncoderClient)
-                                {
-
-                                    if (c.ClientIdentify != ecb.clientIdentify)
-                                        SendSocketDataToClient(content, c.SokcetInstance);
-                                }
-
-                                // SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
 
                             }
-                            else if (ecb != null && ecb.commandType == CommandTypeEnum.ENCODERQUIT)
+                        }
+                        else if (epc.commandType == CommandTypeEnum.ENCODERQUIT)
+                        {
+
+                            RunningEncoder re = CheckIfEncoderRunning(epc.clientIdentify);
+
+
+                            if (re != null)
                             {
-                                lock (lockClients)
+                                StopEncoder(epc.guidId, epc.clientIdentify, re.GroupIds, false);
+                            }
+                            else
+                            {
+                                ComuResponse cr = new ComuResponse();
+                                cr.errorCode = "123";
+                                cr.message = "未打开，不能关闭";
+                                cr.guidId = epc.guidId;
+                                SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cr), handler);
+                            }
+
+
+                        }
+
+                        else
+                        {
+
+                            CommandResponse commandResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<CommandResponse>(content);
+
+                            if (commandResponse != null)
+                            {
+
+
+                                lock (lockEncoderCommand)
                                 {
-                                    SocketClients objToRemoved = null;
-                                    foreach (var c in allEncoderClient)
+                                    ToEncoderCommand tcToRemoved = null;
+                                    if (allQueueCommandToEncoder != null && allQueueCommandToEncoder.Count > 0)
                                     {
-                                        if (c.ClientIdentify == ecb.clientIdentify)
+                                        foreach (var cmd in allQueueCommandToEncoder)
                                         {
-                                            objToRemoved = c;
-                                            break;
+                                            if (cmd.GuidId == commandResponse.guidId)
+                                            {
+                                                tcToRemoved = cmd;
+                                                break;
+                                            }
                                         }
                                     }
 
-                                    if (objToRemoved != null)
+                                    if (tcToRemoved != null)
                                     {
-                                        allEncoderClient.Remove(objToRemoved);
+                                        allQueueCommandToEncoder.Remove(tcToRemoved);
                                     }
 
+                                    hubProxy.Invoke("sendEncoderTaskControlCommandBack", Newtonsoft.Json.JsonConvert.SerializeObject(commandResponse));
+
+                                }
+                            }
+                            else
+                            {
+
+                                EncoderCommandBase ecb = Newtonsoft.Json.JsonConvert.DeserializeObject<EncoderCommandBase>(content);
+                                if (ecb != null && ecb.commandType == CommandTypeEnum.ENCODERREG)
+                                {
+
+                                    lock (lockClients)
+                                    {
+                                        SocketClients objToRemoved = null;
+                                        foreach (var c in allEncoderClient)
+                                        {
+                                            if (c.ClientIdentify == ecb.clientIdentify)
+                                            {
+                                                objToRemoved = c;
+                                                break;
+                                            }
+                                        }
+
+                                        if (objToRemoved != null)
+                                        {
+                                            allEncoderClient.Remove(objToRemoved);
+                                        }
+
+                                        allEncoderClient.Add(new SocketClients() { ClientIdentify = ecb.clientIdentify, SokcetInstance = handler });
+                                    }
+
+                                    EncoderSendGroupsInfoCommand cmd = new EncoderSendGroupsInfoCommand();
+                                    cmd.commandType = CommandTypeEnum.ENCODERSENDGROUPSINFO;
+                                    cmd.guidId = Guid.NewGuid().ToString();
+                                    cmd.groups = new List<GroupInfo>();
+                                    cmd.groups.Add(new GroupInfo { groupId = "1", groupName = "f" });
+                                    cmd.groups.Add(new GroupInfo { groupId = "3", groupName = "bf" });
+
+                                    foreach (var c in allEncoderClient)
+                                    {
+                                        if (c.ClientIdentify != ecb.clientIdentify)
+                                            SendSocketDataToClient(content, c.SokcetInstance);
+                                    }
+                                }
+
+                                    // SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+
+
+                                else if (ecb != null && ecb.commandType == CommandTypeEnum.ENCODERQUIT)
+                                {
+                                    lock (lockClients)
+                                    {
+                                        SocketClients objToRemoved = null;
+                                        foreach (var c in allEncoderClient)
+                                        {
+                                            if (c.ClientIdentify == ecb.clientIdentify)
+                                            {
+                                                objToRemoved = c;
+                                                break;
+                                            }
+                                        }
+
+                                        if (objToRemoved != null)
+                                        {
+                                            allEncoderClient.Remove(objToRemoved);
+                                        }
+
+                                    }
                                 }
                             }
 
@@ -597,6 +921,39 @@ namespace MediaMgrWS
                 }
             }
             catch (Exception exc) { }
+        }
+
+        private void StopEncoder(string guiId, string clientIdentify, string groupIds, bool isStopOther)
+        {
+
+            //            {"guidId":"2847f884-a55b-4375-aca4-a7f2f2df08b9","commandType":"403"} }
+
+
+            //guidId 唯一的指令编号，由服务器生成。
+            //commandType  指令编号
+            //             403： 表示通知知呼叫台停止          
+
+            string strToSend = string.Empty;
+            if (isStopOther)
+            {
+                EncoderCommandBase ec = new EncoderCommandBase();
+                ec.commandType = CommandTypeEnum.ENCODERCLOSE;
+                ec.guidId = Guid.NewGuid().ToString();
+                strToSend = Newtonsoft.Json.JsonConvert.SerializeObject(ec);
+
+            }
+            else
+            {
+                ComuResponse cr = new ComuResponse();
+                cr.errorCode = "0";
+                cr.message = "";
+                cr.guidId = guiId;
+                strToSend = Newtonsoft.Json.JsonConvert.SerializeObject(cr);
+            }
+
+            RemoveRunningEncoder(clientIdentify);
+            SendSocketDataToClient(strToSend, GetConnectedEcoderSocket(clientIdentify).SokcetInstance);
+            hubProxy.Invoke("sendEncoderTaskControlClose", clientIdentify, groupIds);
         }
 
 
@@ -636,7 +993,7 @@ namespace MediaMgrWS
         {
             try
             {
-                if (sListener!=null)
+                if (sListener != null)
                 {
                     sListener.Shutdown(SocketShutdown.Both);
                     sListener.Close();
@@ -675,6 +1032,27 @@ namespace MediaMgrWS
                         {
                             UpdateRunningStatus(false, resp.guidId);
                         }
+                    }
+
+                }
+
+                lock (lockEncoderCommand)
+                {
+                    EncoderCommandBase encoderRequestCmd = Newtonsoft.Json.JsonConvert.DeserializeObject<EncoderCommandBase>(data);
+
+
+                    if (encoderRequestCmd != null && !string.IsNullOrWhiteSpace(encoderRequestCmd.guidId))
+                    {
+
+                        allQueueCommandToEncoder.Add(new ToEncoderCommand() { ClientIdentify = encoderRequestCmd.clientIdentify, GuidId = encoderRequestCmd.guidId });
+
+                        SocketClients sc = GetConnectedEcoderSocket(encoderRequestCmd.clientIdentify);
+
+                        if (sc != null)
+                        {
+                            SendSocketDataToClient(Newtonsoft.Json.JsonConvert.SerializeObject(sc), sc.SokcetInstance);
+                        }
+
                     }
 
                 }
