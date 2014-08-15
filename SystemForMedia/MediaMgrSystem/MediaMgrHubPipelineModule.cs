@@ -97,9 +97,7 @@ namespace MediaMgrSystem
                     {
                         GlobalUtils.RemoveConnectionByConnectionId(extingViedoServerCid);
 
-                    }
-
-                                     
+                    }                                     
 
                     GlobalUtils.AddLogs(hub.Clients, "系统提示", "视频服务器已连接");
                   

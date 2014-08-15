@@ -252,7 +252,7 @@
             });
 
             $(document).click(function () {
-
+                sess_lastActivity = new Date();
                 if (!is_popup_1st_menu && !is_popup_2nd_menu) {
                     hideAllMenus();
                 }

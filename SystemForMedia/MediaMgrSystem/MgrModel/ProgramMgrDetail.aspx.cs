@@ -254,6 +254,8 @@ namespace MediaMgrSystem.MgrModel
 
 
 
+
+
             string fileBasePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["filePath"].ToString();
 
             string mpgExePath = Server.MapPath(@"~\Dlls");
@@ -290,6 +292,51 @@ namespace MediaMgrSystem.MgrModel
                 }
             }
 
+
+
+            bool isMixFiles = false;
+
+            string preExtentName = "";
+            foreach (ListItem f in lbSelectedFiles.Items)
+            {
+                string ext = f.Value.Substring(f.Value.Length - 4, 4);
+
+                if (preExtentName=="")
+                {
+                    preExtentName = ext;
+                    continue;
+                }
+              
+
+                if (ext == preExtentName)
+                {
+                    isMixFiles = false;
+                }
+                else if (ext.ToUpper() == ".MP4" && preExtentName.ToUpper() == ".FLV")
+                {
+                    isMixFiles = false;
+                }
+                else if (ext.ToUpper() == ".FLV" && preExtentName.ToUpper() == ".MP4")
+                {
+                    isMixFiles = false;
+                }
+                else
+                {
+                    isMixFiles = true;
+                    break;
+                }
+
+                preExtentName = ext;
+
+
+            }
+
+            if (isMixFiles)
+            {
+                ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alert", "alert('节目不能同时使用音视频s');", true);
+
+                return;
+            }
 
 
 

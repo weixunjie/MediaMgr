@@ -68,6 +68,24 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return GetProgramList(sqlStr, isGetFileInfo);
         }
 
+        public List<ProgramInfo> GetAllAuditProgram(bool isGetFileInfo = false)
+        {
+            String sqlStr = "SELECT *FROM PROGRAMINFO WHERE MAPPINGFILES LIKE '%.MP3%'";
+
+            return GetProgramList(sqlStr, isGetFileInfo);
+        }
+
+        public List<ProgramInfo> GetAllVideoProgram(bool isGetFileInfo = false)
+        {
+            String sqlStr = "SELECT *FROM PROGRAMINFO WHERE MAPPINGFILES NOT LIKE '%.MP3%'";
+
+            return GetProgramList(sqlStr, isGetFileInfo);
+        }
+
+
+
+
+
 
 
         public int RemoveProgram(string pid)

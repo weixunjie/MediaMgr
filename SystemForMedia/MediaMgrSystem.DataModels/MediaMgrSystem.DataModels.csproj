@@ -43,6 +43,7 @@
     <Compile Include="DataModel\BusinessType.cs" />
     <Compile Include="DataModel\RemoteDeviceStatus.cs" />
     <Compile Include="DataModel\RemoveControlDeviceType.cs" />
+    <Compile Include="DataModel\RunningEncoder.cs" />
     <Compile Include="DataModel\UserInfo.cs" />
     <Compile Include="DataModel\LogInfo.cs" />
     <Compile Include="DataModel\FileAttribute.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="JsonModel\CommandTypeEnum.cs" />
     <Compile Include="DataModel\SingalRClientConnectionType.cs" />
     <Compile Include="DataModel\SingalConnectedClient.cs" />
+    <Compile Include="JsonModel\EncoderOpenCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlACParam.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlScheduleArg.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlManualArg.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlManualCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\ReceiveRemovoteDeivceCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\ReceiveRemovoteDeivceStatus.cs" />
+    <Compile Include="JsonModel\EncoderOpenCommandeArg.cs" />
     <Compile Include="JsonModel\VideoOperAndriodClientArg.cs" />
     <Compile Include="JsonModel\ReceiveCommandBaseArg.cs" />
     <Compile Include="JsonModel\VideoServerOperArg.cs" />

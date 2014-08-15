@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -47,6 +48,7 @@ namespace MediaMgrSystem
             Page.PreLoad += master_Page_PreLoad;
         }
 
+   
         protected void master_Page_PreLoad(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -77,7 +79,7 @@ namespace MediaMgrSystem
             Context.GetOwinContext().Authentication.SignOut();
         }
 
-      
+
     }
 
 }

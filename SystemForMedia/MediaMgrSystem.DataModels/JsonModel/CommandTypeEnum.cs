@@ -38,5 +38,11 @@ namespace MediaMgrSystem.DataModels
 
 
         REMOTECONTRLSENDSTATUS = 231,
+
+        ENCODEROPEN = 402,
+
+
+        ENCODERCLOSE = 403,
+
     }
 }

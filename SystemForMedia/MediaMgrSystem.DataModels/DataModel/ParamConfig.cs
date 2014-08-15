@@ -14,6 +14,10 @@ namespace MediaMgrSystem.DataModels
 
         public String UserName { get; set; }
 
+
+
+
+
         public String UserLevel { get; set; }
 
         public bool IsActive { get; set; }

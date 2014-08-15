@@ -12,8 +12,15 @@ namespace MediaMgrSystem.DataModels
 
         public int BufferTimeForSchedule { get; set; }
 
-        public int MaxClientsCount { get; set; }
-    
+        public int IntervalTimeFromStopToPlay { get; set; }
+
+
+        public int MaxClientsCountForVideo { get; set; }
+
+
+        public int MaxClientsCountForAudio { get; set; }
+
+        public int MaxClientsCountForRemoteControl{ get; set; }
 
     }
 

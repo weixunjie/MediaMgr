@@ -115,22 +115,21 @@ namespace MediaMgrSystem.BusinessLayerLogic
         {
             ParamConfig pc = paramConfigBLL.GetParamConfig();
 
-            if (GetDevicesCount() >= pc.MaxClientsCount)
-            {
-                logBLL.AddLog("系统提示", "终端已经达到最大数量");
+            //if (GetDevicesCount() >= pc.MaxClientsCount)
+            //{
+            //    logBLL.AddLog("系统提示", "终端已经达到最大数量");
 
-                return -1;
-            }
+            //    return -1;
+            //}
 
-            else
-            {
+           
                 String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID,ISUSEDFORAUDIO,ISUSEDFORENCODER,ISUSEDFORREMOTECONTROL) values ('{0}','{1}','{2}','{3}','{4}','{5}')";
 
                 sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.UsedToRemoteControl ? 1 : 0);
 
 
                 return dbUitls.ExecuteNonQuery(sqlStr);
-            }
+        //    }
 
 
 

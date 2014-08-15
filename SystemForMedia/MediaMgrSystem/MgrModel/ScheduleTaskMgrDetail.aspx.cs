@@ -118,6 +118,8 @@ namespace MediaMgrSystem.MgrModel
                     {
                         found.Selected = true;
                     }
+
+                    ProcessWeeksStatus();
                 }
             }
         }
@@ -183,22 +185,37 @@ namespace MediaMgrSystem.MgrModel
 
             }
 
-            ScheduleTaskInfo si = new ScheduleTaskInfo();
+            bool isWeekSelected = false;
+            foreach (ListItem lv in CbWeek.Items)
+            {
+                if (lv.Selected)
+                {
+                    isWeekSelected = true;
+                    break;
+                }
+            }
 
+
+            if (lbSelectedDate.Items.Count <= 0 && !isWeekSelected)
+            {
+                lbMessage.Text = "请选择日期或者特殊日期";
+                lbMessage.Visible = true;
+                return;
+
+            }
+
+            ScheduleTaskInfo si = new ScheduleTaskInfo();
 
 
             si.ScheduleTaskSpecialDays = new List<string>();
 
             si.ScheduleTaskspecialDaysToWeeks = new List<string>();
 
-            string sqlCheckWeeks = string.Empty;
+            string sqlChecking = string.Empty;
+      
 
-            string sqlSpecDaysWeekInSchedeulWeek = string.Empty;
-
-            string sqlSpecDaysWeekInSpecialDaysWeek = string.Empty;
-
-
-            string sqlWeekInSpecDaysWeek = string.Empty;
+            string sqlSpecDaysInSpecialDays= string.Empty;
+       
 
             string sqlWeekInScheduleWeek = string.Empty;
 
@@ -206,7 +223,6 @@ namespace MediaMgrSystem.MgrModel
             si.StrDays = "";
             si.StrWeeks = "";
             si.StrSpecialDaysToWeeks = "";
-
 
             si.IsRepeat = cbIsRepeat.Checked ? "1" : "0";
 
@@ -241,17 +257,12 @@ namespace MediaMgrSystem.MgrModel
                     case "Sunday":
                         weekIndex = "7";
                         break;
-
                 }
-
-
-
 
                 si.StrSpecialDaysToWeeks += weekIndex + ",";
                 si.ScheduleTaskspecialDaysToWeeks.Add(weekIndex);
-                sqlSpecDaysWeekInSpecialDaysWeek = sqlSpecDaysWeekInSpecialDaysWeek + " SCHEDULETASKSPECIALDAYSTOWEEKS LIKE '%" + weekIndex + "%' OR";
-
-                sqlSpecDaysWeekInSchedeulWeek = sqlSpecDaysWeekInSchedeulWeek + " SCHEDULETASKWEEKS LIKE '%" + weekIndex + "%' OR";
+                sqlSpecDaysInSpecialDays = sqlSpecDaysInSpecialDays + " SCHEDULETASKSPECIALDAYS LIKE '%" + lv.Value + "%' OR";
+                            
             }
 
             si.ScheduleTaskWeeks = new List<string>();
@@ -261,37 +272,22 @@ namespace MediaMgrSystem.MgrModel
                 {
                     si.ScheduleTaskWeeks.Add(lv.Value);
                     si.StrWeeks += lv.Value + ",";
-
-                    sqlWeekInSpecDaysWeek = sqlWeekInSpecDaysWeek + " SCHEDULETASKSPECIALDAYSTOWEEKS LIKE '%" + lv.Value + "%'  OR";
-
+            
                     sqlWeekInScheduleWeek = sqlWeekInScheduleWeek + " SCHEDULETASKWEEKS LIKE '%" + lv.Value + "%'  OR";
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(sqlSpecDaysWeekInSpecialDaysWeek))
+            if (!string.IsNullOrWhiteSpace(sqlWeekInScheduleWeek))
             {
-                if (!string.IsNullOrWhiteSpace(sqlWeekInScheduleWeek))
-                {
-                    sqlCheckWeeks = "AND " + "(" + sqlSpecDaysWeekInSpecialDaysWeek +
-                        sqlSpecDaysWeekInSchedeulWeek +
-                        sqlWeekInSpecDaysWeek +
-                        sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
-                }
-                else
-                {
-                    sqlCheckWeeks = "AND " + "(" + sqlSpecDaysWeekInSpecialDaysWeek + sqlSpecDaysWeekInSchedeulWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
 
-                }
+                sqlChecking = "AND " + "(" + sqlWeekInScheduleWeek + sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
+
+                
             }
             else
             {
 
-                if (!string.IsNullOrWhiteSpace(sqlWeekInScheduleWeek))
-                {
-                    sqlCheckWeeks = "AND " + "(" +
-                        sqlWeekInSpecDaysWeek +
-                        sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
-                }
+                sqlChecking = "AND " + "(" + sqlSpecDaysInSpecialDays + sqlSpecDaysInSpecialDays.TrimEnd(new char[] { 'O', 'R' }) + ")";
             }
 
             if (!string.IsNullOrWhiteSpace(si.StrSpecialDaysToWeeks))
@@ -312,14 +308,12 @@ namespace MediaMgrSystem.MgrModel
 
 
 
-            if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskTimeIsOverLap(TbHiddenIdSchedule.Text, tbStartTime.Value, tbEndTime.Value, TbHiddenId.Text, sqlCheckWeeks))
+            if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskTimeIsOverLap(TbHiddenIdSchedule.Text, tbStartTime.Value, tbEndTime.Value, TbHiddenId.Text, sqlChecking))
             {
                 lbMessage.Text = "时间与该计划的其他任务时间段有冲突";
                 lbMessage.Visible = true;
                 return;
             }
-
-
 
             si.ScheduleId = TbHiddenIdSchedule.Text;
             si.ScheduleTaskStartTime = tbStartTime.Value;
@@ -347,7 +341,6 @@ namespace MediaMgrSystem.MgrModel
             else
             {
 
-
                 GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
 
             }
@@ -361,7 +354,31 @@ namespace MediaMgrSystem.MgrModel
             {
                 lbSelectedDate.Items.Remove(lbSelectedDate.SelectedItem);
             }
+
+            ProcessWeeksStatus();
+
         }
+
+        private void ProcessWeeksStatus()
+        {
+            if (lbSelectedDate.Items.Count > 0)
+            {
+                for (int i = 0; i < CbWeek.Items.Count; i++)
+                {
+
+                    CbWeek.Items[i].Selected = false;
+                }
+
+                CbWeek.Enabled = false;
+              
+            }
+            else
+            {
+                CbWeek.Enabled = true;
+              
+            }
+        }
+
 
         protected void btnAddDate_Click(object sender, EventArgs e)
         {
@@ -369,6 +386,8 @@ namespace MediaMgrSystem.MgrModel
             {
                 lbSelectedDate.Items.Add(new ListItem() { Text = tbSelectDate.Value, Value = tbSelectDate.Value });
             }
+
+            ProcessWeeksStatus();
 
         }
 

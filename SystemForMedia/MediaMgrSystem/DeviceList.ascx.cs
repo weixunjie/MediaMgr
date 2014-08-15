@@ -43,6 +43,27 @@ namespace MediaMgrSystem
 
         }
 
+     
+        public string GetImageUrl(string ipAddress )
+        {
+
+            string srcName = "ic_image_device";
+
+            if (!CheckDeviceIsOnline(ipAddress))
+            {
+                srcName = "ic_image_device_offline";
+            }
+
+
+
+            if (HttpContext.Current.Session != null && HttpContext.Current.Session["FunctionType"] != null && HttpContext.Current.Session["FunctionType"].ToString() == "V")
+            {
+                srcName = srcName + "_video";
+            }
+
+            return srcName;
+                            
+        }
         public bool CheckDeviceIsOnline(string ipAddress)
         {
             return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }, SingalRClientConnectionType.ANDROID).Count > 0;

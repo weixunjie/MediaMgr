@@ -49,8 +49,7 @@ namespace MediaMgrSystem.MgrModel
 
             ci.ChannelName = this.TbName.Text;
 
-
-
+            
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
                 ci.ChannelId = TbHiddenId.Text;

@@ -12,6 +12,12 @@ namespace MediaMgrSystem.DataModels
 
         public String EncoderName { get; set; }
 
+        public String BaudRate { get; set; }
+
+        public String ClientIdentify { get; set; }
+
+        
+
     }
 
 }

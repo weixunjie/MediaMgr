@@ -37,6 +37,7 @@
 
                 $("#encoderListEncoderClickMenuBox").show().css("left", x).css("top", y);
 
+                
 
             });
 

@@ -33,6 +33,22 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public EncoderInfo GetEncoderByClientIdentify(string clientIdentify)
+        {
+            String sqlStr = "SELECT * FROM ENCODERINFO FROM ClientIdentify='" + clientIdentify + "'";
+
+            List<EncoderInfo> eis = GetEncoderList(sqlStr);
+            if (eis != null && eis.Count() > 0)
+            {
+                return eis[0];
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
         public List<EncoderInfo> GetAllEncoders()
         {
 
@@ -86,6 +102,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         EncoderInfo ei = new EncoderInfo();
                         ei.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
                         ei.EncoderName = dt.Rows[i]["ENCODERNAME"].ToString();
+                        ei.BaudRate = dt.Rows[i]["BAUDRATE"].ToString();
+                        ei.ClientIdentify = dt.Rows[i]["CLIENTIDENTIFY"].ToString();                        
                         encoderInfo.Add(ei);
                     }
                 }

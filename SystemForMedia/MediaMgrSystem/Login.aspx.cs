@@ -36,13 +36,13 @@ namespace MediaMgrSystem
             Hasp hasp = new Hasp(feature);
             HaspStatus status = hasp.Login(vendorCode);
 
-          
-                lbMessage.Visible = true;
-                lbMessage.Text = status.ToString();
 
-                return;
+            lbMessage.Visible = true;
+            lbMessage.Text = status.ToString();
 
-            
+            return;
+
+
         }
 
         protected void Login_Click(object sender, EventArgs e)
@@ -56,13 +56,13 @@ namespace MediaMgrSystem
                 Session["UserCode"] = ui.UserCode;
                 Session["UserName"] = ui.UserName;
                 Session["IsSuperUser"] = ui.UserLevel == "1" ? "1" : null;
-                Response.Redirect("~/AudioBroadcastMain.aspx");
+                Response.Redirect("~/BroadcastMain.aspx");
             }
             else
             {
                 lbMessage.Visible = true;
 
-        
+
                 lbMessage.Text = "登录失败";
                 //Response.Write("<script>alert('登录失败');</script>");
 

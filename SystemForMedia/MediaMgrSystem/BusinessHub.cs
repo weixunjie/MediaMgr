@@ -39,6 +39,27 @@ namespace MediaMgrSystem
             SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
         }
 
+        public void SendEncoderOpenCommand(string clientIdentify,string priority, string groupIds)
+        {
+
+            EncoderControlLogic.SendEncoderOpenCommand(Clients, clientIdentify, priority, groupIds);
+
+
+                           
+
+
+           // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
+            //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
+        }
+
+        public void SendEncoderCloseCommand(string clientIdentify, string groupIds)
+        {
+
+
+            // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
+            //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
+        }
+
 
         public void SendRemoteControlByGroups(string externalPointIds, string groupIds, bool isOpen, string acMode, string acTempure, string scheduleTime, string strWeeks, bool isSchduled)
         {
@@ -228,9 +249,9 @@ namespace MediaMgrSystem
                                     if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
                                     {
                                         SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", false);
-
-                                        GlobalUtils.AddLogs(Clients, "手工播放", "手工播放停止,错误" + rc.arg.message);
-                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放停止,错误" + rc.arg.message, "1024");
+                                        string errorStr = "手工播放停止,错误:";
+                                        GlobalUtils.AddLogs(Clients, "手工播放", errorStr + rc.arg.message);
+                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + rc.arg.message, "1024");
                                     }
                                 }
 
@@ -256,7 +277,7 @@ namespace MediaMgrSystem
 
                                         if (item != null)
                                         {
-                                            GlobalUtils.AddLogs(Clients, "计划任务", item.ChannelName + "播放计划失败，" + rc.arg.message + ", 运行时间：" + item.RunningTime);
+                                            GlobalUtils.AddLogs(Clients, "计划任务", item.ChannelName + "计划失败，" + rc.arg.message + ", 运行时间：" + item.RunningTime);
                                             SendLogic.SendStopRoRepeatCommand(channelId, item.ChannelName, true, Clients, item.GuidId, item.RunningTime, false);
                                         }
 
@@ -305,15 +326,15 @@ namespace MediaMgrSystem
                                     if (que.CommandType == QueueCommandType.MANAULLYPLAY)
                                     {
                                         SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, "", "", false);
-
-                                           GlobalUtils.AddLogs(Clients, "手工播放", "手工播放停止,错误:" + cb.message  );
-                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放完毕停止,错误" + cb.message);
+                                        string errorStr = "手工播放停止,错误:";
+                                        GlobalUtils.AddLogs(Clients, "手工播放", errorStr + cb.message);
+                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + cb.message);
 
                                     }
                                     else if (que.CommandType == QueueCommandType.SCHEDULEPLAY)
                                     {
 
-                                          GlobalUtils.AddLogs(Clients, "计划任务", que.ChannelName + "播放计划失败，" + cb.message + ", 运行时间：" + que.ScheduledTime);
+                                        GlobalUtils.AddLogs(Clients, "计划任务", que.ChannelName + "播放计划失败，" + cb.message + ", 运行时间：" + que.ScheduledTime);
 
                                         SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, que.ScheduleGuid, que.ScheduledTime, false);
                                     }
@@ -346,7 +367,6 @@ namespace MediaMgrSystem
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
 
 
-
                             Clients.Clients(alPCIds).sendRefreshLogMessge(strOperResult, cb.errorCode);
 
                             removeGuid = cb.guidId;
@@ -356,8 +376,6 @@ namespace MediaMgrSystem
                         }
                     }
                 }
-
-
 
                 if (!string.IsNullOrEmpty(matchIPAddress) && !string.IsNullOrEmpty(removeGuid))
                 {
@@ -369,6 +387,8 @@ namespace MediaMgrSystem
                             removedItem = que;
                             break;
                         }
+
+
                     }
                     if (removedItem != null)
                     {
@@ -432,6 +452,34 @@ namespace MediaMgrSystem
         //}
 
 
+        public void SendEncoderTaskControlCommandBack(string encoderResJson)
+        {
+            ComuResponseBase cr = JsonConvert.DeserializeObject<ComuResponseBase>(encoderResJson);
+
+            if (cr != null) 
+            {
+                lock (GlobalUtils.ObjectLockEncoderQueueItem)
+                {
+                    EncoderQueueItem itemToRemoved = null;
+                    foreach (var que in GlobalUtils.EncoderQueues)
+                    {
+                        if (que.GuidIdStr == cr.guidId)
+                        {
+                            itemToRemoved = que;
+                            break;
+                        }
+                    }
+
+                    if (itemToRemoved != null)
+                    {
+                        GlobalUtils.EncoderQueues.Remove(itemToRemoved); 
+                    }
+                }
+            }
+
+            // 
+
+        }
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority)
         {
 

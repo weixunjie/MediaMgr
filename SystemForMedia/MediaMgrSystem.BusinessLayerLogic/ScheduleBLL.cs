@@ -82,7 +82,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
-   
+
 
         public bool CheckProgrameIsUsing(string pid)
         {
@@ -205,9 +205,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public List<ScheduleTaskInfo> GetAllScheduleTaksByScheduleId(string id)
         {
-
             String sqlStr = "SELECT * FROM SCHEDULETASKINFO WHERE SCHEDULEID='" + id + "' order by ScheduleTaskStartTime ";
-
             return GetTasksList(sqlStr);
 
         }
@@ -220,6 +218,54 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return GetTasksList(sqlStr);
 
         }
+
+        public ScheduleTaskInfo GetNextScheduleTask()
+        {
+
+            string strWeek = DateTime.Now.DayOfWeek.ToString();
+            string weekIndex=string.Empty;
+            switch (strWeek)
+            {
+                case "Monday":
+                    weekIndex = "1";
+                    break;
+                case "Tuesday":
+                    weekIndex = "2";
+                    break;
+                case "Wednesday":
+                    weekIndex = "3";
+                    break;
+                case "Thursday":
+                    weekIndex = "4";
+                    break;
+                case "Friday":
+                    weekIndex = "5";
+                    break;
+                case "Saturday":
+                    weekIndex = "6";
+                    break;
+                case "Sunday":
+                    weekIndex = "7";
+                    break;
+
+            }
+       
+            String sqlStr = " SELECT top 1 * FROM SCHEDULETASKINFO  WHERE SCHEDULETASKSTARTTIME >'{0}' AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%')  ORDER BY SCHEDULETASKSTARTTIME  ";
+
+            sqlStr = String.Format(sqlStr, DateTime.Now.ToString("HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
+
+            List<ScheduleTaskInfo> result= GetTasksList(sqlStr);
+
+           if (result!=null && result.Count>0)
+           {
+               return result[0];
+           }
+
+            return null;
+
+        }
+
+
 
         public ScheduleTaskInfo GetAllScheduleTaskById(string id)
         {
@@ -260,7 +306,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public int UpdateScheduleTask(ScheduleTaskInfo si)
         {
             String sqlStr = "UPDATE SCHEDULETASKINFO SET SCHEDULEID='{0}',SCHEDULETASKSTARTTIME='{1}',SCHEDULETASKENDTIME='{2}',SCHEDULETASKPROGARMID='{3}',SCHEDULETASKPRIORITY='{4}',SCHEDULETASKWEEKS='{5}',SCHEDULETASKSPECIALDAYS='{6}',SCHEDULETASKNAME='{7}',SCHEDULETASKSPECIALDAYSTOWEEKS='{8}',ISREPEAT={9} WHERE SCHEDULETASKID={10}";
-            
+
             sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat, si.ScheduleTaskId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);

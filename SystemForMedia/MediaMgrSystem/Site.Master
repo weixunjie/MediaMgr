@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>校园播放系统管理</title>
-    
+
 
 </head>
 <body>
@@ -33,11 +33,11 @@
         <link rel="stylesheet" href='<% =ResolveUrl("~/Content/dateTimePicker.css") %>' type="text/css" />
 
 
-        
+
 
         <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery-1.10.2.js") %>'></script>
 
-        <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery-1.10.2.min.js") %>'></script>
+
 
         <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery.signalR-2.0.3.min.js") %>'></script>
 
@@ -66,7 +66,7 @@
 
 
 
-        <div class='container'>
+        <div class='container' style="margin-bottom: 5px">
 
             <div class='navbar navbar-inverse  '>
 
@@ -86,9 +86,9 @@
                     <% if (Session["UserId"] != null)
                        { %>>
                     <ul class="nav navbar-nav " style="float: right">
-                        <li><a href="<%=ResolveUrl("~/AudioBroadcastMain.aspx") %>">音频广播</a></li>
-
-                   
+                        <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
+                         <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
+                        
 
                         <li class="dropdown" id="accountmenu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
@@ -131,7 +131,11 @@
                     </ul>
                 </div>
             </div>
+               <% if (Session["UserId"] != null)
+                       { %>
+            <div style="margin-left: 5px; margin-bottom: 5px" id="divScheduleText"></div>
 
+            <% } %>
         </div>
 
 
@@ -139,6 +143,43 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>
+
+
+        <script>
+            $(document).ready(function () {
+
+                fun();
+            });
+
+
+            function run() {
+                var interval = setTimeout(fun, 35000);
+            }
+
+            function fun() {
+
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetLasterSchedule",
+                    data: "{'controlName':'LogList'}",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (msg) {
+
+
+                        $("#divScheduleText").html(msg.d);
+
+                    }
+                });
+
+
+
+                run();
+            };
+
+        </script>
 
     </form>
 </body>

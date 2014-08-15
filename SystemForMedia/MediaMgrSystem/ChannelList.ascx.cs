@@ -74,10 +74,38 @@ namespace MediaMgrSystem
         {
             List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetAllProgram();
 
+            return pis;
+
+        }
+
+        public List<ProgramInfo> GetAllVideoProgram()
+        {
+            List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetAllVideoProgram();
 
             return pis;
 
         }
+
+        public List<ProgramInfo> GetAllAuditProgram()
+        {
+            List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetAllAuditProgram();
+
+            return pis;
+
+        }
+
+        public string GetIntervalTimeFromStopToPlay()
+        {
+            ParamConfig pc = GlobalUtils.ParamConfigBLLInstance.GetParamConfig();
+
+            if (pc != null)
+            {
+                return pc.IntervalTimeFromStopToPlay.ToString();
+            }
+
+            return "2500";
+        }
+
 
 
     }

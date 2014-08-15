@@ -21,6 +21,19 @@ alter  table  dbo.ParamConfig add  MaxClientsCountForRemoteControl nvarchar(50)
 GO
 
 alter  table  dbo.ParamConfig drop column  MaxClientsCount 
+go
+update ParamConfig set IntervalTimeFromStopToPlay='2500'
 
 
 
+alter  table  dbo.ParamConfig add  MaxClientsCountForRemoteControl nvarchar(50)
+GO
+
+alter  table  dbo.EncoderInfo add  BaudRate  nvarchar(50)
+GO
+
+alter  table  dbo.EncoderInfo add  ClientIdentify  nvarchar(50)
+GO
+
+alter  table  dbo.EncoderInfo add  Priority  nvarchar(50)
+GO

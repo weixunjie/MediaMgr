@@ -27,7 +27,12 @@ namespace MediaMgrSystem
         REMOTECONTROLMANULCLOSE,
         REMOTECONTROLSCHEDULEOPEN,
         REMOTECONTROLSCHEDULECLOSE,
+
+        ENCODEROPEN,
+        ENCODERCLOSE
     }
+
+
 
     public class RemoteControlQueueItem
     {
@@ -116,6 +121,41 @@ namespace MediaMgrSystem
         }
     }
 
+
+ 
+
+    public class EncoderQueueItem
+    {
+        public string AndriodIpAddressStr
+        { get; set; }
+
+        public QueueCommandType CommandType
+        { get; set; }
+
+        public string GuidIdStr
+        {
+            get;
+            set;
+        }
+
+       
+        public long PushTicks
+        {
+            get;
+            set;
+        }
+
+       
+
+        public string GroupIds
+        {
+            get;
+            set;
+        }
+
+        
+    }
+
     public class ScheduleRunningItem
     {
         public string ChannelId
@@ -155,10 +195,12 @@ namespace MediaMgrSystem
         public static object PublicObjectForLockClientMsg = new object();
 
         public static object LogForLock = new object();
+     
 
         public static string StreamNameBase = "1234567890";
         public static object ObjectLockQueueItem = new object();
         public static object ObjectLockRemoteControlQueueItem = new object();
+        public static object ObjectLockEncoderQueueItem = new object();
         private static object objForLock = new object();
 
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
@@ -190,7 +232,9 @@ namespace MediaMgrSystem
 
         public static LogBLL LogBLLInstance = new LogBLL(DbUtilsInstance);
 
+        public static EncoderRunningClientsBLL EncoderRunningClientsBLLInstance = new EncoderRunningClientsBLL(DbUtilsInstance);
 
+        
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
@@ -212,11 +256,15 @@ namespace MediaMgrSystem
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
 
+  
         public static List<RemoteControlQueueItem> RemoteControlCommandQueues = new List<RemoteControlQueueItem>();
+
+
+        public static List<EncoderQueueItem> EncoderQueues = new List<EncoderQueueItem>();
 
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
 
-
+        
 
         public static bool CheckIfAudio(string fileName)
         {

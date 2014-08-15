@@ -31,8 +31,18 @@
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
              List<MediaMgrSystem.DataModels.ScheduleInfo> schedules = GetAllSchedules();
 
-             List<MediaMgrSystem.DataModels.ProgramInfo> allProgramInfos = GetAllPrograms();
 
+
+             List<MediaMgrSystem.DataModels.ProgramInfo> allProgramInfos = new List<MediaMgrSystem.DataModels.ProgramInfo>();
+
+             if (Session["FunctionType"] != null && Session["FunctionType"].ToString() == "A")
+             {
+                 allProgramInfos=GetAllAuditProgram();
+             }
+             else
+             {
+                 allProgramInfos = GetAllVideoProgram();
+             }
 
              string ids = string.Empty;
              for (int i = 0; i < allChanels.Count; i++) { ids = ids + "#channelDiv" + allChanels[i].ChannelId.ToString() + ","; }; ids = ids.TrimEnd(',');
@@ -82,19 +92,21 @@
             //Stop disable stop and repeta, enabled palying
             if (type == "Stop") {
 
-                            
+
                 $("#btnChannelControlPlay").attr("disabled", false);
 
                 $("#btnChannelControlStop").attr("disabled", true);
 
                 $("#btnChannelControlRepeat").attr("disabled", true);
 
-          
+
 
             }
 
             if (type == "StopAndDelayStart") {
 
+            
+                var timeOut ='<% =GetIntervalTimeFromStopToPlay() %>';
 
 
                 $("#btnChannelControlPlay").attr("disabled", true);
@@ -108,10 +120,8 @@
                 $(function () {
                     setTimeout(function () {
                         setButtonStatus("Stop");
-                    }, 2500);
+                    }, timeOut);
                 })
-
-
 
             }
 
@@ -321,14 +331,14 @@
             }
 
         })
-        
+
 
         $("#btnChannelControlPlay").click(function () {
 
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
                 chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0");
-          
+
                 $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
             }
 
@@ -347,7 +357,7 @@
             chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false);
 
 
-        
+
 
 
             $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
@@ -391,7 +401,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "AudioBroadcastMain.aspx/GetScheduleByChannelId",
+                url: "BroadcastMain.aspx/GetScheduleByChannelId",
                 data: "{'cid':'" + currentOperChannelId + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -418,7 +428,7 @@
             $.ajax({
                 type: "POST",
                 async: true,
-                url: "AudioBroadcastMain.aspx/SaveSchedule",
+                url: "BroadcastMain.aspx/SaveSchedule",
                 data: "{'cid':'" + currentOperChannelId + "',sid:'" + currentOperScheduel + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -483,7 +493,16 @@
         <% } %>
         <div id="channelDiv<%=allChanels[i].ChannelId %>" data-itemid="<%=allChanels[i].ChannelName.Trim() %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
 
+            <%  if (Session["FunctionType"] != null && Session["FunctionType"].ToString() == "A")
+                { %>
             <img src="Images/ic_image_channel.png" width="90" height="99" />
+            <% }
+                else
+                { %>
+
+            <img src="Images/ic_image_channel_video.png" width="90" height="99" />
+
+            <%} %>
         </div>
 
         <div style="clear: both;">

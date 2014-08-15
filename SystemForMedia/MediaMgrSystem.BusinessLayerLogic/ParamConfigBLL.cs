@@ -35,27 +35,33 @@ namespace MediaMgrSystem.BusinessLayerLogic
             {
                 if (dt.Rows.Count > 0)
                 {
+                                        
+      
 
-                    string tmpBufferTimeForManualPlay = dt.Rows[0]["BufferTimeForManualPlay"].ToString();
+                   string tmpBufferTimeForManualPlay = dt.Rows[0]["BufferTimeForManualPlay"].ToString();
 
-                    string tmpBufferTimeForSchedule = dt.Rows[0]["BufferTimeForSchedule"].ToString();
+                   string tmpBufferTimeForSchedule = dt.Rows[0]["BufferTimeForSchedule"].ToString();
+                   string tmpIntervalTimeFromStopToPlay = dt.Rows[0]["IntervalTimeFromStopToPlay"].ToString();
+                   string tmpMaxClientsCountForVideo = dt.Rows[0]["MaxClientsCountForVideo"].ToString();
 
-                    string tmpMaxClientsCount = dt.Rows[0]["MaxClientsCount"].ToString();
+                   string tmpMaxClientsCountForAudio = dt.Rows[0]["MaxClientsCountForAudio"].ToString();
+
+                   string tmpMaxClientsCountForRemoteControl = dt.Rows[0]["MaxClientsCountForRemoteControl"].ToString();
 
                     int tmp;
 
 
-                    if (!string.IsNullOrWhiteSpace(tmpMaxClientsCount))
+                    if (!string.IsNullOrWhiteSpace(tmpMaxClientsCountForVideo))
                     {
                         try
                         {
-                            string plainMaxClientCount = EncryptUtils.DesDecrypt(tmpMaxClientsCount);
+                            string plainMaxClientCount = EncryptUtils.DesDecrypt(tmpMaxClientsCountForVideo);
 
 
                             if (int.TryParse(plainMaxClientCount, out tmp))
                             {
 
-                                pc.MaxClientsCount = tmp;
+                                pc.MaxClientsCountForVideo = tmp;
 
                             }
 
@@ -63,10 +69,55 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         }
                         catch (Exception ex)
                         {
-                            pc.MaxClientsCount = 10;
+                            pc.MaxClientsCountForVideo = 10;
                         }
                     }
 
+
+
+                    if (!string.IsNullOrWhiteSpace(tmpMaxClientsCountForAudio))
+                    {
+                        try
+                        {
+                            string plainMaxClientCount = EncryptUtils.DesDecrypt(tmpMaxClientsCountForAudio);
+
+
+                            if (int.TryParse(plainMaxClientCount, out tmp))
+                            {
+
+                                pc.MaxClientsCountForAudio = tmp;
+
+                            }
+
+
+                        }
+                        catch (Exception ex)
+                        {
+                            pc.MaxClientsCountForAudio = 10;
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(tmpMaxClientsCountForRemoteControl))
+                    {
+                        try
+                        {
+                            string plainMaxClientCount = EncryptUtils.DesDecrypt(tmpMaxClientsCountForRemoteControl);
+
+
+                            if (int.TryParse(plainMaxClientCount, out tmp))
+                            {
+
+                                pc.MaxClientsCountForRemoteControl = tmp;
+
+                            }
+
+
+                        }
+                        catch (Exception ex)
+                        {
+                            pc.MaxClientsCountForRemoteControl = 10;
+                        }
+                    }
 
 
                     if (int.TryParse(tmpBufferTimeForManualPlay, out tmp))
@@ -81,6 +132,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
                     {
 
                         pc.BufferTimeForSchedule = tmp;
+
+                    }
+                    if (int.TryParse(tmpIntervalTimeFromStopToPlay, out tmp))
+                    {
+
+                        pc.IntervalTimeFromStopToPlay = tmp;
 
                     }
 

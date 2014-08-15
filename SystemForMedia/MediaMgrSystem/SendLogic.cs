@@ -29,15 +29,7 @@ namespace MediaMgrSystem
                 GlobalUtils.WriteDebugLogs(aa);
 
                 lock (GlobalUtils.PublicObjectForLockPlay)
-                {
-                    aa = "Play After PublicObjectForLockPlay viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
-                    System.Diagnostics.Debug.WriteLine(aa);
-                    GlobalUtils.WriteDebugLogs(aa);
-
-
-                    aa = "WS ID= " + GlobalUtils.WindowsServiceConnectionId + " " + "VS ID" + GlobalUtils.VideoServerConnectionId + DateTime.Now.ToString("HH:mm:ss fff");
-                    System.Diagnostics.Debug.WriteLine(aa);
-                    GlobalUtils.WriteDebugLogs(aa);
+                {               
 
 
                     bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);

@@ -104,7 +104,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "AudioBroadcastMain.aspx/GetChannelByGroupId",
+                url: "BroadcastMain.aspx/GetChannelByGroupId",
                 data: "{'gid':'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -128,7 +128,7 @@
             $.ajax({
                 type: "POST",
                 async: true,
-                url: "AudioBroadcastMain.aspx/SaveGroupChannel",
+                url: "BroadcastMain.aspx/SaveGroupChannel",
                 data: "{'cid':'" + currentOperChannel + "',gid:'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -164,7 +164,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "AudioBroadcastMain.aspx/GetEncoderByGroupId",
+                url: "BroadcastMain.aspx/GetEncoderByGroupId",
                 data: "{'gid':'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -191,7 +191,7 @@
             $.ajax({
                 type: "POST",
                 async: true,
-                url: "AudioBroadcastMain.aspx/SaveGroupEncoder",
+                url: "BroadcastMain.aspx/SaveGroupEncoder",
                 data: "{'cid':'" + currentOperEncoder + "',gid:'" + currentOperGroup + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -322,7 +322,7 @@
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "AudioBroadcastMain.aspx/SaveDeviceGroup",
+                url: "BroadcastMain.aspx/SaveDeviceGroup",
                 data: "{'deivceId':'" + a + "','groupId':'" + groupId + "'}",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -407,13 +407,12 @@
                                     <div class="col-md-4">
                                         <p style="text-align: center">
 
-                                            <% string srcName = ResolveUrl("~/Images/ic_image_device.png");
+                                            <% 
 
-                                               if (!CheckDeviceIsOnline(dGroups[l].Devices[k].DeviceIpAddress))
-                                               {
-                                                   srcName = ResolveUrl("~/Images/ic_image_device_offline.png");
-                                               }                                  
+                                                
+                                               string srcName=GetImageUrl(dGroups[l].Devices[k].DeviceIpAddress);
                                                
+                                               srcName = ResolveUrl("~/Images/"+srcName+".png");
                                             %>
 
 
@@ -486,8 +485,10 @@
                                     <div class="col-md-4">
                                         <p style="text-align: center">
 
-
-                                            <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/ic_image_group.png" style="width: 50px; height: 50px" />
+                                            <% string strImageName ="ic_image_group.png";
+                                               if (Session["FunctionType"] != null && Session["FunctionType"].ToString() == "V") { strImageName = "ic_image_group_video.png"; } %>
+          
+                                            <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/<% =strImageName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p id="ptext" style="text-align: center">
                                             <% =dGroups[k].GroupName %>
