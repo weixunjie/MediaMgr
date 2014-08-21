@@ -87,22 +87,14 @@
                        { %>>
                     <ul class="nav navbar-nav " style="float: right">
                         <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
-                         <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
-                        
+                        <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
+
 
                         <li class="dropdown" id="accountmenu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
                             <ul class="dropdown-menu-spec dropdown-menu " style="min-width: 80px">
                                 <li><a href="<%=ResolveUrl("~/MgrModel/ProgramMgrList.aspx") %>">节目管理 </a></li>
 
-
-                                <li><a href="<%=ResolveUrl("~/MgrModel/GroupMgrList.aspx") %>">分组管理 </a></li>
-
-
-                                <li><a href="<%=ResolveUrl("~/MgrModel/DeviceMgrList.aspx") %>">设备管理</a></li>
-
-
-                                <li><a href="<%=ResolveUrl("~/MgrModel/ChannelMgrList.aspx") %>">通道管理</a></li>
 
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/ScheduleMgrList.aspx") %>">计划管理</a></li>
@@ -115,6 +107,17 @@
                                 %>
 
 
+
+
+                                <li><a href="<%=ResolveUrl("~/MgrModel/GroupMgrList.aspx") %>">分组管理 </a></li>
+
+
+                                <li><a href="<%=ResolveUrl("~/MgrModel/DeviceMgrList.aspx") %>">设备管理</a></li>
+
+
+                                <li><a href="<%=ResolveUrl("~/MgrModel/ChannelMgrList.aspx") %>">通道管理</a></li>
+
+
                                 <li><a href="<%=ResolveUrl("~/MgrModel/LogMgrList.aspx") %>">日志管理</a></li>
 
 
@@ -122,6 +125,8 @@
                                 <% }
                            }
                                 %>
+
+                                <li><a href="<%=ResolveUrl("~/MgrModel/LogMgrList.aspx") %>">日志管理</a></li>
                             </ul>
                         </li>
 
@@ -131,9 +136,11 @@
                     </ul>
                 </div>
             </div>
-               <% if (Session["UserId"] != null)
-                       { %>
-            <div style="margin-left: 5px; margin-bottom: 5px" id="divScheduleText"></div>
+            <% if (Session["UserId"] != null)
+               { %>
+            <div style="margin-left: 5px; float: left; margin-bottom: 5px" id="divScheduleText"></div>
+
+            <div style="margin-left: 5px; float: right; margin-bottom: 5px; margin-right: 5px" id="divTimeText"></div>
 
             <% } %>
         </div>
@@ -148,15 +155,44 @@
         <script>
             $(document).ready(function () {
 
-                fun();
+                funUpdateLasterSchedule();
+
+                funUpdateTime();
             });
 
+            //
 
-            function run() {
-                var interval = setTimeout(fun, 35000);
+            function runUpdateTime() {
+                var interval = setTimeout(funUpdateTime, 1000);
             }
 
-            function fun() {
+            function funUpdateTime() {
+
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetNowTime",
+                    data: null,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (msg) {
+
+                        $("#divTimeText").html(msg.d);
+
+                    }
+                });
+
+
+
+                runUpdateTime();
+            };
+
+            function runUpdateLasterSchedule() {
+                var interval = setTimeout(funUpdateLasterSchedule, 35000);
+            }
+
+            function funUpdateLasterSchedule() {
 
 
                 $.ajax({
@@ -176,7 +212,7 @@
 
 
 
-                run();
+                runUpdateLasterSchedule();
             };
 
         </script>

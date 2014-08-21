@@ -11,20 +11,60 @@
 <script type="text/javascript">
 
 
-    var currentOperChannelId = '<% =GetIsPlayingChannelId() %>';
-    var currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
-    var currentPlayPIds = '<% =GetIsPlayingPIds() %>';
-    var boolIsPlaying = '<% = GetIsPlaying() %>';
-    var boolIsRepeat = '<% = GetIsChannelManuallyPlayingIsRepeat() %>';
+    var currentOperChannelId;
+    var currentOperChannelName;
+    var currentPlayPIds;
+    var boolIsPlaying;
+    var boolIsRepeat;
+
+    var currentPlayingFunction;
+    var currentFunction;
+    var isDisabledToSelectProgram = false;
+
 
     $(document).ready(function () {
 
         setButtonStatus("AllDisabled");
 
-        if (boolIsPlaying == "true") {
-            setButtonStatus("Play");
 
-            $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
+        currentPlayingFunction = '<% =GetCurrentPlayFunctionVideoFunction()%>';
+        currentFunction = '<% =CheckIfVideoFunction()%>';
+        
+        currentOperChannelId = '<% =GetIsPlayingChannelId() %>';
+        currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
+              <% string[] pids = GetIsPlayingPIds(); %>
+
+        currentPlayPIds = new Array();
+
+                <% if (pids != null && pids.Length > 0)
+                   {
+                       for (int i = 0; i < pids.Length; i++)
+                       {
+                          %>
+
+        currentPlayPIds.push(<% =pids[i] %>);
+
+                     <% }
+                   }
+                   %>
+
+
+
+        boolIsPlaying = '<% = GetIsPlaying() %>';
+
+  
+
+        if (boolIsPlaying == "true") {
+
+            if (currentPlayingFunction == currentFunction) {
+                setButtonStatus("Play");
+
+
+                $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
+            }
+           
+            $("#btnConfirmPlayPrograme").attr("disabled", true);
+            isDisabledToSelectProgram = true;
         }
 
 
@@ -37,7 +77,7 @@
 
              if (Session["FunctionType"] != null && Session["FunctionType"].ToString() == "A")
              {
-                 allProgramInfos=GetAllAuditProgram();
+                 allProgramInfos = GetAllAuditProgram();
              }
              else
              {
@@ -54,18 +94,51 @@
 
 
 
-        chat.client.sendManualPlayStatus = function (result, error) {
+        chat.client.sendManualPlayStatus = function (result, error, cid, cname, pids, strPlayingFunction) {
 
+
+
+            currentPlayingFunction = strPlayingFunction;
+
+            currentOperChannelId = cid;
+            currentOperChannelName = cname;
+
+            currentPlayPIds = pids;
+
+            //  debugger;
             if (error != "0") {
-
                 isPlaying = false;
-
                 setButtonStatus("Stop");
+                $("#btnConfirmPlayPrograme").attr("disabled", false);
+                isDisabledToSelectProgram = false;
                 $("#divChannelInfo").html(result);
+
+            }
+            else {
+
+                if (result == "Play") {
+                    if (currentPlayingFunction == currentFunction) {
+                        setButtonStatus("Play");               
+
+                    }
+                    else {
+                        setButtonStatus("AllDisabled");
+                      
+                    }
+
+                    $("#btnConfirmPlayPrograme").attr("disabled", true);
+                    isDisabledToSelectProgram = true;
+                }
+                else if (result = "Stop") {
+                    setButtonStatus("StopAndDelayStart");
+                    $("#btnConfirmPlayPrograme").attr("disabled", false);
+                    isDisabledToSelectProgram = false;
+                }
             }
 
-        }
 
+        }
+        
 
 
         function setButtonStatus(type) {
@@ -93,7 +166,11 @@
             if (type == "Stop") {
 
 
+
                 $("#btnChannelControlPlay").attr("disabled", false);
+
+
+
 
                 $("#btnChannelControlStop").attr("disabled", true);
 
@@ -105,8 +182,8 @@
 
             if (type == "StopAndDelayStart") {
 
-            
-                var timeOut ='<% =GetIntervalTimeFromStopToPlay() %>';
+
+                var timeOut = '<% =GetIntervalTimeFromStopToPlay() %>';
 
 
                 $("#btnChannelControlPlay").attr("disabled", true);
@@ -309,6 +386,11 @@
 
         $("#btnConfirmPlayPrograme").click(function () {
 
+            if (isDisabledToSelectProgram)
+            {
+                return;
+            }
+
             if ($("#lbSelectedProgram option").length <= 0) {
                 alert("请选择节目");
             }
@@ -335,9 +417,10 @@
 
         $("#btnChannelControlPlay").click(function () {
 
+            // debugger;
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0");
+                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0", '<% =CheckIfVideoFunction()%>');
 
                 $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
             }
@@ -353,12 +436,12 @@
 
             setButtonStatus("StopAndDelayStart");
 
+          //  debugger;
 
-            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false);
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false, '<% =CheckIfVideoFunction()%>');
 
 
-
-
+            
 
             $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
 

@@ -86,10 +86,36 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public int GetDevicesCount()
+        public int GetDevicesCount(BusinessType bType,string exclueId)
         {
 
             String sqlStr = "sELECT COUNT(DEVICEID) FROM DEVICEINFO";
+
+            if (bType != BusinessType.ALL)
+            {
+                string strAnd = string.Empty;
+                switch (bType)
+                {
+                    case BusinessType.AUDITBROADCAST:
+                        strAnd = "  ISUSEDFORAUDIO=1";
+                        break;
+                    case BusinessType.VIDEOONLINE:
+                        strAnd = "  ISUSEDFORENCODER=1";
+                        break;
+
+                    case BusinessType.REMOVECONTROL:
+                        strAnd = "  ISUSEDFORREMOTECONTROL=1";
+                        break;
+                }
+
+                sqlStr = sqlStr + " WHERE " + strAnd ;
+
+                if (!string.IsNullOrWhiteSpace(exclueId))
+                {
+                    sqlStr = sqlStr+ " AND DEVICEID<>" + exclueId;
+                }
+            
+            }
 
 
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
@@ -103,6 +129,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+
+
         public int RemoveDevice(string deviceId)
         {
             String sqlStr = "DELETE FROM DEVICEINFO WHERE DEVICEID=" + deviceId;
@@ -111,25 +139,62 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public int AddDevice(DeviceInfo di)
+        public int CheckIsOverMaxDevice(DeviceInfo di)
         {
             ParamConfig pc = paramConfigBLL.GetParamConfig();
 
-            //if (GetDevicesCount() >= pc.MaxClientsCount)
-            //{
-            //    logBLL.AddLog("系统提示", "终端已经达到最大数量");
+            if (GetDevicesCount(BusinessType.AUDITBROADCAST,di.DeviceId) >= pc.MaxClientsCountForAudio)
+            {
+                if (di.UsedToAudioBroandcast)
+                {
+                    
 
-            //    return -1;
-            //}
-
-           
-                String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID,ISUSEDFORAUDIO,ISUSEDFORENCODER,ISUSEDFORREMOTECONTROL) values ('{0}','{1}','{2}','{3}','{4}','{5}')";
-
-                sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.UsedToRemoteControl ? 1 : 0);
+                    return -10;
+                }
+            }
 
 
-                return dbUitls.ExecuteNonQuery(sqlStr);
-        //    }
+            if (GetDevicesCount(BusinessType.VIDEOONLINE,di.DeviceId) >= pc.MaxClientsCountForVideo)
+            {
+                if (di.UsedToVideoOnline)
+                {  
+          
+                    return -11;
+                }
+            }
+
+
+            if (GetDevicesCount(BusinessType.REMOVECONTROL,di.DeviceId) >= pc.MaxClientsCountForRemoteControl)
+            {
+                if (di.UsedToRemoteControl)
+                {
+                  
+
+
+                    return -12;
+                }
+            }
+
+            return 0;
+        }
+        public int AddDevice(DeviceInfo di)
+        {
+
+            int intRes = CheckIsOverMaxDevice(di);
+            if (intRes < 0)
+            {
+                return intRes;
+            }
+
+
+
+            String sqlStr = "INSERT INTO DEVICEINFO(DEVICENAME,DEVICEIPADDRESS,GROUPID,ISUSEDFORAUDIO,ISUSEDFORENCODER,ISUSEDFORREMOTECONTROL) values ('{0}','{1}','{2}','{3}','{4}','{5}')";
+
+            sqlStr = String.Format(sqlStr, di.DeviceName, di.DeviceIpAddress, di.GroupId, di.UsedToAudioBroandcast ? 1 : 0, di.UsedToVideoOnline ? 1 : 0, di.UsedToRemoteControl ? 1 : 0);
+
+
+            return dbUitls.ExecuteNonQuery(sqlStr);
+            //    }
 
 
 

@@ -36,7 +36,7 @@ namespace MediaMgrSystem
                 ///Default to audit
                 Session["FunctionType"] = "A";
             }
- 
+
         }
 
         public string getDataTime()
@@ -52,7 +52,7 @@ namespace MediaMgrSystem
 
             if (si != null)
             {
-                return "今日下一个计划："+si.ScheduleTaskStartTime;
+                return "今日下一个计划：" + si.ScheduleTaskStartTime;
             }
             else
             {
@@ -60,8 +60,12 @@ namespace MediaMgrSystem
             }
         }
 
-
-      
+        [WebMethod]
+        public static string GetNowTime()
+        {
+            return DateTime.Now.ToString("yyyy年MM月dd日 HH时mm分ss秒");
+        }       
+        
 
         [WebMethod]
         public static string RangerUserControl(string controlName)
@@ -87,7 +91,7 @@ namespace MediaMgrSystem
             return result;
         }
 
-   
+
 
         [WebMethod]
         public static void SaveDeviceGroup(string deivceId, string groupId)
@@ -107,16 +111,7 @@ namespace MediaMgrSystem
 
                 }
             }
-            //System.Threading.Thread.Sleep(5000);
-
-
-            //JsonString js = new JsonString();
-            //js.StrValue = GuidId;
-
-            //List<JsonString> strs = new List<JsonString>();
-            //strs.Add(js);
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(strs);
-
+  
 
         }
 
@@ -136,9 +131,9 @@ namespace MediaMgrSystem
 
         }
         [WebMethod]
-        public static void SaveGroupChannelAndEncoder(string cid, string gid,string eid)
+        public static void SaveGroupChannelAndEncoder(string cid, string gid, string eid)
         {
-            GlobalUtils.GroupBLLInstance.UpdateGroupChannelAndEncoder(gid, cid,eid);
+            GlobalUtils.GroupBLLInstance.UpdateGroupChannelAndEncoder(gid, cid, eid);
         }
 
         [WebMethod]
@@ -152,13 +147,13 @@ namespace MediaMgrSystem
         {
             GlobalUtils.GroupBLLInstance.UpdateGroupEncoder(gid, cid);
         }
-          
-        
+
+
 
         [WebMethod]
         public static string GetChannelByGroupId(string gid)
         {
-          
+
 
             List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetGroupById(gid);
 

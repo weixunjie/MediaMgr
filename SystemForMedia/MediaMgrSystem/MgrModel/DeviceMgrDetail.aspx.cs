@@ -54,7 +54,7 @@ namespace MediaMgrSystem.MgrModel
                     cbFunction.Items[1].Selected = di.UsedToVideoOnline;
 
                     cbFunction.Items[2].Selected = di.UsedToRemoteControl;
-                    
+
                     var found = ddGroups.Items.FindByValue(di.GroupId);
 
                     if (found != null)
@@ -86,10 +86,10 @@ namespace MediaMgrSystem.MgrModel
             {
                 lbMessage.Visible = true;
                 lbMessage.Text = "分组正在使用，不能修改";
-                return;                    
+                return;
             }
 
-           
+
             DeviceInfo di = new DeviceInfo();
 
             di.DeviceName = TbName.Text;
@@ -105,25 +105,62 @@ namespace MediaMgrSystem.MgrModel
 
             di.UsedToRemoteControl = cbFunction.Items[2].Selected;
 
-            
+
+
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
                 di.DeviceId = TbHiddenId.Text;
+
+                int intResult = deviceBLL.CheckIsOverMaxDevice(di);
+                if (intResult < 0)
+                {
+                    SetOverMaxMessage(intResult,false);
+                    return;
+                }
 
                 deviceBLL.UpdateDevice(di);
             }
             else
             {
-                if (deviceBLL.AddDevice(di) == -1)
-                {
-                    lbMessage.Text = "不能添加终端，端已经达到最大数量";
-                    lbMessage.Visible = true;
+                int resultInt = deviceBLL.AddDevice(di);
 
+                if (resultInt < 0)
+                {
+                    SetOverMaxMessage(resultInt,true);
                     return;
                 }
+
+
             }
 
             Response.Redirect("~/MgrModel/DeviceMgrList.aspx");
+        }
+
+        private void SetOverMaxMessage(int resultInt, bool isAdd)
+        {
+            string msg = string.Empty;
+            switch (resultInt)
+            {
+                case -10:
+                    msg = "音频";
+                    break;
+
+                case -11:
+                    msg = "视频";
+                    break;
+
+                case -12:
+                    msg = "物联";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(msg))
+            {
+                string opStr = isAdd ? "添加" : "修改";
+                lbMessage.Text = "不能" + opStr + "终端，" + msg + "终端已经达到最大数量";
+                lbMessage.Visible = true;
+
+            }
         }
     }
 }

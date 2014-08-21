@@ -29,6 +29,13 @@ update ParamConfig set IntervalTimeFromStopToPlay='2500'
 alter  table  dbo.ParamConfig add  MaxClientsCountForRemoteControl nvarchar(50)
 GO
 
+update ParamConfig set MaxClientsCountForVideo='XoYmQBH84Vw='
+
+update ParamConfig set MaxClientsCountForAudio='XoYmQBH84Vw='
+update ParamConfig set MaxClientsCountForRemoteControl='XoYmQBH84Vw='
+
+
+
 alter  table  dbo.EncoderInfo add  BaudRate  nvarchar(50)
 GO
 

@@ -20,15 +20,38 @@ namespace MediaMgrSystem
 
         public List<GroupInfo> GetAllGroupsIncludeDefaultGroup()
         {
-            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroups();
+            List<GroupInfo> gis = null;
 
-          
+            if (GlobalUtils.CheckIfVideoFunction())
+            {
+
+                gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.VIDEOONLINE);
+
+            }
+            else
+            {
+                gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.AUDITBROADCAST);
+
+            }
+
 
             GroupInfo groupDefault = new GroupInfo();
 
             groupDefault.GroupId = "-1";
             groupDefault.GroupName = "默认分组";
-            groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroup("-1");
+
+            if (GlobalUtils.CheckIfVideoFunction())
+            {
+                groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroupWithFilter("-1", BusinessType.VIDEOONLINE);
+
+            }
+            else
+            {
+                groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroupWithFilter("-1", BusinessType.AUDITBROADCAST);
+
+            }
+
+
 
             gis.Insert(0, groupDefault);
 
@@ -37,14 +60,39 @@ namespace MediaMgrSystem
         }
 
 
-        public bool CheckIfPlaying( )
+        public bool CheckIfPlaying()
         {
             return GlobalUtils.CheckIfPlaying();
 
         }
 
-     
-        public string GetImageUrl(string ipAddress )
+        public bool CheckIsSupperUser()
+        {
+            if (HttpContext.Current != null &&
+                HttpContext.Current.Session["IsSuperUser"] != null
+                && HttpContext.Current.Session["IsSuperUser"].ToString() == "1")
+            {
+                return true;
+            }
+
+            return false;
+
+
+        }
+
+   
+
+
+
+        public string GetGroupImageUrl()
+        {
+            string srcName = "ic_image_group.png";
+            if ( GlobalUtils.CheckIfVideoFunction()) { srcName = "ic_image_group_video.png"; }
+
+
+            return srcName;
+        }
+        public string GetImageUrl(string ipAddress)
         {
 
             string srcName = "ic_image_device";
@@ -56,13 +104,13 @@ namespace MediaMgrSystem
 
 
 
-            if (HttpContext.Current.Session != null && HttpContext.Current.Session["FunctionType"] != null && HttpContext.Current.Session["FunctionType"].ToString() == "V")
+            if (GlobalUtils.CheckIfVideoFunction())
             {
                 srcName = srcName + "_video";
             }
 
             return srcName;
-                            
+
         }
         public bool CheckDeviceIsOnline(string ipAddress)
         {

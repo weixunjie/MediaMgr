@@ -138,6 +138,23 @@ namespace MediaMgrSystem
             set;
         }
 
+        public string EncoderClientIdentify
+        {
+            get;
+            set;
+        }
+
+        public string EncoderPriority
+        {
+            get;
+            set;
+        }
+
+        public string EncoderGroupIds
+        {
+            get;
+            set;
+        }
        
         public long PushTicks
         {
@@ -147,11 +164,7 @@ namespace MediaMgrSystem
 
        
 
-        public string GroupIds
-        {
-            get;
-            set;
-        }
+    
 
         
     }
@@ -246,6 +259,8 @@ namespace MediaMgrSystem
         public static string[] ChannelManuallyPlayingPids = null;
 
 
+        public static BusinessType ChannelManuallyPlayingFunction = BusinessType.AUDITBROADCAST;
+
         public static string ChannelManuallyPlayingChannelId = string.Empty;
 
         public static string ChannelManuallyPlayingChannelName = string.Empty;
@@ -286,6 +301,19 @@ namespace MediaMgrSystem
 
         }
 
+        
+
+        public static string CheckIfChannelManuallyPlayingFunctionIsCurrent()
+        {
+            if (GlobalUtils.CheckIfVideoFunction())
+            {
+                return (GlobalUtils.ChannelManuallyPlayingFunction == BusinessType.VIDEOONLINE).ToString().ToLower();
+            }
+            else
+            {
+                return (GlobalUtils.ChannelManuallyPlayingFunction == BusinessType.AUDITBROADCAST).ToString().ToLower();
+            }
+        }
         public static string WindowsServiceConnectionId
         {
             get
@@ -426,6 +454,21 @@ namespace MediaMgrSystem
             return string.Empty;
         }
 
+        public static bool CheckIfVideoFunction()
+        {
+
+            if (HttpContext.Current.Session != null &&
+                HttpContext.Current.Session["FunctionType"] != null &&
+                HttpContext.Current.Session["FunctionType"].ToString() == "V")
+            {
+
+                return true;
+            }
+
+
+            return false;
+        }
+
         public static  bool CheckIfPlaying()
         {
            
@@ -476,6 +519,10 @@ namespace MediaMgrSystem
 
         }
 
+        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode)
+        {
+            hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction == BusinessType.AUDITBROADCAST ? "1" : "2");
+        }
 
         public static List<string> GetAllPCDeviceConnectionIds()
         {

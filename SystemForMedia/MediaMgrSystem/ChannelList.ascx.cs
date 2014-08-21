@@ -40,10 +40,23 @@ namespace MediaMgrSystem
             return GlobalUtils.IsChannelManuallyPlaying.ToString().ToLower();
         }
 
+        public string CheckIfVideoFunction()
+        {
+            return GlobalUtils.CheckIfVideoFunction()?"2":"1";
+        }
+
+        public string GetCurrentPlayFunctionVideoFunction()
+        {
+            return GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.VIDEOONLINE ? "2" : "1";
+        }
+
         public string[] GetIsPlayingPIds()
         {
             return GlobalUtils.ChannelManuallyPlayingPids;
         }
+
+       
+
 
         public string GetIsPlayingChannelId()
         {

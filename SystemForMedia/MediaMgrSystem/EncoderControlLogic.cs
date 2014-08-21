@@ -46,8 +46,65 @@ namespace MediaMgrSystem
                     }
                 }
 
+                RequestSocketToOperation(hub,clientIdentify, CommandTypeEnum.ENCODEROPEN);
+
+            }
+
+        }
+
+        public static void SendEncoderCloseCommand(IHubCallerConnectionContext hub, string clientIdentify, string groupIds)
+        {
+
+            lock (GlobalUtils.ObjectLockEncoderQueueItem)
+            {
+                List<RunningEncoder> res = GlobalUtils.EncoderRunningClientsBLLInstance.GetAllEncoderRunning();
+
+                if (res != null)
+                { 
+                    bool isFound = false;
+                    foreach (var re in res)
+                    {
+                       
+                        if (re.ClientIdentify == clientIdentify)
+                        {                                                     
+                            isFound = true;
+                            break;
+                        }
+                      
+                    }
+
+                    if (!isFound)
+                    {
+                        GlobalUtils.AddLogs(hub, "呼叫台操作", clientIdentify + " 打开失败，呼叫台不在运行中");
+
+                    }
+                }
 
 
+                RequestSocketToOperation(hub, clientIdentify, CommandTypeEnum.ENCODERCLOSE);
+
+
+
+            }
+
+        }
+
+        private  static void RequestSocketToOperation(IHubCallerConnectionContext hub, string clientIdentify, CommandTypeEnum cmd)
+        {
+
+            if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+            {
+
+                EncoderCommandBase cb = new EncoderCommandBase();
+                cb.clientIdentify = clientIdentify;
+                cb.commandType = cmd;
+                cb.guidId = Guid.NewGuid().ToString();
+
+
+                GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = cb.guidId, CommandType = QueueCommandType.ENCODEROPEN, PushTicks = DateTime.Now.Ticks });
+                hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+
+                ProcessTimeOutRequest(hub);
             }
 
         }
@@ -62,7 +119,7 @@ namespace MediaMgrSystem
 
                 foreach (var ip in clientIps)
                 {
-                    GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { AndriodIpAddressStr = ip, GuidIdStr = guidId, GroupIds = groupIds, PushTicks = currentTicks, CommandType = cmdType });
+                    GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { AndriodIpAddressStr = ip, GuidIdStr = guidId,  PushTicks = currentTicks, CommandType = cmdType });
                 }
             }
         }
@@ -73,8 +130,7 @@ namespace MediaMgrSystem
             try
             {
                 Thread.Sleep(4000);
-
-
+                
                 lock (GlobalUtils.ObjectLockEncoderQueueItem)
                 {
                     IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
@@ -121,7 +177,7 @@ namespace MediaMgrSystem
         }
 
 
-        public static void SendEncoderOpenCommandToAndroid(IHubCallerConnectionContext hub, string clientIdentify, string priority, string groupIds)
+        public static void SendEncoderCommandToAndroid(IHubCallerConnectionContext hub, string clientIdentify, string groupIds,bool isStop)
         {
 
             lock (GlobalUtils.ObjectLockEncoderQueueItem)
@@ -159,7 +215,7 @@ namespace MediaMgrSystem
 
                     EncoderOpenCommand dopc=new EncoderOpenCommand();
 
-                    dopc.commandType=CommandTypeEnum.ENCODEROPEN;
+                    dopc.commandType= isStop? CommandTypeEnum.ENCODERCLOSE: CommandTypeEnum.ENCODEROPEN;
 
                     dopc.guidId=Guid.NewGuid().ToString();
 
@@ -175,6 +231,8 @@ namespace MediaMgrSystem
                     //{"guidId":"2847f884-a55b-4375-aca4-a7f2f2df08b9","commandType":"404"," message":””,"arg":{" udpBroadcastAddress":"udp://229.0.0.1:5000", “streamName”:”123789101”, baudRate  ”:”100”} } }
 
                     PushRemoteControlQueue(QueueCommandType.ENCODEROPEN, ipsNeedToSend, groupIds, dopc.guidId);
+
+                    ProcessTimeOutRequest(hub);
                 }
             }
 

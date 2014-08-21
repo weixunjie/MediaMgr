@@ -26,35 +26,35 @@ namespace MediaMgrSystem
         /// 2: repeat
         /// </summary>
         /// <param name="commandType"></param>
-        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId, bool isRepeat)
+        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId, bool isRepeat, string bType)
         {
             GlobalUtils.ChannelManuallyPlayingIsRepeat = isRepeat;
-            SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "");
+            SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "", bType == "1" ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
 
         }
 
-        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId, string isRepeat)
+        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId, string isRepeat, string bType)
         {
             GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
-            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
+            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", bType == "1" ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
         }
 
-        public void SendEncoderOpenCommand(string clientIdentify,string priority, string groupIds)
+        public void SendEncoderOpenCommand(string clientIdentify, string priority, string groupIds)
         {
 
             EncoderControlLogic.SendEncoderOpenCommand(Clients, clientIdentify, priority, groupIds);
 
 
-                           
 
 
-           // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
+
+            // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
             //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
         }
 
         public void SendEncoderCloseCommand(string clientIdentify, string groupIds)
         {
-
+            EncoderControlLogic.SendEncoderCloseCommand(Clients, clientIdentify, groupIds);
 
             // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
             //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
@@ -135,9 +135,6 @@ namespace MediaMgrSystem
                             {
 
                                 strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
-
-
-
 
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
                                 strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
@@ -236,9 +233,10 @@ namespace MediaMgrSystem
                                 {
                                     if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
                                     {
-                                        SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", false);
+                                        SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", GlobalUtils.ChannelManuallyPlayingFunction, false, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
 
-                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放完毕停止", "1024");
+                                        GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024");
+                                        // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
                                     }
                                 }
                             }
@@ -248,10 +246,12 @@ namespace MediaMgrSystem
                                 {
                                     if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
                                     {
-                                        SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", false);
+                                        SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", GlobalUtils.ChannelManuallyPlayingFunction, false);
                                         string errorStr = "手工播放停止,错误:";
                                         GlobalUtils.AddLogs(Clients, "手工播放", errorStr + rc.arg.message);
-                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + rc.arg.message, "1024");
+                                        //  Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + rc.arg.message, "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids);
+
+                                        GlobalUtils.SendManuallyClientNotice(Clients, errorStr + rc.arg.message, "1024");
                                     }
                                 }
 
@@ -269,7 +269,7 @@ namespace MediaMgrSystem
 
                                                 item = s;
                                                 break;
-                                                //  Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("手工播放完毕停止,错误" + rc.arg.message, "1024");
+
 
                                             }
 
@@ -278,7 +278,7 @@ namespace MediaMgrSystem
                                         if (item != null)
                                         {
                                             GlobalUtils.AddLogs(Clients, "计划任务", item.ChannelName + "计划失败，" + rc.arg.message + ", 运行时间：" + item.RunningTime);
-                                            SendLogic.SendStopRoRepeatCommand(channelId, item.ChannelName, true, Clients, item.GuidId, item.RunningTime, false);
+                                            SendLogic.SendStopRoRepeatCommand(channelId, item.ChannelName, true, Clients, item.GuidId, item.RunningTime, BusinessType.AUDITBROADCAST, false);
                                         }
 
 
@@ -325,10 +325,13 @@ namespace MediaMgrSystem
                                 {
                                     if (que.CommandType == QueueCommandType.MANAULLYPLAY)
                                     {
-                                        SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, "", "", false);
+                                        SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, "", "", GlobalUtils.ChannelManuallyPlayingFunction, false);
                                         string errorStr = "手工播放停止,错误:";
                                         GlobalUtils.AddLogs(Clients, "手工播放", errorStr + cb.message);
-                                        Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + cb.message);
+
+                                        GlobalUtils.SendManuallyClientNotice(Clients, errorStr + cb.message, "211");
+
+                                        //Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + cb.message, "211", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
 
                                     }
                                     else if (que.CommandType == QueueCommandType.SCHEDULEPLAY)
@@ -336,7 +339,7 @@ namespace MediaMgrSystem
 
                                         GlobalUtils.AddLogs(Clients, "计划任务", que.ChannelName + "播放计划失败，" + cb.message + ", 运行时间：" + que.ScheduledTime);
 
-                                        SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, que.ScheduleGuid, que.ScheduledTime, false);
+                                        SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, que.ScheduleGuid, que.ScheduledTime, BusinessType.AUDITBROADCAST, false);
                                     }
 
 
@@ -398,6 +401,8 @@ namespace MediaMgrSystem
             }
         }
 
+
+
         //private void ThreadToRunStartTask(object para)
         //{
 
@@ -456,7 +461,7 @@ namespace MediaMgrSystem
         {
             ComuResponseBase cr = JsonConvert.DeserializeObject<ComuResponseBase>(encoderResJson);
 
-            if (cr != null) 
+            if (cr != null)
             {
                 lock (GlobalUtils.ObjectLockEncoderQueueItem)
                 {
@@ -470,9 +475,19 @@ namespace MediaMgrSystem
                         }
                     }
 
+                    if (cr.errorCode != "0")
+                    {
+                        string operStr = itemToRemoved.CommandType == QueueCommandType.ENCODEROPEN ? "打开 " : " 关闭";
+                        GlobalUtils.AddLogs(Clients, "呼叫台操作", "呼叫台" + operStr + "失败，错误" + cr.message);
+                    }
+                    else
+                    {
+                        EncoderControlLogic.SendEncoderCommandToAndroid(Clients, itemToRemoved.EncoderClientIdentify, itemToRemoved.EncoderGroupIds, itemToRemoved.CommandType == QueueCommandType.ENCODERCLOSE);
+                    }
+
                     if (itemToRemoved != null)
                     {
-                        GlobalUtils.EncoderQueues.Remove(itemToRemoved); 
+                        GlobalUtils.EncoderQueues.Remove(itemToRemoved);
                     }
                 }
             }
@@ -480,6 +495,20 @@ namespace MediaMgrSystem
             // 
 
         }
+
+
+        public void SendEncoderTaskControlOpen(string clientIdentify, string groupIds)
+        {
+            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds,false);
+        }
+
+        //hubProxy.Invoke("sendEncoderTaskControlOpen", groupIds.TrimEnd(','), epc.clientIdentify, ei.BaudRate, eor.arg.streamName, eor.arg.udpBroadcastAddress);
+
+        public void SendEncoderTaskControlClose(string clientIdentify, string groupIds)
+        {
+            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds,true);
+        }
+
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority)
         {
 
@@ -520,7 +549,7 @@ namespace MediaMgrSystem
                 GlobalUtils.WriteDebugLogs(aa);
 
                 //   SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
-                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1", priority);
+                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1", BusinessType.AUDITBROADCAST, priority);
                 // new Thread(ThreadToRunStartTask).Start(objs);
 
             }
@@ -549,7 +578,7 @@ namespace MediaMgrSystem
                 System.Diagnostics.Debug.WriteLine(aa);
                 GlobalUtils.WriteDebugLogs(aa);
 
-                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime, true, priority);
+                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime, BusinessType.AUDITBROADCAST, true, priority);
 
                 //  SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
 

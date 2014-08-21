@@ -62,9 +62,7 @@
 
                     <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="tbUserName"
                         ForeColor="Red" ErrorMessage=" *" Height="25px" />
-
-
-
+                    
 
                 </div>
                 

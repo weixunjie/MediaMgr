@@ -97,10 +97,10 @@ namespace MediaMgrSystem
                     {
                         GlobalUtils.RemoveConnectionByConnectionId(extingViedoServerCid);
 
-                    }                                     
+                    }
 
                     GlobalUtils.AddLogs(hub.Clients, "系统提示", "视频服务器已连接");
-                  
+
 
                 }
 
@@ -117,14 +117,14 @@ namespace MediaMgrSystem
 
                     GlobalUtils.AddLogs(hub.Clients, "系统提示", "后台计划服务已连接");
 
-             
+
 
                 }
 
                 if (sc.ConnectionType == SingalRClientConnectionType.ANDROID ||
                     sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
                 {
-                    
+
                     List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(sc.ConnectionIdentify);
 
                     if (dis != null && dis.Count > 0)
@@ -142,7 +142,29 @@ namespace MediaMgrSystem
 
                         di.UsedToRemoteControl = sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE;
 
-                        GlobalUtils.DeviceBLLInstance.AddDevice(di);
+                        int re = GlobalUtils.DeviceBLLInstance.AddDevice(di);
+
+                        if (re < 0)
+                        {
+                            if (re == -10)
+                            {
+                                GlobalUtils.AddLogs(hub.Clients, "系统提示", "音频终端已经达到最大数量");
+                            }
+                            else if (re == -11)
+                            {
+
+                                GlobalUtils.AddLogs(hub.Clients, "系统提示", "视频终端已经达到最大数量");
+                            }
+                            else if (re == -12)
+                            {
+                                GlobalUtils.AddLogs(hub.Clients, "系统提示", "物联终端已经达到最大数量"); 
+                            }
+
+
+                            di.UsedToAudioBroandcast = false;
+                            GlobalUtils.DeviceBLLInstance.AddDevice(di);
+                        }
+
 
                     }
 
@@ -174,7 +196,7 @@ namespace MediaMgrSystem
                 GlobalUtils.WriteDebugLogs(str);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 GlobalUtils.AddLogs(null, "系统异常", ex.Message);
             }
@@ -225,12 +247,12 @@ namespace MediaMgrSystem
                 {
                     SendRefreshAudioDeviceNotice(hub);
                 }
-                 if (GlobalUtils.CheckIfConnectionIdIsRemoteControlDevice(hub.Context.ConnectionId))
+                if (GlobalUtils.CheckIfConnectionIdIsRemoteControlDevice(hub.Context.ConnectionId))
                 {
                     SendRefreshRemoteControlDeviceNotice(hub);
                 }
-                
-                
+
+
                 GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);
             }
             catch (Exception ex)

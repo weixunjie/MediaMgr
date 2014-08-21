@@ -6,35 +6,24 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class EncoderOpenCommandeArg
+    public class EncoderCommandBase
     {
-        public string udpBroadcastAddress
+        public string guidId
         {
             get;
             set;
         }
 
-        public string streamName
-        {
-            get;
-            set;
-
-        }
-        public string baudRate
-        {
-            get;
-            set;
-
-        }
-
-    }
-    public class EncoderOpenReponse : ComunicationBase
-    {
-
-        public EncoderOpenCommandeArg arg
+        public CommandTypeEnum commandType
         {
             get;
             set;
         }
+        public string clientIdentify
+        {
+            get;
+            set;
+        }
+
     }
 }

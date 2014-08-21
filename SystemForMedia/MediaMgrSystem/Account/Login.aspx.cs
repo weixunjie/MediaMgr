@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Owin;
 using MediaMgrSystem.Models;
+using MediaMgrSystem.DataAccessLayer;
 
 namespace MediaMgrSystem.Account
 {
@@ -12,6 +13,7 @@ namespace MediaMgrSystem.Account
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            string a=EncryptUtils.DesEncrypt("10");
            
         }
 

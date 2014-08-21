@@ -33,11 +33,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return GetGroupList(sqlStr);
         }
 
-        public List<GroupInfo> GetGroupByChannelId(string id)
+        public List<GroupInfo> GetGroupByChannelId(string id,BusinessType bType)
         {
+            
             String sqlStr = "SELECT * FROM GROUPINFO WHERE CHANNELID=" + id;
 
-            return GetGroupList(sqlStr);
+            return GetGroupList(sqlStr,bType);
         }
 
         public List<GroupInfo> GetAllGroups()

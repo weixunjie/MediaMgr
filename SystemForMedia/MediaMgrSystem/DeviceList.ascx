@@ -245,6 +245,7 @@
         }
 
         function hideAllNenus() {
+
             $("#deviceListSingleGroupClickMenuBox").hide();
             $("#deviceListSingleGroupChooseChannelMenu").hide()
             $("#encoderListEncoderClickMenuBox").hide();
@@ -261,6 +262,7 @@
         $.showSingleDeviceClickMenu = function () {
 
             $("<%= deviceIds %>").click(function (e) {
+
 
 
                 hideAllNenus();
@@ -301,21 +303,27 @@
     string groupDeviceListIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { groupDeviceListIds = groupDeviceListIds + "#groupDeviceList" + dGroups[i].GroupId + ","; }; groupDeviceListIds = groupDeviceListIds.TrimEnd(','); %>
 
 
-        <% if (!CheckIfPlaying()){ %>
-            $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
-         <% } %>
+        <% if (!CheckIfPlaying())
+           {
+
+               if (CheckIsSupperUser())
+               { 
+               %>
+
+        $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+         <% }
+           } %>
         function saveOrder() {
 
-         
-         
+
+
             var a = $(this).data("itemid");
 
-            
+
             var groupId = $(this)[0].parentNode.id;
 
-            if (groupId != null)
-            {
-                groupId = groupId.replace("groupDeviceList","");
+            if (groupId != null) {
+                groupId = groupId.replace("groupDeviceList", "");
             }
 
 
@@ -333,7 +341,7 @@
             });
 
 
-         
+
 
         };
 
@@ -373,14 +381,11 @@
 
                         <div class="pull-left"><%=dGroups[l].GroupName %></div>
 
-                     
+
                         <% if (dGroups[l].GroupId != "-1")
                            {  %>
                         <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
                         <% }  %>
-
-                         
-
                     </div>
 
                 </th>
@@ -410,9 +415,9 @@
                                             <% 
 
                                                 
-                                               string srcName=GetImageUrl(dGroups[l].Devices[k].DeviceIpAddress);
-                                               
-                                               srcName = ResolveUrl("~/Images/"+srcName+".png");
+                                      string srcName = GetImageUrl(dGroups[l].Devices[k].DeviceIpAddress);
+
+                                      srcName = ResolveUrl("~/Images/" + srcName + ".png");
                                             %>
 
 
@@ -485,9 +490,8 @@
                                     <div class="col-md-4">
                                         <p style="text-align: center">
 
-                                            <% string strImageName ="ic_image_group.png";
-                                               if (Session["FunctionType"] != null && Session["FunctionType"].ToString() == "V") { strImageName = "ic_image_group_video.png"; } %>
-          
+                                            <% string strImageName = GetGroupImageUrl(); %>
+
                                             <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/<% =strImageName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p id="ptext" style="text-align: center">
