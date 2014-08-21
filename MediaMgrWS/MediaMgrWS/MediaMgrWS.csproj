@@ -80,7 +80,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModels\SocketClients.cs" />
+    <Compile Include="DataModels\Json\CommandResponse.cs" />
+    <Compile Include="DataModels\Json\ToEncoderCommand.cs" />
+    <Compile Include="DataModels\RunningEncoder.cs" />
+    <Compile Include="DataModels\GroupInfo.cs" />
+    <Compile Include="DataModels\Json\EncoderOperationCommand.cs" />
+    <Compile Include="DataModels\Json\EncoderSendGroupsInfoCommand.cs" />
+    <Compile Include="DataModels\Json\EncoderCommandBase.cs" />
+    <Compile Include="DataModels\Json\ComuResponse.cs" />
+    <Compile Include="DataModels\Json\EncoderOpenReponse.cs" />
+    <Compile Include="DataModels\Json\EncoderOpenReponseArg.cs" />
+    <Compile Include="DataModels\EncoderInfo.cs" />
+    <Compile Include="DataModels\CommandTypeEnum.cs" />
     <Compile Include="DbUtils.cs" />
+    <Compile Include="EncoderSocketLogic.cs" />
+    <Compile Include="EncoderBLL.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
