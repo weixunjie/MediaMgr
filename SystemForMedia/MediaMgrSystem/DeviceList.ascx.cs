@@ -22,17 +22,10 @@ namespace MediaMgrSystem
         {
             List<GroupInfo> gis = null;
 
-            if (GlobalUtils.CheckIfVideoFunction())
-            {
 
-                gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.VIDEOONLINE);
 
-            }
-            else
-            {
-                gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.AUDITBROADCAST);
+            gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(GlobalUtils.GetCurrentFunctionType());
 
-            }
 
 
             GroupInfo groupDefault = new GroupInfo();
@@ -40,16 +33,12 @@ namespace MediaMgrSystem
             groupDefault.GroupId = "-1";
             groupDefault.GroupName = "默认分组";
 
-            if (GlobalUtils.CheckIfVideoFunction())
-            {
-                groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroupWithFilter("-1", BusinessType.VIDEOONLINE);
 
-            }
-            else
-            {
-                groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroupWithFilter("-1", BusinessType.AUDITBROADCAST);
 
-            }
+
+            groupDefault.Devices = GlobalUtils.DeviceBLLInstance.GetAllDevicesByGroupWithFilter("-1", GlobalUtils.GetCurrentFunctionType());
+
+
 
 
 
@@ -80,14 +69,14 @@ namespace MediaMgrSystem
 
         }
 
-   
+
 
 
 
         public string GetGroupImageUrl()
         {
             string srcName = "ic_image_group.png";
-            if ( GlobalUtils.CheckIfVideoFunction()) { srcName = "ic_image_group_video.png"; }
+            if (GlobalUtils.GetCurrentFunctionType()==BusinessType.VIDEOONLINE) { srcName = "ic_image_group_video.png"; }
 
 
             return srcName;
@@ -104,7 +93,7 @@ namespace MediaMgrSystem
 
 
 
-            if (GlobalUtils.CheckIfVideoFunction())
+            if (GlobalUtils.GetCurrentFunctionType()==BusinessType.VIDEOONLINE)
             {
                 srcName = srcName + "_video";
             }

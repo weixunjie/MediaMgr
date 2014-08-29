@@ -64,8 +64,8 @@ namespace MediaMgrSystem
         public static string GetNowTime()
         {
             return DateTime.Now.ToString("yyyy年MM月dd日 HH时mm分ss秒");
-        }       
-        
+        }
+
 
         [WebMethod]
         public static string RangerUserControl(string controlName)
@@ -111,7 +111,7 @@ namespace MediaMgrSystem
 
                 }
             }
-  
+
 
         }
 
@@ -186,6 +186,21 @@ namespace MediaMgrSystem
 
         }
 
+        [WebMethod]
+        public static string GetIsCurrentChannelPlayingAndInfo(string channelId)
+        {
+            ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+
+            if (mp != null)
+            {
+
+                return Newtonsoft.Json.JsonConvert.SerializeObject(mp);
+
+            }
+
+            return string.Empty;
+
+        }
 
 
 

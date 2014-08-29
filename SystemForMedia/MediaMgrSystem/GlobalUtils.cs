@@ -37,9 +37,9 @@ namespace MediaMgrSystem
     public class RemoteControlQueueItem
     {
         public string IpAddressStr
-        { 
+        {
             get;
-            set; 
+            set;
         }
 
         public QueueCommandType CommandType
@@ -62,7 +62,7 @@ namespace MediaMgrSystem
             get;
             set;
         }
-     
+
     }
     public class QueueItem
     {
@@ -122,7 +122,7 @@ namespace MediaMgrSystem
     }
 
 
- 
+
 
     public class EncoderQueueItem
     {
@@ -155,18 +155,18 @@ namespace MediaMgrSystem
             get;
             set;
         }
-       
+
         public long PushTicks
         {
             get;
             set;
         }
 
-       
 
-    
 
-        
+
+
+
     }
 
     public class ScheduleRunningItem
@@ -195,6 +195,23 @@ namespace MediaMgrSystem
         }
     }
 
+    public class ManualPlayItem
+    {
+
+        public string ChannelId { get; set; }
+        public string ChannelName { get; set; }
+
+
+        public string[] PlayingPids { get; set; }
+
+        public bool IsPlaying { get; set; }
+
+        public BusinessType PlayingFunction { get; set; }
+
+        public bool IsRepeating { get; set; }
+
+    }
+
     public static class GlobalUtils
     {
 
@@ -208,13 +225,15 @@ namespace MediaMgrSystem
         public static object PublicObjectForLockClientMsg = new object();
 
         public static object LogForLock = new object();
-     
+
 
         public static string StreamNameBase = "1234567890";
         public static object ObjectLockQueueItem = new object();
         public static object ObjectLockRemoteControlQueueItem = new object();
         public static object ObjectLockEncoderQueueItem = new object();
         private static object objForLock = new object();
+
+        public static object ObjectLockForManualPlayItems = new object();
 
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
@@ -247,31 +266,19 @@ namespace MediaMgrSystem
 
         public static EncoderRunningClientsBLL EncoderRunningClientsBLLInstance = new EncoderRunningClientsBLL(DbUtilsInstance);
 
-        
+
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);
 
 
 
-        public static bool IsChannelManuallyPlaying = false;
+        public static List<ManualPlayItem> ManualPlayItems = new List<ManualPlayItem>();
 
-
-        public static string[] ChannelManuallyPlayingPids = null;
-
-
-        public static BusinessType ChannelManuallyPlayingFunction = BusinessType.AUDITBROADCAST;
-
-        public static string ChannelManuallyPlayingChannelId = string.Empty;
-
-        public static string ChannelManuallyPlayingChannelName = string.Empty;
-
-
-        public static bool ChannelManuallyPlayingIsRepeat = false;
 
 
         public static List<QueueItem> CommandQueues = new List<QueueItem>();
 
-  
+
         public static List<RemoteControlQueueItem> RemoteControlCommandQueues = new List<RemoteControlQueueItem>();
 
 
@@ -279,7 +286,7 @@ namespace MediaMgrSystem
 
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
 
-        
+
 
         public static bool CheckIfAudio(string fileName)
         {
@@ -288,6 +295,100 @@ namespace MediaMgrSystem
             return fName.EndsWith(".MP3");
 
         }
+
+        public static ManualPlayItem GetManaulPlayItemByChannelId(string cid)
+        {
+            lock (ObjectLockForManualPlayItems)
+            {
+                foreach (var i in ManualPlayItems)
+                {
+                    if (cid == i.ChannelId)
+                    {
+                        return i;
+                    }
+                }
+
+                return null;
+            }
+
+        }
+
+        public static void AddManualPlayItem(ManualPlayItem mp)
+        {
+            lock (ObjectLockForManualPlayItems)
+            {
+                ManualPlayItem itemToRemove = null;
+                foreach (var i in ManualPlayItems)
+                {
+                    if (mp.ChannelId == i.ChannelId)
+                    {
+                        itemToRemove = i;
+                        break;
+                    }
+                }
+
+                if (itemToRemove != null)
+                {
+                    ManualPlayItems.Remove(itemToRemove);
+                }
+
+                ManualPlayItems.Add(mp);
+            }
+
+        }
+
+        public static void SetManaulPlayItemSatus(string cid, bool isPlay)
+        {
+            lock (ObjectLockForManualPlayItems)
+            {
+                for (int i = 0; i < ManualPlayItems.Count; i++)
+                {
+                    if (cid == ManualPlayItems[i].ChannelId)
+                    {
+                        ManualPlayItems[i].IsPlaying = isPlay;
+                    }
+                }
+            }
+
+        }
+
+        public static void SetManaulPlayItemRepeat(string cid, bool isRepeat)
+        {
+            lock (ObjectLockForManualPlayItems)
+            {
+                for (int i = 0; i < ManualPlayItems.Count; i++)
+                {
+                    if (cid == ManualPlayItems[i].ChannelId)
+                    {
+                        ManualPlayItems[i].IsRepeating = isRepeat;
+                    }
+                }
+            }
+
+        }
+
+        public static bool SetManaulPlayItemRepeatOffset(string cid)
+        {
+            lock (ObjectLockForManualPlayItems)
+            {
+                for (int i = 0; i < ManualPlayItems.Count; i++)
+                {
+                    if (cid == ManualPlayItems[i].ChannelId)
+                    {
+                        ManualPlayItems[i].IsRepeating = !ManualPlayItems[i].IsRepeating;
+
+                        return ManualPlayItems[i].IsRepeating;
+                    }
+                }
+
+                return false;
+            }
+
+        }
+
+
+
+
         public static bool RemoveConnectionByConnectionId(string connectionId)
         {
             lock (objForLock)
@@ -301,17 +402,27 @@ namespace MediaMgrSystem
 
         }
 
-        
 
-        public static string CheckIfChannelManuallyPlayingFunctionIsCurrent()
+        public static string CheckIfChannelManuallyPlayingFunctionIsCurrent(string channelId)
         {
-            if (GlobalUtils.CheckIfVideoFunction())
+            lock (ObjectLockForManualPlayItems)
             {
-                return (GlobalUtils.ChannelManuallyPlayingFunction == BusinessType.VIDEOONLINE).ToString().ToLower();
-            }
-            else
-            {
-                return (GlobalUtils.ChannelManuallyPlayingFunction == BusinessType.AUDITBROADCAST).ToString().ToLower();
+
+                ManualPlayItem mp = GetManaulPlayItemByChannelId(channelId);
+
+                if (mp != null && mp.IsPlaying)
+                {
+                    if (GlobalUtils.GetCurrentFunctionType() == BusinessType.VIDEOONLINE)
+                    {
+                        return (mp.PlayingFunction == BusinessType.VIDEOONLINE).ToString().ToLower();
+                    }
+                    else
+                    {
+                        return (mp.PlayingFunction == BusinessType.AUDITBROADCAST).ToString().ToLower();
+                    }
+                }
+
+                return "false";
             }
         }
         public static string WindowsServiceConnectionId
@@ -454,7 +565,7 @@ namespace MediaMgrSystem
             return string.Empty;
         }
 
-        public static bool CheckIfVideoFunction()
+        public static BusinessType GetCurrentFunctionType()
         {
 
             if (HttpContext.Current.Session != null &&
@@ -462,28 +573,31 @@ namespace MediaMgrSystem
                 HttpContext.Current.Session["FunctionType"].ToString() == "V")
             {
 
-                return true;
+                return BusinessType.VIDEOONLINE;
             }
 
 
-            return false;
+            return BusinessType.AUDITBROADCAST;
         }
 
-        public static  bool CheckIfPlaying()
+        public static bool CheckIfPlaying()
         {
-           
-            if (IsChannelManuallyPlaying)
+            foreach (var mp in ManualPlayItems)
             {
-                return true;
-            }
-            else
-            {
-                if (RunningSchudules != null && RunningSchudules.Count > 0)
+                if (mp.IsPlaying)
                 {
                     return true;
                 }
- 
-            }            
+            }
+
+
+
+            if (RunningSchudules != null && RunningSchudules.Count > 0)
+            {
+                return true;
+            }
+
+
 
             return false;
 
@@ -519,9 +633,14 @@ namespace MediaMgrSystem
 
         }
 
-        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode)
+        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode, ManualPlayItem mp)
         {
-            hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction == BusinessType.AUDITBROADCAST ? "1" : "2");
+
+            if (mp != null)
+            {
+
+                hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, mp.ChannelId, mp.ChannelName, mp.PlayingPids, mp.PlayingFunction == BusinessType.AUDITBROADCAST ? "1" : "2");
+            }
         }
 
         public static List<string> GetAllPCDeviceConnectionIds()

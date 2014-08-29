@@ -14,63 +14,21 @@
     var currentOperChannelId;
     var currentOperChannelName;
     var currentPlayPIds;
-    var boolIsPlaying;
+
     var boolIsRepeat;
 
     var currentPlayingFunction;
-    var currentFunction;
-    var isDisabledToSelectProgram = false;
 
+    var currentFunction;
 
     $(document).ready(function () {
 
         setButtonStatus("AllDisabled");
 
-
-        currentPlayingFunction = '<% =GetCurrentPlayFunctionVideoFunction()%>';
-        currentFunction = '<% =CheckIfVideoFunction()%>';
-        
-        currentOperChannelId = '<% =GetIsPlayingChannelId() %>';
-        currentOperChannelName = '<% =GetIsPlayingChannelName() %>';
-              <% string[] pids = GetIsPlayingPIds(); %>
-
-        currentPlayPIds = new Array();
-
-                <% if (pids != null && pids.Length > 0)
-                   {
-                       for (int i = 0; i < pids.Length; i++)
-                       {
-                          %>
-
-        currentPlayPIds.push(<% =pids[i] %>);
-
-                     <% }
-                   }
-                   %>
-
-
-
-        boolIsPlaying = '<% = GetIsPlaying() %>';
-
-  
-
-        if (boolIsPlaying == "true") {
-
-            if (currentPlayingFunction == currentFunction) {
-                setButtonStatus("Play");
-
-
-                $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
-            }
-           
-            $("#btnConfirmPlayPrograme").attr("disabled", true);
-            isDisabledToSelectProgram = true;
-        }
-
+        currentFunction = '<% = CheckIfAudio()=="true"? "1":"2" %>';
 
         <%   List<MediaMgrSystem.DataModels.ChannelInfo> allChanels = GetAllChannels();
              List<MediaMgrSystem.DataModels.ScheduleInfo> schedules = GetAllSchedules();
-
 
 
              List<MediaMgrSystem.DataModels.ProgramInfo> allProgramInfos = new List<MediaMgrSystem.DataModels.ProgramInfo>();
@@ -96,49 +54,49 @@
 
         chat.client.sendManualPlayStatus = function (result, error, cid, cname, pids, strPlayingFunction) {
 
+            if (currentOperChannelId = cid) {
+                currentPlayingFunction = strPlayingFunction;
+
+                currentOperChannelId = cid;
+                currentOperChannelName = cname;
+
+                currentPlayPIds = pids;
 
 
-            currentPlayingFunction = strPlayingFunction;
-
-            currentOperChannelId = cid;
-            currentOperChannelName = cname;
-
-            currentPlayPIds = pids;
-
-            //  debugger;
-            if (error != "0") {
-                isPlaying = false;
-                setButtonStatus("Stop");
-                $("#btnConfirmPlayPrograme").attr("disabled", false);
-                isDisabledToSelectProgram = false;
-                $("#divChannelInfo").html(result);
-
-            }
-            else {
-
-                if (result == "Play") {
+                //  debugger;
+                if (error != "0") {
                     if (currentPlayingFunction == currentFunction) {
-                        setButtonStatus("Play");               
-
-                    }
-                    else {
-                        setButtonStatus("AllDisabled");
-                      
+                        $("#divChannelInfo").html(result);
+                        isPlaying = false;
+                        setButtonStatus("Stop");
+                        $("#btnChooseProgram").attr("disabled", false);
                     }
 
-                    $("#btnConfirmPlayPrograme").attr("disabled", true);
-                    isDisabledToSelectProgram = true;
                 }
-                else if (result = "Stop") {
-                    setButtonStatus("StopAndDelayStart");
-                    $("#btnConfirmPlayPrograme").attr("disabled", false);
-                    isDisabledToSelectProgram = false;
+                else {
+
+                    if (result == "Play") {
+                        if (currentPlayingFunction == currentFunction) {
+                            setButtonStatus("Play");
+                            $("#btnChooseProgram").attr("disabled", true);
+                        }                     
+
+
+
+                    }
+                    else if (result = "Stop") {
+                        if (currentPlayingFunction == currentFunction) {
+                            setButtonStatus("StopAndDelayStart");
+                            $("#btnChooseProgram").attr("disabled", false);
+                        }
+
+                    }
                 }
             }
 
 
         }
-        
+
 
 
         function setButtonStatus(type) {
@@ -281,6 +239,7 @@
         $("#btnChooseProgram").click(function (e) {
 
 
+
             $("#lbSelectedProgram option").each(function () {
 
                 $(this).remove();
@@ -294,8 +253,8 @@
 
 
 
-                <%  foreach (var pi in allProgramInfos)
-                    { %>
+              <%  foreach (var pi in allProgramInfos)
+                  { %>
 
 
             $("#lbAvaiableProgram").append("<option value='<% =pi.ProgramId%>'><%=pi.ProgramName%></option>");
@@ -324,6 +283,80 @@
                 currentOperChannelId = e.currentTarget.id.replace("channelDiv", "");
 
                 currentOperChannelName = $(this).data("itemid");
+
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    url: "BroadcastMain.aspx/GetIsCurrentChannelPlayingAndInfo",
+                    data: "{'channelId':'" + currentOperChannelId + "'}",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (msg) {
+                       
+                        if (msg.d == null || msg.d == "") {
+                            $("#btnChooseProgram").attr("disabled", false);
+                            setButtonStatus("AllDisabled");
+                        
+                            $("#divChannelInfo").html(currentOperChannelName + "等待操作");
+                        }
+                        else {
+
+
+                            var jsonData = eval('(' + msg.d + ')');
+                            currentPlayingFunction = jsonData.PlayingFunction;
+
+                            currentOperChannelId = jsonData.ChannelId;
+                            currentOperChannelName = jsonData.ChannelName;
+
+
+                            boolIsRepeat = jsonData.IsRepeating;
+
+
+                            currentPlayPIds = jsonData.PlayingPids;
+
+
+
+                            if (jsonData.IsPlaying) {
+                                if (currentPlayingFunction != currentFunction) {
+                                    setButtonStatus("AllDisabled");
+                                    $("#btnChooseProgram").attr("disabled", true);
+
+                                    var typeStrPlaying = "视频";
+                                    if (currentPlayingFunction == "1")
+                                    {
+                                        typeStrPlaying = "音频";
+                                    }
+                                    $("#divChannelInfo").html(currentOperChannelName + "正在播放" + typeStrPlaying);
+                                }
+                                else {
+                                    $("#btnChooseProgram").attr("disabled", true);
+                                    setButtonStatus("Play");
+                                    $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
+                                }
+                            }
+                            else {
+
+                                if (currentPlayingFunction != currentFunction) {
+                                    $("#btnChooseProgram").attr("disabled", false);
+                                    setButtonStatus("AllDisabled");
+                                    $("#divChannelInfo").html(currentOperChannelName + "等待操作");
+                                }
+                                else {
+                                    if (currentPlayPIds != null) {
+                                        $("#btnChooseProgram").attr("disabled", false);
+                                        setButtonStatus("Stop");
+                                        $("#divChannelInfo").html(currentOperChannelName + "准备就绪");
+                                    
+                                    }
+                                }
+                            }
+
+                        }
+                        // debugger;
+
+                    }
+                });
 
 
                 is_popup_1st_menu = true;
@@ -386,10 +419,7 @@
 
         $("#btnConfirmPlayPrograme").click(function () {
 
-            if (isDisabledToSelectProgram)
-            {
-                return;
-            }
+
 
             if ($("#lbSelectedProgram option").length <= 0) {
                 alert("请选择节目");
@@ -420,7 +450,7 @@
             // debugger;
             setButtonStatus("Play");
             if (currentPlayPIds != null && currentPlayPIds.length > 0) {
-                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0", '<% =CheckIfVideoFunction()%>');
+                chat.server.sendPlayCommand(currentPlayPIds, currentOperChannelId, currentOperChannelName, null, "0", '<% =CheckIfAudio()%>');
 
                 $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
             }
@@ -436,12 +466,11 @@
 
             setButtonStatus("StopAndDelayStart");
 
-          //  debugger;
+            //  debugger;
 
-            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false, '<% =CheckIfVideoFunction()%>');
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, true, "", false, '<% =CheckIfAudio()%>');
 
 
-            
 
             $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
 

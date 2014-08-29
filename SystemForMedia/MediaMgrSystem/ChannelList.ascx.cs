@@ -34,44 +34,37 @@ namespace MediaMgrSystem
 
 
         }
+         
+    
 
-        public string GetIsPlaying()
+        //public string[] GetIsPlayingPIds()
+        //{
+        //    return GlobalUtils.ChannelManuallyPlayingPids;
+        //}
+
+
+
+        public string CheckIfAudio()
         {
-            return GlobalUtils.IsChannelManuallyPlaying.ToString().ToLower();
+            return (GlobalUtils.GetCurrentFunctionType() == BusinessType.AUDITBROADCAST).ToString().ToLower();
+
         }
 
-        public string CheckIfVideoFunction()
-        {
-            return GlobalUtils.CheckIfVideoFunction()?"2":"1";
-        }
 
-        public string GetCurrentPlayFunctionVideoFunction()
-        {
-            return GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.VIDEOONLINE ? "2" : "1";
-        }
+        //public string GetIsPlayingChannelId()
+        //{
+        //    return GlobalUtils.ChannelManuallyPlayingChannelId;
+        //}
 
-        public string[] GetIsPlayingPIds()
-        {
-            return GlobalUtils.ChannelManuallyPlayingPids;
-        }
+        //public string GetIsPlayingChannelName()
+        //{
+        //    return GlobalUtils.ChannelManuallyPlayingChannelName;
+        //}
 
-       
-
-
-        public string GetIsPlayingChannelId()
-        {
-            return GlobalUtils.ChannelManuallyPlayingChannelId;
-        }
-
-        public string GetIsPlayingChannelName()
-        {
-            return GlobalUtils.ChannelManuallyPlayingChannelName;
-        }
-
-        public string GetIsChannelManuallyPlayingIsRepeat()
-        {
-            return GlobalUtils.ChannelManuallyPlayingIsRepeat.ToString().ToLower();
-        }
+        //public string GetIsChannelManuallyPlayingIsRepeat()
+        //{
+        //    return GlobalUtils.ChannelManuallyPlayingIsRepeat.ToString().ToLower();
+        //}
 
 
         public List<ChannelInfo> GetAllChannels()

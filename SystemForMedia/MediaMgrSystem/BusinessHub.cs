@@ -26,17 +26,17 @@ namespace MediaMgrSystem
         /// 2: repeat
         /// </summary>
         /// <param name="commandType"></param>
-        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId, bool isRepeat, string bType)
+        public void SendStopRoRepeatCommand(string channelId, string channelName, bool isWantToStop, string scheduleGuidId, bool isRepeat, bool isAuditFun)
         {
-            GlobalUtils.ChannelManuallyPlayingIsRepeat = isRepeat;
-            SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "", bType == "1" ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
+            GlobalUtils.SetManaulPlayItemRepeat(channelId, isRepeat);
+            SendLogic.SendStopRoRepeatCommand(channelId, channelName, isWantToStop, Clients, scheduleGuidId, "", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
 
         }
 
-        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId, string isRepeat, string bType)
+        public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId, string isRepeat, bool isAuditFun)
         {
-            GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
-            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", bType == "1" ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
+            GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
+            SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
         }
 
         public void SendEncoderOpenCommand(string clientIdentify, string priority, string groupIds)
@@ -229,31 +229,37 @@ namespace MediaMgrSystem
 
                             if (rc.arg != null && !string.IsNullOrWhiteSpace(rc.arg.errorCode) && rc.arg.errorCode == "0")
                             {
-                                if (GlobalUtils.IsChannelManuallyPlaying)
-                                {
-                                    if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
-                                    {
-                                        SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", GlobalUtils.ChannelManuallyPlayingFunction, false, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
+                                ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
 
-                                        GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024");
-                                        // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
-                                    }
+                                if (mp != null && mp.IsPlaying)
+                                {
+
+                                    SendLogic.SendStopRoRepeatCommand(channelId, mp.ChannelName, true, Clients, "", "", mp.PlayingFunction, false, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent(channelId));
+
+                                    GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024",mp);
+                                    // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
+
                                 }
                             }
                             else
                             {
-                                if (GlobalUtils.IsChannelManuallyPlaying)
-                                {
-                                    if (GlobalUtils.ChannelManuallyPlayingChannelId == channelId)
-                                    {
-                                        SendLogic.SendStopRoRepeatCommand(channelId, GlobalUtils.ChannelManuallyPlayingChannelName, true, Clients, "", "", GlobalUtils.ChannelManuallyPlayingFunction, false);
-                                        string errorStr = "手工播放停止,错误:";
-                                        GlobalUtils.AddLogs(Clients, "手工播放", errorStr + rc.arg.message);
-                                        //  Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + rc.arg.message, "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids);
 
-                                        GlobalUtils.SendManuallyClientNotice(Clients, errorStr + rc.arg.message, "1024");
-                                    }
+                                ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+
+                                if (mp != null && mp.IsPlaying)
+                                {
+
+                                    SendLogic.SendStopRoRepeatCommand(channelId, mp.ChannelName, true, Clients, "", "", mp.PlayingFunction, false);
+                                    string errorStr = "手工播放停止,错误:";
+                                    GlobalUtils.AddLogs(Clients, "手工播放", errorStr + rc.arg.message);
+                                    //  Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + rc.arg.message, "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids);
+
+                                    GlobalUtils.SendManuallyClientNotice(Clients, errorStr + rc.arg.message, "1024",mp);
+                                    // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
+
                                 }
+
+
 
                                 lock (GlobalUtils.PublicObjectForLockPlay)
                                 {
@@ -316,21 +322,23 @@ namespace MediaMgrSystem
                                 strOperResult = "视频服务器操作" + strOperResult;
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
 
-                                if (cb.errorCode == "0")
+                                if (cb.errorCode != "0")
                                 {
 
-                                }
-
-                                else
-                                {
                                     if (que.CommandType == QueueCommandType.MANAULLYPLAY)
                                     {
-                                        SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, "", "", GlobalUtils.ChannelManuallyPlayingFunction, false);
-                                        string errorStr = "手工播放停止,错误:";
-                                        GlobalUtils.AddLogs(Clients, "手工播放", errorStr + cb.message);
+                                        ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(que.ChannelId);
 
-                                        GlobalUtils.SendManuallyClientNotice(Clients, errorStr + cb.message, "211");
+                                        if (mp != null)
+                                        {
 
+                                            SendLogic.SendStopRoRepeatCommand(que.ChannelId, que.ChannelName, true, Clients, "", "", mp.PlayingFunction, false);
+                                            string errorStr = "手工播放停止,错误:";
+                                            GlobalUtils.AddLogs(Clients, "手工播放", errorStr + cb.message);
+
+                                            GlobalUtils.SendManuallyClientNotice(Clients, errorStr + cb.message, "211", mp);
+
+                                        }
                                         //Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + cb.message, "211", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
 
                                     }
@@ -499,14 +507,14 @@ namespace MediaMgrSystem
 
         public void SendEncoderTaskControlOpen(string clientIdentify, string groupIds)
         {
-            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds,false);
+            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds, false);
         }
 
         //hubProxy.Invoke("sendEncoderTaskControlOpen", groupIds.TrimEnd(','), epc.clientIdentify, ei.BaudRate, eor.arg.streamName, eor.arg.udpBroadcastAddress);
 
         public void SendEncoderTaskControlClose(string clientIdentify, string groupIds)
         {
-            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds,true);
+            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds, true);
         }
 
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority)
