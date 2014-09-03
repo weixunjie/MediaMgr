@@ -19,24 +19,18 @@
 
 <script type="text/javascript">
 
-
-
-
-
+       
 
     var dialogddACMode = "<%= ddACMode.ClientID %>";
 
     var dialogddOpenClose = "<%= this.ddOpenClose.ClientID %>";
 
     var dialogcbScheduleWeeks = "<%= this.cbScheduleWeeks.ClientID %>";
-
-
-
+    
     var dialogForSingleDeviceACMode = "<%= this.ddForSingleDeviceACMode.ClientID %>";
 
     <%  
-
-    
+        
      
     List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroups();
 
@@ -515,7 +509,7 @@
                     <div style="height: 90px">
                         <ul id="deviceGroupList" class="deviceULStyle">
                             <%          
-         
+        
                                 for (int k = 0; k < dGroups.Count; k++)
                                 {                                     
                             
@@ -563,7 +557,6 @@
                     <p>
                         空调温度
                     </p>
-
 
                     <div style="height: 40px">
                         <input type="text" style="width: 220px" id="tbForSingleDeviceACTempure" />

@@ -43,7 +43,7 @@
                 ForeColor="Red" ErrorMessage=" 名称不能为空" Height="25px" />
 
             <asp:TextBox runat="server" ID="TbHiddenId" CssClass="form-control" Visible="False" />
-
+              <asp:TextBox runat="server" ID="tbHiddenOldIpAddress" CssClass="form-control" Visible="False" />
         </div>
 
         <div class="form-group" style="margin-bottom: 10px">
@@ -55,6 +55,15 @@
 
             <asp:RequiredFieldValidator Style="vertical-align: middle" ValidationGroup="inputValidate" runat="server" ControlToValidate="TBIPAddress"
                 ForeColor="Red" ErrorMessage=" IP地址不能为空" Height="25px" />
+
+        </div>
+
+              <div class="form-group" style="margin-bottom: 10px">
+
+            <asp:Label runat="server" AssociatedControlID="tbServerIpAddress" CssClass="col-md-2 control-label" Width="107px">服务器地址:</asp:Label>
+
+            <asp:TextBox runat="server" ID="tbServerIpAddress" CssClass="form-control" />
+          
 
         </div>
 

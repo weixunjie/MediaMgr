@@ -39,14 +39,20 @@ namespace MediaMgrSystem
             SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
         }
 
+        public void SendDeviceOperCommand(string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, bool isEnabled)
+        {
+
+            SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled?1:0);
+
+           // GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
+           // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
+        }
+
+       
         public void SendEncoderOpenCommand(string clientIdentify, string priority, string groupIds)
         {
 
-            EncoderControlLogic.SendEncoderOpenCommand(Clients, clientIdentify, priority, groupIds);
-
-
-
-
+            EncoderControlLogic.SendEncoderOpenCommand(Clients, clientIdentify, priority, groupIds);            
 
             // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
             //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
@@ -139,7 +145,7 @@ namespace MediaMgrSystem
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
                                 strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
 
-
+                                
 
                                 string strCmdType = RemoteControlLogic.GetCommandText(que.CommandType, que.ExternalIds);
 
@@ -324,7 +330,6 @@ namespace MediaMgrSystem
 
                                 if (cb.errorCode != "0")
                                 {
-
                                     if (que.CommandType == QueueCommandType.MANAULLYPLAY)
                                     {
                                         ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(que.ChannelId);
@@ -361,7 +366,7 @@ namespace MediaMgrSystem
                                 strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
                             }
 
-
+                           
                             string strCmdType = GlobalUtils.GetCommandTextGetByType(que.CommandType);
                             if (que.IsScheduled)
                             {
@@ -371,8 +376,16 @@ namespace MediaMgrSystem
                             else
                             {
 
-
                                 GlobalUtils.AddLogs(Clients, "手动操作", que.ChannelName + strCmdType + strOperResult);
+                            }
+
+                            if (cb.errorCode != "0" && que.CommandType==QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS)
+                            {
+                                DeviceInfo di = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(que.NewAddressStr)[0];
+
+                                di.DeviceIpAddress = que.IpAddressStr;
+                                GlobalUtils.DeviceBLLInstance.UpdateDevice(di);
+ 
                             }
 
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();

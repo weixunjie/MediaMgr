@@ -22,6 +22,20 @@ namespace MediaMgrSystem
         MANAULLYREPEAT,
         SCHEDULEPLAY,
         SCHEDULESTOP,
+        DEVICE_OPER_CHANGE_IP_ADDRESS = 128,
+
+        DEVICE_OPER_OPENS_SCREEN = 122,
+        DEVICE_OPER_CLOSE_SCREEN = 123,
+
+        DEVICE_OPER_RESTART = 124,
+
+        DEVICE_OPER_SHUTDOWN = 125,
+
+        DEVICE_OPER_SCHEDULE_TURNON = 126,
+
+        DEVICE_OPER_SCHEDULE_SHUTDOWN = 127,
+
+
 
         REMOTECONTROLMANULOPEN,
         REMOTECONTROLMANULCLOSE,
@@ -68,6 +82,10 @@ namespace MediaMgrSystem
     {
         public string IpAddressStr
         { get; set; }
+
+        public string NewAddressStr
+        { get; set; }
+
 
         public QueueCommandType CommandType
         { get; set; }
@@ -829,14 +847,30 @@ namespace MediaMgrSystem
                 case QueueCommandType.SCHEDULEPLAY:
                     return "播放计划运行时";
 
-
                 case QueueCommandType.SCHEDULESTOP:
                     return "结束播放计划运行时";
 
                 case QueueCommandType.REMOTECONTROLMANULCLOSE:
                     return "手工打开设备操作";
 
+                case QueueCommandType.DEVICE_OPER_OPENS_SCREEN:
+                    return "设备打开屏幕";
+                case QueueCommandType.DEVICE_OPER_CLOSE_SCREEN:
+                    return "设备关闭屏幕";
 
+                case QueueCommandType.DEVICE_OPER_SHUTDOWN:
+                    return "设备关机";
+
+                case QueueCommandType.DEVICE_OPER_RESTART:
+                    return "设备重起";
+
+                case QueueCommandType.DEVICE_OPER_SCHEDULE_SHUTDOWN:
+                    return "设备定时关机";
+                case QueueCommandType.DEVICE_OPER_SCHEDULE_TURNON:
+                    return "设备定时开机";
+
+                case QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS:
+                      return "修改IP地址";
             }
 
             return string.Empty;

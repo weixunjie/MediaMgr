@@ -58,8 +58,10 @@
     <Compile Include="JsonModel\EncoderCommandBase.cs" />
     <Compile Include="JsonModel\EncoderOpenCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlACParam.cs" />
+    <Compile Include="JsonModel\DeviceOperationCommandArg.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlScheduleArg.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlManualArg.cs" />
+    <Compile Include="JsonModel\DeviceOperationCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlScheduleCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlManualCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\ReceiveRemovoteDeivceCommand.cs" />

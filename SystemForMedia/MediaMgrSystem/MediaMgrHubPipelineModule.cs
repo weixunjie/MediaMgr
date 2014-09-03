@@ -81,7 +81,7 @@ namespace MediaMgrSystem
 
 
 
-                if (singalRClientConnectionType != SingalRClientConnectionType.ANDROID)
+                if (singalRClientConnectionType == SingalRClientConnectionType.PC)
                 {
                     strIdentify = Guid.NewGuid().ToString();
 

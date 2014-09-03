@@ -6,12 +6,28 @@
 
     var currentOperGroup;
 
+    var currentOperDevice;
+    var currentOperDeviceIpAddress;
+    var currentOperDeviceGroupId;
+
+ 
+
     $(document).unbind();
 
 
     $(document).ready(function () {
 
+        $("input[id$=tbScheduleTime]").timepicker({
+            timeFormat: 'hh:mm:ss',
 
+            showSecond: false
+        });
+
+        $("input[id$=tbScheduleTurnOffTime]").timepicker({
+            timeFormat: 'hh:mm:ss',
+
+            showSecond: false
+        });
 
         <%  
 
@@ -26,6 +42,8 @@
 
     string deviceIds = string.Empty;
     string imgGroupShowIds = string.Empty;
+
+    string deviceBatchOperDeviceIds = string.Empty;
     int tmpDeviceIndex = 0;
     for (int i = 0; i < dGroups.Count; i++)
     {
@@ -35,16 +53,21 @@
             foreach (var di in dGroups[i].Devices)
             {
                 tmpDeviceIndex++;
-                deviceIds = deviceIds + "#deviceMenu" + tmpDeviceIndex + ",";
+                deviceIds = deviceIds + "#deviceMenu" + di.DeviceId + ",";
             }
         }
 
-        if (dGroups[i].GroupId == "-1") { continue; } imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ",";
+        if (dGroups[i].GroupId == "-1") { continue; }
+
+        deviceBatchOperDeviceIds = deviceBatchOperDeviceIds + "#btnDeviceBatchOper" + dGroups[i].GroupId + ",";
+
+
+        imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ",";
     };
 
     deviceIds = deviceIds.TrimEnd(',');
     imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
-
+    deviceBatchOperDeviceIds = deviceBatchOperDeviceIds.TrimEnd(',');
     string btnMenuChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMenuChannelSelIds = btnMenuChannelSelIds + "#btnMenuChannelSel" + channels[i].ChannelId + ","; }; btnMenuChannelSelIds = btnMenuChannelSelIds.TrimEnd(',');
 
     string btnMenuEncoderSelIds = string.Empty; for (int i = 0; i < encoders.Count; i++) { btnMenuEncoderSelIds = btnMenuEncoderSelIds + "#btnMenuEncoderSel" + encoders[i].EncoderId + ","; }; btnMenuEncoderSelIds = btnMenuEncoderSelIds.TrimEnd(',');
@@ -176,9 +199,7 @@
                 }
             });
 
-
             $("#deviceListSingleGroupChooseEncoderMenu").show().css("left", x).css("top", y);
-
 
         });
 
@@ -187,7 +208,6 @@
         $("<% =btnMenuEncoderSelIds%>").click(function (e) {
 
             var currentOperEncoder = e.currentTarget.id.replace("btnMenuEncoderSel", "");
-
             $.ajax({
                 type: "POST",
                 async: true,
@@ -214,7 +234,6 @@
 
             $("<%= imgGroupShowIds %>").click(function (e) {
 
-
                 hideAllNenus();
 
                 currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
@@ -223,6 +242,8 @@
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
+
+
 
 
                 $("#deviceListSingleGroupClickMenuBox").show().css("left", x).css("top", y);
@@ -252,11 +273,105 @@
             $("#channelListChannelClickMenuBox").hide();
             $("#channelListChannelChooseScheduleMenu").hide()
             $("#deviceListSingleGroupChooseEncoderMenu").hide();
-            $("#deviceListSingleDeviceMenu").hide();
+            $("#deviceListDeviceMenu").hide();
 
         }
 
         $.showGroupClickMenu();
+
+
+        $("#deviceListSingleDeviceMenuBtnOpenScreen").click(function (e) {
+
+            var cmdStr = "122"
+
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+
+
+            hideAllNenus();
+        });
+
+        $("#deviceListSingleDeviceMenuBtnCloseScreen").click(function (e) {
+
+            var cmdStr = "123"
+
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+
+
+            hideAllNenus();
+        });
+
+
+        $("#deviceListSingleDeviceMenuBtnRestartDevice").click(function (e) {
+
+            var cmdStr = "124"
+
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+
+
+            hideAllNenus();
+        });
+
+        $("#deviceListSingleDeviceMenuBtnShutDownDevice").click(function (e) {
+
+            var cmdStr = "125"
+
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+
+
+            hideAllNenus();
+        });
+
+
+        $("#deviceListSingleDeviceMenuBtnScheduleDevice").click(function (e) {
+
+            $('#dialogForDeviveSchdeduelGroup').modal('show');
+        });
+
+        $("#btnConfirmedDialogForDeviveSchdeduelGroup").click(function (e) {
+
+
+            var tbScheduleTimeTurnOnValue = $("#tbScheduleTime").val();
+            if (tbScheduleTimeTurnOnValue == "") {
+
+                alert("计划开机时间不能为空");
+                return
+            }
+
+            var tbScheduleShutDownTimeValue = $("#tbScheduleTurnOffTime").val();
+            if (tbScheduleShutDownTimeValue == "") {
+
+                alert("计划关机时间不能为空");
+                return
+            }
+
+
+
+            
+            chat.server.sendDeviceOperCommand(127, currentOperDeviceGroupId, currentOperDeviceIpAddress, tbScheduleTimeTurnOnValue, tbScheduleShutDownTimeValue, $("#ckcEnabledDeviceSchedule").is(':checked'))
+
+
+            $('#dialogForDeviveSchdeduelGroup').modal('hide');
+        });
+
+
+        $("<%= deviceBatchOperDeviceIds %>").click(function (e) {
+
+
+            hideAllNenus();
+            currentOperDevice = "";
+
+            currentOperDeviceGroupId = e.currentTarget.id.replace("btnDeviceBatchOper", "");
+
+            currentOperDeviceIpAddress = "";
+            is_popup_1st_menu = true;
+
+            var x = $(this).offset().left;
+            var y = $(this).offset().top + $(this).height() + 2;
+
+
+            $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
+
+        });
 
 
         $.showSingleDeviceClickMenu = function () {
@@ -264,18 +379,17 @@
             $("<%= deviceIds %>").click(function (e) {
 
 
-
                 hideAllNenus();
-
-                currentOperGroup = e.currentTarget.id.replace("deviceMenu", "");
-
+                currentOperDeviceGroupId = "";
+                currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
+                currentOperDeviceIpAddress = e.currentTarget.name;
                 is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
                 var y = $(this).offset().top + $(this).height() + 2;
 
 
-                $("#deviceListSingleDeviceMenu").show().css("left", x).css("top", y);
+                $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
 
 
             });
@@ -384,7 +498,7 @@
 
                         <% if (dGroups[l].GroupId != "-1")
                            {  %>
-                        <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =l.ToString() %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
+                        <div class="pull-right"><a class="btn  btn-success" id="btnDeviceBatchOper<% =dGroups[l].GroupId %>" name="<%=dGroups[l].GroupId %>" data-content="">批量操作</a></div>
                         <% }  %>
                     </div>
 
@@ -422,7 +536,7 @@
 
 
 
-                                            <img id="deviceMenu<% =deviceIndex.ToString() %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
+                                            <img id="deviceMenu<% =dGroups[l].Devices[k].DeviceId %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p style="text-align: center">
                                             <% =dGroups[l].Devices[k].DeviceName %>
@@ -576,7 +690,6 @@
 
                 <div style="vertical-align: middle">
 
-
                     <input type="checkbox" id="ckcBatchOpenVideoSource" style="float: left; vertical-align: middle" />
                     <label for="ckcBatchOpenVideoSource" style="line-height: 21px">&nbsp;打开视频源</label>
                     <br />
@@ -594,6 +707,57 @@
 
 
 
+    <div id="dialogForDeviveSchdeduelGroup" style="width: auto" class="modal hide">
+        <div class="modal-header">
+            <a class="close" onclick=" $('#dialogForDeviveSchdeduelGroup').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">分组</h3>
+        </div>
+        <div class="modal-body">
+
+            <h4 style="text-align: left; margin-top: 0px">计划</h4>
+
+
+            <div id="divPlanTime">
+
+                <p>
+                    计划开机时间:
+                </p>
+
+
+                <div>
+                    <input type="text" runat="server" style="width: 220px" id="tbScheduleTime" />
+                </div>
+            </div>
+
+
+
+            <div id="divPlanShutTimeTime">
+
+                <p>
+                    计划关机时间:
+                </p>
+
+
+                <div>
+                    <input type="text" runat="server" style="width: 220px" id="tbScheduleTurnOffTime" />
+                </div>
+            </div>
+
+            <div style="vertical-align: middle">
+
+                <input type="checkbox" id="ckcEnabledDeviceSchedule" style="float: left; vertical-align: middle" />
+                <label for="ckcBatchOpenVideoSource" style="line-height: 21px">&nbsp;是否有效</label>
+                <br />
+
+            </div>
+
+
+
+        </div>
+
+        <div class="modal-footer">
+            <a id="btnConfirmedDialogForDeviveSchdeduelGroup" class="btn primary">确认</a>
+        </div>
+    </div>
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="deviceListSingleGroupClickMenuBox">
         <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通通选择</a></li>
@@ -624,9 +788,17 @@
     </ul>
 
     <ul class="dropdown-menu" role="menu"
-        aria-labelledby="dropdownMenu" id="deviceListSingleDeviceMenu">
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnOpenDevice" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开设备</a></li>
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnCloseDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭设备</a></li>
+        aria-labelledby="dropdownMenu" id="deviceListDeviceMenu">
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnOpenScreen" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开屏幕</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnCloseScreen" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭屏幕</a></li>
+
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnRestartDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">重起设备</a></li>
+
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnShutDownDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭设备</a></li>
+
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnScheduleDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">计划开关机</a></li>
+
+
 
     </ul>
 

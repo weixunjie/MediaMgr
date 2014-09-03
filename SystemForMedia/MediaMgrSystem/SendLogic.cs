@@ -18,16 +18,130 @@ namespace MediaMgrSystem
     public static class SendLogic
     {
 
+        public static void SendChangeIpAddressAndServerUrl(IHubConnectionContext hub, string oldIpAddress, string newIpAddress,string serverUrl)
+        {
+
+            List<string> ipsNeedToSend = null;
+            List<string> idsNeedToSend = null;
+
+            ipsNeedToSend = new List<string>();
+
+            ipsNeedToSend.Add(oldIpAddress);
+
+            idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(ipsNeedToSend, SingalRClientConnectionType.ANDROID);
+
+
+            DeviceOperationCommand cmd = new DeviceOperationCommand();
+
+
+            cmd.commandType = CommandTypeEnum.DEVICE_OPER_CHANGE_IP_ADDRESS;
+
+            cmd.guidId = Guid.NewGuid().ToString();
+
+
+            QueueCommandType queueCommandType = QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS;
+
+            PushQueue(queueCommandType, ipsNeedToSend, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, cmd.guidId, false,newIpAddress);
+
+
+
+            cmd.arg = new DeviceOperationCommandArg();
+
+
+            cmd.arg.newIpAddress = newIpAddress;
+            cmd.arg.serverUrl = serverUrl;
+
+            hub.Clients(idsNeedToSend).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+
+            new Thread(ProcessTimeOutRequest).Start(hub);
+
+
+
+        }
+        public static void SendDeviceOperCommand(IHubConnectionContext hub, string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, int isEnabled)
+        {
+
+            List<string> ipsNeedToSend = null;
+            List<string> idsNeedToSend = null;
+            if (!string.IsNullOrEmpty(groupId))
+            {
+                List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetGroupById(groupId);
+
+
+                List<string> needSentClientIpAddresses = new List<string>();
+                if (gis != null && gis.Count > 0)
+                {
+                    foreach (var gi in gis)
+                    {
+                        if (gi.Devices != null && gi.Devices.Count > 0)
+                        {
+                            foreach (var di in gi.Devices)
+                            {
+                                needSentClientIpAddresses.Add(di.DeviceIpAddress);
+                            }
+                        }
+                    }
+                }
+
+                if (needSentClientIpAddresses.Count > 0)
+                {
+                    ipsNeedToSend = needSentClientIpAddresses;
+                    idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses, SingalRClientConnectionType.ANDROID);
+                }
+                else
+                {
+                    ipsNeedToSend = new List<string>();
+                    idsNeedToSend = new List<string>();
+                }
+
+            }
+            else
+            {
+                ipsNeedToSend = new List<string>();
+
+                ipsNeedToSend.Add(deviceIpAddress);
+
+                idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(ipsNeedToSend, SingalRClientConnectionType.ANDROID);
+
+            }
+
+
+            DeviceOperationCommand cmd = new DeviceOperationCommand();
+
+
+            CommandTypeEnum cmdType = (CommandTypeEnum)Enum.Parse(typeof(CommandTypeEnum), cmdStr);
+
+            cmd.commandType = cmdType;
+
+            cmd.guidId = Guid.NewGuid().ToString();
+
+
+            QueueCommandType queueCommandType = (QueueCommandType)Enum.Parse(typeof(QueueCommandType), cmdStr);
+
+            PushQueue(queueCommandType, ipsNeedToSend, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, cmd.guidId, false);
+
+
+            cmd.arg = new DeviceOperationCommandArg();
+
+
+            cmd.arg.scheduleTurnOnTime = scheduleTurnOnTime;
+
+            cmd.arg.scheduleShutDownTime = scheduleShutDownTime;
+
+            cmd.arg.isEnabled = isEnabled;
+
+            hub.Clients(idsNeedToSend).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+            new Thread(ProcessTimeOutRequest).Start(hub);
+
+
+        }
 
         public static void SendPlayCommand(string channelId, string channelName, string[] programeIds, IHubConnectionContext hub, string scheduleTaskGuidId, string scheduleTime, bool isRepeat, BusinessType bType, string strScheduleTaskPriority = "")
         {
             try
             {
-
                 lock (GlobalUtils.PublicObjectForLockPlay)
                 {
-
-
 
                     bool isSchedule = !string.IsNullOrWhiteSpace(scheduleTaskGuidId);
 
@@ -125,7 +239,7 @@ namespace MediaMgrSystem
 
                             GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放失败, " + errorrNotOpenVideoSvr);
 
-                            GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200",GlobalUtils.GetManaulPlayItemByChannelId(channelId));
+                            GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", GlobalUtils.GetManaulPlayItemByChannelId(channelId));
                             // hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
                         }
 
@@ -333,7 +447,7 @@ namespace MediaMgrSystem
 
                             //   hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("Play", "0", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
 
-                            GlobalUtils.SendManuallyClientNotice(hub, "Play", "0",mp);
+                            GlobalUtils.SendManuallyClientNotice(hub, "Play", "0", mp);
                             GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放成功");
 
                         }
@@ -430,6 +544,15 @@ namespace MediaMgrSystem
                                 GlobalUtils.AddLogs(hubContent, "手动操作", item.ChannelName + strCmdType + ipToDisplay + "操作超时");
                             }
 
+                            if (item.CommandType == QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS)
+                            {
+                                DeviceInfo di = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(item.NewAddressStr)[0];
+
+                                di.DeviceIpAddress = item.IpAddressStr;
+                                GlobalUtils.DeviceBLLInstance.UpdateDevice(di);
+
+                            }
+
                             GlobalUtils.CommandQueues.Remove(item);
                             //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
                         }
@@ -466,7 +589,6 @@ namespace MediaMgrSystem
 
                     if (isSchedule)
                     {
-
                         ComuResponseBase cr = new ComuResponseBase();
 
                         cr.guidId = scheduleTaskGuidId;
@@ -486,7 +608,7 @@ namespace MediaMgrSystem
                     {
                         List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                         // hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
-                        GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200",GlobalUtils.GetManaulPlayItemByChannelId(channelId));
+                        GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", GlobalUtils.GetManaulPlayItemByChannelId(channelId));
                         GlobalUtils.AddLogs(hub, "手动操作", channelName + "停止播放操作失败，" + errorrNotOpenVideoSvr + scheduleTime);
                     }
                 }
@@ -502,8 +624,6 @@ namespace MediaMgrSystem
             {
                 GlobalUtils.AddLogs(null, "系统异常", ex.Message);
             }
-
-
         }
 
         private static void SendOutStopRepeatCommandToServerAndClient(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub,
@@ -537,9 +657,9 @@ namespace MediaMgrSystem
 
                 if (!isSchedule)
                 {
-                   bool isRepeat= GlobalUtils.SetManaulPlayItemRepeatOffset(channelId);
-           
-                   cmdToVideoSvr.arg.isRepeat = isRepeat ? 1 : 0;
+                    bool isRepeat = GlobalUtils.SetManaulPlayItemRepeatOffset(channelId);
+
+                    cmdToVideoSvr.arg.isRepeat = isRepeat ? 1 : 0;
                 }
 
                 List<string> clientsIpToSend = new List<string>();
@@ -659,7 +779,7 @@ namespace MediaMgrSystem
                             itemToRemove = sTask;
                         }
                     }
-                    
+
                     ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
 
                     if (mp != null && mp.IsPlaying)
@@ -682,7 +802,7 @@ namespace MediaMgrSystem
 
                         return;
                     }
-                    
+
                     if (itemToRemove != null)
                     {
 
@@ -733,7 +853,7 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelId, string channelName, string scheduleGuid, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true)
+        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelId, string channelName, string scheduleGuid, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true,string newIpAddres="")
         {
             lock (GlobalUtils.ObjectLockQueueItem)
             {
@@ -751,7 +871,7 @@ namespace MediaMgrSystem
                 {
                     foreach (var ip in clientIps)
                     {
-                        GlobalUtils.CommandQueues.Add(new QueueItem() { ChannelId = channelId, ScheduleGuid = severGuidId, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType });
+                        GlobalUtils.CommandQueues.Add(new QueueItem() { NewAddressStr=newIpAddres, ChannelId = channelId, ScheduleGuid = severGuidId, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType });
                     }
                 }
             }

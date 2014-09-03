@@ -58,6 +58,15 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.TextBox TbHiddenId;
         
         /// <summary>
+        /// tbHiddenOldIpAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbHiddenOldIpAddress;
+        
+        /// <summary>
         /// TBIPAddress control.
         /// </summary>
         /// <remarks>
@@ -65,6 +74,15 @@ namespace MediaMgrSystem.MgrModel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TBIPAddress;
+        
+        /// <summary>
+        /// tbServerIpAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbServerIpAddress;
         
         /// <summary>
         /// cbFunction control.

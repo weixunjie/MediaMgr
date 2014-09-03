@@ -1,5 +1,7 @@
 ﻿using MediaMgrSystem.BusinessLayerLogic;
 using MediaMgrSystem.DataModels;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,7 @@ namespace MediaMgrSystem.MgrModel
     {
         private GroupBLL groupBLL = new GroupBLL(GlobalUtils.DbUtilsInstance);
         private DeviceBLL deviceBLL = new DeviceBLL(GlobalUtils.DbUtilsInstance);
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -55,6 +58,8 @@ namespace MediaMgrSystem.MgrModel
 
                     cbFunction.Items[2].Selected = di.UsedToRemoteControl;
 
+
+                    tbHiddenOldIpAddress.Text = di.DeviceIpAddress;
                     var found = ddGroups.Items.FindByValue(di.GroupId);
 
                     if (found != null)
@@ -109,14 +114,39 @@ namespace MediaMgrSystem.MgrModel
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
+
                 di.DeviceId = TbHiddenId.Text;
 
                 int intResult = deviceBLL.CheckIsOverMaxDevice(di);
                 if (intResult < 0)
                 {
-                    SetOverMaxMessage(intResult,false);
+                    SetOverMaxMessage(intResult, false);
                     return;
                 }
+
+                IHubConnectionContext allClients = GlobalHost.ConnectionManager.GetHubContext("MediaMgrHub").Clients;
+
+                if (!string.IsNullOrEmpty(tbServerIpAddress.Text))
+                {
+                 
+                    if (tbHiddenOldIpAddress.Text != di.DeviceIpAddress)
+                    {
+                        SendLogic.SendChangeIpAddressAndServerUrl(allClients, tbHiddenOldIpAddress.Text, di.DeviceIpAddress, tbServerIpAddress.Text);
+
+                    }
+                    else
+                    {
+                        SendLogic.SendChangeIpAddressAndServerUrl(allClients, tbHiddenOldIpAddress.Text, string.Empty, tbServerIpAddress.Text);
+                    }
+                }
+                else
+                {                  
+                    if (tbHiddenOldIpAddress.Text != di.DeviceIpAddress)
+                    {
+                        SendLogic.SendChangeIpAddressAndServerUrl(allClients, tbHiddenOldIpAddress.Text, di.DeviceIpAddress, string.Empty);
+                    }
+                }
+
 
                 deviceBLL.UpdateDevice(di);
             }
@@ -126,12 +156,14 @@ namespace MediaMgrSystem.MgrModel
 
                 if (resultInt < 0)
                 {
-                    SetOverMaxMessage(resultInt,true);
+                    SetOverMaxMessage(resultInt, true);
                     return;
                 }
 
 
             }
+
+
 
             Response.Redirect("~/MgrModel/DeviceMgrList.aspx");
         }
@@ -156,6 +188,7 @@ namespace MediaMgrSystem.MgrModel
 
             if (!string.IsNullOrEmpty(msg))
             {
+
                 string opStr = isAdd ? "添加" : "修改";
                 lbMessage.Text = "不能" + opStr + "终端，" + msg + "终端已经达到最大数量";
                 lbMessage.Visible = true;
