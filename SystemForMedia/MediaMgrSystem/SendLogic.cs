@@ -163,7 +163,7 @@ namespace MediaMgrSystem
                                 SendStopRoRepeatCommand(channelId, channelName, true, hub, sTask.GuidId, sTask.RunningTime, bType);
                                 ComuResponseBase cr = new ComuResponseBase();
 
-                                cr.guidId = scheduleTaskGuidId;
+                                cr.guidId = scheduleTaskGuidId+","+channelId;
 
                                 cr.errorCode = "202";
 
@@ -197,7 +197,7 @@ namespace MediaMgrSystem
                             //优先手工播放
                             ComuResponseBase cr = new ComuResponseBase();
 
-                            cr.guidId = scheduleTaskGuidId;
+                            cr.guidId = scheduleTaskGuidId+","+channelId;
 
                             cr.errorCode = "202";
 
@@ -223,7 +223,7 @@ namespace MediaMgrSystem
                             {
                                 ComuResponseBase cr = new ComuResponseBase();
 
-                                cr.guidId = scheduleTaskGuidId;
+                                cr.guidId = scheduleTaskGuidId+","+channelId;
 
                                 cr.errorCode = "200";
 
@@ -458,7 +458,7 @@ namespace MediaMgrSystem
 
                             ComuResponseBase cr = new ComuResponseBase();
 
-                            cr.guidId = scheduleTaskGuidId;
+                            cr.guidId = scheduleTaskGuidId+","+channelId;
 
                             cr.errorCode = "181";
 
@@ -591,7 +591,7 @@ namespace MediaMgrSystem
                     {
                         ComuResponseBase cr = new ComuResponseBase();
 
-                        cr.guidId = scheduleTaskGuidId;
+                        cr.guidId = scheduleTaskGuidId + "," + channelId;
 
                         cr.errorCode = "200";
 
@@ -787,7 +787,7 @@ namespace MediaMgrSystem
 
                         ComuResponseBase cr = new ComuResponseBase();
 
-                        cr.guidId = itemToRemove.GuidId;
+                        cr.guidId = itemToRemove.GuidId+","+itemToRemove.ChannelId;
 
                         cr.errorCode = "200";
 
@@ -808,7 +808,7 @@ namespace MediaMgrSystem
 
                         ComuResponseBase cr = new ComuResponseBase();
 
-                        cr.guidId = itemToRemove.GuidId;
+                        cr.guidId = itemToRemove.GuidId+","+itemToRemove.ChannelId;
 
                         cr.errorCode = "180";
 

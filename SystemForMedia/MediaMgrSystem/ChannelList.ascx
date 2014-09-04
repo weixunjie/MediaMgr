@@ -21,6 +21,7 @@
 
     var currentFunction;
 
+    var timeOutCurrentChannel;
     $(document).ready(function () {
 
         setButtonStatus("AllDisabled");
@@ -54,7 +55,8 @@
 
         chat.client.sendManualPlayStatus = function (result, error, cid, cname, pids, strPlayingFunction) {
 
-            if (currentOperChannelId = cid) {
+            if (currentOperChannelId == cid) {
+              
                 currentPlayingFunction = strPlayingFunction;
 
                 currentOperChannelId = cid;
@@ -79,7 +81,7 @@
                         if (currentPlayingFunction == currentFunction) {
                             setButtonStatus("Play");
                             $("#btnChooseProgram").attr("disabled", true);
-                        }                     
+                        }
 
 
 
@@ -87,7 +89,9 @@
                     else if (result = "Stop") {
                         if (currentPlayingFunction == currentFunction) {
                             setButtonStatus("StopAndDelayStart");
+
                             $("#btnChooseProgram").attr("disabled", false);
+
                         }
 
                     }
@@ -141,6 +145,8 @@
             if (type == "StopAndDelayStart") {
 
 
+                timeOutCurrentChannel = currentOperChannelId;
+
                 var timeOut = '<% =GetIntervalTimeFromStopToPlay() %>';
 
 
@@ -154,7 +160,10 @@
 
                 $(function () {
                     setTimeout(function () {
-                        setButtonStatus("Stop");
+                   
+                        if (timeOutCurrentChannel == currentOperChannelId) {
+                            setButtonStatus("Stop");
+                        }
                     }, timeOut);
                 })
 
@@ -285,6 +294,10 @@
                 currentOperChannelName = $(this).data("itemid");
 
 
+                var x = $(this).offset().left;
+                var y = $(this).offset().top + $(this).height() + 2;
+
+
                 $.ajax({
                     type: "POST",
                     async: false,
@@ -293,11 +306,12 @@
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
-                       
+
+
                         if (msg.d == null || msg.d == "") {
                             $("#btnChooseProgram").attr("disabled", false);
                             setButtonStatus("AllDisabled");
-                        
+
                             $("#divChannelInfo").html(currentOperChannelName + "等待操作");
                         }
                         else {
@@ -323,8 +337,7 @@
                                     $("#btnChooseProgram").attr("disabled", true);
 
                                     var typeStrPlaying = "视频";
-                                    if (currentPlayingFunction == "1")
-                                    {
+                                    if (currentPlayingFunction == "1") {
                                         typeStrPlaying = "音频";
                                     }
                                     $("#divChannelInfo").html(currentOperChannelName + "正在播放" + typeStrPlaying);
@@ -347,7 +360,7 @@
                                         $("#btnChooseProgram").attr("disabled", false);
                                         setButtonStatus("Stop");
                                         $("#divChannelInfo").html(currentOperChannelName + "准备就绪");
-                                    
+
                                     }
                                 }
                             }
@@ -355,16 +368,15 @@
                         }
                         // debugger;
 
+                        is_popup_1st_menu = true;
+                     
+
+                        $("#channelListChannelClickMenuBox").show().css("left", x).css("top", y);
+
                     }
                 });
 
 
-                is_popup_1st_menu = true;
-
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
-
-                $("#channelListChannelClickMenuBox").show().css("left", x).css("top", y);
 
 
             });
