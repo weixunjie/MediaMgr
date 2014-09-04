@@ -17,15 +17,21 @@ using System.Net.Sockets;
 
 namespace MediaMgrWS
 {
-   
 
 
+
+    public class RunningTask
+    {
+        public string ChannelId { get; set; }
+
+        public string ScheduleTaskId { get; set; }
+    }
     public partial class MediaMgrService : ServiceBase
     {
 
         private HubConnection hubConnection;
 
-   
+
 
         private bool _isConnected = false;
 
@@ -38,7 +44,7 @@ namespace MediaMgrWS
 
         private object lockQueuItems = new object();
 
-
+        private object lockRunningtems = new object();
 
         private DbUtils dbUitls = null;
 
@@ -46,8 +52,9 @@ namespace MediaMgrWS
 
         private Timer aTimerCheckStopSchedule;
 
-        private IHubProxy hubProxy;    
+        private IHubProxy hubProxy;
 
+        private List<RunningTask> TasksRunning = new List<RunningTask>();
 
         public MediaMgrService()
         {
@@ -90,14 +97,14 @@ namespace MediaMgrWS
             string sqlStr = "SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
                           " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>CONVERT(DATETIME,'{0}') " +
                           " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
-                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) AND ISRUNNING<>1 " +
+                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) " +
                            " AND (LASTRUNDATE IS NULL OR LASTRUNDATE='' OR ( DATEDIFF(S, LASTRUNDATE,GETDATE())>" + ADVANCED_START_SECS.ToString() + "))";
 
             CheckTask(sqlStr, true);
         }
 
 
-       
+
 
 
 
@@ -185,24 +192,39 @@ namespace MediaMgrWS
 
                                 for (int m = 0; m < strChannelIds.Count; m++)
                                 {
+
+
                                     string cid = strChannelIds[m];
                                     string cName = strChannelNames[m];
+
+
                                     if (!string.IsNullOrEmpty(cid))
                                     {
 
                                         if (!isCheckStart)
                                         {
+                                            if (!CheckIfRunning(strScheduleTaskId, cid))
+                                            {
+                                                continue;
+                                            }
+
                                             string[] strPids = new string[0];
 
                                             hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
 
-                                            UpdateRunningStatus(false, strScheduleTaskId, true);
+                                            UpdateRunningStatus(false, strScheduleTaskId, cid, true);
                                             System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
 
                                         }
 
                                         else if (isCheckStart)
                                         {
+
+                                            if (CheckIfRunning(strScheduleTaskId, cid))
+                                            {
+                                                continue;
+                                            }
+
                                             string programeIds = dt.Rows[i]["ScheduleTaskProgarmId"].ToString();
 
                                             string[] strPids = null;
@@ -217,7 +239,7 @@ namespace MediaMgrWS
 
                                                 hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
 
-                                                UpdateRunningStatus(true, strScheduleTaskId, true);
+                                                UpdateRunningStatus(true, strScheduleTaskId, cid, true);
                                                 System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
 
 
@@ -249,7 +271,7 @@ namespace MediaMgrWS
             string sqlStr = " SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
                           " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)>CONVERT(DATETIME,'{0}') " +
                           " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
-                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) AND ISRUNNING=1 " +
+                          "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO)  " +
             " AND (LASTSTOPDATE IS NULL OR LASTSTOPDATE='' OR ( DATEDIFF(S, LASTSTOPDATE,GETDATE())>" + ADVANCED_STOP_SECS.ToString() + "))";
 
             CheckTask(sqlStr, false);
@@ -258,16 +280,17 @@ namespace MediaMgrWS
         protected override void OnStart(string[] args)
         {
 
+            TasksRunning = new List<RunningTask>();
             dbUitls = new DbUtils(System.Configuration.ConfigurationSettings.AppSettings["ConnStr"].ToString());
             DoConnection();
 
-      
+
 
         }
 
-      
 
-       
+
+
 
         private void DoConnection()
         {
@@ -294,13 +317,15 @@ namespace MediaMgrWS
                         //Start video, no need remove queue
                         if (resp.errorCode != "181")
                         {
-                            UpdateRunningStatus(false, resp.guidId);
+
+                            string[] strs = resp.guidId.Split(',');
+                            UpdateRunningStatus(false, strs[0], strs[1]);
                         }
                     }
 
                 }
 
-                lock ( EncoderSocketLogic.lockEncoderCommand)
+                lock (EncoderSocketLogic.lockEncoderCommand)
                 {
                     EncoderCommandBase encoderRequestCmd = Newtonsoft.Json.JsonConvert.DeserializeObject<EncoderCommandBase>(data);
 
@@ -329,25 +354,81 @@ namespace MediaMgrWS
 
         }
 
-        private void UpdateRunningStatus(bool isRunning, string schduelTaskId, bool isUpdateTime = false)
+        private bool CheckIfRunning(string schduelTaskId, string channelId)
         {
-            string sqlUpdate = " UPDATE DBO.SCHEDULETASKINFO SET ISRUNNING={0}{1} WHERE  SCHEDULETASKID={2} ";
+
+            lock (lockRunningtems)
+            {
+                foreach (var task in TasksRunning)
+                {
+                    if (task.ChannelId == channelId && task.ScheduleTaskId == schduelTaskId)
+                    {
+                        return true;
+                    }
+                }
+
+            }
+
+            return false;
+
+
+
+        }
+        private void UpdateRunningStatus(bool isRunning, string schduelTaskId, string channelId, bool isUpdateTime = false)
+        {
+
 
             string updateStr = string.Empty;
+
             if (isRunning)
             {
-                updateStr = ",LASTRUNDATE=GETDATE()";
+                updateStr = "UPDATE DBO.SCHEDULETASKINFO  set LASTRUNDATE=GETDATE() WHERE  SCHEDULETASKID={0} ";
 
             }
             else
             {
-                updateStr = ",LASTSTOPDATE=GETDATE()";
+                updateStr = "UPDATE DBO.SCHEDULETASKINFO  set LASTSTOPDATE=GETDATE() WHERE  SCHEDULETASKID={0} ";
             }
 
+            if (isUpdateTime)
+            {
+                updateStr = string.Format(updateStr, schduelTaskId);
 
-            sqlUpdate = string.Format(sqlUpdate, isRunning ? 1 : 0, isUpdateTime ? updateStr : "", schduelTaskId);
+                dbUitls.ExecuteNonQuery(updateStr);
+            }
 
-            dbUitls.ExecuteNonQuery(sqlUpdate);
+            lock (lockRunningtems)
+            {
+
+
+                RunningTask itemToRemove = null;
+                foreach (var task in TasksRunning)
+                {
+                    if (task.ChannelId == channelId && task.ScheduleTaskId == schduelTaskId)
+                    {
+                        itemToRemove = task;
+                        break;
+                    }
+                }
+
+
+
+                if (isRunning)
+                {
+
+                    TasksRunning.Add(new RunningTask { ChannelId = channelId, ScheduleTaskId = schduelTaskId });
+
+
+                }
+                else
+                {
+                    if (itemToRemove != null)
+                    {
+                        TasksRunning.Remove(itemToRemove);
+                    }
+                }
+            }
+
         }
 
         void hubConnection_StateChanged(StateChange obj)
@@ -367,6 +448,7 @@ namespace MediaMgrWS
                 aTimerCheckStartSchedule.Enabled = true;
 
 
+
                 aTimerCheckStopSchedule = new Timer();
                 aTimerCheckStopSchedule.Elapsed += aTimerForStop_Elapsed;
                 aTimerCheckStopSchedule.Interval = 1 * 800;
@@ -378,7 +460,7 @@ namespace MediaMgrWS
                 EncoderSocketLogic.EncoderBLLInstance = new EncoderBLL(dbUitls);
 
                 EncoderSocketLogic.hubProxy = hubProxy;
-                
+
                 EncoderSocketLogic.OpenSocketServer();
 
 
