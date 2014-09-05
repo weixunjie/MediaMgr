@@ -45,6 +45,17 @@ namespace MediaMgrSystem
                     {
 
                         singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
+
+
+                        SyncTimeCommand cmd=new SyncTimeCommand();
+
+                        cmd.guidId=Guid.NewGuid().ToString();
+                        cmd.commandType=CommandTypeEnum.SYNCTIME;
+                        cmd.arg=new SyncTimeCommandArg();
+              
+                       cmd.arg.serverNowTime=((DateTime.Now.Ticks - 621355968000000000) / 10000).ToString();
+                       hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+
                     }
                     else if (type == "VIDEOSERVER")
                     {

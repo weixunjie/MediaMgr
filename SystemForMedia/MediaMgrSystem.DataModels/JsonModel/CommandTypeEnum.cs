@@ -28,7 +28,7 @@ namespace MediaMgrSystem.DataModels
 
         STREAMSFINISHED = 114,
 
-
+        SYNCTIME = 130,
 
 
         REMOTECONTRLMANUALOPEN = 211,

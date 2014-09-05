@@ -130,6 +130,9 @@ namespace MediaMgrSystem
 
             cmd.arg.isEnabled = isEnabled;
 
+
+            
+
             hub.Clients(idsNeedToSend).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
             new Thread(ProcessTimeOutRequest).Start(hub);
 
@@ -329,6 +332,9 @@ namespace MediaMgrSystem
                         {
                             port = 1234 + intCID;
                         }
+
+                                                
+
 
                         cmdToVideoSvr.arg.udpBroadcastAddress = "udp://229.0.0.1:" + port.ToString();
 
