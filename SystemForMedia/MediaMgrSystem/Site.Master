@@ -126,7 +126,7 @@
                            }
                                 %>
 
-                                <li><a href="<%=ResolveUrl("~/MgrModel/LogMgrList.aspx") %>">日志管理</a></li>
+                      
                             </ul>
                         </li>
 

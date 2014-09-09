@@ -52,7 +52,15 @@ namespace MediaMgrSystem
 
             if (si != null)
             {
-                return "今日下一个计划：" + si.ScheduleTaskStartTime;
+                List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(si.ScheduleTaskProgarmId);
+
+                string pName = string.Empty ;
+                if (pis != null && pis.Count > 0)
+                {
+                    pName = pis[0].ProgramName;
+                }
+
+                return "今日下一个计划：" + si.ScheduleTaskStartTime + " 节目名称：" + pName;
             }
             else
             {
