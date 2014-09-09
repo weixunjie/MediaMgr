@@ -24,6 +24,7 @@ import com.zsoft.SignalA.Transport.StateBase;
 import com.zsoft.SignalA.Transport.Longpolling.ConnectedState;
 import com.zsoft.SignalA.Transport.Longpolling.LongPollingTransport;
 
+import android.R;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -57,9 +58,7 @@ public class MainService extends Service {
 
 	public static final int COMMAND_MANUAL_CLOSE = 222;
 
-	
-
-	private  ContentResolver mContentResolver = null;
+	private ContentResolver mContentResolver = null;
 	private boolean mIsClientRunning;
 
 	private ConnectedState mState;
@@ -116,8 +115,8 @@ public class MainService extends Service {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 
-		mContentResolver=this.getContentResolver();
-		
+		mContentResolver = this.getContentResolver();
+
 		url = StorageHelper.getMulticastAddr(this,
 				"http://192.168.1.100:19671/signalr/hubs");
 
@@ -240,13 +239,11 @@ public class MainService extends Service {
 			url = "http://" + url;
 		}
 
-		if (url.indexOf("signalr/hubs")<0)
-		{
-			url=url+"/signalr/hubs";
+		if (url.indexOf("signalr/hubs") < 0) {
+			url = url + "/signalr/hubs";
 		}
-		
-		conn = new HubConnection(url , this,
-				new LongPollingTransport(),
+
+		conn = new HubConnection(url, this, new LongPollingTransport(),
 				"clientType=REMOTECONTORLDEVICE&clientIdentify="
 						+ getLocalIPAddress()) {
 			@Override
@@ -304,12 +301,12 @@ public class MainService extends Service {
 					Log.i(TAG, "commandType: " + commandType);
 
 					if (commandType == COMMAND_MANUAL_OPEN) {
-						
-						processManuallyPlay(resultObject,true);
+
+						processManuallyPlay(resultObject, true);
 
 					} else if (commandType == COMMAND_MANUAL_CLOSE) {
-						
-						processManuallyPlay(resultObject,false);
+
+						processManuallyPlay(resultObject, false);
 						// stop play
 					}
 
@@ -324,6 +321,22 @@ public class MainService extends Service {
 
 		});
 		conn.Start();
+	}
+
+	private String getDeviceDisplayByType(String deviceType) {
+		if (deviceType.equals(DeviceOperation.DEVICE_AC)) {			
+			 return mContext.getString(jld.com.jld.remotecontrol.client.R.string.ac_display);
+		} else if (deviceType.equals(DeviceOperation.DEVICE_TV)) {
+			 return mContext.getString(jld.com.jld.remotecontrol.client.R.string.tv_display);
+		} else if (deviceType.equals(DeviceOperation.DEVICE_PROJECTOR)) {
+			 return mContext.getString(jld.com.jld.remotecontrol.client.R.string.projector_display);
+		} else if (deviceType.equals(DeviceOperation.DEVICE_PC)) {
+			 return mContext.getString(jld.com.jld.remotecontrol.client.R.string.computer_display);
+		} else if (deviceType.equals(DeviceOperation.DEVICE_LIGHT)) {
+			 return mContext.getString(jld.com.jld.remotecontrol.client.R.string.ligtht_display);
+		}
+
+		return "";
 	}
 
 	private void processManuallyPlay(JSONObject resultObject, boolean isOpen) {
@@ -342,46 +355,44 @@ public class MainService extends Service {
 
 						String deviceType = strs[i];
 
-						String operText="打开";
-						
-						if (!isOpen)
-						{
-							operText="关闭";
+						String operText = "打开";
+
+						if (!isOpen) {
+							operText = "关闭";
 						}
 						DeviceInfo di = StorageHelper.getDeviceInfo(mContext,
 								deviceType);
 
 						if (di != null) {
 
-							JSONObject paramsDataObject = new JSONObject(argObject.get("paramsData").toString());
-							
+							JSONObject paramsDataObject = new JSONObject(
+									argObject.get("paramsData").toString());
+
 							String acTemperature = paramsDataObject.get(
 									"acTemperature").toString();
 
-							String acMode = paramsDataObject.get("acMode").toString();
+							String acMode = paramsDataObject.get("acMode")
+									.toString();
 
-							boolean oResult = DeviceOperation.setStatus(di, isOpen, acMode, acTemperature);
+							boolean oResult = DeviceOperation.setStatus(di,
+									isOpen, acMode, acTemperature);
 
 							if (oResult) {
-								sendFeedBackToServer(
-										"0",
-										DeviceOperation
-												.getDeviceDisplayByType(deviceType)
-												+ operText+"成功");
+								sendFeedBackToServer("0",
+
+								getDeviceDisplayByType(deviceType) + operText
+										+ "成功");
 							} else {
-								sendFeedBackToServer(
-										"0",
-										DeviceOperation
-												.getDeviceDisplayByType(deviceType)
-												+ operText+"失败");
+								sendFeedBackToServer("0",
+
+								getDeviceDisplayByType(deviceType) + operText
+										+ "失败");
 							}
 
 						} else {
-							sendFeedBackToServer(
-									"21",
-									DeviceOperation
-											.getDeviceDisplayByType(deviceType)
-											+ "未注册");
+							sendFeedBackToServer("21",
+
+							getDeviceDisplayByType(deviceType) + "未注册");
 						}
 
 					}

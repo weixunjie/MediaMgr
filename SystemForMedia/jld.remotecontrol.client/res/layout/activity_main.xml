@@ -10,19 +10,13 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal" >
 
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10" >
-        </EditText>
-
+   
         <Button
             android:id="@+id/btnRegUnReg"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="开始注册" />
+            android:text="@string/btn_text_reg" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,13 +41,13 @@
             android:id="@+id/btnOpenSel"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="打开" />
+            android:text="@string/btn_text_open" />
 
         <Button
             android:id="@+id/btnCloseSel"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="关闭" />
+            android:text="@string/btn_text_close" />
     </LinearLayout>
 
 </LinearLayout>

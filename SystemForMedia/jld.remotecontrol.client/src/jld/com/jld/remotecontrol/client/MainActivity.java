@@ -50,20 +50,23 @@ public class MainActivity extends Activity {
 		public void hui(String str);
 	}
 
-	private String[] devicesStrings = new String[] { "空调", "电视", "投影仪", "电脑",
-			"灯" };
+	private String[] devicesStrings = new String[] {
+			this.getString(R.string.ac_display),
+			this.getString(R.string.tv_display),
+			this.getString(R.string.projector_display),
+			this.getString(R.string.computer_display),
+			this.getString(R.string.ligtht_display) };
 
-	private iot iot_hw;  
-	
+	private iot iot_hw;
+
 	private final Timer timer = new Timer();
 	private TimerTask task;
 	private EditText editText1;
 
 	private String regDeviceId;
-	
+
 	private String regPortNumber;
 
-	
 	private Context mContext;
 	private boolean isRegisting = false;
 	private RadioOnClick DialogOnClick = new RadioOnClick(0);
@@ -187,7 +190,7 @@ public class MainActivity extends Activity {
 			}
 		};
 
-		editText1 = (EditText) findViewById(R.id.editText1);
+		// editText1 = (EditText) findViewById(R.id.editText1);
 
 		bindDeviceListView();
 
@@ -217,8 +220,8 @@ public class MainActivity extends Activity {
 			public int device_registered_callback(String device_id,
 					int _port_number) {
 
-				regDeviceId=device_id;
-				regPortNumber=String.valueOf(_port_number);
+				regDeviceId = device_id;
+				regPortNumber = String.valueOf(_port_number);
 				Log.d("MainActivity", "deivice=" + device_id + "  port="
 						+ _port_number + "   registed");
 
@@ -228,7 +231,7 @@ public class MainActivity extends Activity {
 						.create();
 				// areaListView=ad.getListView();
 				ad.show();
-				
+
 				return 0;
 
 			}
@@ -236,8 +239,8 @@ public class MainActivity extends Activity {
 
 		iot_hw = new iot(observable);
 		iot_hw.init();
-		
-		DeviceOperation.ioClass=iot_hw;
+
+		DeviceOperation.ioClass = iot_hw;
 		final Button btnRegUnReg = (Button) findViewById(R.id.btnRegUnReg);
 
 		btnRegUnReg.setOnClickListener(new View.OnClickListener() {
@@ -246,12 +249,12 @@ public class MainActivity extends Activity {
 			public void onClick(View arg0) {
 				isRegisting = !isRegisting;
 				if (isRegisting) {
-					iot_hw.register();					
+					iot_hw.register();
 					btnRegUnReg.setText("完成注册");
 				} else {
 					iot_hw.unregister();
 					btnRegUnReg.setText("开始注册");
-				}		
+				}
 
 			}
 		});

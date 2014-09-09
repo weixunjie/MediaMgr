@@ -4,6 +4,16 @@
     <string name="app_name">jld.remotecontrol.client</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="ac_display">空调</string>
+    <string name="ligtht_display">灯</string>
+    <string name="projector_display">投影仪</string>
+    <string name="tv_display">电视</string>
+    <string name="computer_display">电脑</string>
+    <string name="btn_text_open">打开</string>
+    <string name="btn_text_close">关闭</string>
+    <string name="btn_text_reg">开始注册</string>
+    <string name="btn_text_unreg">完成注册</string>
+    <string name="lable_text_server_url">服务器地址</string>
 
     <color name="white">#ffffffff</color>
     <color name="unfocused">#cccccccc</color>

@@ -1,5 +1,9 @@
 package com.model.utils;
 
+
+import android.R;
+import android.content.Context;
+
 import com.datamodels.DeviceInfo;
 import com.datamodels.DeviceStatus;
 import com.example.iot.iot;
@@ -18,7 +22,9 @@ public class DeviceOperation {
 	public static final String DEVICE_LIGHT = "5";
 	
 
-	public static iot ioClass =null;;
+	public static iot ioClass =null;
+	
+	public static Context mContext =null;;
 	public static DeviceStatus getStatus(String deviceId) {
 		DeviceStatus ds=new DeviceStatus();
 		return ds;
@@ -29,8 +35,8 @@ public class DeviceOperation {
 		if (diInfo.isAC()) {
 			ioClass.air_open_close(diInfo.getDeviceId(), isOpen);
 			
-		} else {
-		
+		} else {		
+			
 			ioClass.port_up_off(diInfo.getDeviceId(),
 					Integer.valueOf(diInfo.getPortNumber()), isOpen);
 		}
@@ -46,30 +52,7 @@ public class DeviceOperation {
 	}	
 	
 	
-	public static String getDeviceDisplayByType(String deviceType) {
-		if (deviceType.equals(DEVICE_AC))
-		{
-			return "空调";
-		}
-		else if (deviceType.equals(DEVICE_TV))
-		{
-			return "电视";
-		}
-		else if (deviceType.equals(DEVICE_PROJECTOR))
-		{
-			return "投影仪";
-		}
-		else if (deviceType.equals(DEVICE_PC))
-		{
-			return "电脑";
-		}
-		else if (deviceType.equals(DEVICE_LIGHT))
-		{
-			return "灯";
-		}
-		
-		return "";
-	}	
+	
 	
 
 }
