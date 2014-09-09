@@ -651,14 +651,13 @@ namespace MediaMgrSystem
 
         }
 
-        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode, ManualPlayItem mp)
+        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode,ManualPlayItem mp )
         {
 
-            if (mp != null)
-            {
+            
 
-                hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, mp.ChannelId, mp.ChannelName, mp.PlayingPids, mp.PlayingFunction == BusinessType.AUDITBROADCAST ? "1" : "2");
-            }
+                hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, mp.ChannelId, mp.ChannelName, mp.PlayingPids, mp.PlayingFunction==BusinessType.AUDITBROADCAST ? "1" : "2");
+            
         }
 
         public static List<string> GetAllPCDeviceConnectionIds()

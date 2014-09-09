@@ -54,9 +54,10 @@
 
 
         chat.client.sendManualPlayStatus = function (result, error, cid, cname, pids, strPlayingFunction) {
-
+    
             if (currentOperChannelId == cid) {
               
+            
                 currentPlayingFunction = strPlayingFunction;
 
                 currentOperChannelId = cid;

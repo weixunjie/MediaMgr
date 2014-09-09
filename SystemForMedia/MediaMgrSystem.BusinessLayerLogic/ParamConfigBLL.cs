@@ -72,8 +72,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                             pc.MaxClientsCountForVideo = 10;
                         }
                     }
-
-
+                    
 
                     if (!string.IsNullOrWhiteSpace(tmpMaxClientsCountForAudio))
                     {
@@ -103,14 +102,10 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         {
                             string plainMaxClientCount = EncryptUtils.DesDecrypt(tmpMaxClientsCountForRemoteControl);
 
-
                             if (int.TryParse(plainMaxClientCount, out tmp))
                             {
-
                                 pc.MaxClientsCountForRemoteControl = tmp;
-
                             }
-
 
                         }
                         catch (Exception ex)

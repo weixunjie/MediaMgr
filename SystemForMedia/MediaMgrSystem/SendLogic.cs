@@ -242,7 +242,17 @@ namespace MediaMgrSystem
 
                             GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放失败, " + errorrNotOpenVideoSvr);
 
-                            GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", GlobalUtils.GetManaulPlayItemByChannelId(channelId));
+                            ManualPlayItem item = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+                            if (item == null)
+                            {
+                                item = new ManualPlayItem();
+                                item.ChannelId = channelId;
+                                item.ChannelName = channelName;
+                                item.PlayingPids = programeIds;
+                                item.PlayingFunction = bType;
+                            }
+
+                            GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", item);
                             // hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
                         }
 
@@ -614,7 +624,18 @@ namespace MediaMgrSystem
                     {
                         List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
                         // hub.Clients(alPCIds).sendManualPlayStatus(errorrNotOpenVideoSvr, "200", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
-                        GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", GlobalUtils.GetManaulPlayItemByChannelId(channelId));
+
+                       ManualPlayItem item=    GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+
+                        if (item==null)
+                        {
+                            item=new ManualPlayItem();
+                            item.ChannelId=channelId;
+                            item.ChannelName=channelName;
+                            item.PlayingPids=null;
+                            item.PlayingFunction=bType;
+                        }
+                        GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", item);
                         GlobalUtils.AddLogs(hub, "手动操作", channelName + "停止播放操作失败，" + errorrNotOpenVideoSvr + scheduleTime);
                     }
                 }
@@ -765,6 +786,7 @@ namespace MediaMgrSystem
                             mp.IsPlaying = false;
 
                             mp.IsRepeating = false;
+
 
                             //    hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("Stop", "0", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
                             GlobalUtils.SendManuallyClientNotice(hub, "Stop", "0", mp);
