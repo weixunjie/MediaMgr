@@ -140,11 +140,13 @@ namespace MediaMgrSystem
                             if (que.GuidIdStr == cb.guidId)
                             {
 
+                          
                                 strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
 
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
                                 strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
 
+                                removeGuid = cb.guidId;
                                 
 
                                 string strCmdType = RemoteControlLogic.GetCommandText(que.CommandType, que.ExternalIds);

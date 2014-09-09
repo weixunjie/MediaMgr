@@ -89,6 +89,8 @@
                         <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
                         <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
+                        <li><a href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
+
 
                         <li class="dropdown" id="accountmenu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
