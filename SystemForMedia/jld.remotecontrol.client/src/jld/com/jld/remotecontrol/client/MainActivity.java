@@ -50,12 +50,7 @@ public class MainActivity extends Activity {
 		public void hui(String str);
 	}
 
-	private String[] devicesStrings = new String[] {
-			this.getString(R.string.ac_display),
-			this.getString(R.string.tv_display),
-			this.getString(R.string.projector_display),
-			this.getString(R.string.computer_display),
-			this.getString(R.string.ligtht_display) };
+	private String[] devicesStrings = null;
 
 	private iot iot_hw;
 
@@ -180,6 +175,14 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		mContext=this;
+		devicesStrings=new String[] {
+				mContext.getString(R.string.ac_display),
+				mContext.getString(R.string.tv_display),
+				mContext.getString(R.string.projector_display),
+				mContext.getString(R.string.computer_display),
+				mContext.getString(R.string.ligtht_display) };
+		
 		task = new TimerTask() {
 			@Override
 			public void run() {
@@ -189,6 +192,8 @@ public class MainActivity extends Activity {
 				handler.sendMessage(message);
 			}
 		};
+		
+		
 
 		// editText1 = (EditText) findViewById(R.id.editText1);
 
