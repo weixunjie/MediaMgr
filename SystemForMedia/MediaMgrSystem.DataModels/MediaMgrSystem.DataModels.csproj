@@ -51,14 +51,20 @@
     <Compile Include="DataModel\ScheduleTaskInfo.cs" />
     <Compile Include="DataModel\ScheduleInfo.cs" />
     <Compile Include="DataModel\ChannelInfo.cs" />
-    <Compile Include="DataModel\EncoderInfo.cs" />
+    <Compile Include="DataModel\EncoderAudioInfo.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenReponse.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenReponseArg.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioOperationCommand.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioSendGroupsInfoCommand.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderSyncGroupInfo.cs" />
+    <Compile Include="JsonModel\AudioEncoder\ToEncoderAudioCommand.cs" />
     <Compile Include="JsonModel\CommandTypeEnum.cs" />
     <Compile Include="DataModel\SingalRClientConnectionType.cs" />
     <Compile Include="DataModel\SingalConnectedClient.cs" />
     <Compile Include="JsonModel\SyncTimeCommand.cs" />
     <Compile Include="JsonModel\SyncTimeCommandArg.cs" />
-    <Compile Include="JsonModel\EncoderCommandBase.cs" />
-    <Compile Include="JsonModel\EncoderOpenCommand.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioCommandBase.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlACParam.cs" />
     <Compile Include="JsonModel\DeviceOperationCommandArg.cs" />
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlScheduleArg.cs" />
@@ -68,7 +74,7 @@
     <Compile Include="JsonModel\RemoteControl\DeviceRemoteControlManualCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\ReceiveRemovoteDeivceCommand.cs" />
     <Compile Include="JsonModel\RemoteControl\ReceiveRemovoteDeivceStatus.cs" />
-    <Compile Include="JsonModel\EncoderOpenCommandeArg.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenCommandeArg.cs" />
     <Compile Include="JsonModel\VideoOperAndriodClientArg.cs" />
     <Compile Include="JsonModel\ReceiveCommandBaseArg.cs" />
     <Compile Include="JsonModel\VideoServerOperArg.cs" />
@@ -81,6 +87,7 @@
     <Compile Include="DataModel\GroupInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

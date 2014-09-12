@@ -64,8 +64,7 @@
                 currentOperChannelName = cname;
 
                 currentPlayPIds = pids;
-
-
+                
                 //  debugger;
                 if (error != "0") {
                     if (currentPlayingFunction == currentFunction) {
@@ -83,9 +82,6 @@
                             setButtonStatus("Play");
                             $("#btnChooseProgram").attr("disabled", true);
                         }
-
-
-
                     }
                     else if (result = "Stop") {
                         if (currentPlayingFunction == currentFunction) {
@@ -128,15 +124,9 @@
             //Stop disable stop and repeta, enabled palying
             if (type == "Stop") {
 
-
-
+                
                 $("#btnChannelControlPlay").attr("disabled", false);
-
-
-
-
                 $("#btnChannelControlStop").attr("disabled", true);
-
                 $("#btnChannelControlRepeat").attr("disabled", true);
 
 

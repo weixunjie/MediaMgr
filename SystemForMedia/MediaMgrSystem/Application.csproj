@@ -176,7 +176,7 @@
     <Content Include="Images\ic_image_projector.png" />
     <Content Include="LogOut.aspx" />
     <Content Include="LogList.ascx" />
-    <Content Include="EncoderList.ascx" />
+    <Content Include="AudioEncoderList.ascx" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\ChannelList.css" />
@@ -204,9 +204,9 @@
     <Content Include="Images\ic_image_stop.png" />
     <Content Include="Images\ic_image_stop_disabled.png" />
     <Content Include="Images\ic_image_stop_hover.png" />
-    <Content Include="MgrModel\EncoderMgrDetail.aspx" />
+    <Content Include="MgrModel\EncoderAudioMgrDetail.aspx" />
     <Content Include="MgrModel\ChannelMgrDetail.aspx" />
-    <Content Include="MgrModel\EncoderMgrList.aspx" />
+    <Content Include="MgrModel\EncoderAudioMgrList.aspx" />
     <Content Include="MgrModel\LogMgrList.aspx" />
     <Content Include="MgrModel\PreviewMP3.aspx" />
     <Content Include="Login.aspx" />
@@ -333,26 +333,26 @@
     <Compile Include="LogList.ascx.designer.cs">
       <DependentUpon>LogList.ascx</DependentUpon>
     </Compile>
-    <Compile Include="EncoderList.ascx.cs">
-      <DependentUpon>EncoderList.ascx</DependentUpon>
+    <Compile Include="AudioEncoderList.ascx.cs">
+      <DependentUpon>AudioEncoderList.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="EncoderList.ascx.designer.cs">
-      <DependentUpon>EncoderList.ascx</DependentUpon>
+    <Compile Include="AudioEncoderList.ascx.designer.cs">
+      <DependentUpon>AudioEncoderList.ascx</DependentUpon>
     </Compile>
-    <Compile Include="MgrModel\EncoderMgrDetail.aspx.cs">
-      <DependentUpon>EncoderMgrDetail.aspx</DependentUpon>
+    <Compile Include="MgrModel\EncoderAudioMgrDetail.aspx.cs">
+      <DependentUpon>EncoderAudioMgrDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MgrModel\EncoderMgrDetail.aspx.designer.cs">
-      <DependentUpon>EncoderMgrDetail.aspx</DependentUpon>
+    <Compile Include="MgrModel\EncoderAudioMgrDetail.aspx.designer.cs">
+      <DependentUpon>EncoderAudioMgrDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MgrModel\EncoderMgrList.aspx.cs">
-      <DependentUpon>EncoderMgrList.aspx</DependentUpon>
+    <Compile Include="MgrModel\EncoderAudioMgrList.aspx.cs">
+      <DependentUpon>EncoderAudioMgrList.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MgrModel\EncoderMgrList.aspx.designer.cs">
-      <DependentUpon>EncoderMgrList.aspx</DependentUpon>
+    <Compile Include="MgrModel\EncoderAudioMgrList.aspx.designer.cs">
+      <DependentUpon>EncoderAudioMgrList.aspx</DependentUpon>
     </Compile>
     <Compile Include="MgrModel\LogMgrList.aspx.cs">
       <DependentUpon>LogMgrList.aspx</DependentUpon>
@@ -583,7 +583,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:19671/</IISUrl>
+          <IISUrl>http://10.50.90.83:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>

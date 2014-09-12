@@ -28,17 +28,17 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public List<GroupInfo> GetGroupByIds(string groupIds)
         {
-            String sqlStr = "SELECT * FROM GROUPINFO WHERE GROUPID in (" + groupIds+")";
+            String sqlStr = "SELECT * FROM GROUPINFO WHERE GROUPID in (" + groupIds + ")";
 
             return GetGroupList(sqlStr);
         }
 
-        public List<GroupInfo> GetGroupByChannelId(string id,BusinessType bType)
+        public List<GroupInfo> GetGroupByChannelId(string id, BusinessType bType)
         {
-            
+
             String sqlStr = "SELECT * FROM GROUPINFO WHERE CHANNELID=" + id;
 
-            return GetGroupList(sqlStr,bType);
+            return GetGroupList(sqlStr, bType);
         }
 
         public List<GroupInfo> GetAllGroups()
@@ -49,15 +49,23 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public List<GroupInfo> GetAllGroupsWithOutDeviceInfo()
+        {
+            String sqlStr = "SELECT * FROM GroupInfo";
+
+            return GetGroupList(sqlStr,BusinessType.ALL,false);
+
+        }
+
         public List<GroupInfo> GetAllGroupsByBusinessType(BusinessType bType)
         {
             String sqlStr = "SELECT * FROM GroupInfo";
 
-            return GetGroupList(sqlStr,bType);
+            return GetGroupList(sqlStr, bType);
 
         }
 
-        
+
 
 
 
@@ -68,9 +76,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             String strUpdateDeviceToDefaultGroup = "UPDATE DEVICEINFO SET GROUPID='-1' WHERE GROUPID=" + goupId;
 
-             dbUitls.ExecuteNonQuery(sqlStr);
+            dbUitls.ExecuteNonQuery(sqlStr);
 
-             return dbUitls.ExecuteNonQuery(strUpdateDeviceToDefaultGroup);
+            return dbUitls.ExecuteNonQuery(strUpdateDeviceToDefaultGroup);
 
         }
 
@@ -126,19 +134,19 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             String sqlStrUpdateDevice = "UPDATE GROUPINFO SET CHANNELID='{0}' WHERE GROUPID={1}";
 
-            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice,channelId, groupId);
+            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice, channelId, groupId);
 
             dbUitls.ExecuteNonQuery(sqlStrUpdateDevice);
 
 
 
         }
-       public void UpdateGroupChannelAndEncoder(string groupId, string channelId,string encoderId)
+        public void UpdateGroupChannelAndEncoder(string groupId, string channelId, string encoderId)
         {
 
             String sqlStrUpdateDevice = "UPDATE GROUPINFO SET CHANNELID='{0}', ENCODERID='{1}' WHERE GROUPID={2}";
 
-            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice,channelId,encoderId, groupId);
+            sqlStrUpdateDevice = String.Format(sqlStrUpdateDevice, channelId, encoderId, groupId);
 
             dbUitls.ExecuteNonQuery(sqlStrUpdateDevice);
 
@@ -174,7 +182,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
-        protected List<GroupInfo> GetGroupList(string sqlStr,BusinessType bType=BusinessType.ALL)
+        protected List<GroupInfo> GetGroupList(string sqlStr, BusinessType bType = BusinessType.ALL, bool isGeDevice=true)
         {
             List<GroupInfo> groups = new List<GroupInfo>();
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
@@ -192,13 +200,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         gi.ChannelId = dt.Rows[i]["CHANNELID"].ToString();
                         gi.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
 
-                        if (bType == BusinessType.ALL)
+                        if (isGeDevice)
                         {
-                            gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
-                        }
-                        else
-                        {
-                            gi.Devices = deviceBLL.GetAllDevicesByGroupWithFilter(gi.GroupId, bType);
+                            if (bType == BusinessType.ALL)
+                            {
+                                gi.Devices = deviceBLL.GetAllDevicesByGroup(gi.GroupId);
+                            }
+                            else
+                            {
+                                gi.Devices = deviceBLL.GetAllDevicesByGroupWithFilter(gi.GroupId, bType);
+                            }
                         }
                         groups.Add(gi);
                     }

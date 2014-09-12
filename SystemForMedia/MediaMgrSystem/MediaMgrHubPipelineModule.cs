@@ -47,14 +47,14 @@ namespace MediaMgrSystem
                         singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
 
 
-                        SyncTimeCommand cmd=new SyncTimeCommand();
+                        SyncTimeCommand cmd = new SyncTimeCommand();
 
-                        cmd.guidId=Guid.NewGuid().ToString();
-                        cmd.commandType=CommandTypeEnum.SYNCTIME;
-                        cmd.arg=new SyncTimeCommandArg();
-              
-                       cmd.arg.serverNowTime=((DateTime.Now.Ticks - 621355968000000000) / 10000).ToString();
-                       hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+                        cmd.guidId = Guid.NewGuid().ToString();
+                        cmd.commandType = CommandTypeEnum.SYNCTIME;
+                        cmd.arg = new SyncTimeCommandArg();
+
+                        cmd.arg.serverNowTime = ((DateTime.Now.Ticks - 621355968000000000) / 10000).ToString();
+                        hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
 
                     }
                     else if (type == "VIDEOSERVER")
@@ -65,9 +65,27 @@ namespace MediaMgrSystem
 
                     }
 
-                    else if (type == "ENCODER")
+                    else if (type == "ENCODERFORAUDIO")
                     {
-                        singalRClientConnectionType = SingalRClientConnectionType.ENCODERDEVICE;
+                        //sync group for encoer
+                        singalRClientConnectionType = SingalRClientConnectionType.ENCODERAUDIODEVICE;
+
+
+                        EncoderAudioSendGroupsInfoCommand cmdSyncGrouOps = new EncoderAudioSendGroupsInfoCommand();
+                        cmdSyncGrouOps.commandType = CommandTypeEnum.ENCODERSENDGROUPSINFO;
+                        cmdSyncGrouOps.guidId = Guid.NewGuid().ToString();
+                        cmdSyncGrouOps.groups = new List<EncoderSyncGroupInfo>();
+
+                        List<GroupInfo> gi = GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfo();
+
+                        foreach (var g in gi)
+                        {
+                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { GroupId = g.GroupId, GroupName = g.GroupName});
+                        }
+
+                        hub.Clients.Client(hub.Context.ConnectionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmdSyncGrouOps));
+
+
                     }
 
                     else if (type == "WINDOWSSERVICE")
@@ -168,7 +186,7 @@ namespace MediaMgrSystem
                             }
                             else if (re == -12)
                             {
-                                GlobalUtils.AddLogs(hub.Clients, "系统提示", "物联终端已经达到最大数量"); 
+                                GlobalUtils.AddLogs(hub.Clients, "系统提示", "物联终端已经达到最大数量");
                             }
 
 

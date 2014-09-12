@@ -113,7 +113,7 @@ namespace MediaMgrSystem
 
         }
 
-        public List<EncoderInfo> GetAllEncoders()
+        public List<EncoderAudioInfo> GetAllEncoders()
         {
             return GlobalUtils.EncoderBLLInstance.GetAllEncoders();
 

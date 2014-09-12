@@ -133,6 +133,22 @@ namespace MediaMgrSystem
         }
 
         [WebMethod]
+        public static string CheckAudiotEncoderIsRunning(string cid)
+        {
+            RunningEncoder re = GlobalUtils.EncoderRunningClientsBLLInstance.CheckIfEncoderRunning(cid);
+
+            if (re != null)
+            {
+                return "1";
+            }
+            else
+            {
+                return "0";
+            }      
+
+        }
+
+        [WebMethod]
         public static void SaveSchedule(string cid, string sid)
         {
             GlobalUtils.ChannelBLLInstance.UpdateChannelSchedule(cid, sid);

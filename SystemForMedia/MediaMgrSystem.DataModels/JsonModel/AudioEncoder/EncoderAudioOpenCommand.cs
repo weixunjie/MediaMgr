@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public enum SingalRClientConnectionType
+    public class EncoderAudioOpenCommand : ComunicationBase
     {
-        PC,
-        ANDROID,
-        REMOTECONTORLDEVICE,
-        VEDIOSERVER,
-        ENCODERAUDIODEVICE,
-        WINDOWSSERVICE
+
+        public EncoderAudioOpenCommandeArg arg
+        {
+            get;
+            set;
+        }
+
     }
+
 }

@@ -42,25 +42,33 @@ namespace MediaMgrSystem
         public void SendDeviceOperCommand(string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, bool isEnabled)
         {
 
-            SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled?1:0);
+            SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled ? 1 : 0);
 
-           // GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
-           // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
+            // GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
+            // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
         }
 
-       
-        public void SendEncoderOpenCommand(string clientIdentify, string priority, string groupIds)
+
+        public void SendAudioEncoderOpenCommand(string clientIdentify, string groupIds)
         {
 
-            EncoderControlLogic.SendEncoderOpenCommand(Clients, clientIdentify, priority, groupIds);            
+            groupIds = groupIds.TrimEnd(',');
+
+            EncoderAudioInfo ei = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(clientIdentify);
+
+            if (ei != null)
+            {
+                EncoderAuditControlLogic.SendEncoderAudioOpenCommand(Clients, clientIdentify, ei.Priority, groupIds);
+            }
+
 
             // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
             //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
         }
 
-        public void SendEncoderCloseCommand(string clientIdentify, string groupIds)
+        public void SendAudioEncoderCloseCommand(string clientIdentify)
         {
-            EncoderControlLogic.SendEncoderCloseCommand(Clients, clientIdentify, groupIds);
+            EncoderAuditControlLogic.SendEncoderAudioCloseCommand(Clients, clientIdentify);
 
             // GlobalUtils.ChannelManuallyPlayingIsRepeat = false;
             //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
@@ -83,6 +91,98 @@ namespace MediaMgrSystem
             // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
         }
 
+
+        public void SendEncoderAudioControlToMgrServer(string data, string connectionId)
+        {
+            EncoderAudioOperationCommand rc = JsonConvert.DeserializeObject<EncoderAudioOperationCommand>(data);
+
+            if (rc != null)
+            {
+                if (rc.commandType == CommandTypeEnum.ENCODEROPEN)
+                {
+                    EncoderAudioInfo eai = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(rc.clientIdentify);
+                    string gids = string.Empty;
+                    if (rc.groupIds != null && rc.groupIds.Count > 0)
+                    {
+                        foreach (var str in rc.groupIds)
+                        {
+
+                            gids = gids + str + ",";
+                        }
+                    }
+
+                    EncoderAuditControlLogic.SendEncoderAudioOpenCommand(Clients, rc.clientIdentify, eai.Priority.ToString(), gids.TrimEnd(','), true, rc.guidId);
+
+                }
+                else if (rc.commandType == CommandTypeEnum.ENCODERCLOSE)
+                {
+                    EncoderAuditControlLogic.SendEncoderAudioCloseCommand(Clients, rc.clientIdentify, true, rc.guidId);
+
+                }
+            }
+
+
+            ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
+            if (cb != null)
+            {
+                lock (GlobalUtils.ObjectLockEncoderQueueItem)
+                {
+                    string matchIPAddress = string.Empty; ;
+                    String removeGuid = string.Empty;
+                    string strOperResult = string.Empty;
+                    foreach (var que in GlobalUtils.EncoderQueues)
+                    {
+
+                        if (cb != null && cb.errorCode != null)
+                        {
+                            if (que.GuidIdStr == cb.guidId)
+                            {
+
+                                strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
+
+                                matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
+                                strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
+
+                                removeGuid = cb.guidId;
+
+
+                                string strCmdType = GlobalUtils.GetCommandTextGetByType(que.CommandType);
+
+
+                                GlobalUtils.AddLogs(Clients, "音频解码", strCmdType + " " + strOperResult);
+
+
+
+
+                                break;
+                            }
+                        }
+                    }
+
+
+
+                    if (!string.IsNullOrEmpty(matchIPAddress) && !string.IsNullOrEmpty(removeGuid))
+                    {
+                        EncoderQueueItem removedItem = null;
+                        foreach (var que in GlobalUtils.EncoderQueues)
+                        {
+                            if (que.GuidIdStr == removeGuid && que.EncoderClientIdentify == matchIPAddress)
+                            {
+                                removedItem = que;
+                                break;
+                            }
+                        }
+                        if (removedItem != null)
+                        {
+                            GlobalUtils.EncoderQueues.Remove(removedItem);
+                        }
+                    }
+                }
+
+
+
+            }
+        }
 
         public void SendRemoteControlToMgrServer(string data, string connectionId)
         {
@@ -140,14 +240,14 @@ namespace MediaMgrSystem
                             if (que.GuidIdStr == cb.guidId)
                             {
 
-                          
+
                                 strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
 
                                 matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId);
                                 strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
 
                                 removeGuid = cb.guidId;
-                                
+
 
                                 string strCmdType = RemoteControlLogic.GetCommandText(que.CommandType, que.ExternalIds);
 
@@ -244,7 +344,7 @@ namespace MediaMgrSystem
 
                                     SendLogic.SendStopRoRepeatCommand(channelId, mp.ChannelName, true, Clients, "", "", mp.PlayingFunction, false, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent(channelId));
 
-                                    GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024",mp);
+                                    GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024", mp);
                                     // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
 
                                 }
@@ -262,7 +362,7 @@ namespace MediaMgrSystem
                                     GlobalUtils.AddLogs(Clients, "手工播放", errorStr + rc.arg.message);
                                     //  Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(errorStr + rc.arg.message, "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids);
 
-                                    GlobalUtils.SendManuallyClientNotice(Clients, errorStr + rc.arg.message, "1024",mp);
+                                    GlobalUtils.SendManuallyClientNotice(Clients, errorStr + rc.arg.message, "1024", mp);
                                     // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
 
                                 }
@@ -368,7 +468,7 @@ namespace MediaMgrSystem
                                 strOperResult = "终端" + matchIPAddress + "操作" + strOperResult;
                             }
 
-                           
+
                             string strCmdType = GlobalUtils.GetCommandTextGetByType(que.CommandType);
                             if (que.IsScheduled)
                             {
@@ -381,13 +481,13 @@ namespace MediaMgrSystem
                                 GlobalUtils.AddLogs(Clients, "手动操作", que.ChannelName + strCmdType + strOperResult);
                             }
 
-                            if (cb.errorCode != "0" && que.CommandType==QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS)
+                            if (cb.errorCode != "0" && que.CommandType == QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS)
                             {
                                 DeviceInfo di = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(que.NewAddressStr)[0];
 
                                 di.DeviceIpAddress = que.IpAddressStr;
                                 GlobalUtils.DeviceBLLInstance.UpdateDevice(di);
- 
+
                             }
 
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
@@ -480,57 +580,46 @@ namespace MediaMgrSystem
         //}
 
 
-        public void SendEncoderTaskControlCommandBack(string encoderResJson)
-        {
-            ComuResponseBase cr = JsonConvert.DeserializeObject<ComuResponseBase>(encoderResJson);
+        //public void SendEncoderTaskControlCommandBack(string encoderResJson)
+        //{
+        //    ComuResponseBase cr = JsonConvert.DeserializeObject<ComuResponseBase>(encoderResJson);
 
-            if (cr != null)
-            {
-                lock (GlobalUtils.ObjectLockEncoderQueueItem)
-                {
-                    EncoderQueueItem itemToRemoved = null;
-                    foreach (var que in GlobalUtils.EncoderQueues)
-                    {
-                        if (que.GuidIdStr == cr.guidId)
-                        {
-                            itemToRemoved = que;
-                            break;
-                        }
-                    }
+        //    if (cr != null)
+        //    {
+        //        lock (GlobalUtils.ObjectLockEncoderQueueItem)
+        //        {
+        //            EncoderQueueItem itemToRemoved = null;
+        //            foreach (var que in GlobalUtils.EncoderQueues)
+        //            {
+        //                if (que.GuidIdStr == cr.guidId)
+        //                {
+        //                    itemToRemoved = que;
+        //                    break;
+        //                }
+        //            }
 
-                    if (cr.errorCode != "0")
-                    {
-                        string operStr = itemToRemoved.CommandType == QueueCommandType.ENCODEROPEN ? "打开 " : " 关闭";
-                        GlobalUtils.AddLogs(Clients, "呼叫台操作", "呼叫台" + operStr + "失败，错误" + cr.message);
-                    }
-                    else
-                    {
-                        EncoderControlLogic.SendEncoderCommandToAndroid(Clients, itemToRemoved.EncoderClientIdentify, itemToRemoved.EncoderGroupIds, itemToRemoved.CommandType == QueueCommandType.ENCODERCLOSE);
-                    }
+        //            if (cr.errorCode != "0")
+        //            {
+        //                string operStr = itemToRemoved.CommandType == QueueCommandType.ENCODEAUDIOROPEN ? "打开 " : " 关闭";
+        //                GlobalUtils.AddLogs(Clients, "呼叫台操作", "呼叫台" + operStr + "失败，错误" + cr.message);
+        //            }
+        //            else
+        //            {
+        //                EncoderAuditControlLogic.SendEncoderCommandToAndroid(Clients, itemToRemoved.EncoderClientIdentify, itemToRemoved.EncoderGroupIds, itemToRemoved.CommandType == QueueCommandType.ENCODERAUDIOCLOSE);
+        //            }
 
-                    if (itemToRemoved != null)
-                    {
-                        GlobalUtils.EncoderQueues.Remove(itemToRemoved);
-                    }
-                }
-            }
+        //            if (itemToRemoved != null)
+        //            {
+        //                GlobalUtils.EncoderQueues.Remove(itemToRemoved);
+        //            }
+        //        }
+        //    }
 
-            // 
+        //    // 
 
-        }
+        //}
 
 
-        public void SendEncoderTaskControlOpen(string clientIdentify, string groupIds)
-        {
-            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds, false);
-        }
-
-        //hubProxy.Invoke("sendEncoderTaskControlOpen", groupIds.TrimEnd(','), epc.clientIdentify, ei.BaudRate, eor.arg.streamName, eor.arg.udpBroadcastAddress);
-
-        public void SendEncoderTaskControlClose(string clientIdentify, string groupIds)
-        {
-            EncoderControlLogic.SendEncoderCommandToAndroid(Clients, clientIdentify, groupIds, true);
-        }
 
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority)
         {

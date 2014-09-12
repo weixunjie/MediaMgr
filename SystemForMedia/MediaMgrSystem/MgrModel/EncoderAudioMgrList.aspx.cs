@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace MediaMgrSystem.MgrModel
 {
-    public partial class EncoderMgrList : System.Web.UI.Page
+    public partial class EncoderAudioMgrList : System.Web.UI.Page
     {
         
 
@@ -32,13 +32,13 @@ namespace MediaMgrSystem.MgrModel
         {
 
             // ListBox1.Items.RemoveAt(1);
-            Response.Redirect("~/MgrModel/EncoderMgrDetail.aspx");
+            Response.Redirect("~/MgrModel/EncoderAudioMgrDetail.aspx");
         }
 
 
         private void BindListData()
         {
-            List<EncoderInfo> datas = GlobalUtils.EncoderBLLInstance.GetAllEncoders();
+            List<EncoderAudioInfo> datas = GlobalUtils.EncoderBLLInstance.GetAllEncoders();
 
             dvList.DataSource = datas;
             dvList.DataBind();
@@ -49,7 +49,7 @@ namespace MediaMgrSystem.MgrModel
         {
             if (e.CommandName == "Edit")
             {
-                Response.Redirect("~/MgrModel/EncoderMgrDetail.aspx?id=" + e.CommandArgument.ToString());
+                Response.Redirect("~/MgrModel/EncoderAudioMgrDetail.aspx?id=" + e.CommandArgument.ToString());
 
             }
             else if (e.CommandName == "Del")

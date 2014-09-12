@@ -116,6 +116,8 @@
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/DeviceMgrList.aspx") %>">设备管理</a></li>
 
+                                <li><a href="<%=ResolveUrl("~/MgrModel/EncoderAudioMgrList.aspx") %>">音频编码管理</a></li>
+
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/ChannelMgrList.aspx") %>">通道管理</a></li>
 
@@ -127,8 +129,6 @@
                                 <% }
                            }
                                 %>
-
-                      
                             </ul>
                         </li>
 

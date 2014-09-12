@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="EncoderMgrList.aspx.cs" Inherits="MediaMgrSystem.MgrModel.EncoderMgrList" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="EncoderAudioMgrList.aspx.cs" Inherits="MediaMgrSystem.MgrModel.EncoderAudioMgrList" %>
 
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
@@ -23,6 +23,11 @@
                             </asp:TemplateField>
 
                             <asp:BoundField DataField="EncoderName" HeaderText="名称" />
+
+                            <asp:BoundField DataField="BaudRate" HeaderText="码率" />
+
+                              <asp:BoundField DataField="ClientIdentify" HeaderText="IP地址" />
+
 
                             <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">
                                 <ItemTemplate>

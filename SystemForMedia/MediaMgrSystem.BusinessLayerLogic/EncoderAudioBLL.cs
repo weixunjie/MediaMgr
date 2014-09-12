@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.BusinessLayerLogic
 {
-    public class EncoderBLL
+    public class EncoderAudioBLL
     {
         DbUtils dbUitls = null;
-        public EncoderBLL(DbUtils dUtils)
+        public EncoderAudioBLL(DbUtils dUtils)
         {
             dbUitls = dUtils;
         }
 
-        public EncoderInfo GetEncoderById(string encoderId)
+        public EncoderAudioInfo GetEncoderById(string encoderId)
         {
-            String sqlStr = "SELECT * FROM ENCODERINFO FROM ENCODERID=" + encoderId;
+            String sqlStr = "SELECT * FROM ENCODERINFO WHERE ENCODERID=" + encoderId;
 
-            List<EncoderInfo> eis = GetEncoderList(sqlStr);
+            List<EncoderAudioInfo> eis = GetEncoderList(sqlStr);
             if (eis != null && eis.Count() > 0)
             {
                 return eis[0];
@@ -33,11 +33,11 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public EncoderInfo GetEncoderByClientIdentify(string clientIdentify)
+        public EncoderAudioInfo GetEncoderByClientIdentify(string clientIdentify)
         {
-            String sqlStr = "SELECT * FROM ENCODERINFO FROM ClientIdentify='" + clientIdentify + "'";
+            String sqlStr = "SELECT * FROM ENCODERINFO WHERE ClientIdentify='" + clientIdentify + "'";
 
-            List<EncoderInfo> eis = GetEncoderList(sqlStr);
+            List<EncoderAudioInfo> eis = GetEncoderList(sqlStr);
             if (eis != null && eis.Count() > 0)
             {
                 return eis[0];
@@ -49,7 +49,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public List<EncoderInfo> GetAllEncoders()
+        public List<EncoderAudioInfo> GetAllEncoders()
         {
 
             String sqlStr = "SELECT * FROM ENCODERINFO";
@@ -60,36 +60,36 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int RemoveEncoder(string encoderId)
         {
-            String sqlStr = "DELETE FROM ENCODERINFO where ENCODERID=" + encoderId;
+            String sqlStr = "DELETE FROM ENCODERINFO WHERE ENCODERID=" + encoderId;
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
-        public int AddEncoder(EncoderInfo ei)
+        public int AddEncoder(EncoderAudioInfo ei)
         {
             String sqlStr = "INSERT INTO ENCODERINFO(ENCODERNAME) values ('{0}')";
 
-            sqlStr = String.Format(sqlStr,ei.EncoderName);
+            sqlStr = String.Format(sqlStr, ei.EncoderName);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
-        public int UpdateEncoder(EncoderInfo ei)
+        public int UpdateEncoder(EncoderAudioInfo ei)
         {
-            String sqlStr = "UPDATE ENCODERINFO SET ENCODERNAME='{0}' WHERE ENCODERID={1}";
+            String sqlStr = "UPDATE ENCODERINFO SET ENCODERNAME='{0}',PRIORITY='{1}', BAUDRATE='{2}'  WHERE ENCODERID={3}";
 
-            sqlStr = String.Format(sqlStr, ei.EncoderName,ei.EncoderId);
+            sqlStr = String.Format(sqlStr, ei.EncoderName, ei.Priority, ei.BaudRate, ei.EncoderId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
         }
 
 
-        protected List<EncoderInfo> GetEncoderList(string sqlStr)
+        protected List<EncoderAudioInfo> GetEncoderList(string sqlStr)
         {
-            List<EncoderInfo> encoderInfo = new List<EncoderInfo>();
+            List<EncoderAudioInfo> encoderInfo = new List<EncoderAudioInfo>();
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
             if (dt != null)
@@ -99,11 +99,11 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        EncoderInfo ei = new EncoderInfo();
+                        EncoderAudioInfo ei = new EncoderAudioInfo();
                         ei.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
                         ei.EncoderName = dt.Rows[i]["ENCODERNAME"].ToString();
                         ei.BaudRate = dt.Rows[i]["BAUDRATE"].ToString();
-                        ei.ClientIdentify = dt.Rows[i]["CLIENTIDENTIFY"].ToString();                        
+                        ei.ClientIdentify = dt.Rows[i]["CLIENTIDENTIFY"].ToString();
                         encoderInfo.Add(ei);
                     }
                 }

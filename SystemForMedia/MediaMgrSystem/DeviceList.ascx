@@ -10,7 +10,7 @@
     var currentOperDeviceIpAddress;
     var currentOperDeviceGroupId;
 
- 
+
 
     $(document).unbind();
 
@@ -35,7 +35,7 @@
     List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroupsIncludeDefaultGroup();
     List<MediaMgrSystem.DataModels.ChannelInfo> channels = GetAllChannels();
 
-    List<MediaMgrSystem.DataModels.EncoderInfo> encoders = GetAllEncoders();
+    List<MediaMgrSystem.DataModels.EncoderAudioInfo> encoders = GetAllEncoders();
 
 
 
@@ -284,7 +284,7 @@
 
             var cmdStr = "122"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
 
 
             hideAllNenus();
@@ -294,7 +294,7 @@
 
             var cmdStr = "123"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
 
 
             hideAllNenus();
@@ -305,7 +305,7 @@
 
             var cmdStr = "124"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
 
 
             hideAllNenus();
@@ -315,7 +315,7 @@
 
             var cmdStr = "125"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "","",false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
 
 
             hideAllNenus();
@@ -346,7 +346,7 @@
 
 
 
-            
+
             chat.server.sendDeviceOperCommand(127, currentOperDeviceGroupId, currentOperDeviceIpAddress, tbScheduleTimeTurnOnValue, tbScheduleShutDownTimeValue, $("#ckcEnabledDeviceSchedule").is(':checked'))
 
 

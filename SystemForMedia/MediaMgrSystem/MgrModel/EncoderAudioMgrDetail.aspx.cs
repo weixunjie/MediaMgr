@@ -9,10 +9,10 @@ using System.Web.UI.WebControls;
 
 namespace MediaMgrSystem.MgrModel
 {
-    public partial class EncoderMgrDetail : System.Web.UI.Page
+    public partial class EncoderAudioMgrDetail : System.Web.UI.Page
     {
 
-        private EncoderBLL encoderBLL = new EncoderBLL(GlobalUtils.DbUtilsInstance);
+        private EncoderAudioBLL encoderBLL = new EncoderAudioBLL(GlobalUtils.DbUtilsInstance);
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -20,9 +20,16 @@ namespace MediaMgrSystem.MgrModel
             {
                 Response.Redirect("~/Login.aspx");
             }
- 
+
             if (!Page.IsPostBack)
             {
+
+                ddPriority.Items.Clear();
+
+                for (int i = 1; i <= 10; i++)
+                {
+                    ddPriority.Items.Add(new ListItem { Text = i.ToString(), Value = i.ToString() });
+                }
 
                 if (Request["id"] != null)
                 {
@@ -30,8 +37,15 @@ namespace MediaMgrSystem.MgrModel
 
                     TbHiddenId.Text = id;
 
-                    EncoderInfo ei = encoderBLL.GetEncoderById(id);
 
+
+                    EncoderAudioInfo ei = encoderBLL.GetEncoderById(id);
+
+                    tbIpAddress.Text = ei.ClientIdentify;
+
+                    tbBoundRate.Text = ei.BaudRate;
+
+                    ddPriority.SelectedValue = ei.Priority;
                     this.TbName.Text = ei.EncoderName;
 
 
@@ -41,21 +55,24 @@ namespace MediaMgrSystem.MgrModel
 
         protected void Back_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/MgrModel/EncoderMgrList.aspx");
+            Response.Redirect("~/MgrModel/EncoderAudioMgrList.aspx");
         }
 
         protected void Add_Click(object sender, EventArgs e)
         {
-            EncoderInfo ei = new EncoderInfo();
+            EncoderAudioInfo ei = new EncoderAudioInfo();
 
 
             ei.EncoderName = this.TbName.Text;
 
 
+            ei.BaudRate = this.tbBoundRate.Text;
+
+
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
-                ei.EncoderId = TbHiddenId.Text;              
+                ei.EncoderId = TbHiddenId.Text;
                 encoderBLL.UpdateEncoder(ei);
             }
             else
@@ -63,7 +80,7 @@ namespace MediaMgrSystem.MgrModel
                 encoderBLL.AddEncoder(ei);
             }
 
-            Response.Redirect("~/MgrModel/EncoderMgrList.aspx");
+            Response.Redirect("~/MgrModel/EncoderAudioMgrList.aspx");
         }
     }
 }

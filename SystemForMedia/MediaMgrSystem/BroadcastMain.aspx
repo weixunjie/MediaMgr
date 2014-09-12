@@ -4,7 +4,7 @@
 
 
 
-<%@ Register Src="EncoderList.ascx" TagName="EncoderList" TagPrefix="encoderList" %>
+<%@ Register Src="AudioEncoderList.ascx" TagName="EncoderList" TagPrefix="encoderList" %>
 <%@ Register Src="DeviceList.ascx" TagName="DeviceList" TagPrefix="deviceList" %>
 <%@ Register Src="ChannelList.ascx" TagName="ChannelList" TagPrefix="channelList" %>
 
@@ -143,7 +143,7 @@
 
         <div style="margin-top: 20px">
 
-           <%-- <encoderList:EncoderList ID="EncoderList" runat="server" />--%>
+           <encoderList:EncoderList ID="EncoderList" runat="server" />
 
         </div>
     </div>

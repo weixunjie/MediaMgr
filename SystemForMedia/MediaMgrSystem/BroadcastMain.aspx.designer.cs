@@ -20,5 +20,14 @@ namespace MediaMgrSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::MediaMgrSystem.ChannelList cList;
+        
+        /// <summary>
+        /// EncoderList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MediaMgrSystem.AudioEncoderList EncoderList;
     }
 }

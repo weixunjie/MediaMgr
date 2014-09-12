@@ -10,7 +10,7 @@
 namespace MediaMgrSystem.MgrModel {
     
     
-    public partial class EncoderMgrList {
+    public partial class EncoderAudioMgrList {
         
         /// <summary>
         /// dvList control.

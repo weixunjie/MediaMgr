@@ -10,7 +10,7 @@
 namespace MediaMgrSystem.MgrModel {
     
     
-    public partial class EncoderMgrDetail {
+    public partial class EncoderAudioMgrDetail {
         
         /// <summary>
         /// ErrorMessage control.
@@ -47,5 +47,32 @@ namespace MediaMgrSystem.MgrModel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TbHiddenId;
+        
+        /// <summary>
+        /// tbIpAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbIpAddress;
+        
+        /// <summary>
+        /// ddPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddPriority;
+        
+        /// <summary>
+        /// tbBoundRate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbBoundRate;
     }
 }

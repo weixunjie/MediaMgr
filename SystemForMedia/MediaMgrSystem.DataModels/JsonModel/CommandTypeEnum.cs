@@ -56,5 +56,7 @@ namespace MediaMgrSystem.DataModels
 
         ENCODERCLOSE = 403,
 
+        ENCODERSENDGROUPSINFO = 401,
+
     }
 }

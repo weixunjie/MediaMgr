@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public enum SingalRClientConnectionType
+    public class EncoderSyncGroupInfo
     {
-        PC,
-        ANDROID,
-        REMOTECONTORLDEVICE,
-        VEDIOSERVER,
-        ENCODERAUDIODEVICE,
-        WINDOWSSERVICE
+        public String GroupId { get; set; }
+
+        public String GroupName { get; set; }
+
+     
+
+
     }
 }

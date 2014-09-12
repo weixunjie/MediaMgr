@@ -10,6 +10,6 @@
 namespace MediaMgrSystem {
     
     
-    public partial class EncoderList {
+    public partial class AudioEncoderList {
     }
 }

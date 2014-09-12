@@ -42,8 +42,8 @@ namespace MediaMgrSystem
         REMOTECONTROLSCHEDULEOPEN,
         REMOTECONTROLSCHEDULECLOSE,
 
-        ENCODEROPEN,
-        ENCODERCLOSE
+        ENCODEAUDIOROPEN,
+        ENCODERAUDIOCLOSE
     }
 
 
@@ -278,11 +278,13 @@ namespace MediaMgrSystem
 
 
 
-        public static EncoderBLL EncoderBLLInstance = new EncoderBLL(DbUtilsInstance);
+        public static EncoderAudioBLL EncoderBLLInstance = new EncoderAudioBLL(DbUtilsInstance);
+
+        public static EncoderAudioRunningClientsBLL EncoderAudioRunningClientsBLLInstance = new EncoderAudioRunningClientsBLL(DbUtilsInstance);
 
         public static LogBLL LogBLLInstance = new LogBLL(DbUtilsInstance);
 
-        public static EncoderRunningClientsBLL EncoderRunningClientsBLLInstance = new EncoderRunningClientsBLL(DbUtilsInstance);
+        public static EncoderAudioRunningClientsBLL EncoderRunningClientsBLLInstance = new EncoderAudioRunningClientsBLL(DbUtilsInstance);
 
 
 
@@ -870,6 +872,12 @@ namespace MediaMgrSystem
 
                 case QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS:
                       return "修改IP地址";
+
+                case QueueCommandType.ENCODEAUDIOROPEN:
+                      return "打开音频编码时";
+
+                case QueueCommandType.ENCODERAUDIOCLOSE:
+                      return "关闭音频编码时";
             }
 
             return string.Empty;

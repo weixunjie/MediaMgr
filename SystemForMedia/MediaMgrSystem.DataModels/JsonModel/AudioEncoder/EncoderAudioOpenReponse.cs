@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class EncoderOpenCommand : ComunicationBase
+    public class EncoderAudioOpenReponse :ComuResponseBase
     {
-
-        public EncoderOpenCommandeArg arg
+        public EncoderOpenReponseArg arg
         {
             get;
             set;
         }
-
     }
 
 }

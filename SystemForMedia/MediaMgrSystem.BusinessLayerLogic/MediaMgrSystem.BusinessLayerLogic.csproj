@@ -44,12 +44,12 @@
   <ItemGroup>
     <Compile Include="ParamConfigBLL.cs" />
     <Compile Include="RemoteDeviceStatusBLL.cs" />
-    <Compile Include="EncoderRunningClientsBLL.cs" />
+    <Compile Include="EncoderAudioRunningClientsBLL.cs" />
     <Compile Include="SingalConnectedClientsBLL.cs" />
     <Compile Include="UserBLL.cs" />
     <Compile Include="LogBLL.cs" />
     <Compile Include="ScheduleBLL.cs" />
-    <Compile Include="EncoderBLL.cs" />
+    <Compile Include="EncoderAudioBLL.cs" />
     <Compile Include="ChannelBLL.cs" />
     <Compile Include="GroupBLL.cs" />
     <Compile Include="DeviceBLL.cs" />

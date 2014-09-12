@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class EncoderInfo
+    public class EncoderAudioInfo
     {
         public String EncoderId { get; set; }
 
@@ -16,6 +16,7 @@ namespace MediaMgrSystem.DataModels
 
         public String ClientIdentify { get; set; }
 
+        public String Priority { get; set; }
         
 
     }

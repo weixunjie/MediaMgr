@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\alvin.wei\Desktop\hao</_PublishTargetUrl>
+    <_PublishTargetUrl>http://localhost/MediaMgrDemo</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="Account/Login.aspx">
@@ -46,10 +46,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/09/2014 10:04:44</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.BusinessLayerLogic.dll">
-      <publishTime>09/09/2014 10:15:57</publishTime>
+      <publishTime>09/12/2014 13:29:55</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.BusinessLayerLogic.pdb">
-      <publishTime>09/09/2014 10:15:57</publishTime>
+      <publishTime>09/12/2014 13:29:55</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataAccessLayer.dll">
       <publishTime>09/09/2014 10:15:56</publishTime>
@@ -58,16 +58,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/09/2014 10:15:56</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.dll">
-      <publishTime>09/09/2014 10:15:56</publishTime>
+      <publishTime>09/12/2014 13:29:53</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.pdb">
-      <publishTime>09/09/2014 10:15:55</publishTime>
+      <publishTime>09/12/2014 13:29:50</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>09/09/2014 11:25:15</publishTime>
+      <publishTime>09/12/2014 13:52:45</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>09/09/2014 11:25:15</publishTime>
+      <publishTime>09/12/2014 13:52:44</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
       <publishTime>09/09/2014 10:11:37</publishTime>
@@ -193,7 +193,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/28/2014 20:22:29</publishTime>
     </File>
     <File Include="DeviceList.ascx">
-      <publishTime>09/09/2014 10:04:44</publishTime>
+      <publishTime>09/12/2014 13:35:52</publishTime>
     </File>
     <File Include="Dlls/ffmpeg.exe">
       <publishTime>09/09/2014 10:04:44</publishTime>
@@ -202,7 +202,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/09/2014 10:04:44</publishTime>
     </File>
     <File Include="EncoderList.ascx">
-      <publishTime>09/09/2014 10:04:44</publishTime>
+      <publishTime>09/12/2014 13:35:52</publishTime>
     </File>
     <File Include="favicon.ico">
       <publishTime>09/09/2014 10:06:54</publishTime>
@@ -514,7 +514,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/24/2014 16:26:31</publishTime>
     </File>
     <File Include="Site.Master">
-      <publishTime>09/09/2014 13:49:34</publishTime>
+      <publishTime>09/09/2014 14:03:51</publishTime>
     </File>
     <File Include="Site.Mobile.Master">
       <publishTime>09/09/2014 10:06:54</publishTime>
