@@ -654,7 +654,7 @@
     <div id="divChannelInfo" style="clear: both; margin-bottom: 10px; margin-top: 10px; text-align: left; font-size: 15pt">
         等待操作
     </div>
-    <ul style="clear: both; margin-left: 0px; text-align: left; list-style-type: none;">
+    <ul style="clear: both; margin-left: 0px; text-align:center; list-style-type: none;">
 
         <li class="channelControlButtonLI">
 
