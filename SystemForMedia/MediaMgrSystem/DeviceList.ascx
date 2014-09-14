@@ -483,7 +483,7 @@
 
 
 
-    <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 5px;">
+    <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 0px;">
 
         <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
 

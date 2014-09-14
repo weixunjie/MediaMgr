@@ -38,31 +38,31 @@
         initSession();
 
         function initSession() {
-      
+
             sess_lastActivity = new Date();
             sessSetInterval();
-           
+
         }
         function sessSetInterval() {
             sess_intervalID = setInterval('sessInterval()', sess_pollInterval);
         }
-       
+
         function sessLogOut() {
             window.location.href = "<%=ResolveUrl("~/LogOut.aspx") %>";
         }
 
         function sessInterval() {
-         
+
 
             $.ajax({
                 url: "AudioLogic.ashx",
                 contentType: "text/plain",
-                cache: false,               
+                cache: false,
                 data: { sessInterval: "Y" },
                 type: "GET",
                 success: function (data) {
 
-                  
+
                 }
             });
         }
@@ -89,7 +89,7 @@
             }
 
             chat.client.sendRefreshLogMessge = function (result) {
-           
+
                 loadLogList();
             }
 
@@ -98,8 +98,8 @@
 
 
 
-            function loadDeviceList(loadSync) {                      
-                
+            function loadDeviceList(loadSync) {
+
                 $.ajax({
                     url: "AudioLogic.ashx",
                     contentType: "text/plain",
@@ -108,7 +108,7 @@
                     data: null,
                     type: "GET",
                     success: function (data) {
-                       
+
                         $("#divForDevice").html(data);
                     }
                 });
@@ -137,29 +137,33 @@
     </script>
 
 
-    <div style="width: 250px; height: 160%; float: left; margin-left: 10px; text-align: center">
+    <div style="width: 250px; height: 100%; float: left; margin-left: 10px; text-align: center">
 
         <channelList:ChannelList ID="cList" runat="server" />
 
         <div style="margin-top: 20px">
 
-           <encoderList:EncoderList ID="EncoderList" runat="server" />
+            <encoderList:EncoderList ID="EncoderList" runat="server" />
 
         </div>
     </div>
 
-    <div id="divForDevice" style="margin-left: 390px">
+    <div style="margin-left: 390px;border-left:solid; margin-top:0px; border-left-color:#4179b6;border-left-width:1px">
 
         
+
+        <div id="divForDevice" style="margin-left: 7px; padding-top:10px "></div>
+
+        <div id="divforLogs" style="margin-left: 7px"></div>
+
+        <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>
+
 
     <div style="clear: both;">
     </div>
 
 
-    <div id="divforLogs" style="margin-left: 390px">
 
-        <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
-    </div>
 
 </asp:Content>

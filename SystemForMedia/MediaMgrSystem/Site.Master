@@ -66,17 +66,19 @@
 
 
 
-        <div class='container' style="margin-bottom: 5px">
+        <div class='container' style="margin-bottom: 0px">
 
-            <div class='navbar navbar-inverse  '>
+            <div class='navbar navbar-inverse' style="margin-bottom: 0px" >
 
                 <div class='navbar-inner nav-collapse ' style="height: auto">
 
                     <ul class="nav navbar-nav" style="padding-left: 0px; margin-left: 0px">
                         <li style="padding-left: 0px; height: 20px; vertical-align: middle">
+                             <a style="padding-left: 0px; float:left; height: 25px;  width:80px; color:white" class="navbar-brand" ><img  style="height: 20px;  width:80px;" src="<%=ResolveUrl("~/Images/ic_image_logo.png") %>"/></a>
 
 
-                            <a style="padding-left: 0px; height: 20px;" class="navbar-brand" runat="server">管理后台</a>
+
+                            <a style="padding-left: 0px; height: 20px; width:220px; color:white" class="navbar-brand" runat="server">杰讯智能播控系统</a>
 
 
 
@@ -84,9 +86,9 @@
 
                     </ul>
                     <% if (Session["UserId"] != null)
-                       { %>>
-                    <ul class="nav navbar-nav " style="float: right">
-                        <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
+                       { %>
+                    <ul class="nav navbar-nav " style="float: right; color:white">
+                        <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
                         <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
                         <li><a href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
@@ -138,15 +140,17 @@
                     </ul>
                 </div>
             </div>
-            <% if (Session["UserId"] != null)
-               { %>
-            <div style="margin-left: 5px; float: left; margin-bottom: 5px" id="divScheduleText"></div>
-
-            <div style="margin-left: 5px; float: right; margin-bottom: 5px; margin-right: 5px" id="divTimeText"></div>
-
-            <% } %>
+       
         </div>
+             <% if (Session["UserId"] != null)
+               { %>
+            
+       <div class="container body-content" style=" background-color:#dac6df;line-height:35px">
+            <div style="margin-left: 5px; float: left; margin-bottom: 0px" id="divScheduleText"></div>
 
+            <div style="margin-left: 5px; float: right; margin-bottom: 0px; margin-right: 5px" id="divTimeText"></div>
+            </div>
+            <% } %>
 
         <div class="container body-content" style="padding-left: 8px">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
