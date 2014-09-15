@@ -478,12 +478,13 @@
 
         for (int l = 0; l < dGroups.Count; l++)
         {
-           
+
+
     %>
 
 
 
-    <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 0px;">
+    <table class="table table-bordered table-striped; " border="0" style="border-bottom-width: 0px; overflow: auto; height: auto; margin-top: 0px; margin-bottom: 0px">
 
         <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
 
@@ -514,11 +515,15 @@
                     <div style="height: 90px">
                         <ul id="groupDeviceList<%=dGroups[l].GroupId %>" class="deviceULStyle">
                             <%
+                        
                            deviceIndex++;
                            if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)
                            {
                                for (int k = 0; k < dGroups[l].Devices.Count; k++) %>
                             <%    {
+
+                                    
+                                   
                             %>
                             <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>">
 
@@ -538,7 +543,7 @@
 
                                             <img id="deviceMenu<% =dGroups[l].Devices[k].DeviceId %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
-                                        <p style="text-align: center">
+                                        <p style="text-align: center; font-size:12px">
                                             <% =dGroups[l].Devices[k].DeviceName %>
                                         </p>
                                     </div>
@@ -555,15 +560,29 @@
                     </div>
                 </td>
             </tr>
+
+            <tr style="height: 1px; padding: 0px">
+                <td style="height: 1px; padding: 0px">
+
+                    <% if (l == dGroups.Count - 1)
+                       { %>
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
+                    <% }
+                       else
+                       { %>
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6;   margin-top:0px; margin-bottom:0px;  margin-left: 5px; margin-right: 5px" />
+                    <% } %>
+                </td>
+            </tr>
         </tbody>
     </table>
 
     <%
-                           groupIndex++;
+                       groupIndex++;
         } %>
 
 
-    <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 5px;">
+    <table class="table table-bordered table-striped; " border="0" style="overflow: auto; height: auto; margin-top: 0px; margin-bottom: 0px; margin-left: 0px;">
 
         <thead>
             <tr>
@@ -625,6 +644,12 @@
                     </div>
                 </td>
             </tr>
+            <tr style="height: 1px; padding: 0px">
+                <td style="height: 1px; padding: 0px">
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
+                </td>
+            </tr>
+
         </tbody>
     </table>
 

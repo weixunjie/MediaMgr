@@ -2019,7 +2019,7 @@ table {
         line-height: 20px;
         text-align: left;
         vertical-align: top;
-        border-top: 1px solid #dddddd;
+        border-top: 0px solid #dddddd;
     }
 
     .table th {
@@ -2053,7 +2053,7 @@ table {
 }
 
 .table-bordered {
-    border: 1px solid #dddddd;
+    border: 0px solid #dddddd;
     border-collapse: separate;
     *border-collapse: collapse;
     border-left: 0;
@@ -2064,7 +2064,7 @@ table {
 
     .table-bordered th,
     .table-bordered td {
-        border-left: 1px solid #dddddd;
+        border-left: 0px solid #dddddd;
     }
 
     .table-bordered caption + thead tr:first-child th,

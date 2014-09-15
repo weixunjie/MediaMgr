@@ -68,9 +68,9 @@
 
         <div class='container' style="margin-bottom: 0px">
 
-            <div class='navbar navbar-inverse' style="margin-bottom: 0px" >
+            <div class='navbar navbar-inverse' style="margin-bottom: 0px; " >
 
-                <div class='navbar-inner nav-collapse ' style="height: auto">
+                <div class='navbar-inner nav-collapse ' style="height: auto;padding-left:2px">
 
                     <ul class="nav navbar-nav" style="padding-left: 0px; margin-left: 0px">
                         <li style="padding-left: 0px; height: 20px; vertical-align: middle">
@@ -89,15 +89,15 @@
                        { %>
                     <ul class="nav navbar-nav " style="float: right; color:white">
                         <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
-                        <li><a href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
+                        <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
-                        <li><a href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
+                        <li><a style="color:white" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
 
 
                         <li class="dropdown" id="accountmenu">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
+                            <a  style="color:white" class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
                             <ul class="dropdown-menu-spec dropdown-menu " style="min-width: 80px">
-                                <li><a href="<%=ResolveUrl("~/MgrModel/ProgramMgrList.aspx") %>">节目管理 </a></li>
+                                <li><a  href="<%=ResolveUrl("~/MgrModel/ProgramMgrList.aspx") %>">节目管理 </a></li>
 
 
 
@@ -134,7 +134,7 @@
                             </ul>
                         </li>
 
-                        <li><a href="<%=ResolveUrl("~/LogOut.aspx") %>">您好,<% =Session["UserName"].ToString() %></a></li>
+                        <li><a style="color:white" href="<%=ResolveUrl("~/LogOut.aspx") %>">您好,<% =Session["UserName"].ToString() %></a></li>
 
                         <% } %>
                     </ul>
