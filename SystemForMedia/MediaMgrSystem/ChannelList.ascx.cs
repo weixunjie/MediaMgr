@@ -50,6 +50,20 @@ namespace MediaMgrSystem
 
         }
 
+        public bool CheckChannelIdPlaying(string cid)
+        {            
+            foreach (var mp in GlobalUtils.ManualPlayItems)
+            {
+                if (mp.ChannelId == cid && mp.IsPlaying)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
 
         //public string GetIsPlayingChannelId()
         //{

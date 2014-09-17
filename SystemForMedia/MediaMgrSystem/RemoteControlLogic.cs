@@ -47,10 +47,11 @@ namespace MediaMgrSystem
 
                     List<string> ipsNeedToSend = new List<string>();
                     List<string> idsNeedToSend = new List<string>();
+                    List<string> ipReallySent = new List<string>();
                     if (needSentClientIpAddresses.Count > 0)
                     {
                         ipsNeedToSend = needSentClientIpAddresses;
-                        idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses, SingalRClientConnectionType.REMOTECONTORLDEVICE);
+                        idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses, SingalRClientConnectionType.REMOTECONTORLDEVICE, out ipReallySent);
                     }
 
 
@@ -109,7 +110,9 @@ namespace MediaMgrSystem
 
             DeviceRemoteControlManualCommand cmd = CreateManualControlCommand(externalPointId, isOpen, acMode, acTempure);
 
-            List<string> connectIds = GlobalUtils.GetConnectionIdsByIdentify(new List<string> { deviceIP }, SingalRClientConnectionType.REMOTECONTORLDEVICE);
+            List<string> ipReallySent = new List<string>();
+
+            List<string> connectIds = GlobalUtils.GetConnectionIdsByIdentify(new List<string> { deviceIP }, SingalRClientConnectionType.REMOTECONTORLDEVICE, out ipReallySent);
 
             QueueCommandType type = isOpen ? QueueCommandType.REMOTECONTROLMANULOPEN : QueueCommandType.REMOTECONTROLSCHEDULECLOSE;
 

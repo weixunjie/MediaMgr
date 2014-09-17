@@ -46,15 +46,50 @@ namespace MediaMgrSystem
         }
 
         [WebMethod]
+        public static string GetRunningSchedule()
+        {
+            string str = "当前节目：";
+
+            if (GlobalUtils.RunningSchudules != null && GlobalUtils.RunningSchudules.Count > 0)
+            {
+                string runningGuiDId = GlobalUtils.RunningSchudules[0].GuidId;
+
+                ScheduleTaskInfo runningSI = GlobalUtils.ScheduleBLLInstance.GetAllScheduleTaskById(runningGuiDId);
+
+                if (runningSI != null)
+                {
+                    List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(runningSI.ScheduleTaskProgarmId);
+
+                    string pName = string.Empty;
+                    if (pis != null && pis.Count > 0)
+                    {
+                        pName = pis[0].ProgramName;
+                        str += pName;
+
+                        return str;
+                    }
+                    
+                }
+
+
+
+
+            }
+            return str += "无";
+        }
+
+        [WebMethod]
         public static string GetLasterSchedule()
         {
+
+
             ScheduleTaskInfo si = GlobalUtils.ScheduleBLLInstance.GetNextScheduleTask();
 
             if (si != null)
             {
                 List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(si.ScheduleTaskProgarmId);
 
-                string pName = string.Empty ;
+                string pName = string.Empty;
                 if (pis != null && pis.Count > 0)
                 {
                     pName = pis[0].ProgramName;
@@ -144,7 +179,7 @@ namespace MediaMgrSystem
             else
             {
                 return "0";
-            }      
+            }
 
         }
 

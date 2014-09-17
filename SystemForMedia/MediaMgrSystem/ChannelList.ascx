@@ -55,6 +55,29 @@
 
         chat.client.sendManualPlayStatus = function (result, error, cid, cname, pids, strPlayingFunction) {
 
+            var strNornalChannelBg;
+
+
+            if (result == "Play") {
+                if (currentPlayingFunction == "1") {
+                    strNornalChannelBg = '<% =ResolveUrl("~/images/ic_image_channel_playing_bg.png")%>';
+                }
+                else {
+                    strNornalChannelBg = '<% =ResolveUrl("~/images/ic_image_channel_playing_bg_video.png")%>';
+                }
+            }
+            else {
+                if (currentPlayingFunction == "1") {
+                    strNornalChannelBg = '<% =ResolveUrl("~/images/ic_image_channel_bg.png")%>';
+                }
+                else {
+                    strNornalChannelBg = '<% =ResolveUrl("~/images/ic_image_channel_bg_video.png")%>';
+                }
+            }
+
+            $("#channelDiv" + cid).css("background-image", "url(" + strNornalChannelBg + ")");
+
+
             if (currentOperChannelId == cid) {
 
 
@@ -77,19 +100,33 @@
                 }
                 else {
 
+                    var typeStrPlaying = "视频";
+                    if (currentPlayingFunction == "1") {
+                        typeStrPlaying = "音频";
+                    }
+
                     if (result == "Play") {
                         if (currentPlayingFunction == currentFunction) {
                             setButtonStatus("Play");
                             $("#btnChooseProgram").attr("disabled", true);
+                            $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
+                        }
+                        else {
+                            $("#divChannelInfo").html(currentOperChannelName + "正在播放" + typeStrPlaying);
                         }
                     }
-                    else if (result = "Stop") {
+                    else if (result == "Stop") {
                         if (currentPlayingFunction == currentFunction) {
                             setButtonStatus("StopAndDelayStart");
 
                             $("#btnChooseProgram").attr("disabled", false);
+                            $("#divChannelInfo").html(currentOperChannelName + "已停止播放");
 
                         }
+                        else {
+                            $("#divChannelInfo").html(currentOperChannelName + "已停止播放" + typeStrPlaying);
+                        }
+
 
                     }
                 }
@@ -338,8 +375,15 @@
                                     setButtonStatus("Play");
                                     $("#divChannelInfo").html(currentOperChannelName + "正在播放中");
                                 }
+
+
+
+
+
                             }
                             else {
+
+
 
                                 if (currentPlayingFunction != currentFunction) {
                                     $("#btnChooseProgram").attr("disabled", false);
@@ -589,48 +633,93 @@
 </ul>
 
 
-<div style="margin-bottom: 10px; margin-left:0px;margin-top: 10px; text-align: left;">
-<table class="table table-bordered table-striped;" cellspacing="0" cellpadding="5" border="0" style=" width:300px;  margin-top: 0px; margin-bottom: 0px; margin-left: 0px;padding:0px;">
-    <%  
+<div style="margin-bottom: 10px; margin-left: 0px; margin-top: 10px; text-align: left;">
+    <table class="table table-bordered table-striped;" cellspacing="0" cellpadding="5" border="0" style="width: 300px; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px;">
+        <%  
         
-        int totalRow=allChanels.Count/3+allChanels.Count % 3;       
-          
-        for (int i = 0; i < totalRow; i++)
-        {
+            int totalRow = allChanels.Count / 3 + allChanels.Count % 3;
+
+            if (allChanels.Count < 3)
+            {
+                totalRow = 1;
+            }
+
+            for (int i = 0; i < totalRow; i++)
+            {
             
-    %>
+        %>
 
 
-    <tr >
+        <tr>
 
 
-       
-        <% for(int k=0;k<3;k++ ) {
 
-               if ((i * 3 + k) > allChanels.Count-1)
+            <% for (int k = 0; k < 3; k++)
                {
-                   continue;
-               }
+
+                   if ((i * 3 + k) > allChanels.Count - 1)
+                   {
+            %>
+
+            <td style="text-align: left; padding: 0px; padding-right: 10px; padding-bottom: 5px">
+                <div style="width: 100px; margin: 0px 0px 0px 0px; height: 33px; line-height: 33px; vertical-align: central; text-align: center; float: left">
+                </div>
+            </td>
+
+
+            <%
+                       continue;
+                   }
+
+                   string strNornalChannelBg = "";
+                   if (CheckChannelIdPlaying(allChanels[i * 3 + k].ChannelId))
+                   {
+                       if (CheckIfAudio() == "true")
+                       {
+                           strNornalChannelBg = "~/images/ic_image_channel_playing_bg.png";
+                       }
+                       else
+                       {
+                           strNornalChannelBg = "~/images/ic_image_channel_playing_bg_video.png";
+                       }
+
+                   }
+                   else
+                   {
+                       if (CheckIfAudio() == "true")
+                       {
+                           strNornalChannelBg = "~/images/ic_image_channel_bg.png";
+                       }
+                       else
+                       {
+                           strNornalChannelBg = "~/images/ic_image_channel_bg_video.png";
+                       }
+                   }
+
                
-               %>
+                   
+               
+            %>
 
-        <td style=" text-align:left; padding:0px; padding-right:10px; padding-bottom:5px">
+            <td style="text-align: left; padding: 0px; padding-right: 10px; padding-bottom: 5px">
 
 
-            <div id="channelDiv<%=allChanels[i*3+k].ChannelId %>" data-itemid="<%=allChanels[i*3+k].ChannelName.Trim() %>" style="background-image: url('<%= ResolveUrl("~/images/ic_image_channel_bg.png") %> '); width: 100px; margin: 0px 0px 0px 0px; height: 33px; line-height: 33px; vertical-align: central; text-align: center; float: left">
 
-                <%=  allChanels[i*3+k].ChannelName  %>
-            </div>
-        </td>
+
+                <div id="channelDiv<%=allChanels[i*3+k].ChannelId %>" data-itemid="<%=allChanels[i*3+k].ChannelName.Trim() %>" style="background-image: url('<% =ResolveUrl(strNornalChannelBg) %>'); width: 100px; margin: 0px 0px 0px 0px; height: 33px; line-height: 33px; vertical-align: central; text-align: center; font-weight:bold; font-size:14px; float: left">
+
+                    <%=  allChanels[i*3+k].ChannelName  %>
+                </div>
+            </td>
+            <% } %>
+        </tr>
+
         <% } %>
-    </tr>
-
-    <% } %>
-</table>
-    </div>
+    </table>
+</div>
 
 
-<div id="divChannelInfo" style=" margin-left:2px; clear: both; margin-bottom: 10px; margin-top: 10px; text-align: left; font-size: 15pt">
+<div id="divChannelInfo" style="margin-left: 2px; clear: both; margin-bottom: 10px; margin-top: 10px; text-align: left; font-size: 15pt">
     等待操作
 </div>
 <ul style="clear: both; margin-left: 0px; text-align: center; list-style-type: none;">

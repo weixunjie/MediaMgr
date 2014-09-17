@@ -540,7 +540,6 @@
                                             %>
 
 
-
                                             <img id="deviceMenu<% =dGroups[l].Devices[k].DeviceId %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
                                         <p style="text-align: center; font-size:12px">

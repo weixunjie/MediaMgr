@@ -307,7 +307,8 @@ namespace MediaMgrSystem
                     if (needSentClientIpAddresses.Count > 0)
                     {
                         ipsNeedToSend = needSentClientIpAddresses;
-                        idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses, SingalRClientConnectionType.ANDROID);
+                        List<string> ipReallySent = new List<string>();
+                        idsNeedToSend = GlobalUtils.GetConnectionIdsByIdentify(needSentClientIpAddresses, SingalRClientConnectionType.ANDROID, out ipReallySent);
                     }
 
                     EncoderAudioInfo ei = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(clientIdentify);

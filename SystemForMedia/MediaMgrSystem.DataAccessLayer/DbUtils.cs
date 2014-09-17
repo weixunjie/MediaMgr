@@ -79,7 +79,7 @@ namespace MediaMgrSystem.DataAccessLayer
                     //通过包含查询SQL的SqlCommand实例来实例化SqlDataAdapter   
                     SqlDataAdapter adapter = new SqlDataAdapter(command);
 
-                    adapter.Fill(data);//填充DataTable   
+                     adapter.Fill(data);//填充DataTable   
                 }
             }
             return data;

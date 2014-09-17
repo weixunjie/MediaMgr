@@ -148,13 +148,13 @@
         </div>
     </div>
 
-    <div style="margin-left: 350px;  border-left:solid; margin-top:0px; border-left-color:#4179b6;border-left-width:1px">
+    <div style="margin-left: 334px;  border-left:solid; margin-top:0px; border-left-color:#4179b6;border-left-width:1px; padding-right:5px; padding-bottom:15px">
 
         
 
         <div id="divForDevice" style="margin-left: 0px; padding-top:10px "></div>
 
-        <div id="divforLogs" style="margin-left: 3px; margin-top:5px"></div>
+        <div id="divforLogs" style="margin-left: 3px; margin-top:15px; "></div>
 
         <%--    <deviceList:DeviceList ID="DeviceList1" runat="server" />--%>
     </div>

@@ -29,7 +29,8 @@ namespace MediaMgrSystem
 
         public bool CheckDeviceIsOnline(string ipAddress)
         {
-            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress },SingalRClientConnectionType.REMOTECONTORLDEVICE).Count > 0;
+            List<string> ipReallySent = new List<string>();
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }, SingalRClientConnectionType.REMOTECONTORLDEVICE, out ipReallySent).Count > 0;
 
         }
 

@@ -213,6 +213,7 @@ namespace MediaMgrSystem
         }
     }
 
+    
     public class ManualPlayItem
     {
 
@@ -230,6 +231,13 @@ namespace MediaMgrSystem
 
     }
 
+    public class PlayDevice
+    {
+        public string IpAddress { get; set; }
+
+        public bool IsAudio { get; set; }
+
+    }
     public static class GlobalUtils
     {
 
@@ -243,6 +251,9 @@ namespace MediaMgrSystem
         public static object PublicObjectForLockClientMsg = new object();
 
         public static object LogForLock = new object();
+
+        public static List<PlayDevice> PlayingDevices = new List<PlayDevice>();
+
 
 
         public static string StreamNameBase = "1234567890";
@@ -623,10 +634,11 @@ namespace MediaMgrSystem
 
         }
 
-        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies, SingalRClientConnectionType scType)
+        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies, SingalRClientConnectionType scType,out List<string> ipAddressReallySent)
         {
             List<string> results = new List<string>();
 
+            ipAddressReallySent = new List<string>();
             lock (objForLock)
             {
 
@@ -641,6 +653,7 @@ namespace MediaMgrSystem
                             if (sc.ConnectionType == scType)
                             {
                                 results.Add(sc.ConnectionId);
+                                ipAddressReallySent.Add(sc.ConnectionIdentify);
                             }
                         }
                     }

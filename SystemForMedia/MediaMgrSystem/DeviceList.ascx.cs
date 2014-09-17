@@ -76,7 +76,7 @@ namespace MediaMgrSystem
         public string GetGroupImageUrl()
         {
             string srcName = "ic_image_group.png";
-            if (GlobalUtils.GetCurrentFunctionType()==BusinessType.VIDEOONLINE) { srcName = "ic_image_group_video.png"; }
+            if (GlobalUtils.GetCurrentFunctionType() == BusinessType.VIDEOONLINE) { srcName = "ic_image_group_video.png"; }
 
 
             return srcName;
@@ -93,19 +93,59 @@ namespace MediaMgrSystem
 
 
 
-            if (GlobalUtils.GetCurrentFunctionType()==BusinessType.VIDEOONLINE)
+
+
+            if (GlobalUtils.GetCurrentFunctionType() == BusinessType.VIDEOONLINE)
             {
                 srcName = srcName + "_video";
             }
+
+            bool isAudio = false;
+
+            if (CheckDeviceIsPlaying(ipAddress, out isAudio))
+            {
+                if (isAudio)
+                {
+                    srcName = "ic_image_device.playing_audio";
+
+                }
+                else
+                {
+                    srcName = "ic_image_device.playing_video";
+                }
+
+            }
+
 
             return srcName;
 
         }
         public bool CheckDeviceIsOnline(string ipAddress)
         {
-            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }, SingalRClientConnectionType.ANDROID).Count > 0;
+            List<string> ipReallySent = new List<string>();
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }, SingalRClientConnectionType.ANDROID, out ipReallySent).Count > 0;
 
         }
+
+        public bool CheckDeviceIsPlaying(string ipAddress, out bool isAudio)
+        {
+            isAudio = false;
+            foreach (var de in GlobalUtils.PlayingDevices)
+            {
+
+                if (ipAddress == de.IpAddress)
+                {
+                    isAudio = de.IsAudio;
+                    return true;
+                }
+            }
+
+            return false;
+
+
+        }
+
+
 
         public List<ChannelInfo> GetAllChannels()
         {

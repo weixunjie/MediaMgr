@@ -10,9 +10,9 @@
 
 
 </head>
-<body>
+<body  style="background-image:url(<% =ResolveUrl("~/Images/bg.jpg") %>); background-repeat:repeat; padding-bottom:0px" >
 
-    <form runat="server">
+    <form runat="server" style=" height:100%; margin-bottom:1px">
 
 
         <link rel="stylesheet" href='<% =ResolveUrl("~/Content/jquery-ui-1.10.4.custom.min.css") %>' type="text/css" />
@@ -74,7 +74,7 @@
 
                     <ul class="nav navbar-nav" style="padding-left: 0px; margin-left: 0px">
                         <li style="padding-left: 0px; height: 20px; vertical-align: middle">
-                             <a style="padding-left: 0px; float:left; height: 25px;  width:80px; color:white" class="navbar-brand" ><img  style="height: 20px;  width:80px;" src="<%=ResolveUrl("~/Images/ic_image_logo.png") %>"/></a>
+                             <a style="padding-left: 5px; float:left; height: 25px;  width:80px; color:white" class="navbar-brand" ><img  style="height: 20px;  width:80px;" src="<%=ResolveUrl("~/Images/ic_image_logo.png") %>"/></a>
 
 
 
@@ -91,7 +91,7 @@
                         <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
                         <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
-                        <li><a style="color:white" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
+                       <%-- <li><a style="color:white" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>--%>
 
 
                         <li class="dropdown" id="accountmenu">
@@ -118,7 +118,7 @@
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/DeviceMgrList.aspx") %>">设备管理</a></li>
 
-                                <li><a href="<%=ResolveUrl("~/MgrModel/EncoderAudioMgrList.aspx") %>">音频编码管理</a></li>
+              <%--                  <li><a href="<%=ResolveUrl("~/MgrModel/EncoderAudioMgrList.aspx") %>">音频编码管理</a></li>--%>
 
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/ChannelMgrList.aspx") %>">通道管理</a></li>
@@ -146,23 +146,43 @@
                { %>
             
        <div class="container body-content" style=" background-color:#dac6df;line-height:35px">
-            <div style="margin-left: 5px; float: left; margin-bottom: 0px" id="divScheduleText"></div>
 
-            <div style="margin-left: 5px; float: right; margin-bottom: 0px; margin-right: 5px" id="divTimeText"></div>
+           
+             <div style="margin-left: 10px; float: left; margin-bottom: 0px; margin-right: 5px" id="divCurrentPlaying"></div>
+
+            <div style="margin-left: 25px; float:left; margin-bottom: 0px" id="divScheduleText"></div>
+
+            <div style="margin-left: 5px; float: right; margin-bottom: 0px; margin-right: 15px" id="divTimeText"></div>
+
+
+
             </div>
             <% } %>
 
-        <div class="container body-content" style="padding-left: 8px">
-            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        <div class="container body-content" style=" height:auto; background-color:white;   padding-left:0px;padding-bottom:0px"  >
+
+               <% if (Session["UserId"] != null)
+               { %>
+
+            <div style=" padding-left:10px; margin-bottom:10px" >
+                <%
+                }               
+                         else
+               { %>
+
+                   <div style=" padding-left:10px" >
+
+                 <%   } %>
+            <asp:ContentPlaceHolder ID="MainContent"   runat="server">
             </asp:ContentPlaceHolder>
+                </div>
         </div>
 
 
         <script>
             $(document).ready(function () {
 
-                funUpdateLasterSchedule();
-
+            
                 funUpdateTime();
             });
 
@@ -190,26 +210,29 @@
                 });
 
 
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetRunningSchedule",
+                    data: null,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (msg) {
 
-                runUpdateTime();
-            };
+                        $("#divCurrentPlaying").html(msg.d);
 
-            function runUpdateLasterSchedule() {
-                var interval = setTimeout(funUpdateLasterSchedule, 35000);
-            }
-
-            function funUpdateLasterSchedule() {
+                    }
+                    });
 
 
                 $.ajax({
                     async: false,
                     type: "POST",
                     url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetLasterSchedule",
-                    data: "{'controlName':'LogList'}",
+                    data: null,
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (msg) {
-
 
                         $("#divScheduleText").html(msg.d);
 
@@ -217,9 +240,11 @@
                 });
 
 
-
-                runUpdateLasterSchedule();
+                runUpdateTime();
             };
+
+            
+       
 
         </script>
 
