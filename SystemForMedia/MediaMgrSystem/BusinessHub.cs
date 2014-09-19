@@ -199,28 +199,25 @@ namespace MediaMgrSystem
 
                     if (rc != null && rc.commandType == CommandTypeEnum.REMOTECONTRLSENDSTATUS)
                     {
-                        if (rc.status != null && rc.status.Count > 0)
+
+                        string strIP = GlobalUtils.GetIdentifyByConectionId(connectionId);
+
+
+                        if (!string.IsNullOrWhiteSpace(rc.deviceType))
                         {
-                            string strIP = GlobalUtils.GetIdentifyByConectionId(connectionId);
-                            foreach (var sta in rc.status)
+                            RemoveControlDeviceType type = RemoveControlDeviceType.NONE;
+                            if (Enum.TryParse(rc.deviceType, out type))
                             {
-                                if (sta != null)
-                                {
-                                    if (!string.IsNullOrWhiteSpace(sta.deviceType))
-                                    {
-                                        RemoveControlDeviceType type = RemoveControlDeviceType.NONE;
-                                        if (Enum.TryParse(sta.deviceType, out type))
-                                        {
-                                            GlobalUtils.RemoteDeviceStatusBLLInstance.DeleteByClientIdentifyAndType(strIP, type);
-                                            GlobalUtils.RemoteDeviceStatusBLLInstance.AddStatus(new RemoteDeviceStatus { ACMode = sta.acMode, ACTempature = sta.acTemperature, ClientIdentify = strIP, DeviceOpenedStatus = sta.isOpen == "1", DeviceType = type });
-                                        }
-                                    }
-
-
-                                }
+                                GlobalUtils.RemoteDeviceStatusBLLInstance.DeleteByClientIdentifyAndType(strIP, type);
+                                GlobalUtils.RemoteDeviceStatusBLLInstance.AddStatus(new RemoteDeviceStatus { ACMode = string.Empty, ACTempature = string.Empty, ClientIdentify = strIP, DeviceOpenedStatus = rc.state == "1", DeviceType = type });
                             }
-
                         }
+
+
+
+
+
+
 
                     }
 
@@ -255,33 +252,33 @@ namespace MediaMgrSystem
                                 GlobalUtils.AddLogs(Clients, "物联网控制", strCmdType + " " + strOperResult);
 
 
-                                if (cb.errorCode == "0" && que.CommandType == QueueCommandType.REMOTECONTROLMANULCLOSE && que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN)
-                                {
-                                    //更新状态列表
-                                    if (!string.IsNullOrWhiteSpace(que.ExternalIds))
-                                    {
-                                        string[] ids = que.ExternalIds.TrimEnd(',').Split(',');
+                                //if (cb.errorCode == "0" && que.CommandType == QueueCommandType.REMOTECONTROLMANULCLOSE && que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN)
+                                //{
+                                //    //更新状态列表
+                                //    if (!string.IsNullOrWhiteSpace(que.ExternalIds))
+                                //    {
+                                //        string[] ids = que.ExternalIds.TrimEnd(',').Split(',');
 
-                                        if (ids != null && ids.Length > 0)
-                                        {
-                                            for (int i = 0; i < ids.Length; i++)
-                                            {
-                                                string id = ids[i];
-                                                if (!string.IsNullOrWhiteSpace(id))
-                                                {
+                                //        if (ids != null && ids.Length > 0)
+                                //        {
+                                //            for (int i = 0; i < ids.Length; i++)
+                                //            {
+                                //                string id = ids[i];
+                                //                if (!string.IsNullOrWhiteSpace(id))
+                                //                {
 
-                                                    RemoveControlDeviceType type = RemoveControlDeviceType.NONE;
-                                                    if (Enum.TryParse(id, out type))
-                                                    {
-                                                        GlobalUtils.RemoteDeviceStatusBLLInstance.DeleteByClientIdentifyAndType(matchIPAddress, type);
-                                                        GlobalUtils.RemoteDeviceStatusBLLInstance.AddStatus(new RemoteDeviceStatus { ACMode = "", ACTempature = "", ClientIdentify = matchIPAddress, DeviceOpenedStatus = que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN, DeviceType = type });
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                //                    RemoveControlDeviceType type = RemoveControlDeviceType.NONE;
+                                //                    if (Enum.TryParse(id, out type))
+                                //                    {
+                                //                        GlobalUtils.RemoteDeviceStatusBLLInstance.DeleteByClientIdentifyAndType(matchIPAddress, type);
+                                //                        GlobalUtils.RemoteDeviceStatusBLLInstance.AddStatus(new RemoteDeviceStatus { ACMode = "", ACTempature = "", ClientIdentify = matchIPAddress, DeviceOpenedStatus = que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN, DeviceType = type });
+                                //                    }
+                                //                }
+                                //            }
+                                //        }
+                                //    }
 
-                                }
+                                //}
 
                                 break;
                             }
@@ -620,7 +617,12 @@ namespace MediaMgrSystem
         //}
 
 
+        //hubProxy.Invoke("sendRemoteControlTaskControl", strClientIdentify, strDeviceType, strNewDeviceStatus, strACTempature, strACMode);
 
+        public void SendRemoteControlTaskControl(string strClientIdentify, string strDeviceType, string strNewDeviceStatus, string strACTempature, string strACMode)
+        {
+            RemoteControlLogic.SendRemoteControlBySingleDevice(Clients, strDeviceType, strClientIdentify, strNewDeviceStatus == "1", strACMode, strACTempature);
+        }
         public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority)
         {
 

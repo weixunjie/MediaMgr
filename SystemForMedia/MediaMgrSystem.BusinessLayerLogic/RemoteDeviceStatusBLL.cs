@@ -43,7 +43,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public int AddStatus(RemoteDeviceStatus sc)
         {
 
-            String sqlStr = "INSERT INTO REMOTECONTROLDEVICESTATUS(CLIENTIDENTIFY,DEVICETYPE,DEVICESTATUS,ACTEMPATURE,ACMODE) values ('{0}','{1}','{2}')";
+            String sqlStr = "INSERT INTO REMOTECONTROLDEVICESTATUS(CLIENTIDENTIFY,DEVICETYPE,DEVICESTATUS,ACTEMPATURE,ACMODE) values ('{0}','{1}','{2}','{3}','{4}')";
 
             sqlStr = String.Format(sqlStr, sc.ClientIdentify, sc.DeviceType.ToString(), sc.DeviceOpenedStatus ? "1" : "0", sc.ACTempature, sc.ACMode);
 

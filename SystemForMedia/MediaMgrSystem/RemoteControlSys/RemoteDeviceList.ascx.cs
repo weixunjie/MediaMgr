@@ -16,6 +16,7 @@ namespace MediaMgrSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
+          
         }
 
         public List<GroupInfo> GetAllGroups()

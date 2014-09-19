@@ -9,11 +9,12 @@ namespace MediaMgrSystem.DataModels
     public class ReceiveRemovoteDeivceCommand : ComunicationBase
     {
 
-        public List<ReceiveRemovoteDeivceStatus> status
-        {
-            get;
-            set;
-        }
+        public string deviceType{get;set;}
+
+        public string port{get;set;}
+
+           public string state{get;set;}
+ 
 
      
     }

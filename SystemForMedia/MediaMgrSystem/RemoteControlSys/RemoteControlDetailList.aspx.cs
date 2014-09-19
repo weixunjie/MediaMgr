@@ -21,6 +21,10 @@ namespace MediaMgrSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
+            if (Session["UserId"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
 
 
         }
@@ -34,7 +38,7 @@ namespace MediaMgrSystem
 
         }
 
-        public string GetStatusTextByIdentifyAndDeviceType(string identify, RemoveControlDeviceType type, out string colorText)
+        public string GetStatusTextByIdentifyAndDeviceType(string identify, RemoveControlDeviceType type)
         {
             if (GlobalUtils.AllRemoteDeviceStatus != null && GlobalUtils.AllRemoteDeviceStatus.Count > 0)
             {
@@ -44,8 +48,7 @@ namespace MediaMgrSystem
                     {
                       
                         if (status.DeviceOpenedStatus)
-                        {
-                            colorText = "blue";
+                        {                           
 
 
                             return "已打开";
@@ -53,7 +56,7 @@ namespace MediaMgrSystem
                         }
                         else
                         {
-                            colorText = "black";
+                         
 
                             return "已关闭";
                         }
@@ -63,16 +66,14 @@ namespace MediaMgrSystem
                 }
             }
 
-
-            
-            colorText = "gray";
+           
             return "未知";
 
         }
 
         public List<GroupInfo> GetAllGroups()
         {
-            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.ALL);
+            List<GroupInfo> gis = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.REMOVECONTROL);
 
             return gis;
 

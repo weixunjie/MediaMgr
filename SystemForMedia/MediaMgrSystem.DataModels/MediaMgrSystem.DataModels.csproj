@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="DataModel\ParamConfig.cs" />
     <Compile Include="DataModel\BusinessType.cs" />
+    <Compile Include="DataModel\RemoteDeviceScheduleTask.cs" />
     <Compile Include="DataModel\RemoteDeviceStatus.cs" />
     <Compile Include="DataModel\RemoveControlDeviceType.cs" />
     <Compile Include="DataModel\RunningEncoder.cs" />

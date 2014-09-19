@@ -15,7 +15,8 @@ namespace MediaMgrSystem
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+         
+
         }
 
         public List<LogInfo> GetTop3RemoveControlLogsLogs()

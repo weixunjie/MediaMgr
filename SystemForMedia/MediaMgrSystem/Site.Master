@@ -91,7 +91,7 @@
                         <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
                         <li><a  style="color:white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
-                       <%-- <li><a style="color:white" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>--%>
+                        <li><a style="color:white" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
 
 
                         <li class="dropdown" id="accountmenu">

@@ -13,14 +13,16 @@ h2 {
     list-style-type: none;
 }
 
-    .deviceULStyle li {
-        float: left;
-        display: block;
-        width: 80px;
-        height: 80px;
-        margin-right: 10px;
-        margin-top: 10px;
-    }
+
+
+.deviceULStyle li {
+    float: left;
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
 
 
 
@@ -34,7 +36,4 @@ h2 {
 .batchOperationLableStyle {
     width: 80px;
     float: left;
-
-   
 }
-

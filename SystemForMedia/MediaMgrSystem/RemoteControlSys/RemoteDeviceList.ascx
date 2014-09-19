@@ -19,14 +19,14 @@
 
 <script type="text/javascript">
 
-       
+
 
     var dialogddACMode = "<%= ddACMode.ClientID %>";
 
     var dialogddOpenClose = "<%= this.ddOpenClose.ClientID %>";
 
     var dialogcbScheduleWeeks = "<%= this.cbScheduleWeeks.ClientID %>";
-    
+
     var dialogForSingleDeviceACMode = "<%= this.ddForSingleDeviceACMode.ClientID %>";
 
     <%  
@@ -192,9 +192,9 @@
             hideAllMenus();
             is_popup_2nd_menu = false;
 
-            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId,  currentOperDevice,true,"", "");
+            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId, currentOperDevice, true, "", "");
 
-            
+
 
         });
 
@@ -204,7 +204,7 @@
 
             hideAllMenus();
             is_popup_2nd_menu = false;
-            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId, currentOperDevice,false,"", "");
+            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId, currentOperDevice, false, "", "");
 
 
 
@@ -226,11 +226,11 @@
 
                 hideAllMenus();
 
-               // currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
+                // currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
 
                 currentOperDevice = $(this).data("itemid");
 
-              
+
                 is_popup_1st_menu = true;
 
                 var x = $(this).offset().left;
@@ -279,16 +279,16 @@
 
             var strSingleACMode = $('#' + dialogForSingleDeviceACMode + ' option:selected').val();
 
-            
+
 
             $('#dialogOperationACForSingleDevice').modal('hide');
 
-            
-            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId,  currentOperDevice,true, strSingleACMode, tbForSingleDeviceACTempureValue);
+
+            hubForRemoteControl.server.sendRemoteControlBySingleDevice(currentExternalPointId, currentOperDevice, true, strSingleACMode, tbForSingleDeviceACTempureValue);
 
 
         });
-        
+
 
         $("#btnConfirmedBatchGroupOperation").click(function (e) {
 
@@ -305,7 +305,7 @@
 
             if (strGroupIds == "") {
                 alert('请选择分组');
-           
+
                 return
                 //alert($("#" + dialogddACMode).val());
             }
@@ -351,16 +351,17 @@
 
             var strWeeks = "";
 
-            $("input[name^='dialogcbScheduleWeeks']").each(function () {
+            $("input[name^='" + dialogcbScheduleWeeks + "']").each(function () {
 
                 if ($(this)[0].checked) {
                     strWeeks += $(this).val() + ",";
                 }
             });
 
+        
             if (strWeeks == "") {
                 if (isBatchSchedule) {
-                    alert("请选择计划周期。");
+                    alert("请选择计划周期");
                     return
                 }
             }
@@ -454,7 +455,7 @@
                      
                                             %>
 
-                                            
+
 
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" data-itemid="<% =dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
@@ -475,11 +476,26 @@
 
                 </td>
             </tr>
+
+            <tr style="height: 1px; padding: 0px">
+                <td style="height: 1px; padding: 0px">
+
+                    <% if (l == dGroups.Count - 1)
+                       { %>
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
+                    <% }
+                       else
+                       { %>
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-top: 0px; margin-bottom: 0px; margin-left: 5px; margin-right: 5px" />
+                    <% } %>
+                </td>
+            </tr>
+
         </tbody>
     </table>
 
     <%
-            groupIndex++;
+                       groupIndex++;
         } %>
 
 
@@ -537,6 +553,12 @@
 
 
                     </div>
+                </td>
+            </tr>
+
+            <tr style="height: 1px; padding: 0px">
+                <td style="height: 1px; padding: 0px">
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
                 </td>
             </tr>
         </tbody>

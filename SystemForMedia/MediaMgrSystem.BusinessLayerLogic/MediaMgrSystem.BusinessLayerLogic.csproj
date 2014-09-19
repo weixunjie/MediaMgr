@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ParamConfigBLL.cs" />
+    <Compile Include="RemoteDeviceScheduleTaskBLL.cs" />
     <Compile Include="RemoteDeviceStatusBLL.cs" />
     <Compile Include="EncoderAudioRunningClientsBLL.cs" />
     <Compile Include="SingalConnectedClientsBLL.cs" />

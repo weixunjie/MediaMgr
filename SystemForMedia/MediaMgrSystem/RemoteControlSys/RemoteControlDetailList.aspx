@@ -4,7 +4,7 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-
+    
     <h3 style="clip: rect(auto, auto, 10px, auto)">物联设备明细查看</h3>
 
 
@@ -35,8 +35,8 @@
 
 
 
-        <table class="table table-bordered table-striped; " style="overflow: auto; height: auto; margin-top: 5px;">
 
+        <table class="table table-bordered table-striped; " border="0" style="overflow: auto; height: auto; margin-top: 0px; margin-bottom: 0px; margin-left: 0px;">
             <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
 
             <thead>
@@ -58,122 +58,52 @@
 
                 <tr>
                     <td>
-                        <div>
-                            <ul style="margin: 0px; list-style-type: none">
-                                <%
-                         
-                if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)
-                {
-                    for (int k = 0; k < dGroups[l].Devices.Count; k++)
-                    { %>
-                                <li data-itemid="<%=dGroups[l].Devices[k].DeviceId %>" style="float: left; display: block; width: 260px; height: 150px; margin-right: 10px; margin-top: 5px">
-
-                                    <table class="table table-bordered table-striped; " style="overflow: auto; height: auto;">
+                        <% if (dGroups[l].Devices != null && dGroups[l].Devices.Count > 0)
+                           { %>
 
 
-                                        <thead style="border-radius: 0px">
-                                            <tr>
-
-                                                <th colspan="3" style="border-bottom-left-radius: 0px">
-
-                                                    <div style="text-align: left;"><%=dGroups[l].Devices[k].DeviceName %></div>
+                        <table class="table table-bordered table-striped; " style="border: 1px solid #dddddd; overflow: auto; width: 500px; height: auto; margin-top: 0px; margin-bottom: 0px; margin-left: 0px;">
 
 
-                                                </th>
+                            <thead>
+                                <tr>
+                                    <th>教室</th>
+                                    <th style="border-left: 1px solid #dddddd">空调</th>
+                                    <th style="border-left: 1px solid #dddddd">电脑</th>
+                                    <th style="border-left: 1px solid #dddddd">灯</th>
+                                    <th style="border-left: 1px solid #dddddd">电视</th>
+                                    <th style="border-left: 1px solid #dddddd">投影仪</th>
+                                </tr>
+                            </thead>
 
-                                            </tr>
-                                        </thead>
+                            <tbody>
 
-
-
-                                        <tbody>
-                                            <tr>
-                                                <td>
-
-                                                    <% 
-                        string colorText;
-                        string statusText;
-                        statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.AC, out colorText);
-                       
-                                                    %>
-
-                                                    <div class="col-md-4" style="color: <%=colorText %>">
-                                                        空调:  <b><%=statusText %></b>
-
-                                                    </div>
-
-                                                </td>
-                                                <td>
-
-                                                    <% 
-                     
-                        statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.COMPUTER, out colorText);
-                       
-                                                    %>
-
-                                                    <div class="col-md-4" style="color: <%=colorText %>">
-                                                        电脑: <b><%=statusText %></b>
-
-                                                    </div>
-                                                </td>
-
-                                                <td>
-
-                                                    <%statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.LIGHT, out colorText);
-                       
-                                                    %>
-
-                                                    <div class="col-md-4" style="color: <%=colorText %>">
-                                                        灯: <b><%=statusText %></b>
-
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-
-
-
-                                            <tr>
-
-                                                <td>
-                                                    <%statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.TV, out colorText);
-                       
-                                                    %>
-
-                                                    <div class="col-md-4" style="color: <%=colorText %>">
-                                                        电视: <b><%=statusText %></b>
-
-                                                    </div>
-                                                </td>
-
-                                                <td colspan="2">
-                                                    <%statusText = GetStatusTextByIdentifyAndDeviceType(dGroups[l].Devices[k].DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.PROJECTOR, out colorText);
-                       
-                                                    %>
-
-                                                    <div class="col-md-4" style="  color: <%=colorText %>">
-                                                        投影: <b><%=statusText %></b>
-
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-
-
-
-
-                                        </tbody>
-                                    </table>
-
-                                </li>
-
-
-                                <%  }
-                }
+                                <% foreach (var di in dGroups[l].Devices)
+                                   { 
+                                     
                                 %>
-                            </ul>
+                                <tr>
+                                    <td style="border-top: 1px solid #dddddd"><% =di.DeviceName %></td>
+                                    <td style="border-left: 1px solid #dddddd; border-top: 1px solid #dddddd"><% =GetStatusTextByIdentifyAndDeviceType(di.DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.AC) %></td>
+                                    <td style="border-left: 1px solid #dddddd; border-top: 1px solid #dddddd"><% =GetStatusTextByIdentifyAndDeviceType(di.DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.COMPUTER) %></td>
+                                    <td style="border-left: 1px solid #dddddd; border-top: 1px solid #dddddd"><% =GetStatusTextByIdentifyAndDeviceType(di.DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.LIGHT) %></td>
+                                    <td style="border-left: 1px solid #dddddd; border-top: 1px solid #dddddd"><% =GetStatusTextByIdentifyAndDeviceType(di.DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.TV) %></td>
+                                    <td style="border-left: 1px solid #dddddd; border-top: 1px solid #dddddd"><% =GetStatusTextByIdentifyAndDeviceType(di.DeviceIpAddress, MediaMgrSystem.DataModels.RemoveControlDeviceType.PROJECTOR) %></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
 
-                        </div>
+
+                        </table>
+
+                        <% } %>
+                    </td>
+
+                </tr>
+
+                <tr style="height: 1px; padding: 0px">
+                    <td style="height: 1px; padding: 0px">
+                        <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
                     </td>
                 </tr>
             </tbody>

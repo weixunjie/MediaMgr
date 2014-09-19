@@ -267,6 +267,7 @@ namespace MediaMgrSystem
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
 
+        public static RemoteDeviceScheduleTaskBLL RemoteDeviceScheduleTaskBLLInstance = new RemoteDeviceScheduleTaskBLL(GlobalUtils.DbUtilsInstance);
         public static SingalConnectedClientsBLL SingalConnectedClientsBLLIntance = new SingalConnectedClientsBLL(GlobalUtils.DbUtilsInstance);
 
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
