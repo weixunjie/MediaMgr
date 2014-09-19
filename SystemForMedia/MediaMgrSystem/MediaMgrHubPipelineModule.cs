@@ -222,7 +222,19 @@ namespace MediaMgrSystem
                 string str = "Someone Connected: Connected Id" + hub.Context.ConnectionId;
                 System.Diagnostics.Debug.WriteLine(str);
 
+                
+
                 GlobalUtils.WriteDebugLogs(str);
+
+                if (sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
+                {
+                    ComunicationBase cmd = new ComunicationBase();
+
+                    cmd.guidId = Guid.NewGuid().ToString();
+                    cmd.commandType = CommandTypeEnum.REMOTECONTRL_COMMAND_REQUEST_STATE;
+
+                    hub.Clients.Client(hub.Context.ConnectionId).sendRemoteControlToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+                }
 
             }
             catch (Exception ex)
