@@ -37,9 +37,11 @@ namespace MediaMgrWS
 
 
         private const int ADVANCED_START_SECS = 5;
-        private const int ADVANCED_STOP_SECS = 1;
-        private object lockObject = new object();
+        private const int ADVANCED_REMOTECONTROL_SECS = 3;
 
+        private const int ADVANCED_STOP_SECS = 2;
+        private object lockObject = new object();
+        private object lockRemoteControl = new object();
         private object lockFlag = new object();
 
         private object lockQueuItems = new object();
@@ -50,6 +52,7 @@ namespace MediaMgrWS
 
         private Timer aTimerCheckStartSchedule;
 
+        private Timer aTimerCheckRemoteControl;
         private Timer aTimerCheckStopSchedule;
 
         private IHubProxy hubProxy;
@@ -95,57 +98,123 @@ namespace MediaMgrWS
         private void CheckAndStartTask()
         {
             string sqlStr = "SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
-                          " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>CONVERT(DATETIME,'{0}') " +
-                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
+                          " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)>=CONVERT(DATETIME,'{0}') AND CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKSTARTTIME)<=CONVERT(DATETIME,'{1}') " +
+                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{2}%' OR SCHEDULETASKWEEKS LIKE '%{3}%' ) AND " +
                           "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO) " +
                            " AND (LASTRUNDATE IS NULL OR LASTRUNDATE='' OR ( DATEDIFF(S, LASTRUNDATE,GETDATE())>" + ADVANCED_START_SECS.ToString() + "))";
 
             CheckTask(sqlStr, true);
         }
 
+        private void CheckRemoteControl()
+        {
+
+            lock (lockRemoteControl)
+            {
+                string sqlStr = "SELECT * FROM DBO.REMOTECONTROLSCHEDULETASK WHERE  " +
+                              " CONVERT(DATETIME,'1900-01-01 '+ TASKTIME)>=CONVERT(DATETIME,'{0}') AND CONVERT(DATETIME,'1900-01-01 '+ TASKTIME)<=CONVERT(DATETIME,'{1}') " +
+                              " AND WEEKS LIKE '%{2}%'  " +
+                               " AND (LASTRUNDATE IS NULL OR LASTRUNDATE='' OR ( DATEDIFF(S, LASTRUNDATE,GETDATE())>" + ADVANCED_REMOTECONTROL_SECS.ToString() + "))";
 
 
+                int offsetSec = ADVANCED_REMOTECONTROL_SECS;
+
+                DateTime dtNow = DateTime.Now;
+                string dtNowSec = dtNow.ToString("1900-01-01 HH:mm:ss");
+
+                string dtMinsAfterSec = dtNow.AddSeconds(offsetSec).ToString("1900-01-01 HH:mm:ss");
+
+                sqlStr = String.Format(sqlStr, dtNowSec, dtMinsAfterSec, GetWeekIndex());
+
+                DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
+
+                if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        string taskTime = dt.Rows[i]["TaskTime"].ToString();
 
 
+                        string strTaskId = dt.Rows[i]["TaskId"].ToString();
+
+                        string strClientIdentify = dt.Rows[i]["ClientIdentify"].ToString();
+                        string strDeviceType = dt.Rows[i]["DeviceType"].ToString();
+
+                        string strNewDeviceStatus = dt.Rows[i]["NewDeviceStatus"].ToString();
+
+                        string strACTempature = dt.Rows[i]["ACTempature"].ToString();
+
+                        string strACMode = dt.Rows[i]["ACMode"].ToString();
+
+                        hubProxy.Invoke("sendRemoteControlTaskControl", strClientIdentify, strDeviceType, strNewDeviceStatus, strACTempature, strACMode);
+
+                        UpdateRemoteControlTaskStatus(strTaskId);
+                    }
+                }
 
 
+            }
+
+        }
+
+        private void UpdateRemoteControlTaskStatus(string taskId)
+        {
+
+            string updateStr = "UPDATE DBO.REMOTECONTROLSCHEDULETASK  set LASTRUNDATE=GETDATE() WHERE TaskId =" + taskId;
+
+            dbUitls.ExecuteNonQuery(updateStr);
+        }
+
+
+        private string GetWeekIndex()
+        {
+            string strWeek = DateTime.Now.DayOfWeek.ToString();
+            string weekIndex = string.Empty;
+            switch (strWeek)
+            {
+                case "Monday":
+                    weekIndex = "1";
+                    break;
+                case "Tuesday":
+                    weekIndex = "2";
+                    break;
+                case "Wednesday":
+                    weekIndex = "3";
+                    break;
+                case "Thursday":
+                    weekIndex = "4";
+                    break;
+                case "Friday":
+                    weekIndex = "5";
+                    break;
+                case "Saturday":
+                    weekIndex = "6";
+                    break;
+                case "Sunday":
+                    weekIndex = "7";
+                    break;
+
+            }
+
+            return weekIndex;
+        }
 
         private void CheckTask(string sqlStr, bool isCheckStart)
         {
             try
             {
-                string strWeek = DateTime.Now.DayOfWeek.ToString();
-                string weekIndex = string.Empty;
-                switch (strWeek)
-                {
-                    case "Monday":
-                        weekIndex = "1";
-                        break;
-                    case "Tuesday":
-                        weekIndex = "2";
-                        break;
-                    case "Wednesday":
-                        weekIndex = "3";
-                        break;
-                    case "Thursday":
-                        weekIndex = "4";
-                        break;
-                    case "Friday":
-                        weekIndex = "5";
-                        break;
-                    case "Saturday":
-                        weekIndex = "6";
-                        break;
-                    case "Sunday":
-                        weekIndex = "7";
-                        break;
+                string weekIndex = GetWeekIndex();
 
-                }
+                int offsetSec = isCheckStart ? ADVANCED_START_SECS : ADVANCED_STOP_SECS;
 
-                string dtMinsSec = DateTime.Now.ToString("1900-01-01 HH:mm:ss");
+                DateTime dtNow = DateTime.Now;
+
+                string dtMinsNowSec = dtNow.ToString("1900-01-01 HH:mm:ss");
+                string dtMinsAfter5Sec = dtNow.AddSeconds(offsetSec).ToString("1900-01-01 HH:mm:ss");
 
 
-                sqlStr = String.Format(sqlStr, dtMinsSec, DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
+
+                sqlStr = String.Format(sqlStr, dtMinsNowSec, dtMinsAfter5Sec, dtNow.ToString("yyyy-MM-dd"), weekIndex);
 
                 DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
@@ -155,107 +224,99 @@ namespace MediaMgrWS
                     {
                         string strTimeToCheck = isCheckStart ? dt.Rows[i]["ScheduleTaskStartTime"].ToString() : dt.Rows[i]["ScheduleTaskEndTime"].ToString();
 
-                        DateTime dtRunTime;
-                        string dtNow = DateTime.Now.ToString("HH:mm:ss");
-                        if (DateTime.TryParse(strTimeToCheck, out dtRunTime))
+
+
+                        string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
+                        string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
+
+                        string strIsRepeat = dt.Rows[i]["IsRepeat"].ToString();
+
+                        string strScheduleTaskPriority = dt.Rows[i]["ScheduleTaskPriority"].ToString();
+
+
+
+
+                        string sqlStrGetChannelId = "SELECT CHANNELID,CHANNELNAME FROM DBO.CHANNELINFO WHERE SCHEDULEID='" + strScheduleId + "'";
+
+                        List<string> strChannelIds = new List<string>();
+                        List<string> strChannelNames = new List<string>();
+                        DataTable dtChannel = dbUitls.ExecuteDataTable(sqlStrGetChannelId);
+
+                        if (dtChannel != null && dtChannel.Rows.Count > 0)
+                        {
+                            for (int k = 0; k < dtChannel.Rows.Count; k++)
+                            {
+                                strChannelIds.Add(dtChannel.Rows[k]["CHANNELID"].ToString());
+                                strChannelNames.Add(dtChannel.Rows[k]["CHANNELNAME"].ToString());
+                            }
+                        }
+
+
+                        for (int m = 0; m < strChannelIds.Count; m++)
                         {
 
-                            string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
-                            string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
-
-                            string strIsRepeat = dt.Rows[i]["IsRepeat"].ToString();
-
-                            string strScheduleTaskPriority = dt.Rows[i]["ScheduleTaskPriority"].ToString();
-
-                            TimeSpan tsOffset = dtRunTime.Subtract(DateTime.Parse(dtNow));
-
-                            int andvanceSec = isCheckStart ? ADVANCED_START_SECS : ADVANCED_STOP_SECS;
+                            string cid = strChannelIds[m];
+                            string cName = strChannelNames[m];
 
 
-                            if (tsOffset.TotalSeconds <= andvanceSec && tsOffset.TotalMilliseconds > 0)
+                            if (!string.IsNullOrEmpty(cid))
                             {
-                                string sqlStrGetChannelId = "SELECT CHANNELID,CHANNELNAME FROM DBO.CHANNELINFO WHERE SCHEDULEID='" + strScheduleId + "'";
 
-                                List<string> strChannelIds = new List<string>();
-                                List<string> strChannelNames = new List<string>();
-                                DataTable dtChannel = dbUitls.ExecuteDataTable(sqlStrGetChannelId);
-
-                                if (dtChannel != null && dtChannel.Rows.Count > 0)
+                                if (!isCheckStart)
                                 {
-                                    for (int k = 0; k < dtChannel.Rows.Count; k++)
+                                    if (!CheckIfRunning(strScheduleTaskId, cid))
                                     {
-                                        strChannelIds.Add(dtChannel.Rows[k]["CHANNELID"].ToString());
-                                        strChannelNames.Add(dtChannel.Rows[k]["CHANNELNAME"].ToString());
+                                        continue;
                                     }
+
+                                    string[] strPids = new string[0];
+
+                                    hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
+
+                                    UpdateRunningStatus(false, strScheduleTaskId, cid, true);
+                                    System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
+
                                 }
 
-
-                                for (int m = 0; m < strChannelIds.Count; m++)
+                                else if (isCheckStart)
                                 {
 
+                                    if (CheckIfRunning(strScheduleTaskId, cid))
+                                    {
+                                        continue;
+                                    }
 
-                                    string cid = strChannelIds[m];
-                                    string cName = strChannelNames[m];
+                                    string programeIds = dt.Rows[i]["ScheduleTaskProgarmId"].ToString();
 
+                                    string[] strPids = null;
 
-                                    if (!string.IsNullOrEmpty(cid))
+                                    if (!string.IsNullOrEmpty(programeIds))
+                                    {
+                                        strPids = programeIds.Split(',');
+                                    }
+
+                                    if (!string.IsNullOrEmpty(cid) && strPids != null && strPids.Length > 0)
                                     {
 
-                                        if (!isCheckStart)
-                                        {
-                                            if (!CheckIfRunning(strScheduleTaskId, cid))
-                                            {
-                                                continue;
-                                            }
+                                        hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
 
-                                            string[] strPids = new string[0];
+                                        UpdateRunningStatus(true, strScheduleTaskId, cid, true);
+                                        System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
 
-                                            hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
-
-                                            UpdateRunningStatus(false, strScheduleTaskId, cid, true);
-                                            System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
-
-                                        }
-
-                                        else if (isCheckStart)
-                                        {
-
-                                            if (CheckIfRunning(strScheduleTaskId, cid))
-                                            {
-                                                continue;
-                                            }
-
-                                            string programeIds = dt.Rows[i]["ScheduleTaskProgarmId"].ToString();
-
-                                            string[] strPids = null;
-
-                                            if (!string.IsNullOrEmpty(programeIds))
-                                            {
-                                                strPids = programeIds.Split(',');
-                                            }
-
-                                            if (!string.IsNullOrEmpty(cid) && strPids != null && strPids.Length > 0)
-                                            {
-
-                                                hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
-
-                                                UpdateRunningStatus(true, strScheduleTaskId, cid, true);
-                                                System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
-
-
-                                            }
-
-
-                                        }
 
                                     }
+
+
                                 }
+
                             }
                         }
                     }
-
                 }
+
+
             }
+
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("出错拉 " + ex.Message);
@@ -269,8 +330,8 @@ namespace MediaMgrWS
         private void CheckAndStopTask()
         {
             string sqlStr = " SELECT * FROM DBO.SCHEDULETASKINFO WHERE  " +
-                          " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)>CONVERT(DATETIME,'{0}') " +
-                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%' ) AND " +
+                          " CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)>=CONVERT(DATETIME,'{0}') AND CONVERT(DATETIME,'1900-01-01 '+ SCHEDULETASKENDTIME)<=CONVERT(DATETIME,'{1}') " +
+                          " AND (SCHEDULETASKSPECIALDAYS LIKE '%{2}%' OR SCHEDULETASKWEEKS LIKE '%{3}%' ) AND " +
                           "SCHEDULEID IN(SELECT DISTINCT SCHEDULEID FROM DBO.CHANNELINFO)  " +
             " AND (LASTSTOPDATE IS NULL OR LASTSTOPDATE='' OR ( DATEDIFF(S, LASTSTOPDATE,GETDATE())>" + ADVANCED_STOP_SECS.ToString() + "))";
 
@@ -447,6 +508,10 @@ namespace MediaMgrWS
                 aTimerCheckStartSchedule.Interval = 1 * 800;
                 aTimerCheckStartSchedule.Enabled = true;
 
+                aTimerCheckRemoteControl = new Timer();
+                aTimerCheckRemoteControl.Elapsed += aTimerCheckRemoteControl_Elapsed;
+                aTimerCheckRemoteControl.Interval = 1 * 800;
+                aTimerCheckRemoteControl.Enabled = true;
 
 
                 aTimerCheckStopSchedule = new Timer();
@@ -474,7 +539,10 @@ namespace MediaMgrWS
                 {
                     aTimerCheckStartSchedule.Stop();
                 }
-
+                if (aTimerCheckRemoteControl != null)
+                {
+                    aTimerCheckRemoteControl.Stop();
+                }
                 if (aTimerCheckStopSchedule != null)
                 {
                     aTimerCheckStopSchedule.Stop();
@@ -498,13 +566,27 @@ namespace MediaMgrWS
             }
         }
 
+        void aTimerCheckRemoteControl_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (lockObject)
+            {
+                if (_isConnected)
+                {
+                    CheckRemoteControl();
+                }
+            }
+        }
+
         protected override void OnStop()
         {
             if (aTimerCheckStartSchedule != null)
             {
                 aTimerCheckStartSchedule.Stop();
             }
-
+            if (aTimerCheckRemoteControl != null)
+            {
+                aTimerCheckRemoteControl.Stop();
+            }
             if (aTimerCheckStopSchedule != null)
             {
                 aTimerCheckStopSchedule.Stop();
