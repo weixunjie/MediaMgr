@@ -43,7 +43,10 @@ namespace MediaMgrSystem
         REMOTECONTROLSCHEDULECLOSE,
 
         ENCODEAUDIOROPEN,
-        ENCODERAUDIOCLOSE
+        ENCODERAUDIOCLOSE,
+
+        VIDEOENCODERAUDIOCLOSE,
+        VIDEOENCODERAUDIOOPEN
     }
 
 
@@ -141,6 +144,33 @@ namespace MediaMgrSystem
 
 
 
+    public class VideoEncoderQueueItem
+    {
+
+        public string AndriodIpAddressStr
+        {
+            get;
+            set;
+        }
+        public QueueCommandType CommandType
+        { get; set; }
+
+        public string GuidIdStr
+        {
+            get;
+            set;
+        }
+
+        public string EncoderId
+        {
+            get;
+            set;
+        }
+
+        public long PushTicks { get; set; }
+
+
+    }
 
     public class EncoderQueueItem
     {
@@ -213,7 +243,7 @@ namespace MediaMgrSystem
         }
     }
 
-    
+
     public class ManualPlayItem
     {
 
@@ -260,6 +290,7 @@ namespace MediaMgrSystem
         public static object ObjectLockQueueItem = new object();
         public static object ObjectLockRemoteControlQueueItem = new object();
         public static object ObjectLockEncoderQueueItem = new object();
+        public static object ObjectLockVideoEncoderQueueItem = new object();
         private static object objForLock = new object();
 
         public static object ObjectLockForManualPlayItems = new object();
@@ -292,6 +323,8 @@ namespace MediaMgrSystem
 
         public static EncoderAudioBLL EncoderBLLInstance = new EncoderAudioBLL(DbUtilsInstance);
 
+        public static VideoEncoderBLL VideoEncoderBLLInstance = new VideoEncoderBLL(DbUtilsInstance);
+
         public static EncoderAudioRunningClientsBLL EncoderAudioRunningClientsBLLInstance = new EncoderAudioRunningClientsBLL(DbUtilsInstance);
 
         public static LogBLL LogBLLInstance = new LogBLL(DbUtilsInstance);
@@ -315,6 +348,8 @@ namespace MediaMgrSystem
 
 
         public static List<EncoderQueueItem> EncoderQueues = new List<EncoderQueueItem>();
+
+        public static List<VideoEncoderQueueItem> VideoEncoderQueues = new List<VideoEncoderQueueItem>();
 
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
 
@@ -635,7 +670,7 @@ namespace MediaMgrSystem
 
         }
 
-        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies, SingalRClientConnectionType scType,out List<string> ipAddressReallySent)
+        public static List<string> GetConnectionIdsByIdentify(List<string> strIdentifies, SingalRClientConnectionType scType, out List<string> ipAddressReallySent)
         {
             List<string> results = new List<string>();
 
@@ -667,13 +702,13 @@ namespace MediaMgrSystem
 
         }
 
-        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode,ManualPlayItem mp )
+        public static void SendManuallyClientNotice(IHubConnectionContext hub, string str, string errorCode, ManualPlayItem mp)
         {
 
-            
 
-                hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, mp.ChannelId, mp.ChannelName, mp.PlayingPids, mp.PlayingFunction==BusinessType.AUDITBROADCAST ? "1" : "2");
-            
+
+            hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus(str, errorCode, mp.ChannelId, mp.ChannelName, mp.PlayingPids, mp.PlayingFunction == BusinessType.AUDITBROADCAST ? "1" : "2");
+
         }
 
         public static List<string> GetAllPCDeviceConnectionIds()
@@ -885,13 +920,13 @@ namespace MediaMgrSystem
                     return "设备定时开机";
 
                 case QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS:
-                      return "修改IP地址";
+                    return "修改IP地址";
 
                 case QueueCommandType.ENCODEAUDIOROPEN:
-                      return "打开音频编码时";
+                    return "打开音频编码时";
 
                 case QueueCommandType.ENCODERAUDIOCLOSE:
-                      return "关闭音频编码时";
+                    return "关闭音频编码时";
             }
 
             return string.Empty;

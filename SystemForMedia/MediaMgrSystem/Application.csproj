@@ -162,6 +162,9 @@
   <ItemGroup>
     <Content Include="Account\LoginOut.aspx" />
     <Content Include="Account\Login.aspx" />
+    <Content Include="MgrModel\EncoderVideoMgrDetail.aspx" />
+    <Content Include="MgrModel\EncoderVideoMgrList.aspx" />
+    <Content Include="VideoEncodeList.ascx" />
     <Content Include="Bundle.config" />
     <Content Include="Dlls\ffmpeg.exe" />
     <Content Include="Dlls\FFMPEGWrapper.dll" />
@@ -317,6 +320,28 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="VideoEncoderControlLogic.cs" />
+    <Compile Include="MgrModel\EncoderVideoMgrDetail.aspx.cs">
+      <DependentUpon>EncoderVideoMgrDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\EncoderVideoMgrDetail.aspx.designer.cs">
+      <DependentUpon>EncoderVideoMgrDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MgrModel\EncoderVideoMgrList.aspx.cs">
+      <DependentUpon>EncoderVideoMgrList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\EncoderVideoMgrList.aspx.designer.cs">
+      <DependentUpon>EncoderVideoMgrList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="VideoEncodeList.ascx.cs">
+      <DependentUpon>VideoEncodeList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VideoEncodeList.ascx.designer.cs">
+      <DependentUpon>VideoEncodeList.ascx</DependentUpon>
+    </Compile>
     <Compile Include="AudioLogic.ashx.cs">
       <DependentUpon>AudioLogic.ashx</DependentUpon>
     </Compile>
@@ -584,7 +609,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://10.50.90.83:19671/</IISUrl>
+          <IISUrl>http://localhost:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>

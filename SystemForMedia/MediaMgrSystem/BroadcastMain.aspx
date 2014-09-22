@@ -4,7 +4,7 @@
 
 
 
-<%@ Register Src="AudioEncoderList.ascx" TagName="EncoderList" TagPrefix="encoderList" %>
+<%@ Register Src="VideoEncodeList.ascx" TagName="VideoEncodeList" TagPrefix="videoEncodeList" %>
 <%@ Register Src="DeviceList.ascx" TagName="DeviceList" TagPrefix="deviceList" %>
 <%@ Register Src="ChannelList.ascx" TagName="ChannelList" TagPrefix="channelList" %>
 
@@ -137,18 +137,27 @@
     </script>
 
 
-    <div style="width: 300px; height: 100%; float: left; margin-left: 0px; text-align: center">
+    <div style="width: 326px; height: 100%; float: left; margin-left: 0px;text-align: center">
 
         <channelList:ChannelList ID="cList" runat="server" />
 
-        <div style="margin-top: 20px">
+        <div style="margin-top: 20px; margin:0px">
 
-           <%-- <encoderList:EncoderList ID="EncoderList" runat="server" />--%>
+            <%   if (Request["FType"] != null && Request["FType"].ToString() == "V")
+                 {        
+                 
+                     
+                
+                 %>
+                 <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-right: 5px" />
+        <videoEncodeList:VideoEncodeList ID="EncoderList" runat="server" />
+            
+            <% } %>
 
         </div>
     </div>
 
-    <div style="margin-left: 334px;  border-left:solid; margin-top:0px; border-left-color:#4179b6;border-left-width:1px; padding-right:5px; padding-bottom:15px">
+    <div style="margin-left: 336px;  border-left:solid; margin-top:0px; border-left-color:#4179b6;border-left-width:1px; padding-right:5px; padding-bottom:15px">
 
         
 

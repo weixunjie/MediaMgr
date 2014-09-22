@@ -6,22 +6,15 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class EncoderVideoOperationCommandeArg
+    public class EncoderVideoOperCommand : ComunicationBase
     {
-        public string udpBroadcastAddress
-        {
-            get;
-            set;
-        }
-            
-        public string baudRate
-        {
-            get;
-            set;
 
+        public EncoderVideoOperationCommandeArg arg
+        {
+            get;
+            set;
         }
 
     }
 
-   
 }

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModel\VideoEncoderInfo.cs" />
     <Compile Include="DataModel\ParamConfig.cs" />
     <Compile Include="DataModel\BusinessType.cs" />
     <Compile Include="DataModel\RemoteDeviceScheduleTask.cs" />
@@ -53,6 +54,8 @@
     <Compile Include="DataModel\ScheduleInfo.cs" />
     <Compile Include="DataModel\ChannelInfo.cs" />
     <Compile Include="DataModel\EncoderAudioInfo.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderVideoOperationCommandeArg.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderVideoOperCommand.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenReponse.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenReponseArg.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderAudioOperationCommand.cs" />

@@ -61,5 +61,10 @@ namespace MediaMgrSystem.DataModels
 
         ENCODERSENDGROUPSINFO = 401,
 
+        VIDEOENCODEROPEN = 501,
+
+
+        VIDEOENCODERCLOSE = 502,
+
     }
 }

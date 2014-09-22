@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 namespace MediaMgrSystem.DataModels
 {
-    public class EncoderVideoOperationCommandeArg
+    public class EncoderAudioOpenCommandeArg
     {
         public string udpBroadcastAddress
         {
             get;
             set;
         }
-            
+
+        public string streamName
+        {
+            get;
+            set;
+
+        }
         public string baudRate
         {
             get;

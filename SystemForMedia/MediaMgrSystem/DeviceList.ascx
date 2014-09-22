@@ -35,7 +35,7 @@
     List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroupsIncludeDefaultGroup();
     List<MediaMgrSystem.DataModels.ChannelInfo> channels = GetAllChannels();
 
-    List<MediaMgrSystem.DataModels.EncoderAudioInfo> encoders = GetAllEncoders();
+    List<MediaMgrSystem.DataModels.VideoEncoderInfo> encoders = GetAllEncoders();
 
 
 
