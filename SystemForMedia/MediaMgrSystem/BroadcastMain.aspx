@@ -1,4 +1,4 @@
-﻿<%@ Page Title="校园播放系统管理" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true"
+﻿<%@ Page Title="杰讯智能播控系统" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true"
     CodeBehind="BroadcastMain.aspx.cs" Inherits="MediaMgrSystem.BroadcastMain" %>
 
 

@@ -21,7 +21,7 @@
 
 
 
-    var dialogddACMode = "<%= ddACMode.ClientID %>";
+  <%--  var dialogddACMode = "<%= ddACMode.ClientID %>";--%>
 
     var dialogddOpenClose = "<%= this.ddOpenClose.ClientID %>";
 
@@ -78,7 +78,7 @@
 
             var x = $(this).offset().left;
             var y = $(this).offset().top + $(this).height() + 10;
-
+            hideAllMenus();
             is_popup_1st_menu = true;
 
             $("#groupListBatchMenu").show().css("left", x).css("top", y);
@@ -99,16 +99,20 @@
         $("#groupListBacthMenuSchedule").click(function (e) {
 
 
+        
+
             isBatchSchedule = true;
             $("#divPlanTime").css("display", "block");
 
             $("#divPlanWeeks").css("display", "block");
 
-            $("#batchGroupRightDiv").css("height", "460px");
+            $("#batchGroupRightDiv").css("height", "330px");
 
-            $("#dialogForBatchGrouplbAvaiableGroups").css("height", "440px");
+            $("#dialogForBatchGrouplbAvaiableGroups").css("height", "310px");
 
             is_popup_1st_menu = false;
+
+            hideAllMenus();
             $("#groupListBatchMenu").hide;
             $('#dialogForBatchGroup').modal('show');
         });
@@ -122,11 +126,12 @@
             $("#divPlanWeeks").css("display", "none");
 
 
-            $("#batchGroupRightDiv").css("height", "330px");
+            $("#batchGroupRightDiv").css("height", "200px");
 
-            $("#dialogForBatchGrouplbAvaiableGroups").css("height", "310px");
+            $("#dialogForBatchGrouplbAvaiableGroups").css("height", "170");
 
             is_popup_1st_menu = false;
+            hideAllMenus();
             $("#groupListBatchMenu").hide;
             $('#dialogForBatchGroup').modal('show');
         });
@@ -326,16 +331,16 @@
             }
 
 
-            var tbACTempureValue = $("#tbACTempure").val();
+            //var tbACTempureValue = $("#tbACTempure").val();
 
 
 
-            if (!(/^(\+|-)?\d+$/.test(tbACTempureValue)) || tbACTempureValue < 0 || tbACTempureValue > 45) {
+            //if (!(/^(\+|-)?\d+$/.test(tbACTempureValue)) || tbACTempureValue < 0 || tbACTempureValue > 45) {
 
-                alert("请输入正确的空调温度");
-                return;
+            //    alert("请输入正确的空调温度");
+            //    return;
 
-            }
+            //}
 
 
             var tbScheduleTimeValue = $("#tbScheduleTime").val();
@@ -365,13 +370,13 @@
                     return
                 }
             }
-            var strACMode = $('#' + dialogddACMode + ' option:selected').val();
+            //var strACMode = $('#' + dialogddACMode + ' option:selected').val();
 
             var strOpenOrClose = $('#' + dialogddOpenClose + ' option:selected').val();
 
 
 
-            hubForRemoteControl.server.sendRemoteControlByGroups(strExternalPointIds, strGroupIds, strOpenOrClose == "1", strACMode, tbACTempureValue, tbScheduleTimeValue, strWeeks, isBatchSchedule);
+            hubForRemoteControl.server.sendRemoteControlByGroups(strExternalPointIds, strGroupIds, strOpenOrClose == "1", "", "20", tbScheduleTimeValue, strWeeks, isBatchSchedule);
             $('#dialogForBatchGroup').modal('hide');
 
         });
@@ -459,7 +464,7 @@
 
                                             <img id="deviceMenu<% =deviceIndex.ToString() %>" data-itemid="<% =dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
-                                        <p style="text-align: center">
+                                            <p style="text-align: center; font-size:12px">
                                             <% =dGroups[l].Devices[k].DeviceName %>
                                         </p>
                                     </div>
@@ -616,12 +621,12 @@
         <div class="modal-header">
             <a class="close" onclick=" $('#dialogForBatchGroup').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">设备操作</h3>
         </div>
-        <div class="modal-body" style="max-height: 500px">
+        <div class="modal-body" style="max-height: 400px">
             <div style="float: left; height: auto; width: 160px; margin-right: 10px">
 
                 <h4 style="text-align: left; margin-top: 0px">可选组</h4>
 
-                <select size="4" multiple="multiple" style="height: 450px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
+                <select size="4" multiple="multiple" style="height: 350px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
 
                     <% foreach (var di in dGroups)
                        {
@@ -634,7 +639,7 @@
                 </select>
             </div>
 
-            <div id="batchGroupRightDiv" style="float: left; height: 460px; width: 300px;">
+            <div id="batchGroupRightDiv" style="float: left; height: 360px; width: 300px;">
                 <h4 style="text-align: left; margin-top: 0px">批量操作</h4>
 
                 <div>
@@ -654,7 +659,7 @@
 
                 </div>
 
-                <div>
+                <%--<div>
 
                     <p>
                         空调温度
@@ -680,7 +685,7 @@
                         </asp:DropDownList>
                     </div>
 
-                </div>
+                </div>--%>
 
                 <div>
 
@@ -691,8 +696,8 @@
                     <div style="height: 40px">
 
                         <asp:DropDownList runat="server" Width="235px" Height="30px" ID="ddOpenClose">
-                            <asp:ListItem Value="0">打开</asp:ListItem>
-                            <asp:ListItem Value="1">关闭</asp:ListItem>
+                            <asp:ListItem Value="1">打开</asp:ListItem>
+                            <asp:ListItem Value="0">关闭</asp:ListItem>
                         </asp:DropDownList>
                     </div>
 

@@ -23,13 +23,13 @@
 
         $("#btnOpenEncoder").click(function (e) {
 
-            // $('#dialogForChooseGroupId').modal('show');
+            chat.server.sendVideoEncoderOperation(currentOperEncoderId, "1")
 
         });
 
         $("#btnCloseEncoder").click(function (e) {
 
-            chat.server.sendAudioEncoderCloseCommand(currentOperEncoderClientIdentify)
+            chat.server.sendVideoEncoderOperation(currentOperEncoderId, "0")
 
         });
 
@@ -49,13 +49,11 @@
                 var x = $(this).offset().left ;
                 var y = $(this).offset().top + $(this).height() + 2 ;
 
-
-
+                
 
                 $("#encoderListEncoderClickMenuBox").show().css("left", x).css("top", y);
 
-
-
+                
 
 
 
@@ -134,14 +132,14 @@
 
                 <div style="width: 100px; margin: 0px 0px 0px 0px; height: 105px; line-height: 105px; vertical-align: central; text-align: center;">
 
-                    <div  id="encoderDiv<%=allEncoders[j].EncoderId %>" style="height: 60px; line-height:60px">
+                    <div  id="encoderDiv<%=allEncoders[j * 3 + k].EncoderId %>" style="height: 60px; line-height:60px">
 
                         <img src="Images/ic_image_video_encoder.png" style="width: 60px; height: 100%" />
                     </div>
 
 
                    <div style="text-align:center;line-height:30px  ">
-                        <%=  allEncoders[j].EncoderName  %>
+                        <%=  allEncoders[j * 3 + k].EncoderName  %>
                     </div>
 
                 </div>

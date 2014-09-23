@@ -44,7 +44,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public List<GroupInfo> GetGroupByVideoEncoderId(string id, BusinessType bType)
         {
 
-            String sqlStr = "SELECT * FROM GROUPINFO WHERE EcnoderId=" + id;
+            String sqlStr = "SELECT * FROM GROUPINFO WHERE ENCODERID=" + id;
 
             return GetGroupList(sqlStr, bType);
         }

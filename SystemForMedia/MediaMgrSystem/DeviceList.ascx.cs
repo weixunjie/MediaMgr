@@ -153,7 +153,7 @@ namespace MediaMgrSystem
 
         }
 
-        public List<VideoEncoderInfo> VideoEncoderInfo()
+        public List<VideoEncoderInfo> GetAllEncoders()
         {
             return GlobalUtils.VideoEncoderBLLInstance.GetAllEncoders();
 

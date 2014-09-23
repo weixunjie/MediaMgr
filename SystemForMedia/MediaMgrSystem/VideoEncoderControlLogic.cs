@@ -77,11 +77,11 @@ namespace MediaMgrSystem
                     if (idsNeedToSend.Count > 0)
                     {
 
-                        hub.Clients(idsNeedToSend).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
+                        hub.Clients(idsNeedToSend).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
 
                     }
 
-                    ProcessTimeOutRequest(hub);
+                    new Thread(ProcessTimeOutRequest).Start(hub);
 
                 }
 

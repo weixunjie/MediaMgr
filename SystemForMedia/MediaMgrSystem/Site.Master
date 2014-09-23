@@ -6,11 +6,11 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>校园播放系统管理</title>
+    <title>杰讯智能播控系统</title>
 
 
 </head>
-<body style="background-image: url(<% =ResolveUrl("~/Images/bg.jpg") %>); background-repeat: repeat; padding-bottom: 0px">
+<body style="padding-bottom: 0px">
 
     <form runat="server" style="height: 100%; margin-bottom: 1px">
 
@@ -79,7 +79,7 @@
 
 
 
-                            <a style="padding-left: 0px; height: 20px; width: 220px; color: white" class="navbar-brand" runat="server">杰讯智能播控系统</a>
+                            <a style="padding-left: 0px; height: 20px; width: 220px; color:whitesmoke "  class="navbar-brand" runat="server">杰讯智能播控系统</a>
 
 
 
@@ -89,14 +89,14 @@
                     <% if (Session["UserId"] != null)
                        { %>
                     <ul class="nav navbar-nav " style="float: right; color: white">
-                        <li><a style="color: white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
-                        <li><a style="color: white" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
+                        <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=A") %>">音频广播</a></li>
+                        <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
-                        <li><a style="color: white" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
+                        <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
 
 
                         <li class="dropdown" id="accountmenu">
-                            <a style="color: white" class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
+                            <a style="color: whitesmoke" class="dropdown-toggle" data-toggle="dropdown" href="#">基础数据<b class="caret"></b></a>
                             <ul class="dropdown-menu-spec dropdown-menu " style="min-width: 80px">
                                 <li><a href="<%=ResolveUrl("~/MgrModel/ProgramMgrList.aspx") %>">节目管理 </a></li>
 
@@ -128,13 +128,16 @@
 
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/UserMgrList.aspx") %>">用户管理</a></li>
+
+                                <li><a  target="_blank"  href="http://www.163.com">信息发布管理</a></li>
+
                                 <% }
                            }
                                 %>
                             </ul>
                         </li>
 
-                        <li><a style="color: white" href="<%=ResolveUrl("~/LogOut.aspx") %>">您好,<% =Session["UserName"].ToString() %></a></li>
+                        <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/LogOut.aspx") %>">您好,<% =Session["UserName"].ToString() %></a></li>
 
                         <% } %>
                     </ul>
@@ -145,7 +148,7 @@
         <% if (Session["UserId"] != null)
            { %>
 
-        <div class="container body-content" style="background-color: #dac6df; line-height: 35px">
+        <div class="container body-content" style="background-color: #d2d8fc; line-height: 35px">
 
 
             <div style="margin-left: 10px; float: left; margin-bottom: 0px; margin-right: 5px" id="divCurrentPlaying"></div>

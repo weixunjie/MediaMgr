@@ -66,6 +66,11 @@ namespace MediaMgrSystem
             //SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1");
         }
 
+
+        public void SendVideoEncoderOperation(string encoderId, string isOpen)
+        {
+            VideoEncoderControlLogic.SendVideoEncoderOperation(Clients, encoderId, isOpen == "1");
+        }
         public void SendAudioEncoderCloseCommand(string clientIdentify)
         {
             EncoderAuditControlLogic.SendEncoderAudioCloseCommand(Clients, clientIdentify);
@@ -405,7 +410,13 @@ namespace MediaMgrSystem
 
             }
 
+
+
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
+            object[] objes = new object[2];
+            objes[0] = cb;
+            objes[1] = connectionId;
+            new Thread(ProcessVideoEncoderReponse).Start(objes);
             lock (GlobalUtils.ObjectLockQueueItem)
             {
                 string matchIPAddress = string.Empty; ;
@@ -516,6 +527,70 @@ namespace MediaMgrSystem
                     if (removedItem != null)
                     {
                         GlobalUtils.CommandQueues.Remove(removedItem);
+                    }
+                }
+            }
+
+
+        }
+
+        private void ProcessVideoEncoderReponse(object cbObj)
+        {
+            object[] ojbs = cbObj as object[];  
+
+
+            ComuResponseBase cb = ojbs[0] as ComuResponseBase;
+            string connectionId = ojbs[1] as string;
+            lock (GlobalUtils.ObjectLockVideoEncoderQueueItem)
+            {
+                string matchIPAddress = GlobalUtils.GetIdentifyByConectionId(connectionId); ;
+                String removeGuid = string.Empty;
+                string strOperResult = string.Empty;
+                foreach (var que in GlobalUtils.VideoEncoderQueues)
+                {
+
+                    if (cb != null && cb.errorCode != null)
+                    {
+                        if (que.GuidIdStr == cb.guidId && que.AndriodIpAddressStr == matchIPAddress)
+                        {
+                            strOperResult = cb.errorCode == "0" ? "成功" : "失败， 错误消息编号" + cb.errorCode + ",内容：" + cb.message;
+
+
+
+
+                            string strCmd = que.CommandType == QueueCommandType.VIDEOENCODERAUDIOOPEN ? "打开视频源" : "关闭视频源";
+
+                            GlobalUtils.AddLogs(Clients, "视频源操作", strCmd + "," + que.AndriodIpAddressStr + "操作" + strOperResult);
+
+
+
+
+                            matchIPAddress = que.AndriodIpAddressStr;
+
+                            removeGuid = cb.guidId;
+
+
+                            break;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(matchIPAddress) && !string.IsNullOrEmpty(removeGuid))
+                {
+                    VideoEncoderQueueItem removedItem = null;
+                    foreach (var que in GlobalUtils.VideoEncoderQueues)
+                    {
+                        if (que.GuidIdStr == removeGuid && que.AndriodIpAddressStr == matchIPAddress)
+                        {
+                            removedItem = que;
+                            break;
+                        }
+
+
+                    }
+                    if (removedItem != null)
+                    {
+                        GlobalUtils.VideoEncoderQueues.Remove(removedItem);
                     }
                 }
             }
