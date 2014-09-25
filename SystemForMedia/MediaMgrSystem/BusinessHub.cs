@@ -67,9 +67,9 @@ namespace MediaMgrSystem
         }
 
 
-        public void SendVideoEncoderOperation(string encoderId, string isOpen)
+        public void SendVideoEncoderOperation(string encoderId, string isOpen,string isLiveAudio)
         {
-            VideoEncoderControlLogic.SendVideoEncoderOperation(Clients, encoderId, isOpen == "1");
+            VideoEncoderControlLogic.SendVideoEncoderOperation(Clients, encoderId, isOpen == "1", isLiveAudio=="1");
         }
         public void SendAudioEncoderCloseCommand(string clientIdentify)
         {

@@ -21,6 +21,12 @@ namespace MediaMgrSystem.DataModels
 
         }
 
+        public string mediaType
+        {
+            get;
+            set;
+        }
+
     }
 
    

@@ -18,7 +18,7 @@ namespace MediaMgrSystem
     public static class VideoEncoderControlLogic
     {
 
-        public static void SendVideoEncoderOperation(IHubCallerConnectionContext hub, string encoderId, bool isOpen)
+        public static void SendVideoEncoderOperation(IHubCallerConnectionContext hub, string encoderId, bool isOpen, bool isLiveAudio)
         {
 
 
@@ -26,7 +26,16 @@ namespace MediaMgrSystem
             lock (GlobalUtils.ObjectLockVideoEncoderQueueItem)
             {
 
-                List<GroupInfo> groups = GlobalUtils.GroupBLLInstance.GetGroupByVideoEncoderId(encoderId, BusinessType.VIDEOONLINE);
+                List<GroupInfo> groups = null;
+
+                if (isLiveAudio)
+                {
+                    groups = GlobalUtils.GroupBLLInstance.GetGroupByVideoEncoderId(encoderId, BusinessType.AUDITBROADCAST);
+                }
+                else
+                {
+                    groups = GlobalUtils.GroupBLLInstance.GetGroupByVideoEncoderId(encoderId, BusinessType.VIDEOONLINE);
+                }
 
 
                 if (groups != null)
@@ -68,7 +77,7 @@ namespace MediaMgrSystem
                     eor.guidId = Guid.NewGuid().ToString();
                     eor.arg = new EncoderVideoOperationCommandeArg();
                     eor.arg.baudRate = vi.BaudRate;
-
+                    eor.arg.mediaType = isLiveAudio ? "1" : "0";
                     eor.arg.udpBroadcastAddress = vi.EncoderId;
 
 

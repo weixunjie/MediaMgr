@@ -12,6 +12,10 @@
 
         <%   List<MediaMgrSystem.DataModels.VideoEncoderInfo> allEncoders = GetAllEncoders();
 
+             bool isAudio = MediaMgrSystem.GlobalUtils.GetCurrentFunctionType() == MediaMgrSystem.DataModels.BusinessType.AUDITBROADCAST;
+
+
+
 
              string ids = string.Empty;
              for (int i = 0; i < allEncoders.Count; i++) { ids = ids + "#encoderDiv" + allEncoders[i].EncoderId.ToString() + ","; }; ids = ids.TrimEnd(',');
@@ -23,13 +27,14 @@
 
         $("#btnOpenEncoder").click(function (e) {
 
-            chat.server.sendVideoEncoderOperation(currentOperEncoderId, "1")
+
+            chat.server.sendVideoEncoderOperation(currentOperEncoderId, "1", '<% =isAudio?"1":"2" %>');
 
         });
 
         $("#btnCloseEncoder").click(function (e) {
 
-            chat.server.sendVideoEncoderOperation(currentOperEncoderId, "0")
+            chat.server.sendVideoEncoderOperation(currentOperEncoderId, "0", '<% =isAudio?"1":"2" %>');
 
         });
 
@@ -46,14 +51,14 @@
 
                 is_popup_1st_menu = true;
 
-                var x = $(this).offset().left ;
-                var y = $(this).offset().top + $(this).height() + 2 ;
+                var x = $(this).offset().left;
+                var y = $(this).offset().top + $(this).height() + 2;
 
-                
+
 
                 $("#encoderListEncoderClickMenuBox").show().css("left", x).css("top", y);
 
-                
+
 
 
 
@@ -115,7 +120,7 @@
             %>
 
             <td style="text-align: left; padding: 0px; padding-right: 10px; padding-bottom: 5px">
-                <div style=" margin: 0px 0px 0px 0px; height: 105px; line-height: 105px; vertical-align: central; text-align: center;">
+                <div style="margin: 0px 0px 0px 0px; height: 105px; line-height: 105px; vertical-align: central; text-align: center;">
                 </div>
             </td>
 
@@ -132,13 +137,13 @@
 
                 <div style="width: 100px; margin: 0px 0px 0px 0px; height: 105px; line-height: 105px; vertical-align: central; text-align: center;">
 
-                    <div  id="encoderDiv<%=allEncoders[j * 3 + k].EncoderId %>" style="height: 60px; line-height:60px">
+                    <div id="encoderDiv<%=allEncoders[j * 3 + k].EncoderId %>" style="height: 60px; line-height: 60px">
 
                         <img src="Images/ic_image_video_encoder.png" style="width: 60px; height: 100%" />
                     </div>
 
 
-                   <div style="text-align:center;line-height:30px  ">
+                    <div style="text-align: center; line-height: 30px">
                         <%=  allEncoders[j * 3 + k].EncoderName  %>
                     </div>
 
