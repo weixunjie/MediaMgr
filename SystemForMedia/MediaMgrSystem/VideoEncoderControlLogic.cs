@@ -76,9 +76,9 @@ namespace MediaMgrSystem
 
                     eor.guidId = Guid.NewGuid().ToString();
                     eor.arg = new EncoderVideoOperationCommandeArg();
-                    eor.arg.baudRate = vi.BaudRate;
+                    eor.arg.biteRate = vi.BaudRate;
                     eor.arg.mediaType = isLiveAudio ? "1" : "0";
-                    eor.arg.udpBroadcastAddress = vi.EncoderId;
+                    eor.arg.udpBroadcastAddress = vi.UdpAddress;
 
 
                     PushQueue(isOpen ? QueueCommandType.VIDEOENCODERAUDIOOPEN : QueueCommandType.VIDEOENCODERAUDIOCLOSE, ipsNeedToSend, eor.guidId, encoderId);
@@ -93,8 +93,7 @@ namespace MediaMgrSystem
                     new Thread(ProcessTimeOutRequest).Start(hub);
 
                 }
-
-
+                
 
             }
         }

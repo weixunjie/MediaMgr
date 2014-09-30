@@ -14,7 +14,7 @@ namespace MediaMgrSystem.DataModels
             set;
         }
             
-        public string baudRate
+        public string biteRate
         {
             get;
             set;
