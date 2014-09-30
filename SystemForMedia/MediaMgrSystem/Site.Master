@@ -79,7 +79,7 @@
 
 
 
-                            <a style="padding-left: 0px; height: 20px; width: 220px; color:whitesmoke "  class="navbar-brand" runat="server">杰讯智能播控系统</a>
+                            <a style="padding-left: 0px; height: 20px; width: 220px; color: whitesmoke" class="navbar-brand" runat="server">杰讯智能播控系统</a>
 
 
 
@@ -93,6 +93,9 @@
                         <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/BroadcastMain.aspx?FType=V") %>">视频直播</a></li>
 
                         <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
+
+                        <li><a   style="color: whitesmoke" href="http://www.163.com" target="_blank" >信息发布</a></li>
+
 
 
                         <li class="dropdown" id="accountmenu">
@@ -110,7 +113,7 @@
                                if (Session["IsSuperUser"].ToString() == "1")
                                {
                                 %>
-                                
+
 
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/GroupMgrList.aspx") %>">分组管理 </a></li>
@@ -129,7 +132,7 @@
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/UserMgrList.aspx") %>">用户管理</a></li>
 
-                                <li><a  target="_blank"  href="http://www.163.com">信息发布管理</a></li>
+
 
                                 <% }
                            }
@@ -202,36 +205,36 @@
                         async: false,
                         type: "POST",
                         url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetNowTime",
-                    data: null,
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (msg) {
+                        data: null,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (msg) {
 
-                        $("#divTimeText").html(msg.d);
+                            $("#divTimeText").html(msg.d);
 
-                    }
-                });
-
-
-                $.ajax({
-                    async: false,
-                    type: "POST",
-                    url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetRunningSchedule",
-                    data: null,
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (msg) {
-
-                        $("#divCurrentPlaying").html(msg.d);
-
-                    }
-                });
+                        }
+                    });
 
 
-                $.ajax({
-                    async: false,
-                    type: "POST",
-                    url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetLasterSchedule",
+                    $.ajax({
+                        async: false,
+                        type: "POST",
+                        url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetRunningSchedule",
+                        data: null,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (msg) {
+
+                            $("#divCurrentPlaying").html(msg.d);
+
+                        }
+                    });
+
+
+                    $.ajax({
+                        async: false,
+                        type: "POST",
+                        url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetLasterSchedule",
                     data: null,
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",

@@ -162,6 +162,7 @@
   <ItemGroup>
     <Content Include="Account\LoginOut.aspx" />
     <Content Include="Account\Login.aspx" />
+    <Content Include="Images\ic_image_video_encoder.png" />
     <Content Include="MgrModel\EncoderVideoMgrDetail.aspx" />
     <Content Include="MgrModel\EncoderVideoMgrList.aspx" />
     <Content Include="VideoEncodeList.ascx" />
@@ -609,7 +610,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://10.50.90.83:19671/</IISUrl>
+          <IISUrl>http://192.168.1.101:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>
