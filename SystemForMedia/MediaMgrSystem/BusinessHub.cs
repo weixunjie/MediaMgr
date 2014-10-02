@@ -511,22 +511,48 @@ namespace MediaMgrSystem
                     }
                 }
 
-                if (!string.IsNullOrEmpty(matchIPAddress) && !string.IsNullOrEmpty(removeGuid))
+                if (connectionId == GlobalUtils.VideoServerConnectionId)
                 {
-                    QueueItem removedItem = null;
-                    foreach (var que in GlobalUtils.CommandQueues)
+                    if (!string.IsNullOrEmpty(removeGuid))
                     {
-                        if (que.GuidIdStr == removeGuid && que.IpAddressStr == matchIPAddress)
+                        QueueItem removedItem = null;
+                        foreach (var que in GlobalUtils.CommandQueues)
                         {
-                            removedItem = que;
-                            break;
+                            if (que.GuidIdStr == removeGuid)
+                            {
+                                removedItem = que;
+                                break;
+                            }
+
+
                         }
-
-
+                        if (removedItem != null)
+                        {
+                            GlobalUtils.CommandQueues.Remove(removedItem);
+                        }
                     }
-                    if (removedItem != null)
+
+                }
+                else
+                {
+
+                    if (!string.IsNullOrEmpty(matchIPAddress) && !string.IsNullOrEmpty(removeGuid))
                     {
-                        GlobalUtils.CommandQueues.Remove(removedItem);
+                        QueueItem removedItem = null;
+                        foreach (var que in GlobalUtils.CommandQueues)
+                        {
+                            if (que.GuidIdStr == removeGuid && que.IpAddressStr == matchIPAddress)
+                            {
+                                removedItem = que;
+                                break;
+                            }
+
+
+                        }
+                        if (removedItem != null)
+                        {
+                            GlobalUtils.CommandQueues.Remove(removedItem);
+                        }
                     }
                 }
             }

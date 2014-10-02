@@ -94,7 +94,7 @@
 
                         <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
 
-                        <li><a   style="color: whitesmoke" href="http://www.163.com" target="_blank" >信息发布</a></li>
+                        <li><a   style="color: whitesmoke" href="http://localhost/wei/Default.aspx" target="_blank" >信息发布</a></li>
 
 
 

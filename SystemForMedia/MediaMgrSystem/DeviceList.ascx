@@ -379,17 +379,17 @@
             $("<%= deviceIds %>").click(function (e) {
 
 
-                hideAllNenus();
-                currentOperDeviceGroupId = "";
-                currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
-                currentOperDeviceIpAddress = e.currentTarget.name;
-                is_popup_1st_menu = true;
+                //hideAllNenus();
+                //currentOperDeviceGroupId = "";
+                //currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
+                //currentOperDeviceIpAddress = e.currentTarget.name;
+                //is_popup_1st_menu = true;
 
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
+                //var x = $(this).offset().left;
+                //var y = $(this).offset().top + $(this).height() + 2;
 
 
-                $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
+                //$("#deviceListDeviceMenu").show().css("left", x).css("top", y);
 
 
             });
@@ -784,7 +784,7 @@
     </div>
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="deviceListSingleGroupClickMenuBox">
-        <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通通选择</a></li>
+        <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通道选择</a></li>
         <li><a class="btn" id="btnSingleGroupChooseEncoder" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">视频源选择</a></li>
 
     </ul>

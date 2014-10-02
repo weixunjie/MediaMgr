@@ -77,7 +77,7 @@ namespace MediaMgrSystem
                     eor.guidId = Guid.NewGuid().ToString();
                     eor.arg = new EncoderVideoOperationCommandeArg();
                     eor.arg.biteRate = vi.BaudRate;
-                    eor.arg.mediaType = isLiveAudio ? "1" : "0";
+                    eor.arg.mediaType = isLiveAudio ? "1" : "1";
                     eor.arg.udpBroadcastAddress = vi.UdpAddress;
 
 

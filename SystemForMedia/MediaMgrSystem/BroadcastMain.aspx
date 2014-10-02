@@ -143,16 +143,25 @@
 
         <div style="margin-top: 20px; margin: 0px">
 
-            <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-right: 5px" />
+            
+            <%   if (Request["FType"] != null && Request["FType"].ToString() == "V")
+                 {        
+                 
+                     
+                
+            %>
 
+            <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-right: 5px" />
             <videoEncodeList:VideoEncodeList ID="EncoderList" runat="server" />
 
-
+            <% 
+                 }
+            %>
         </div>
     </div>
 
     <div style="margin-left: 336px; border-left: solid; margin-top: 0px; border-left-color: #4179b6; border-left-width: 1px; padding-right: 5px; padding-bottom: 15px">
-        
+
 
         <div id="divForDevice" style="margin-left: 0px; padding-top: 10px"></div>
 
