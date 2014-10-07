@@ -1,0 +1,284 @@
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:164)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at java.io.FilterOutputStream.close(FilterOutputStream.java:61)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:176)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 14 more
+I/System.out( 3893): cat sys/devices/platform/switch-gpio.0/headset_data
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:162)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:164)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at java.io.FilterOutputStream.close(FilterOutputStream.java:61)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:176)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 14 more
+I/System.out( 3893): cat sys/devices/platform/switch-gpio.0/headset_data
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:162)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:164)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at java.io.FilterOutputStream.close(FilterOutputStream.java:61)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:176)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 14 more
+I/System.out( 3893): cat sys/devices/platform/switch-gpio.0/headset_data
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:162)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:164)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 13 more
+W/System.err( 3893): java.io.SyncFailedException: fsync failed: EINVAL (Invalid argument)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:77)
+W/System.err( 3893):    at java.io.FileOutputStream.flush(FileOutputStream.java:194)
+W/System.err( 3893):    at java.io.FilterOutputStream.flush(FilterOutputStream.java:88)
+W/System.err( 3893):    at java.io.DataOutputStream.flush(DataOutputStream.java:63)
+W/System.err( 3893):    at java.io.FilterOutputStream.close(FilterOutputStream.java:61)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService.execCommand(MainService.
+java:176)
+W/System.err( 3893):    at jld.com.jld.remotecontrol.client.MainService$1.handleMessage(MainServ
+ice.java:258)
+W/System.err( 3893):    at android.os.Handler.dispatchMessage(Handler.java:99)
+W/System.err( 3893):    at android.os.Looper.loop(Looper.java:137)
+W/System.err( 3893):    at android.app.ActivityThread.main(ActivityThread.java:5041)
+W/System.err( 3893):    at java.lang.reflect.Method.invokeNative(Native Method)
+W/System.err( 3893):    at java.lang.reflect.Method.invoke(Method.java:511)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit
+.java:816)
+W/System.err( 3893):    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:582)
+W/System.err( 3893):    at dalvik.system.NativeStart.main(Native Method)
+W/System.err( 3893): Caused by: libcore.io.ErrnoException: fsync failed: EINVAL (Invalid argumen
+t)
+W/System.err( 3893):    at libcore.io.Posix.fsync(Native Method)
+W/System.err( 3893):    at libcore.io.BlockGuardOs.fsync(BlockGuardOs.java:97)
+W/System.err( 3893):    at java.io.FileDescriptor.sync(FileDescriptor.java:74)
+W/System.err( 3893):    ... 14 more
+^C
+C:\work\校园项目\版本测试\正式版本\10-01 后台 + 客户端>adb shell
+root@android:/ # cat sys/devices/platform/switch-gpio.0/headset_data
+cat sys/devices/platform/switch-gpio.0/headset_data
+data0 = 15, data1 = 63
