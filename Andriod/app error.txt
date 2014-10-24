@@ -1,9 +1,0 @@
-	Intent mIntent = new Intent();
-						ComponentName comp = new ComponentName(
-								"com.example.jld.base.devoperation",
-								"com.example.jld.base.devoperation.MainActivity");
-						mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						mIntent.putExtra("hao", "ss");
-						mIntent.setComponent(comp);
-						mIntent.setAction("android.intent.action.VIEW");
-						mContext.startActivity(mIntent);
