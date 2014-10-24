@@ -165,6 +165,7 @@
     <Content Include="Images\ic_image_video_encoder.png" />
     <Content Include="MgrModel\EncoderVideoMgrDetail.aspx" />
     <Content Include="MgrModel\EncoderVideoMgrList.aspx" />
+    <Content Include="MgrModel\UpgardeConfigMgr.aspx" />
     <Content Include="VideoEncodeList.ascx" />
     <Content Include="Bundle.config" />
     <Content Include="Dlls\ffmpeg.exe" />
@@ -321,6 +322,13 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="MgrModel\UpgardeConfigMgr.aspx.cs">
+      <DependentUpon>UpgardeConfigMgr.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MgrModel\UpgardeConfigMgr.aspx.designer.cs">
+      <DependentUpon>UpgardeConfigMgr.aspx</DependentUpon>
+    </Compile>
     <Compile Include="VideoEncoderControlLogic.cs" />
     <Compile Include="MgrModel\EncoderVideoMgrDetail.aspx.cs">
       <DependentUpon>EncoderVideoMgrDetail.aspx</DependentUpon>
@@ -610,7 +618,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:19671/</IISUrl>
+          <IISUrl>http://10.50.90.83:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>

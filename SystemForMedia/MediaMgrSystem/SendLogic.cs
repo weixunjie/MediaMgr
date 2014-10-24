@@ -58,7 +58,7 @@ namespace MediaMgrSystem
 
 
         }
-        public static void SendDeviceOperCommand(IHubConnectionContext hub, string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, int isEnabled)
+        public static void SendDeviceOperCommand(IHubConnectionContext hub, string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, int isEnabled, string volValue)
         {
 
             List<string> ipsNeedToSend = null;
@@ -127,6 +127,7 @@ namespace MediaMgrSystem
 
             cmd.arg.scheduleTurnOnTime = scheduleTurnOnTime;
 
+            cmd.arg.volValue = volValue;
             cmd.arg.scheduleShutDownTime = scheduleShutDownTime;
 
             cmd.arg.isEnabled = isEnabled;

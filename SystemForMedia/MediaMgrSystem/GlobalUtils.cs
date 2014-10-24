@@ -331,6 +331,7 @@ namespace MediaMgrSystem
 
         public static EncoderAudioRunningClientsBLL EncoderRunningClientsBLLInstance = new EncoderAudioRunningClientsBLL(DbUtilsInstance);
 
+        public static UpgradeConfigBLL UpgradeConfigBLLInstance = new UpgradeConfigBLL(GlobalUtils.DbUtilsInstance);
 
 
         public static FileInfoBLL FileInfoBLLInstance = new FileInfoBLL(DbUtilsInstance);

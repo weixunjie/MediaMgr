@@ -14,6 +14,16 @@ namespace MediaMgrSystem.DataModels
             set;
         }
 
+        public string upgradeVer
+        {
+            get;
+            set;
+        }
 
+        public string upgradeUrl
+        {
+            get;
+            set;
+        }
     }
 }

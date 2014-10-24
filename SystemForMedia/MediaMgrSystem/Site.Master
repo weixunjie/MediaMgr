@@ -94,7 +94,7 @@
 
                         <li><a style="color: whitesmoke" href="<%=ResolveUrl("~/RemoteControlSys/RemoteControlMain.aspx") %>">物联管理</a></li>
 
-                        <li><a   style="color: whitesmoke" href="http://localhost/wei/Default.aspx" target="_blank" >信息发布</a></li>
+                        <li><a style="color: whitesmoke" href="http://localhost/wei/Default.aspx" target="_blank">信息发布</a></li>
 
 
 
@@ -132,6 +132,10 @@
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/UserMgrList.aspx") %>">用户管理</a></li>
 
+
+                                <li><a href="<%=ResolveUrl("~/MgrModel/UpgardeConfigMgr.aspx") %>">更新配置</a></li>
+
+                                
 
 
                                 <% }
@@ -190,6 +194,7 @@
 
 
                     funUpdateTime();
+                    funUpdateProgrameInfo();
                 });
 
                 //
@@ -216,6 +221,15 @@
                     });
 
 
+
+
+                    runUpdateTime();
+
+
+                };
+                function funUpdateProgrameInfo() {
+
+
                     $.ajax({
                         async: false,
                         type: "POST",
@@ -235,20 +249,26 @@
                         async: false,
                         type: "POST",
                         url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetLasterSchedule",
-                    data: null,
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (msg) {
+                        data: null,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (msg) {
 
-                        $("#divScheduleText").html(msg.d);
+                            $("#divScheduleText").html(msg.d);
 
-                    }
-                });
+                        }
+                    });
 
 
-                runUpdateTime();
-            };
+                    runFunUpdateProgrameInfo();
 
+
+                }
+
+
+                function runFunUpdateProgrameInfo() {
+                    var interval = setTimeout(funUpdateProgrameInfo, 30000);
+                }
 
 
 

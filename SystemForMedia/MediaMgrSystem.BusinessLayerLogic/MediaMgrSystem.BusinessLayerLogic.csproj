@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UpgradeConfigBLL.cs" />
     <Compile Include="VideoEncoderBLL.cs" />
     <Compile Include="ParamConfigBLL.cs" />
     <Compile Include="RemoteDeviceScheduleTaskBLL.cs" />

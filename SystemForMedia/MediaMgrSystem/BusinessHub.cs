@@ -39,10 +39,10 @@ namespace MediaMgrSystem
             SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
         }
 
-        public void SendDeviceOperCommand(string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, bool isEnabled)
+        public void SendDeviceOperCommand(string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, bool isEnabled,string volValue)
         {
 
-            SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled ? 1 : 0);
+            SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled ? 1 : 0, volValue);
 
             // GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
             // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);

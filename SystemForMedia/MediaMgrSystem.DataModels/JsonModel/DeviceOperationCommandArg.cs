@@ -20,6 +20,12 @@ namespace MediaMgrSystem.DataModels
             set;
         }
 
+        public string volValue
+        {
+            get;
+            set;
+        }
+
         public int isEnabled
         {
             get;

@@ -27,11 +27,23 @@ namespace MediaMgrSystem
             GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 120, 0);
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0, 0, 6);
 
+            System.Timers.Timer timer = new System.Timers.Timer(16 * 60 * 1000);
+
+
+            timer.AutoReset = true;
+
+
+
+            timer.Enabled = true;
+
+
+
         }
+
 
         void Session_end(object sender, EventArgs e)
         {
- 
+
         }
 
     }

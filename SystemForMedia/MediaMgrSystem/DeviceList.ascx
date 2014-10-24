@@ -284,7 +284,7 @@
 
             var cmdStr = "122"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
 
 
             hideAllNenus();
@@ -294,7 +294,7 @@
 
             var cmdStr = "123"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
 
 
             hideAllNenus();
@@ -305,17 +305,48 @@
 
             var cmdStr = "124"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
 
 
             hideAllNenus();
         });
 
+        $("#deviceListSingleDeviceMenuBtnAdjustVol").click(function (e) {
+
+            $('#dialogForDeviveAdjustVol').modal('show');
+            $("#tbVolValue").val("15");
+        });
+
+
+        $("#btnConfirmedDialogForDeviveAdjustVol").click(function (e) {
+
+            $('#dialogForDeviveAdjustVol').modal('hide');
+           // $("#tbVolValue").val("15");
+
+            var tbVolValue = $("#tbVolValue").val();
+
+
+
+            if (!(/^(\+|-)?\d+$/.test(tbVolValue)) || tbVolValue < 0 || tbVolValue > 15) {
+
+                alert("请输入正确的音量值");
+                return;
+
+            }
+
+            var cmdStr = "129"
+
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false, tbVolValue)
+
+
+        });
+        
+        
         $("#deviceListSingleDeviceMenuBtnShutDownDevice").click(function (e) {
 
             var cmdStr = "125"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false)
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
 
 
             hideAllNenus();
@@ -347,7 +378,7 @@
 
 
 
-            chat.server.sendDeviceOperCommand(127, currentOperDeviceGroupId, currentOperDeviceIpAddress, tbScheduleTimeTurnOnValue, tbScheduleShutDownTimeValue, $("#ckcEnabledDeviceSchedule").is(':checked'))
+            chat.server.sendDeviceOperCommand(127, currentOperDeviceGroupId, currentOperDeviceIpAddress, tbScheduleTimeTurnOnValue, tbScheduleShutDownTimeValue, $("#ckcEnabledDeviceSchedule").is(':checked'),"")
 
 
             $('#dialogForDeviveSchdeduelGroup').modal('hide');
@@ -373,23 +404,29 @@
 
         });
 
+        $("<%= deviceBatchOperDeviceIds %>").mouseout(function (e) {
+            is_popup_1st_menu = false;
+        });
+
 
         $.showSingleDeviceClickMenu = function () {
 
             $("<%= deviceIds %>").click(function (e) {
 
-
-                //hideAllNenus();
-                //currentOperDeviceGroupId = "";
-                //currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
-                //currentOperDeviceIpAddress = e.currentTarget.name;
-                //is_popup_1st_menu = true;
-
-                //var x = $(this).offset().left;
-                //var y = $(this).offset().top + $(this).height() + 2;
+                is_popup_1st_menu = true;
 
 
-                //$("#deviceListDeviceMenu").show().css("left", x).css("top", y);
+                hideAllNenus();
+                currentOperDeviceGroupId = "";
+                currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
+                currentOperDeviceIpAddress = e.currentTarget.name;
+
+
+                var x = $(this).offset().left;
+                var y = $(this).offset().top + $(this).height() + 2;
+
+
+                $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
 
 
             });
@@ -542,7 +579,7 @@
 
                                             <img id="deviceMenu<% =dGroups[l].Devices[k].DeviceId %>" name="<%=dGroups[l].Devices[k].DeviceIpAddress %>" src="<%=srcName %>" style="width: 50px; height: 50px" />
                                         </p>
-                                        <p style="text-align: center; font-size:12px">
+                                        <p style="text-align: center; font-size: 12px">
                                             <% =dGroups[l].Devices[k].DeviceName %>
                                         </p>
                                     </div>
@@ -569,7 +606,7 @@
                     <% }
                        else
                        { %>
-                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6;   margin-top:0px; margin-bottom:0px;  margin-left: 5px; margin-right: 5px" />
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-top: 0px; margin-bottom: 0px; margin-left: 5px; margin-right: 5px" />
                     <% } %>
                 </td>
             </tr>
@@ -730,6 +767,34 @@
     </div>
 
 
+    <div id="dialogForDeviveAdjustVol" style="width: auto" class="modal hide">
+        <div class="modal-header">
+            <a class="close" onclick=" $('#dialogForDeviveAdjustVol').modal('hide');" title="关闭">&times;</a><h3 style="text-align: center">分组</h3>
+        </div>
+        <div class="modal-body">
+
+            <h4 style="text-align: left; margin-top: 0px">音量调节</h4>
+
+
+            <div>
+
+                <p>
+                    音量值:（0-15)
+                </p>
+
+                <div>
+                    <input type="text" runat="server" style="width: 220px" id="tbVolValue" />
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="modal-footer">
+            <a id="btnConfirmedDialogForDeviveAdjustVol" class="btn primary">确认</a>
+        </div>
+    </div>
+
 
     <div id="dialogForDeviveSchdeduelGroup" style="width: auto" class="modal hide">
         <div class="modal-header">
@@ -813,8 +878,8 @@
 
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="deviceListDeviceMenu">
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnOpenScreen" data-backdrop="static" data-dismiss="modal" data-keyboard="false">打开屏幕</a></li>
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnCloseScreen" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭屏幕</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnAdjustVol" data-backdrop="static" data-dismiss="modal" data-keyboard="false">音量调节</a></li>
+        
 
         <li><a class="btn" id="deviceListSingleDeviceMenuBtnRestartDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">重起设备</a></li>
 

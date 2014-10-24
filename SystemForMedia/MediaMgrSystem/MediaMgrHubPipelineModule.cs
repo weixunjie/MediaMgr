@@ -37,6 +37,10 @@ namespace MediaMgrSystem
 
 
 
+
+
+
+
                 if (hub.Context.QueryString["clientType"] != null)
                 {
                     type = hub.Context.QueryString["clientType"].ToString().ToUpper();
@@ -46,15 +50,10 @@ namespace MediaMgrSystem
 
                         singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
 
+                        UpgradeInfo ui = GlobalUtils.UpgradeConfigBLLInstance.GetUpgradeConfig("1");
 
-                        SyncTimeCommand cmd = new SyncTimeCommand();
+                        SendSyncTimeAndVersionCheck(ui, hub, singalRClientConnectionType);
 
-                        cmd.guidId = Guid.NewGuid().ToString();
-                        cmd.commandType = CommandTypeEnum.SYNCTIME;
-                        cmd.arg = new SyncTimeCommandArg();
-
-                        cmd.arg.serverNowTime = ((DateTime.Now.Ticks - 621355968000000000) / 10000).ToString();
-                        hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
 
                     }
                     else if (type == "VIDEOSERVER")
@@ -80,7 +79,7 @@ namespace MediaMgrSystem
 
                         foreach (var g in gi)
                         {
-                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { GroupId = g.GroupId, GroupName = g.GroupName});
+                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { GroupId = g.GroupId, GroupName = g.GroupName });
                         }
 
                         hub.Clients.Client(hub.Context.ConnectionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmdSyncGrouOps));
@@ -97,6 +96,9 @@ namespace MediaMgrSystem
                     {
                         singalRClientConnectionType = SingalRClientConnectionType.REMOTECONTORLDEVICE;
 
+                        UpgradeInfo ui = GlobalUtils.UpgradeConfigBLLInstance.GetUpgradeConfig("2");
+
+                        SendSyncTimeAndVersionCheck(ui, hub, singalRClientConnectionType);
                     }
 
                 }
@@ -220,9 +222,9 @@ namespace MediaMgrSystem
                 GlobalUtils.AddConnection(sc);
 
                 string str = "Someone Connected: Connected Id" + hub.Context.ConnectionId;
-                System.Diagnostics.Debug.WriteLine(str);
+                System.Diagnostics.Debug.WriteLine(str + "Date Time->" + DateTime.Now.ToString("HH:mm:ss"));
 
-                
+
 
                 GlobalUtils.WriteDebugLogs(str);
 
@@ -244,6 +246,28 @@ namespace MediaMgrSystem
 
         }
 
+        private void SendSyncTimeAndVersionCheck(UpgradeInfo ui, IHub hub, SingalRClientConnectionType type)
+        {
+
+            SyncTimeCommand cmd = new SyncTimeCommand();
+
+            cmd.guidId = Guid.NewGuid().ToString();
+            cmd.commandType = CommandTypeEnum.SYNCTIME;
+            cmd.arg = new SyncTimeCommandArg();
+
+            cmd.arg.upgradeUrl = ui.UpgardeUrl;
+            cmd.arg.upgradeVer = String.IsNullOrEmpty(ui.VersionId) ? "1" : ui.VersionId;
+            cmd.arg.serverNowTime = ((DateTime.Now.Ticks - 621355968000000000) / 10000).ToString();
+            if (type == SingalRClientConnectionType.ANDROID)
+            {
+                hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+            }
+            else if (type == SingalRClientConnectionType.REMOTECONTORLDEVICE)
+            {
+                hub.Clients.Client(hub.Context.ConnectionId).sendRemoteControlToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
+
+            }
+        }
         private void SendRefreshAudioDeviceNotice(IHub hub)
         {
 
