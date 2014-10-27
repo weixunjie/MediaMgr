@@ -73,11 +73,13 @@
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
 
+
             chat.connection.stateChanged(function (change) {
                 if (change.newState === $.signalR.connectionState.disconnected) {
+                    alert('Singlar Disconnected');
+                    $.connection.hub.stop();
                     chat = $.connection.MediaMgrHub;
                     $.connection.hub.start();
-
                 }
                 else if (change.newState === $.signalR.connectionState.connected) {
 
@@ -143,7 +145,7 @@
 
         <div style="margin-top: 20px; margin: 0px">
 
-            
+
             <%   if (Request["FType"] != null && Request["FType"].ToString() == "V")
                  {        
                  

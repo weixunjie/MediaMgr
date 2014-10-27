@@ -85,7 +85,7 @@ namespace MediaMgrSystem.MgrModel
                 }
                 else
                 {
-                    GlobalUtils.ProgramBLLInstance.RemoveProgram(userId);
+                    GlobalUtils.UserBLLInstance.RemoveUser(userId);
                     BindListData();
                 }
             }

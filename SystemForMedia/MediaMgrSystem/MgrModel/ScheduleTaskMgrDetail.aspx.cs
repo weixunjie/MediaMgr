@@ -212,10 +212,10 @@ namespace MediaMgrSystem.MgrModel
             si.ScheduleTaskspecialDaysToWeeks = new List<string>();
 
             string sqlChecking = string.Empty;
-      
 
-            string sqlSpecDaysInSpecialDays= string.Empty;
-       
+
+            string sqlSpecDaysInSpecialDays = string.Empty;
+
 
             string sqlWeekInScheduleWeek = string.Empty;
 
@@ -262,7 +262,7 @@ namespace MediaMgrSystem.MgrModel
                 si.StrSpecialDaysToWeeks += weekIndex + ",";
                 si.ScheduleTaskspecialDaysToWeeks.Add(weekIndex);
                 sqlSpecDaysInSpecialDays = sqlSpecDaysInSpecialDays + " SCHEDULETASKSPECIALDAYS LIKE '%" + lv.Value + "%' OR";
-                            
+
             }
 
             si.ScheduleTaskWeeks = new List<string>();
@@ -272,7 +272,7 @@ namespace MediaMgrSystem.MgrModel
                 {
                     si.ScheduleTaskWeeks.Add(lv.Value);
                     si.StrWeeks += lv.Value + ",";
-            
+
                     sqlWeekInScheduleWeek = sqlWeekInScheduleWeek + " SCHEDULETASKWEEKS LIKE '%" + lv.Value + "%'  OR";
                 }
             }
@@ -282,7 +282,7 @@ namespace MediaMgrSystem.MgrModel
 
                 sqlChecking = "AND " + "(" + sqlWeekInScheduleWeek + sqlWeekInScheduleWeek.TrimEnd(new char[] { 'O', 'R' }) + ")";
 
-                
+
             }
             else
             {
@@ -302,7 +302,7 @@ namespace MediaMgrSystem.MgrModel
 
             if (!string.IsNullOrWhiteSpace(si.StrDays))
             {
-               
+
                 si.StrDays = si.StrDays.TrimEnd(',');
             }
 
@@ -370,12 +370,12 @@ namespace MediaMgrSystem.MgrModel
                 }
 
                 CbWeek.Enabled = false;
-              
+
             }
             else
             {
                 CbWeek.Enabled = true;
-              
+
             }
         }
 
@@ -403,12 +403,13 @@ namespace MediaMgrSystem.MgrModel
                     if (pis[0].MappingFiles != null && pis[0].MappingFiles.Count > 0)
                     {
 
-                        string fileUrl = ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
-
-                        //string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
-
                         string baseUrl = Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.IndexOf(Request.RawUrl));
-                        string playMap3Page = baseUrl + fileUrl;
+
+                        string fileUrl = baseUrl+ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
+
+                        string fileUrlPaly = baseUrl+ResolveUrl("~/FileSource/singlemp3player.swf");
+
+                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl + "&FileUrlPlayer=" + fileUrlPaly);
 
                         ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
 

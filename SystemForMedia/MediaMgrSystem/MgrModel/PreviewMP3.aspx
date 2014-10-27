@@ -9,7 +9,20 @@
 
 
 <div >
-    <object classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
+
+
+        <object classid="clsid27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="580" height="110">
+<param name="_cx" value="10372">
+<param name="_cy" value="2355">
+<param name="FlashVars" value="-1">
+<param name="Movie" value="http://localhost/MediaMgrDemo/FileSource/singlemp3player.swf?showDownload=true&file=<% =Request["FileUrl"].ToString() %>&autoStart=true">
+
+<embed wmode="transparent" src="http://localhost/MediaMgrDemo/FileSource/singlemp3player.swf?showDownload=true&file=<% =Request["FileUrl"].ToString() %>&autoStart=true" width="580" height="110" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" ></embed>
+</object>
+
+
+
+   <%-- <object classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
         type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." width="200" height="100">
         <param name="AudioStream" value="-1">
         <param name="AutoSize" value="0">
@@ -73,7 +86,9 @@
             pluginspage="http://www.microsoft.com/Windows/Downloads/Contents/Products/MediaPlayer/"
              name="MediaPlayer" src="<% =Request["FileUrl"].ToString() %>"
              height="100" width="200"   showaudiocontrols="1" showtracker="0" showdisplay="1" showstatusbar="0" showgotobar="0" showcaptioning="0" autostart="1" autorewind="0" animationatstart="0" transparentatstart="0" allowchangedisplaysize="0" allowscan="0" enablecontextmenu="1" clicktoplay="1"></embed>
-    </object>
+    </object>--%>
+    
+    <%--<embed type="video/x-ms-wmv" align="middle" autostart="0" height="45" width="600" loop="false" src="<% =Request["FileUrl"].ToString() %>"/><br/>--%>
 </div>
 <%-- <object id="MediaPlayer" height="64" width="260" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
         <param name="AutoStart" value="1">

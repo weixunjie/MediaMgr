@@ -155,7 +155,15 @@ namespace MediaMgrSystem
 
         public List<VideoEncoderInfo> GetAllEncoders()
         {
-            return GlobalUtils.VideoEncoderBLLInstance.GetAllEncoders();
+
+            VideoEncoderInfo ve = new VideoEncoderInfo();
+
+            ve.EncoderId = "-1";
+            ve.EncoderName = "无";
+
+            List<VideoEncoderInfo> res = GlobalUtils.VideoEncoderBLLInstance.GetAllEncoders();
+            res.Insert(0, ve);
+            return res;
 
         }
 
