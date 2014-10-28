@@ -16,7 +16,7 @@ namespace MediaMgrSystem.MgrModel
 
             if (Session["UserId"] == null)
             {
-                Response.Redirect("~/Login.aspx");
+              //  Response.Redirect("~/Login.aspx");
             }
     
         }

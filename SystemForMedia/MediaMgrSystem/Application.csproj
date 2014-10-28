@@ -166,6 +166,8 @@
     <Content Include="MgrModel\EncoderVideoMgrDetail.aspx" />
     <Content Include="MgrModel\EncoderVideoMgrList.aspx" />
     <Content Include="MgrModel\UpgardeConfigMgr.aspx" />
+    <Content Include="Scripts\jquery.jmp3.js" />
+    <Content Include="MgrModel\singlemp3player.swf" />
     <Content Include="VideoEncodeList.ascx" />
     <Content Include="Bundle.config" />
     <Content Include="Dlls\ffmpeg.exe" />

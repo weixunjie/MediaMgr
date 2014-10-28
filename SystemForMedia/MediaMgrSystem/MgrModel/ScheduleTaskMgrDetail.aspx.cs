@@ -405,11 +405,11 @@ namespace MediaMgrSystem.MgrModel
 
                         string baseUrl = Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.IndexOf(Request.RawUrl));
 
-                        string fileUrl = baseUrl+ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
+                        string fileUrl = baseUrl + ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
 
-                        string fileUrlPaly = baseUrl+ResolveUrl("~/FileSource/singlemp3player.swf");
+                        // string fileUrlPaly = baseUrl+ResolveUrl("~/FileSource/singlemp3player.swf");
 
-                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl + "&FileUrlPlayer=" + fileUrlPaly);
+                        string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
 
                         ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
 
