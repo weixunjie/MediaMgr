@@ -4,6 +4,9 @@
 
 
 
+<%@ Register Src="AudioEncoderList.ascx" TagName="AudioEncoderList" TagPrefix="audioEncoderList" %>
+
+
 <%@ Register Src="VideoEncodeList.ascx" TagName="VideoEncodeList" TagPrefix="videoEncodeList" %>
 <%@ Register Src="DeviceList.ascx" TagName="DeviceList" TagPrefix="deviceList" %>
 <%@ Register Src="ChannelList.ascx" TagName="ChannelList" TagPrefix="channelList" %>
@@ -158,7 +161,13 @@
 
             <% 
                  }
+                 else
+                 { 
             %>
+
+            <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-right: 5px" />
+            <audioEncoderList:AudioEncoderList ID="audioEncoderList1" runat="server" />
+            <%  } %>
         </div>
     </div>
 

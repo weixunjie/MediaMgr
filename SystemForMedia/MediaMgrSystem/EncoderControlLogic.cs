@@ -27,7 +27,7 @@ namespace MediaMgrSystem
             {
                 if (string.IsNullOrWhiteSpace(connecionId))
                 {
-                    GlobalUtils.AddLogs(hub, "音频编码", "音频编码设备未开启");
+                    GlobalUtils.AddLogs(hub, "呼叫台", "呼叫台设备未开启");
                     return;
                 }
 
@@ -91,7 +91,7 @@ namespace MediaMgrSystem
                 eor.arg.baudRate = ei.BaudRate;
                 eor.arg.streamName = "1234567890" + ei.EncoderId;
                 eor.arg.udpBroadcastAddress = "udp://229.0.0.1:300" + ei.EncoderId;
-
+                eor.commandType = CommandTypeEnum.ENCODERAUDIOTOPEN;
 
                 GlobalUtils.EncoderAudioRunningClientsBLLInstance.UpdateRunningEncoder(new RunningEncoder() { ClientIdentify = clientIdentify, GroupIds = groupIds, Priority = priority });
 
@@ -106,14 +106,23 @@ namespace MediaMgrSystem
 
                     if (isOperationFromDevice)
                     {
-                        ComuResponseBase cb = new ComuResponseBase();
+                        EncoderAudioOpenReponse cb = new EncoderAudioOpenReponse();
                         cb.guidId = deviceReqeustGuiId;
+                        cb.arg = new EncoderOpenReponseArg();
+
+                        cb.arg.baudRate = ei.BaudRate;
+
+                        cb.arg.streamName = eor.arg.streamName;
+
+                        cb.arg.udpBroadcastAddress = eor.arg.udpBroadcastAddress;
+
+
                         cb.errorCode = "0";
                         hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
                     }
                     else
                     {
-                        hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(ei));
+                        hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
                     }
 
                     ProcessTimeOutRequest(hub);
@@ -137,7 +146,7 @@ namespace MediaMgrSystem
             string strToSend = string.Empty;
 
             EncoderAudioCommandBase ec = new EncoderAudioCommandBase();
-            ec.commandType = CommandTypeEnum.ENCODERCLOSE;
+            ec.commandType = CommandTypeEnum.ENCODERAUDIOCLOSE;
             ec.guidId = Guid.NewGuid().ToString();
             strToSend = Newtonsoft.Json.JsonConvert.SerializeObject(ec);
             GlobalUtils.EncoderAudioRunningClientsBLLInstance.RemoveRunningEncoder(clientIdentify);
@@ -160,7 +169,7 @@ namespace MediaMgrSystem
 
                 if (string.IsNullOrWhiteSpace(connecionId))
                 {
-                    GlobalUtils.AddLogs(hub, "音频编码", "音频编码设备未开启");
+                    GlobalUtils.AddLogs(hub, "呼叫台操作", "呼叫台未开启");
                     return;
                 }
 
@@ -285,7 +294,7 @@ namespace MediaMgrSystem
                 if (!string.IsNullOrEmpty(groupIds))
                 {
                     groupIds = groupIds.TrimEnd(',');
-                    List<GroupInfo> groups = GlobalUtils.GroupBLLInstance.GetGroupByIds(groupIds);
+                    List<GroupInfo> groups = GlobalUtils.GroupBLLInstance.GetGroupByIdAndBType(groupIds, BusinessType.AUDITBROADCAST);
 
                     List<string> needSentClientIpAddresses = new List<string>();
                     if (groups != null && groups.Count > 0)
@@ -315,7 +324,7 @@ namespace MediaMgrSystem
 
                     EncoderAudioOpenCommand dopc = new EncoderAudioOpenCommand();
 
-                    dopc.commandType = isStop ? CommandTypeEnum.ENCODERCLOSE : CommandTypeEnum.ENCODEROPEN;
+                    dopc.commandType = isStop ? CommandTypeEnum.ENCODERAUDIOCLOSE : CommandTypeEnum.ENCODERAUDIOTOPEN;
 
                     dopc.guidId = Guid.NewGuid().ToString();
 

@@ -103,7 +103,7 @@ namespace MediaMgrSystem
 
             if (rc != null)
             {
-                if (rc.commandType == CommandTypeEnum.ENCODEROPEN)
+                if (rc.commandType == CommandTypeEnum.ENCODERAUDIOTOPEN)
                 {
                     EncoderAudioInfo eai = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(rc.clientIdentify);
                     string gids = string.Empty;
@@ -119,7 +119,7 @@ namespace MediaMgrSystem
                     EncoderAuditControlLogic.SendEncoderAudioOpenCommand(Clients, rc.clientIdentify, eai.Priority.ToString(), gids.TrimEnd(','), true, rc.guidId);
 
                 }
-                else if (rc.commandType == CommandTypeEnum.ENCODERCLOSE)
+                else if (rc.commandType == CommandTypeEnum.ENCODERAUDIOCLOSE)
                 {
                     EncoderAuditControlLogic.SendEncoderAudioCloseCommand(Clients, rc.clientIdentify, true, rc.guidId);
 

@@ -54,10 +54,10 @@ namespace MediaMgrSystem.DataModels
 
         REMOTECONTRLSENDSTATUS = 231,
 
-        ENCODEROPEN = 402,
+        ENCODERAUDIOTOPEN = 402,
 
 
-        ENCODERCLOSE = 403,
+        ENCODERAUDIOCLOSE = 403,
 
         ENCODERSENDGROUPSINFO = 401,
 

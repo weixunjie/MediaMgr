@@ -26,6 +26,13 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return GetGroupList(sqlStr);
         }
 
+        public List<GroupInfo> GetGroupByIdAndBType(string groupId,BusinessType bType)
+        {
+            String sqlStr = "SELECT * FROM GROUPINFO WHERE GROUPID=" + groupId;
+
+            return GetGroupList(sqlStr, bType);
+        }
+
         public List<GroupInfo> GetGroupByIds(string groupIds)
         {
             String sqlStr = "SELECT * FROM GROUPINFO WHERE GROUPID in (" + groupIds + ")";

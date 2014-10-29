@@ -10,7 +10,7 @@ namespace MediaMgrSystem.DataModels
 
     public class EncoderAudioOperationCommand : EncoderAudioCommandBase
     {
-        public List<string> groupIds
+        public string groupIds
         {
             get;
             set;
