@@ -39,7 +39,7 @@ namespace MediaMgrSystem
             SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
         }
 
-        public void SendDeviceOperCommand(string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, bool isEnabled,string volValue)
+        public void SendDeviceOperCommand(string cmdStr, string groupId, string deviceIpAddress, string scheduleTurnOnTime, string scheduleShutDownTime, bool isEnabled, string volValue)
         {
 
             SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled ? 1 : 0, volValue);
@@ -67,9 +67,9 @@ namespace MediaMgrSystem
         }
 
 
-        public void SendVideoEncoderOperation(string encoderId, string isOpen,string isLiveAudio)
+        public void SendVideoEncoderOperation(string encoderId, string isOpen, string isLiveAudio)
         {
-            VideoEncoderControlLogic.SendVideoEncoderOperation(Clients, encoderId, isOpen == "1", isLiveAudio=="1");
+            VideoEncoderControlLogic.SendVideoEncoderOperation(Clients, encoderId, isOpen == "1", isLiveAudio == "1");
         }
         public void SendAudioEncoderCloseCommand(string clientIdentify)
         {
@@ -106,17 +106,13 @@ namespace MediaMgrSystem
                 if (rc.commandType == CommandTypeEnum.ENCODERAUDIOTOPEN)
                 {
                     EncoderAudioInfo eai = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(rc.clientIdentify);
-                    string gids = string.Empty;
-                    if (rc.groupIds != null && rc.groupIds.Count > 0)
+                  //  string gids = string.Empty;
+                    if (!string.IsNullOrEmpty(rc.groupIds))
                     {
-                        foreach (var str in rc.groupIds)
-                        {
 
-                            gids = gids + str + ",";
-                        }
+
+                        EncoderAuditControlLogic.SendEncoderAudioOpenCommand(Clients, rc.clientIdentify, eai.Priority.ToString(), rc.groupIds.TrimEnd(','), true, rc.guidId);
                     }
-
-                    EncoderAuditControlLogic.SendEncoderAudioOpenCommand(Clients, rc.clientIdentify, eai.Priority.ToString(), gids.TrimEnd(','), true, rc.guidId);
 
                 }
                 else if (rc.commandType == CommandTypeEnum.ENCODERAUDIOCLOSE)
@@ -562,7 +558,7 @@ namespace MediaMgrSystem
 
         private void ProcessVideoEncoderReponse(object cbObj)
         {
-            object[] ojbs = cbObj as object[];  
+            object[] ojbs = cbObj as object[];
 
 
             ComuResponseBase cb = ojbs[0] as ComuResponseBase;

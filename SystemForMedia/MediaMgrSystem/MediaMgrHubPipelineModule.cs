@@ -66,9 +66,8 @@ namespace MediaMgrSystem
 
                     else if (type == "ENCODERFORAUDIO")
                     {
-                        //sync group for encoer
+                      
                         singalRClientConnectionType = SingalRClientConnectionType.ENCODERAUDIODEVICE;
-
 
                         EncoderAudioSendGroupsInfoCommand cmdSyncGrouOps = new EncoderAudioSendGroupsInfoCommand();
                         cmdSyncGrouOps.commandType = CommandTypeEnum.ENCODERSENDGROUPSINFO;

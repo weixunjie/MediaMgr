@@ -620,7 +620,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>19671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://10.50.90.83:19671/</IISUrl>
+          <IISUrl>http://localhost:19671/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://192.168.0.137:19671</CustomServerUrl>
