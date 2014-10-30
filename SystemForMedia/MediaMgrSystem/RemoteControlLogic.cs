@@ -28,7 +28,7 @@ namespace MediaMgrSystem
                 {
 
                     groupIds = groupIds.TrimEnd(',');
-                    List<GroupInfo> groups = GlobalUtils.GroupBLLInstance.GetGroupByIds(groupIds);
+                    List<GroupInfo> groups = GlobalUtils.GroupBLLInstance.GetGroupByIdAndBType(groupIds,BusinessType.REMOVECONTROL);
 
                     List<string> needSentClientIpAddresses = new List<string>();
                     if (groups != null && groups.Count > 0)

@@ -36,7 +36,7 @@ namespace MediaMgrSystem
             {
                 foreach (var d in datas)
                 {
-                    reData.Add(new EncoderSyncGroupInfo { GroupId = d.GroupId, GroupName = d.GroupName });
+                    reData.Add(new EncoderSyncGroupInfo { groupId = d.GroupId, groupName = d.GroupName });
  
                 }
             }

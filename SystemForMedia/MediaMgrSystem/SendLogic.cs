@@ -301,6 +301,7 @@ namespace MediaMgrSystem
 
                         cmdToVideoSvr.arg = new VideoServerOperArg();
 
+                        
 
                         cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
 
@@ -463,6 +464,7 @@ namespace MediaMgrSystem
                         System.Diagnostics.Debug.WriteLine(str);
                         GlobalUtils.WriteDebugLogs(str);
 
+                        
 
                         new Thread(ProcessTimeOutRequest).Start(hub);
 

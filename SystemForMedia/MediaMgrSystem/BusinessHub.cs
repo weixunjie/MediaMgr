@@ -110,7 +110,6 @@ namespace MediaMgrSystem
                     if (!string.IsNullOrEmpty(rc.groupIds))
                     {
 
-
                         EncoderAuditControlLogic.SendEncoderAudioOpenCommand(Clients, rc.clientIdentify, eai.Priority.ToString(), rc.groupIds.TrimEnd(','), true, rc.guidId);
                     }
 
@@ -525,6 +524,14 @@ namespace MediaMgrSystem
                         if (removedItem != null)
                         {
                             GlobalUtils.CommandQueues.Remove(removedItem);
+
+
+                            try
+                            {
+                                System.Diagnostics.Debug.WriteLine("kao" + "  " + GlobalUtils.CommandQueues[0].IpAddressStr + "->" + GlobalUtils.CommandQueues[0].GuidIdStr);
+                            }
+                            catch { }
+                           // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
                         }
                     }
 

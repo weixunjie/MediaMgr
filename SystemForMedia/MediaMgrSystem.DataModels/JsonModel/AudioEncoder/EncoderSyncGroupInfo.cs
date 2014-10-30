@@ -8,9 +8,9 @@ namespace MediaMgrSystem.DataModels
 {
     public class EncoderSyncGroupInfo
     {
-        public String GroupId { get; set; }
+        public String groupId { get; set; }
 
-        public String GroupName { get; set; }
+        public String groupName { get; set; }
 
      
 

@@ -78,7 +78,7 @@ namespace MediaMgrSystem
 
                         foreach (var g in gi)
                         {
-                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { GroupId = g.GroupId, GroupName = g.GroupName });
+                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { groupId = g.GroupId, groupName = g.GroupName });
                         }
 
                         hub.Clients.Client(hub.Context.ConnectionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmdSyncGrouOps));
@@ -256,7 +256,7 @@ namespace MediaMgrSystem
 
             cmd.arg.upgradeUrl = ui.UpgardeUrl;
             cmd.arg.upgradeVer = String.IsNullOrEmpty(ui.VersionId) ? "1" : ui.VersionId;
-            cmd.arg.serverNowTime = ((DateTime.Now.Ticks - 621355968000000000) / 10000).ToString();
+            cmd.arg.serverNowTime = ((DateTime.UtcNow.Ticks - 621355968000000000) / 10000).ToString();
             if (type == SingalRClientConnectionType.ANDROID)
             {
                 hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
