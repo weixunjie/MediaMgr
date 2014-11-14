@@ -158,6 +158,7 @@ namespace MediaMgrSystem
                         foreach (var sTask in GlobalUtils.RunningSchudules)
                         {
 
+
                             if (sTask.ChannelId == channelId)
                             { //优先手工播放/如何不是打铃的话
                                 //if (sTask.Priority != "1")
@@ -360,7 +361,11 @@ namespace MediaMgrSystem
 
                         VideoOperAndriodClientCommand clientsDatraToSend = new VideoOperAndriodClientCommand();
 
-                        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipReallySent, out clientsDatraToSend, maxBitRate, bType);
+                        List<GroupInfo> channelGroup = null;
+
+                        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipReallySent, out clientsDatraToSend, maxBitRate, bType, out channelGroup);
+
+
 
 
 
@@ -368,14 +373,61 @@ namespace MediaMgrSystem
 
                         if (isSchedule)
                         {
+                            BusinessTypeChecking outType;
+                            if (!GlobalUtils.CheckIsGroupsRunningBusiness(channelGroup, BusinessTypeChecking.ScheduleTask, out outType))
+                            {
+
+                                ComuResponseBase cr = new ComuResponseBase();
+
+                                cr.guidId = scheduleTaskGuidId + "," + channelId;
+
+                                cr.errorCode = "200";
+
+                                cr.message = errorrNotOpenVideoSvr;
+                                hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+
+                                GlobalUtils.AddLogs(hub, "计划任务", channelName + "播放计划失败，" + GlobalUtils.CheckRunningBusinessTypeDesp(outType) + ", 运行时间：" + scheduleTime);
+
+                                return;
+                                //GlobalUtils.SendManuallyClientNotice(hub, GlobalUtils.CheckRunningBusinessTypeDesp(outType), "200", item);
+
+                            }
+
+
                             type = QueueCommandType.SCHEDULEPLAY;
                         }
                         else
                         {
 
 
+                            BusinessTypeChecking outType;
+                            if (!GlobalUtils.CheckIsGroupsRunningBusiness(channelGroup, BusinessTypeChecking.ManualTask, out outType))
+                            {
+
+
+                                List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                                GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动播放失败, " + GlobalUtils.CheckRunningBusinessTypeDesp(outType));
+
+                                ManualPlayItem item = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+                                if (item == null)
+                                {
+                                    item = new ManualPlayItem();
+                                    item.ChannelId = channelId;
+                                    item.ChannelName = channelName;
+                                    item.PlayingPids = programeIds;
+                                    item.PlayingFunction = bType;
+                                }
+
+                                GlobalUtils.SendManuallyClientNotice(hub, errorrNotOpenVideoSvr, "200", item);
+                                return;
+                                //GlobalUtils.SendManuallyClientNotice(hub, GlobalUtils.CheckRunningBusinessTypeDesp(outType), "200", item);
+
+                            }
+
 
                             type = QueueCommandType.MANAULLYPLAY;
+
                         }
 
                         PushQueue(type, clientsIpToSend, isSchedule, channelId, channelName, scheduleTaskGuidId, scheduleTime, cmdToVideoSvr.guidId, clientsDatraToSend.guidId);
@@ -405,11 +457,11 @@ namespace MediaMgrSystem
 
                             bool isExsting = false;
 
-                            foreach(var pd in GlobalUtils.PlayingDevices)
+                            foreach (var pd in GlobalUtils.PlayingDevices)
                             {
-                                if (pd.IpAddress==css)
+                                if (pd.IpAddress == css)
                                 {
-                                    isExsting=true;
+                                    isExsting = true;
                                     break;
                                 }
                             }
@@ -490,6 +542,7 @@ namespace MediaMgrSystem
 
                             mp.IsRepeating = false;
 
+                            mp.ChannelGroup = channelGroup;
 
                             mp.IsPlaying = true;
                             GlobalUtils.AddManualPlayItem(mp);
@@ -504,7 +557,7 @@ namespace MediaMgrSystem
                         }
                         else
                         {
-                            GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { ChannelName = channelName, Priority = strScheduleTaskPriority, ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = scheduleTime });
+                            GlobalUtils.RunningSchudules.Add(new ScheduleRunningItem { ChannelName = channelName, Priority = strScheduleTaskPriority, ChannelId = channelId, GuidId = scheduleTaskGuidId, RunningTime = scheduleTime, ChannelGroup = channelGroup });
                             System.Diagnostics.Debug.WriteLine("Add Schedule Task " + channelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
 
                             ComuResponseBase cr = new ComuResponseBase();
@@ -735,7 +788,8 @@ namespace MediaMgrSystem
                 if (isWantToStop)
                 {
 
-                    CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipRealySent, out clientsDataToSend, bType);
+                    List<GroupInfo> channelGroups;
+                    CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipRealySent, out clientsDataToSend, bType, out channelGroups);
 
 
                     clientsDataToSend.arg = new VideoOperAndriodClientArg();
@@ -807,7 +861,7 @@ namespace MediaMgrSystem
                             }
                         }
 
-                        if (itemToRemoved!=null)
+                        if (itemToRemoved != null)
                         {
                             GlobalUtils.PlayingDevices.Remove(itemToRemoved);
                         }
@@ -965,7 +1019,7 @@ namespace MediaMgrSystem
 
 
         private static void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
-            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, out VideoOperAndriodClientCommand dataToSend, int maxBitRate, BusinessType bType)
+            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, out VideoOperAndriodClientCommand dataToSend, int maxBitRate, BusinessType bType, out List<GroupInfo> groups)
         {
 
             VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
@@ -995,12 +1049,12 @@ namespace MediaMgrSystem
 
             dataToSend = dataSendToAndroidClient;
 
-            GetClientIpAndIdList(channelId, out ipsNeedToSend, out idsNeedToSend, out ipReallySent, bType);
+            GetClientIpAndIdList(channelId, out ipsNeedToSend, out idsNeedToSend, out ipReallySent, bType, out groups);
         }
 
 
         private static void CreateCommandForStopRepeatToClients(CommandTypeEnum cmdType, string channelId,
-           out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, out VideoOperAndriodClientCommand dataToSend, BusinessType bType)
+           out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, out VideoOperAndriodClientCommand dataToSend, BusinessType bType, out List<GroupInfo> groups)
         {
 
             VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
@@ -1016,13 +1070,14 @@ namespace MediaMgrSystem
 
 
 
-            GetClientIpAndIdList(channelId, out ipsNeedToSend, out idsNeedToSend, out ipReallySent, bType);
+            GetClientIpAndIdList(channelId, out ipsNeedToSend, out idsNeedToSend, out ipReallySent, bType, out groups);
         }
 
-        private static void GetClientIpAndIdList(string channelId, out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, BusinessType bType)
+        private static void GetClientIpAndIdList(string channelId, out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, BusinessType bType, out List<GroupInfo> groupInfo)
         {
             List<GroupInfo> channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId, bType);
 
+            groupInfo = channelGroups;
             List<string> needSentClientIpAddresses = new List<string>();
             if (channelGroups != null && channelGroups.Count > 0)
             {

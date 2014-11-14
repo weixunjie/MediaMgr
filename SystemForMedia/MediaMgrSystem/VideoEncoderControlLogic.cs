@@ -22,7 +22,6 @@ namespace MediaMgrSystem
         {
 
 
-
             lock (GlobalUtils.ObjectLockVideoEncoderQueueItem)
             {
 
@@ -74,6 +73,40 @@ namespace MediaMgrSystem
 
                     eor.commandType = isOpen ? CommandTypeEnum.VIDEOENCODEROPEN : CommandTypeEnum.VIDEOENCODERCLOSE;
 
+                    VideoEncoderRunningItem itemToRemote = null; ;
+                    for (int i = 0; i < GlobalUtils.RunningVideoEncoder.Count; i++)
+                    {
+                        VideoEncoderRunningItem rv = GlobalUtils.RunningVideoEncoder[i];
+                        if (rv.EncoderId == encoderId)
+                        {
+                            itemToRemote = rv;
+
+                        }
+                    }
+
+                    if (itemToRemote != null)
+                    {
+                        GlobalUtils.RunningVideoEncoder.Remove(itemToRemote);
+                    }
+
+                    if (isOpen)
+                    {
+                        BusinessTypeChecking outType;
+                        if (!GlobalUtils.CheckIsGroupsRunningBusiness(groups, BusinessTypeChecking.VideoEncoder, out outType))
+                        {
+                            GlobalUtils.AddLogs(hub, "视频编码", GlobalUtils.CheckRunningBusinessTypeDesp(outType));
+                            return;
+                            //GlobalUtils.SendManuallyClientNotice(hub, GlobalUtils.CheckRunningBusinessTypeDesp(outType), "200", item);
+
+                        }
+                        VideoEncoderRunningItem item = new VideoEncoderRunningItem();
+                        item.EncoderId = encoderId;
+                        item.Groups = groups;
+                        GlobalUtils.RunningVideoEncoder.Add(item);
+
+
+                    }
+
                     eor.guidId = Guid.NewGuid().ToString();
                     eor.arg = new EncoderVideoOperationCommandeArg();
                     eor.arg.biteRate = vi.BaudRate;
@@ -81,7 +114,7 @@ namespace MediaMgrSystem
                     eor.arg.udpBroadcastAddress = vi.UdpAddress;
 
 
-                    PushQueue(isOpen ? QueueCommandType.VIDEOENCODERAUDIOOPEN : QueueCommandType.VIDEOENCODERAUDIOCLOSE, ipsNeedToSend, eor.guidId, encoderId);
+                    PushQueue(isOpen ? QueueCommandType.VIDEOENCODEROPEN : QueueCommandType.VIDEOENCODEOCLOSE, ipsNeedToSend, eor.guidId, encoderId);
 
                     if (idsNeedToSend.Count > 0)
                     {
@@ -93,7 +126,7 @@ namespace MediaMgrSystem
                     new Thread(ProcessTimeOutRequest).Start(hub);
 
                 }
-                
+
 
             }
         }
@@ -148,7 +181,7 @@ namespace MediaMgrSystem
 
                             string strCmd = string.Empty;
 
-                            strCmd = item.CommandType == QueueCommandType.VIDEOENCODERAUDIOOPEN ? "打开视频源" : "关闭视频源";
+                            strCmd = item.CommandType == QueueCommandType.VIDEOENCODEROPEN ? "打开视频源" : "关闭视频源";
 
                             GlobalUtils.AddLogs(hubContent, "视频源操作", strCmd + "," + ipToDisplay + "操作超时");
 

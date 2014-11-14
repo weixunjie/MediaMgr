@@ -587,7 +587,7 @@ namespace MediaMgrSystem
 
 
 
-                            string strCmd = que.CommandType == QueueCommandType.VIDEOENCODERAUDIOOPEN ? "打开视频源" : "关闭视频源";
+                            string strCmd = que.CommandType == QueueCommandType.VIDEOENCODEROPEN ? "打开视频源" : "关闭视频源";
 
                             GlobalUtils.AddLogs(Clients, "视频源操作", strCmd + "," + que.AndriodIpAddressStr + "操作" + strOperResult);
 

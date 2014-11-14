@@ -45,8 +45,8 @@ namespace MediaMgrSystem
         ENCODEAUDIOROPEN,
         ENCODERAUDIOCLOSE,
 
-        VIDEOENCODERAUDIOCLOSE,
-        VIDEOENCODERAUDIOOPEN
+        VIDEOENCODEOCLOSE,
+        VIDEOENCODEROPEN
     }
 
 
@@ -217,6 +217,15 @@ namespace MediaMgrSystem
 
     }
 
+    public class VideoEncoderRunningItem
+    {
+        public List<GroupInfo> Groups
+        { get; set; }
+
+        public string EncoderId
+        { get; set; }
+    }
+
     public class ScheduleRunningItem
     {
         public string ChannelId
@@ -241,6 +250,13 @@ namespace MediaMgrSystem
             get;
             set;
         }
+
+        public List<GroupInfo> ChannelGroup
+        {
+            get;
+            set;
+        }
+
     }
 
 
@@ -259,8 +275,21 @@ namespace MediaMgrSystem
 
         public bool IsRepeating { get; set; }
 
+        public List<GroupInfo> ChannelGroup { get; set; }
+
     }
 
+    public enum BusinessTypeChecking
+    {
+        AudioEncoder = 0,
+        VideoEncoder = 1,
+        ScheduleTask = 2,
+        ManualTask = 3,
+
+
+
+
+    }
     public class PlayDevice
     {
         public string IpAddress { get; set; }
@@ -354,6 +383,115 @@ namespace MediaMgrSystem
 
         public static List<ScheduleRunningItem> RunningSchudules = new List<ScheduleRunningItem>();
 
+        public static List<VideoEncoderRunningItem> RunningVideoEncoder = new List<VideoEncoderRunningItem>();
+
+
+        public static string CheckRunningBusinessTypeDesp( BusinessTypeChecking bType)
+        {
+
+            if (bType == BusinessTypeChecking.AudioEncoder)
+            {
+                return "操作失败，呼叫台正在运行";
+            }
+            if (bType == BusinessTypeChecking.VideoEncoder)
+            {
+                return "操作失败，视频编码正在运行";
+            }
+
+            if (bType == BusinessTypeChecking.ManualTask)
+            {
+                return "操作失败，手工播放正在运行";
+            }
+
+            if (bType == BusinessTypeChecking.ScheduleTask)
+            {
+                return "操作失败，计划正在运行";
+            }
+
+            return string.Empty;
+
+        }
+        public static bool CheckIsGroupsRunningBusiness(List<GroupInfo> gis, BusinessTypeChecking bType, out BusinessTypeChecking bTypeRunning)
+        {
+
+            if (bType != BusinessTypeChecking.VideoEncoder)
+            {
+                foreach (var rv in RunningVideoEncoder)
+                {
+                    foreach (var gi in gis)
+                    {
+                        if (rv.Groups.Where(a => a.GroupId == gi.GroupId).DefaultIfEmpty().Count() > 0)
+                        {
+                            bTypeRunning = BusinessTypeChecking.VideoEncoder;
+                            return false;
+                        }
+                    }
+                }
+
+            }
+
+            if (bType != BusinessTypeChecking.AudioEncoder)
+            {
+                List<RunningEncoder> runs = EncoderAudioRunningClientsBLLInstance.GetAllEncoderRunning();
+                foreach (var rv in runs)
+                {
+                    if (!string.IsNullOrEmpty(rv.GroupIds))
+                    {
+                        string[] gids = rv.GroupIds.Split(',');
+                        for (int j = 0; j < gids.Length; j++)
+                        {
+                            foreach (var gi in gis)
+                            {
+                                if (gids[j] == gi.GroupId)
+                                {
+
+                                    bTypeRunning = BusinessTypeChecking.AudioEncoder;
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            if (bType != BusinessTypeChecking.ScheduleTask && bType != BusinessTypeChecking.ManualTask)
+            {
+                foreach (var mp in ManualPlayItems)
+                {
+
+                    foreach (var gi in gis)
+                    {
+                        if (mp.ChannelGroup.Where(a => a.GroupId == gi.GroupId).DefaultIfEmpty().Count() > 0)
+                        {
+                            bTypeRunning = BusinessTypeChecking.ManualTask;
+                            return false;
+                        }
+                    }
+                }
+
+            }
+
+            if (bType != BusinessTypeChecking.ScheduleTask && bType != BusinessTypeChecking.ManualTask)
+            {
+                foreach (var st in RunningSchudules)
+                {
+                    //st.
+                    foreach (var gi in gis)
+                    {
+                        if (st.ChannelGroup.Where(a => a.GroupId == gi.GroupId).DefaultIfEmpty().Count() > 0)
+                        {
+                            bTypeRunning = BusinessTypeChecking.ScheduleTask;
+                            return false;
+                        }
+                    }
+                }
+
+            }
+
+            bTypeRunning = BusinessTypeChecking.ScheduleTask;
+            return true;
+        }
 
 
         public static bool CheckIfAudio(string fileName)
