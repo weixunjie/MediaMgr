@@ -149,8 +149,16 @@ namespace MediaMgrSystem
 
         public List<ChannelInfo> GetAllChannels()
         {
-            return GlobalUtils.ChannelBLLInstance.GetAllChannels();
+            ChannelInfo ci = new ChannelInfo();
 
+            ci.ChannelName = "-1";
+            ci.ChannelId = "无";
+
+            List<ChannelInfo> res = GlobalUtils.ChannelBLLInstance.GetAllChannels();
+
+            res.Insert(0, ci);
+
+            return res;
         }
 
         public List<VideoEncoderInfo> GetAllEncoders()
