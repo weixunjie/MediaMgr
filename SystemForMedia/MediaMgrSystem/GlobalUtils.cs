@@ -312,8 +312,8 @@ namespace MediaMgrSystem
         public static object LogForLock = new object();
 
         public static List<PlayDevice> PlayingDevices = new List<PlayDevice>();
-
-
+        public static List<RunningEncoder> RunningEncoder = new List<RunningEncoder>();
+       
 
         public static string StreamNameBase = "1234567890";
         public static object ObjectLockQueueItem = new object();
@@ -333,6 +333,10 @@ namespace MediaMgrSystem
         public static GroupBLL GroupBLLInstance = new GroupBLL(GlobalUtils.DbUtilsInstance);
 
         public static RemoteDeviceStatusBLL RemoteDeviceStatusBLLInstance = new RemoteDeviceStatusBLL(GlobalUtils.DbUtilsInstance);
+
+
+        public static LogSignalRConnectionBLL LogSignalRConnectionBLLBLLInstance = new LogSignalRConnectionBLL(GlobalUtils.DbUtilsInstance);
+
 
 
         public static List<RemoteDeviceStatus> AllRemoteDeviceStatus = new List<RemoteDeviceStatus>();
@@ -989,6 +993,28 @@ namespace MediaMgrSystem
 
         }
 
+
+        public static void AddConnectionTestLogs( string logName, string logDesp)
+        {
+
+            try
+            {
+
+                LogSignalRConnectionBLLBLLInstance.AddLog(logName, logDesp);
+                
+               
+            }
+            catch (Exception ex)
+            {
+                if (ex != null && !string.IsNullOrWhiteSpace(ex.Message))
+                {
+
+                    WriteErroLogs("程序异常" + ex.Message);
+                }
+
+            }
+
+        }
 
         public static List<string> GetAllAndriodsDeviceConnectionIds()
         {

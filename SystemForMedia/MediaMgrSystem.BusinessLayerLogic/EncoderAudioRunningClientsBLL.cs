@@ -68,6 +68,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
+
         public List<RunningEncoder> GetAllEncoderRunning()
         {
             string sqlStr = "select * from RunningEncoder";

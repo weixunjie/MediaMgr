@@ -128,9 +128,23 @@ namespace MediaMgrSystem
                     ProcessTimeOutRequest(hub);
 
 
+
                     //  SendCommandToAudioToEncoder(hub, clientIdentify, CommandTypeEnum.ENCODEROPEN);
 
                     SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, false);
+
+
+
+                    if (groupIds != null )
+                    {
+                        String[] gid = groupIds.Split(',');
+                        foreach (var c in gid)
+                        {
+
+                            GlobalUtils.AddLogs(hub, "视频编码", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组播放成功");
+
+                        }
+                    }
 
                 }
             }
@@ -156,6 +170,19 @@ namespace MediaMgrSystem
             hub.Client(connecionId).sendAudioEncoderCommandToClient(strToSend);
 
             SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, true);
+
+
+
+            if (groupIds != null)
+            {
+                String[] gid = groupIds.Split(',');
+                foreach (var c in gid)
+                {
+
+                    GlobalUtils.AddLogs(hub, "视频编码", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组停止成功");
+
+                }
+            }
 
         }
 

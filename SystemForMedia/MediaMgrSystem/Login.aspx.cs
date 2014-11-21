@@ -18,7 +18,9 @@ namespace MediaMgrSystem
         {
             string a = EncryptUtils.DesEncrypt("10");
             //HaspFeature feature = HaspFeature.FromFeature(1);
+            string Name = "aganar";
 
+            int UID = Convert.ToInt32(Name);
             //string vendorCode =
             //"1ziy757gG/pwwAp+5L5WJj9E0EZRb8YEFI6AEdJ0PulID52APrEkNYYoMZAQ6qT55ZnEDjzHNoQh2n1I" +
             //"EhfxyRMlGtruunxwbengMIq/DJY1WX24BpYdA2Q4AseCwBHdVWXgjjdOReoP1DbgTx53rBwS4iKsXNbl" +

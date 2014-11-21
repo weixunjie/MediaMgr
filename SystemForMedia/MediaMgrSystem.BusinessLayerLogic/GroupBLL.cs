@@ -72,6 +72,14 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
+        public List<GroupInfo> GetAllGroupsWithOutDeviceInfoByGroupId(string goupId)
+        {
+            String sqlStr = "SELECT * FROM GroupInfo WHERE GROUPID=" + goupId;
+
+            return GetGroupList(sqlStr, BusinessType.ALL, false);
+
+        }
+
         public List<GroupInfo> GetAllGroupsByBusinessType(BusinessType bType)
         {
             String sqlStr = "SELECT * FROM GroupInfo";

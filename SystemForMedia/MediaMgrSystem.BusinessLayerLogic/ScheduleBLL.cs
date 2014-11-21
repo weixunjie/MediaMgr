@@ -249,8 +249,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
                     break;
 
             }
-       
-            String sqlStr = " SELECT top 1 * FROM SCHEDULETASKINFO  WHERE SCHEDULETASKSTARTTIME >'{0}' AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%')  ORDER BY SCHEDULETASKSTARTTIME  ";
+
+            string sqlStr = " SELECT TOP 1 * FROM SCHEDULETASKINFO  WHERE SCHEDULETASKSTARTTIME >'{0}' AND (SCHEDULETASKSPECIALDAYS LIKE '%{1}%' OR SCHEDULETASKWEEKS LIKE '%{2}%') AND   SCHEDULEID IN (SELECT DISTINCT  SCHEDULEID FROM CHANNELINFO)    ORDER BY SCHEDULETASKSTARTTIME  ";
 
             sqlStr = String.Format(sqlStr, DateTime.Now.ToString("HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
 

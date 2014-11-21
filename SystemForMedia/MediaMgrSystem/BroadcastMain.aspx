@@ -57,17 +57,32 @@
         function sessInterval() {
 
 
-            $.ajax({
-                url: "AudioLogic.ashx",
-                contentType: "text/plain",
-                cache: false,
-                data: { sessInterval: "Y" },
-                type: "GET",
-                success: function (data) {
+            var now = new Date();
+            //get milliseconds of differences
+            var diff = now - sess_lastActivity;
+            //get minutes between differences
+
+            var diffMins = (diff / 1000 / 60);
+            if (diffMins >= sess_warningMinutes) {
+                //warn before expiring
+
+                //stop the timer
+               // sessClearInterval();
+                //prompt for attention
+               // sessLogOut();
+            }
+
+            //$.ajax({
+            //    url: "AudioLogic.ashx",
+            //    contentType: "text/plain",
+            //    cache: false,
+            //    data: { sessInterval: "Y" },
+            //    type: "GET",
+            //    success: function (data) {
 
 
-                }
-            });
+            //    }
+            //});
         }
 
         $(document).ready(function () {
@@ -84,6 +99,11 @@
                 else if (change.newState === $.signalR.connectionState.connected) {
 
                 }
+            });
+
+            chat.connection.error(function (error) {
+                alert("error");
+                window.location.href = "<%=ResolveUrl("~/LogOut.aspx") %>";
             });
 
             chat.client.sendRefreshAudioDeviceMessge = function (result) {

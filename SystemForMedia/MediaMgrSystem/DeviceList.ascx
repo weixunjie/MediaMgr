@@ -37,8 +37,7 @@
 
     List<MediaMgrSystem.DataModels.VideoEncoderInfo> encoders = GetAllEncoders();
 
-
-
+    GetAllEncoderRunning();
 
     string deviceIds = string.Empty;
     string imgGroupShowIds = string.Empty;
@@ -284,7 +283,7 @@
 
             var cmdStr = "122"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false, "")
 
 
             hideAllNenus();
@@ -294,7 +293,7 @@
 
             var cmdStr = "123"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false, "")
 
 
             hideAllNenus();
@@ -305,7 +304,7 @@
 
             var cmdStr = "124"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false, "")
 
 
             hideAllNenus();
@@ -321,7 +320,7 @@
         $("#btnConfirmedDialogForDeviveAdjustVol").click(function (e) {
 
             $('#dialogForDeviveAdjustVol').modal('hide');
-           // $("#tbVolValue").val("15");
+            // $("#tbVolValue").val("15");
 
             var tbVolValue = $("#tbVolValue").val();
 
@@ -340,13 +339,13 @@
 
 
         });
-        
-        
+
+
         $("#deviceListSingleDeviceMenuBtnShutDownDevice").click(function (e) {
 
             var cmdStr = "125"
 
-            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false,"")
+            chat.server.sendDeviceOperCommand(cmdStr, currentOperDeviceGroupId, currentOperDeviceIpAddress, "", "", false, "")
 
 
             hideAllNenus();
@@ -378,7 +377,7 @@
 
 
 
-            chat.server.sendDeviceOperCommand(127, currentOperDeviceGroupId, currentOperDeviceIpAddress, tbScheduleTimeTurnOnValue, tbScheduleShutDownTimeValue, $("#ckcEnabledDeviceSchedule").is(':checked'),"")
+            chat.server.sendDeviceOperCommand(127, currentOperDeviceGroupId, currentOperDeviceIpAddress, tbScheduleTimeTurnOnValue, tbScheduleShutDownTimeValue, $("#ckcEnabledDeviceSchedule").is(':checked'), "")
 
 
             $('#dialogForDeviveSchdeduelGroup').modal('hide');
@@ -531,7 +530,7 @@
                 <th style="line-height: 30px">
                     <div class="row" style="margin-left: 0px">
 
-                        <div class="pull-left"><%=dGroups[l].GroupName %></div>
+                        <div class="pull-left"><%=dGroups[l].GroupName +CheckDeviceIsGroupPlaying(dGroups[l].GroupId)  %>   </div>
 
 
                         <% if (dGroups[l].GroupId != "-1")
@@ -879,7 +878,7 @@
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="deviceListDeviceMenu">
         <li><a class="btn" id="deviceListSingleDeviceMenuBtnAdjustVol" data-backdrop="static" data-dismiss="modal" data-keyboard="false">音量调节</a></li>
-        
+
 
         <li><a class="btn" id="deviceListSingleDeviceMenuBtnRestartDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">重起设备</a></li>
 

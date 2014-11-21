@@ -68,12 +68,25 @@ namespace MediaMgrSystem
 
                         return str;
                     }
-                    
+
                 }
+            }
 
+            if (GlobalUtils.ManualPlayItems != null && GlobalUtils.ManualPlayItems.Count > 0)
+            {
+                foreach (var mp in GlobalUtils.ManualPlayItems)
+                {
+                    List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(mp.PlayingPids[0]);
 
+                    string pName = string.Empty;
+                    if (pis != null && pis.Count > 0)
+                    {
+                        pName = pis[0].ProgramName;
+                        str += pName;
 
-
+                        return str;
+                    }
+                }
             }
             return str += "无";
         }

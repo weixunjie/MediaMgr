@@ -39,7 +39,7 @@
 
 
 
-        <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery.signalR-2.0.3.min.js") %>'></script>
+        <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery.signalR-2.0.3.js") %>'></script>
 
         <script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery-ui-1.10.4.custom.js") %>'></script>
 
@@ -268,7 +268,7 @@
 
 
                 function runFunUpdateProgrameInfo() {
-                    var interval = setTimeout(funUpdateProgrameInfo, 30000);
+                    var interval = setTimeout(funUpdateProgrameInfo, 5000);
                 }
 
 

@@ -100,21 +100,21 @@ namespace MediaMgrSystem
                 srcName = srcName + "_video";
             }
 
-            bool isAudio = false;
+            //bool isAudio = false;
 
-            if (CheckDeviceIsPlaying(ipAddress, out isAudio))
-            {
-                if (isAudio)
-                {
-                    srcName = "ic_image_device.playing_audio";
+            //if (CheckDeviceIsPlaying(ipAddress, out isAudio))
+            //{
+            //    if (isAudio)
+            //    {
+            //        srcName = "ic_image_device.playing_audio";
 
-                }
-                else
-                {
-                    srcName = "ic_image_device.playing_video";
-                }
+            //    }
+            //    else
+            //    {
+            //        srcName = "ic_image_device.playing_video";
+            //    }
 
-            }
+            //}
 
 
             return srcName;
@@ -132,7 +132,6 @@ namespace MediaMgrSystem
             isAudio = false;
             foreach (var de in GlobalUtils.PlayingDevices)
             {
-
                 if (ipAddress == de.IpAddress)
                 {
                     isAudio = de.IsAudio;
@@ -141,6 +140,89 @@ namespace MediaMgrSystem
             }
 
             return false;
+
+
+        }
+
+        public void GetAllEncoderRunning()
+        {
+            GlobalUtils.RunningEncoder = GlobalUtils.EncoderAudioRunningClientsBLLInstance.GetAllEncoderRunning();
+        }
+
+        public string CheckDeviceIsGroupPlaying(string groupId)
+        {
+
+            string strPlaying = "(播放中)";
+            foreach (var mp in GlobalUtils.ManualPlayItems)
+            {
+                if (mp.ChannelGroup != null)
+                {
+                    foreach (var gi in mp.ChannelGroup)
+                    {
+                        if (gi.GroupId == groupId)
+                        {
+                           // outPlayingType = "audio";
+                            return strPlaying;
+                        }
+                    }
+                }
+                    
+            }
+
+            foreach (var rs in GlobalUtils.RunningSchudules)
+            {
+                if (rs.ChannelGroup != null)
+                {
+                    foreach (var gi in rs.ChannelGroup)
+                    {
+                        if (gi.GroupId == groupId)
+                        {
+                           // outPlayingType = "audio";
+                            return strPlaying;
+                        }
+                    }
+                }
+
+            }
+
+
+            foreach (var rs in GlobalUtils.RunningVideoEncoder)
+            {
+                if (rs.Groups != null)
+                {
+                    foreach (var gi in rs.Groups)
+                    {
+                        if (gi.GroupId == groupId)
+                        {
+                            // outPlayingType = "audio";
+                            return strPlaying;
+                        }
+                    }
+                }
+
+            }
+
+            List<RunningEncoder> runs = GlobalUtils.RunningEncoder; 
+
+            foreach (var rs in runs)
+            {
+                
+                if (rs.GroupIds != null)
+                {
+                    String[] strs=rs.GroupIds.Split(',');
+                    foreach (var gi in strs)
+                    {
+                        if (gi == groupId)
+                        {
+                            // outPlayingType = "audio";
+                            return strPlaying;
+                        }
+                    }
+                }
+
+            }
+
+            return "";
 
 
         }

@@ -27,24 +27,23 @@ namespace MediaMgrSystem
             GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 120, 0);
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0, 0, 6);
 
-            System.Timers.Timer timer = new System.Timers.Timer(16 * 60 * 1000);
-
-
-            timer.AutoReset = true;
-
-
-
-            timer.Enabled = true;
-
+         
 
 
         }
 
-
-        void Session_end(object sender, EventArgs e)
+        void Application_Error(object sender, EventArgs e)
         {
-
+            //捕获整个解决方案下的所有异常
+            try
+            {
+                HttpUnhandledException eHttp = this.Server.GetLastError() as HttpUnhandledException;
+                Exception eApp = eHttp.InnerException;
+                GlobalUtils.AddConnectionTestLogs("系统异常", eApp.Message);
+            }
+            catch { }
         }
+
 
     }
 }

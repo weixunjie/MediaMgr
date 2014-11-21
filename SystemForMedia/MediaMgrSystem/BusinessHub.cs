@@ -106,7 +106,7 @@ namespace MediaMgrSystem
                 if (rc.commandType == CommandTypeEnum.ENCODERAUDIOTOPEN)
                 {
                     EncoderAudioInfo eai = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(rc.clientIdentify);
-                  //  string gids = string.Empty;
+                    //  string gids = string.Empty;
                     if (!string.IsNullOrEmpty(rc.groupIds))
                     {
 
@@ -148,8 +148,10 @@ namespace MediaMgrSystem
 
                                 string strCmdType = GlobalUtils.GetCommandTextGetByType(que.CommandType);
 
-
-                                GlobalUtils.AddLogs(Clients, "音频解码", strCmdType + " " + strOperResult);
+                                if (cb.errorCode != "0")
+                                {
+                                    GlobalUtils.AddLogs(Clients, "音频解码", strCmdType + " " + strOperResult);
+                                }
 
 
 
@@ -247,11 +249,12 @@ namespace MediaMgrSystem
 
 
                                 string strCmdType = RemoteControlLogic.GetCommandText(que.CommandType, que.ExternalIds);
+                                if (cb.errorCode != "0")
+                                {
 
+                                    GlobalUtils.AddLogs(Clients, "物联网控制", strCmdType + " " + strOperResult);
 
-                                GlobalUtils.AddLogs(Clients, "物联网控制", strCmdType + " " + strOperResult);
-
-
+                                }
                                 //if (cb.errorCode == "0" && que.CommandType == QueueCommandType.REMOTECONTROLMANULCLOSE && que.CommandType == QueueCommandType.REMOTECONTROLMANULOPEN)
                                 //{
                                 //    //更新状态列表
@@ -531,7 +534,7 @@ namespace MediaMgrSystem
                                 System.Diagnostics.Debug.WriteLine("kao" + "  " + GlobalUtils.CommandQueues[0].IpAddressStr + "->" + GlobalUtils.CommandQueues[0].GuidIdStr);
                             }
                             catch { }
-                           // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
+                            // System.Diagnostics.Debug.WriteLine("vid" + GlobalUtils.VideoServerConnectionId);
                         }
                     }
 
@@ -588,11 +591,12 @@ namespace MediaMgrSystem
 
 
                             string strCmd = que.CommandType == QueueCommandType.VIDEOENCODEROPEN ? "打开视频源" : "关闭视频源";
+                            if (cb.errorCode != "0")
+                            {
+                                GlobalUtils.AddLogs(Clients, "视频源操作", strCmd + "," + que.AndriodIpAddressStr + "操作" + strOperResult);
 
-                            GlobalUtils.AddLogs(Clients, "视频源操作", strCmd + "," + que.AndriodIpAddressStr + "操作" + strOperResult);
 
-
-
+                            }
 
                             matchIPAddress = que.AndriodIpAddressStr;
 

@@ -66,7 +66,7 @@ namespace MediaMgrSystem
 
                     else if (type == "ENCODERFORAUDIO")
                     {
-                      
+
                         singalRClientConnectionType = SingalRClientConnectionType.ENCODERAUDIODEVICE;
 
                         EncoderAudioSendGroupsInfoCommand cmdSyncGrouOps = new EncoderAudioSendGroupsInfoCommand();
@@ -78,7 +78,7 @@ namespace MediaMgrSystem
 
                         foreach (var g in gi)
                         {
-                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { groupId = g.GroupId, groupName = g.GroupName });
+                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { GroupId = g.GroupId, GroupName = g.GroupName });
                         }
 
                         hub.Clients.Client(hub.Context.ConnectionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmdSyncGrouOps));
@@ -223,6 +223,10 @@ namespace MediaMgrSystem
                 string str = "Someone Connected: Connected Id" + hub.Context.ConnectionId;
                 System.Diagnostics.Debug.WriteLine(str + "Date Time->" + DateTime.Now.ToString("HH:mm:ss"));
 
+                if (sc.ConnectionType != SingalRClientConnectionType.PC)
+                {
+                    GlobalUtils.AddConnectionTestLogs(sc.ConnectionType.ToString(), "设备：(" + sc.ConnectionIdentify + ")已连接");
+                }
 
 
                 GlobalUtils.WriteDebugLogs(str);
@@ -241,6 +245,7 @@ namespace MediaMgrSystem
             catch (Exception ex)
             {
                 GlobalUtils.AddLogs(null, "系统异常", ex.Message);
+                GlobalUtils.AddConnectionTestLogs("系统异常", ex.Message);
             }
 
         }
@@ -290,30 +295,47 @@ namespace MediaMgrSystem
             {
                 DateTime dt = DateTime.UtcNow;
 
+                SingalRClientConnectionType disConnectType = SingalRClientConnectionType.PC;
+
                 string str = "DISConnected: Connected Id" + hub.Context.ConnectionId;
                 System.Diagnostics.Debug.WriteLine(str);
 
                 GlobalUtils.WriteDebugLogs(str);
                 if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
                 {
+                    disConnectType = SingalRClientConnectionType.VEDIOSERVER;
                     SendRefreshAudioDeviceNotice(hub);
                     GlobalUtils.AddLogs(hub.Clients, "系统异常", "视频服务器断开连接");
+                    GlobalUtils.AddConnectionTestLogs("系统异常", "视频服务器断开连接");
 
                 }
 
                 if (hub.Context.ConnectionId == GlobalUtils.WindowsServiceConnectionId)
                 {
+                    disConnectType = SingalRClientConnectionType.WINDOWSSERVICE;
                     SendRefreshAudioDeviceNotice(hub);
                     GlobalUtils.AddLogs(hub.Clients, "系统异常", "后台计划服务断开连接");
+                    GlobalUtils.AddConnectionTestLogs("系统异常", "后台计划服务断开连接");
                 }
 
                 if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId))
                 {
+                    disConnectType = SingalRClientConnectionType.ANDROID;
                     SendRefreshAudioDeviceNotice(hub);
                 }
                 if (GlobalUtils.CheckIfConnectionIdIsRemoteControlDevice(hub.Context.ConnectionId))
                 {
+                    disConnectType = SingalRClientConnectionType.REMOTECONTORLDEVICE;
                     SendRefreshRemoteControlDeviceNotice(hub);
+                }
+
+
+                if (disConnectType != SingalRClientConnectionType.PC)
+                {
+
+                    String ci = GlobalUtils.GetIdentifyByConectionId(hub.Context.ConnectionId);
+
+                    GlobalUtils.AddConnectionTestLogs(disConnectType.ToString(), "设备：(" + ci + ")断开连接");
                 }
 
 
@@ -322,6 +344,7 @@ namespace MediaMgrSystem
             catch (Exception ex)
             {
                 GlobalUtils.AddLogs(null, "系统异常", ex.Message);
+                GlobalUtils.AddConnectionTestLogs("系统异常", ex.Message);
             }
 
         }

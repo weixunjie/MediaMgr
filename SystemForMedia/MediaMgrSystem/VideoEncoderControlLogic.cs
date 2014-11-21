@@ -113,6 +113,20 @@ namespace MediaMgrSystem
                     eor.arg.mediaType = isLiveAudio ? "1" : "1";
                     eor.arg.udpBroadcastAddress = vi.UdpAddress;
 
+                    if (groups != null && groups.Count > 0)
+                    {
+                        foreach (var c in groups)
+                        {
+                            if (isOpen)
+                            {
+                                GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组播放成功");
+                            }
+                            else
+                            {
+                                GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组停止成功");
+                            }
+                        }
+                    }
 
                     PushQueue(isOpen ? QueueCommandType.VIDEOENCODEROPEN : QueueCommandType.VIDEOENCODEOCLOSE, ipsNeedToSend, eor.guidId, encoderId);
 

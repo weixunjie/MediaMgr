@@ -772,6 +772,8 @@
 
             if (connection.state === signalR.connectionState.disconnected) {
                 // Connection hasn't been started yet
+
+                $(connection).triggerHandler(events.onError, null);
                 throw new Error("SignalR: Connection must be started before data can be sent. Call .start() before .send()");
             }
 

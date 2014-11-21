@@ -302,7 +302,7 @@ namespace MediaMgrSystem
 
                         cmdToVideoSvr.arg = new VideoServerOperArg();
 
-                        
+
 
                         cmdToVideoSvr.arg.currentTime = DateTime.Now.ToString("HH:mm:ss");
 
@@ -516,7 +516,7 @@ namespace MediaMgrSystem
                         System.Diagnostics.Debug.WriteLine(str);
                         GlobalUtils.WriteDebugLogs(str);
 
-                        
+
 
                         new Thread(ProcessTimeOutRequest).Start(hub);
 
@@ -572,12 +572,27 @@ namespace MediaMgrSystem
                             {
 
                                 hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
-                                GlobalUtils.AddLogs(hub, "计划任务", channelName + "运行播放计划成功，运行时间：" + scheduleTime);
+                                GlobalUtils.AddLogs(hub, "计划任务", channelName + "运行播放计划成功，运行时间：");
 
                             }
 
 
 
+                        }
+
+                        if (channelGroup != null && channelGroup.Count > 0)
+                        {
+                            foreach (var c in channelGroup)
+                            {
+                                if (isSchedule)
+                                {
+                                    GlobalUtils.AddLogs(hub, "计划任务", c.GroupName + "组播放成功");
+                                }
+                                else
+                                {
+                                    GlobalUtils.AddLogs(hub, "手动操作", c.GroupName + "组播放成功");
+                                }
+                            }
                         }
 
                         List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
@@ -784,11 +799,11 @@ namespace MediaMgrSystem
                 List<string> ipRealySent = new List<string>();
 
                 VideoOperAndriodClientCommand clientsDataToSend = new VideoOperAndriodClientCommand();
-
+                List<GroupInfo> channelGroups=new List<GroupInfo>();
                 if (isWantToStop)
                 {
 
-                    List<GroupInfo> channelGroups;
+                  
                     CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipRealySent, out clientsDataToSend, bType, out channelGroups);
 
 
@@ -900,6 +915,7 @@ namespace MediaMgrSystem
                             mp.IsRepeating = false;
 
 
+
                             //    hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("Stop", "0", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
                             GlobalUtils.SendManuallyClientNotice(hub, "Stop", "0", mp);
                             GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动停止成功");
@@ -971,6 +987,23 @@ namespace MediaMgrSystem
 
 
 
+                }
+
+
+
+                if (channelGroups != null && channelGroups.Count > 0)
+                {
+                    foreach (var c in channelGroups)
+                    {
+                        if (isSchedule)
+                        {
+                            GlobalUtils.AddLogs(hub, "计划任务", c.GroupName + "组停止成功");
+                        }
+                        else
+                        {
+                            GlobalUtils.AddLogs(hub, "手动操作", c.GroupName + "组停止成功");
+                        }
+                    }
                 }
 
                 List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
