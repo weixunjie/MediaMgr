@@ -16,6 +16,14 @@ namespace MediaMgrSystem.DataModels
             set;
         }
 
+        public string devIds
+        {
+            get;
+            set;
+        }
+
+
+
 
     }
 

@@ -21,6 +21,7 @@
 
     var currentFunction;
 
+    var currentSId;
     var timeOutCurrentChannel;
     $(document).ready(function () {
 
@@ -55,6 +56,7 @@
 
         chat.client.sendManualPlayStatus = function (result, error, cid, cname, pids, strPlayingFunction) {
 
+      
             var strNornalChannelBg;
 
 
@@ -275,6 +277,12 @@
 
         $("#btnChooseProgram").click(function (e) {
 
+   
+
+            if ($("#btnChooseProgram").attr("disabled") == "disabled")
+            {
+                return;
+            }
 
 
             $("#lbSelectedProgram option").each(function () {
@@ -530,7 +538,8 @@
         $("#btnChannelControlRepeat").click(function () {
 
 
-            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, false, "", boolIsRepeat);
+            chat.server.sendStopRoRepeatCommand(currentOperChannelId, currentOperChannelName, false, "", boolIsRepeat,'<% =CheckIfAudio()%>');
+ 
 
 
             boolIsRepeat = !boolIsRepeat;
@@ -568,6 +577,7 @@
 
                     $("<% =schdueleIds%>").css("font-weight", "normal");
                     $("#btnSchedule" + msg.d).css("font-weight", "bold");
+                    currentSId = msg.d;
 
                 }
             });
@@ -580,7 +590,6 @@
 
 
         $("<% =schdueleIds%>").click(function (e) {
-
 
             var currentOperScheduel = e.currentTarget.id.replace("btnSchedule", "");
 
@@ -596,6 +605,12 @@
                 }
             });
 
+        
+            if (currentSId != currentOperScheduel)
+            {
+                chat.server.sendChangeChannelSchedule(currentOperChannelId, currentOperChannelName);
+
+            }
             is_popup_1st_menu = false;
             is_popup_2nd_menu = false;
 
@@ -729,7 +744,7 @@
         <img src="Images/ic_image_play.png" id="btnChannelControlPlay" onmouseover='this.src="Images/ic_image_play_hover.png"' onmousedown='this.src="Images/ic_image_play_hover.png"' class="channelControlButtonImage" />
 
     </li>
-
+    
 
     <li class="channelControlButtonLI">
 

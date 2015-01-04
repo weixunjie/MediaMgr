@@ -68,9 +68,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddEncoder(EncoderAudioInfo ei)
         {
-            String sqlStr = "INSERT INTO ENCODERINFO(ENCODERNAME) values ('{0}')";
+            String sqlStr = "INSERT INTO ENCODERINFO(ENCODERNAME,CLIENTIDENTIFY,BAUDRATE,Priority) values ('{0}','{1}','{2}','1')";
 
-            sqlStr = String.Format(sqlStr, ei.EncoderName);
+            sqlStr = String.Format(sqlStr, ei.EncoderName,ei.ClientIdentify,ei.BaudRate);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -103,6 +103,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         ei.EncoderId = dt.Rows[i]["ENCODERID"].ToString();
                         ei.EncoderName = dt.Rows[i]["ENCODERNAME"].ToString();
                         ei.BaudRate = dt.Rows[i]["BAUDRATE"].ToString();
+                        ei.Priority = dt.Rows[i]["Priority"].ToString();
                         ei.ClientIdentify = dt.Rows[i]["CLIENTIDENTIFY"].ToString();
                         encoderInfo.Add(ei);
                     }

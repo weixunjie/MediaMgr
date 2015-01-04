@@ -162,7 +162,11 @@
   <ItemGroup>
     <Content Include="Account\LoginOut.aspx" />
     <Content Include="Account\Login.aspx" />
+    <Content Include="Images\ic_image_audio_encoder.png" />
+    <Content Include="Images\ic_image_audio_encoder_calling.png" />
+    <Content Include="Images\ic_image_audio_encoder_offline.png" />
     <Content Include="Images\ic_image_video_encoder.png" />
+    <Content Include="Images\ic_image_video_encoder_billing.png" />
     <Content Include="MgrModel\EncoderVideoMgrDetail.aspx" />
     <Content Include="MgrModel\EncoderVideoMgrList.aspx" />
     <Content Include="MgrModel\UpgardeConfigMgr.aspx" />
@@ -288,6 +292,7 @@
     <Fakes Include="Fakes\Microsoft.AspNet.SignalR.Core.fakes" />
     <Content Include="ClassDiagram1.cd" />
     <Content Include="AudioLogic.ashx" />
+    <Content Include="VideoLogic.ashx" />
     <None Include="Scripts\_references.js" />
     <Content Include="Site.Master" />
     <Content Include="ViewSwitcher.ascx" />
@@ -297,6 +302,7 @@
     <None Include="Project_Readme.html" />
     <Content Include="Site.Mobile.Master" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
+    <Content Include="CallerLogic.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -323,6 +329,12 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="CallerLogic.ashx.cs">
+      <DependentUpon>CallerLogic.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="VideoLogic.ashx.cs">
+      <DependentUpon>VideoLogic.ashx</DependentUpon>
+    </Compile>
     <Compile Include="MgrModel\UpgardeConfigMgr.aspx.cs">
       <DependentUpon>UpgardeConfigMgr.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -432,7 +444,7 @@
     <Compile Include="MgrModel\ScheduleTaskMgrDetail.aspx.designer.cs">
       <DependentUpon>ScheduleTaskMgrDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="EncoderControlLogic.cs" />
+    <Compile Include="CallerEncoderControlLogic.cs" />
     <Compile Include="RemoteControlSys\RemoteControlDetailList.aspx.cs">
       <DependentUpon>RemoteControlDetailList.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

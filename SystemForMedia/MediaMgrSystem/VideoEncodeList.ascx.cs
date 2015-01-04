@@ -28,5 +28,40 @@ namespace MediaMgrSystem
                 
         }
 
+        public bool CheckDeviceCallingOnline(string encoderId)
+        {
+        
+            foreach (var st in GlobalUtils.GlobalGroupBusinessStatus)
+            {
+                if (st.TypeRunning == BusinessTypeForGroup.VideoEncoder)
+                {
+                    if (st.encoderId == encoderId)
+                    {
+                      //  isFound = true;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        
+        }
+
+        public string GetImageUrl(string encoderId)
+        {
+
+            string srcName = "ic_image_video_encoder.png";
+
+            if (CheckDeviceCallingOnline(encoderId))
+            {
+                srcName = "ic_image_video_encoder_billing.png";
+            }
+
+
+
+            return srcName;
+
+        }
+
     }
 }

@@ -22,9 +22,9 @@
 
             $('input[id$=tbStartTime]').timepicker({
                 timeFormat: 'hh:mm:ss',
-         
+
                 showSecond: true
-              
+
             });
 
             $("input[id$=tbEndTime]").timepicker({
@@ -101,10 +101,22 @@
 
                 <div class="form-group" style="margin-bottom: 10px">
 
+                    <div style="float:left; width:85px">
                     <asp:Label runat="server" AssociatedControlID="CbWeek" CssClass="col-md-2 control-label" Width="107px">星期:</asp:Label>
 
+                                        
 
-                    <asp:CheckBoxList ID="CbWeek" runat="server" Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="566px" CssClass="cb">
+                    </div>
+
+                      <div style="clear:right">
+                           
+                           <asp:CheckBox ID="cbCheckAll" runat="server" AutoPostBack="true" OnCheckedChanged="cbCheckAll_CheckedChanged" TextAlign="Left" />
+                               全选    
+
+                          </div>
+
+                    <div style="clear:left">
+                    <asp:CheckBoxList ID="CbWeek" runat="server"  Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="666px" CssClass="cb"  >
                         <asp:ListItem Value="1">星期一</asp:ListItem>
                         <asp:ListItem Value="2">星期二</asp:ListItem>
                         <asp:ListItem Value="3">星期三</asp:ListItem>
@@ -112,7 +124,10 @@
                         <asp:ListItem Value="5">星期五</asp:ListItem>
                         <asp:ListItem Value="6">星期六</asp:ListItem>
                         <asp:ListItem Value="7">星期日</asp:ListItem>
+                
                     </asp:CheckBoxList>
+
+                  </div>
 
 
                 </div>
@@ -212,7 +227,9 @@
                     <div class="form-group">
 
                         <asp:Button runat="server" Text="确认保存" ValidationGroup="inputValidate" CssClass="btn btn-default" OnClick="Add_Click" />
-                        <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Back_Click" />
+                        <asp:Button runat="server" ValidateRequestMode="Disabled" Text="返回" CssClass="btn btn-default" OnClick="Back_Click" ID="Button1" />
+
+                        <asp:Button ID="Button2" runat="server" Visible="false" CssClass="btn btn-default" OnClick="Button2_Click" Text="生成 " ValidateRequestMode="Disabled" />
 
                     </div>
             </section>

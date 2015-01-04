@@ -1,0 +1,1 @@
+alter table dbo.DeviceInfo add  macAddress nvarchar(200)

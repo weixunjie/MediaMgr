@@ -30,6 +30,7 @@
 
         var chat;
 
+        var isUnLoad = false;
         var is_popup_2nd_menu = false;
 
         var is_popup_1st_menu = false;
@@ -67,9 +68,9 @@
                 //warn before expiring
 
                 //stop the timer
-               // sessClearInterval();
+                // sessClearInterval();
                 //prompt for attention
-               // sessLogOut();
+                sessLogOut();
             }
 
             //$.ajax({
@@ -85,8 +86,14 @@
             //});
         }
 
+        $(window).unload(function () {
+            isUnLoad = true;
+            //  alert("Goodbye!");
+        });
+
         $(document).ready(function () {
 
+            isUnLoad = false;
 
             chat = $.connection.MediaMgrHub;
             $.connection.hub.start();
@@ -95,20 +102,35 @@
             chat.connection.stateChanged(function (change) {
                 if (change.newState === $.signalR.connectionState.disconnected) {
 
+                    if (isUnLoad==false) {
+                        //alert("disconnect");
+                        window.location.href = "<%=ResolveUrl("~/LogOut.aspx") %>";
                 }
-                else if (change.newState === $.signalR.connectionState.connected) {
+            }
+            else if (change.newState === $.signalR.connectionState.connected) {
 
-                }
+            }
             });
 
             chat.connection.error(function (error) {
-                alert("error");
+
                 window.location.href = "<%=ResolveUrl("~/LogOut.aspx") %>";
             });
 
             chat.client.sendRefreshAudioDeviceMessge = function (result) {
                 loadDeviceList(true);
             }
+
+
+            chat.client.sendRefreshVideoEncoderDeviceMessge = function (result) {
+                loadVideoEncderDeviceList(true);
+            }
+
+            chat.client.sendRefreshCallerEncoderDeviceMessge = function (result) {
+                loadCallerEncderDeviceList(true);
+            }
+
+            
 
             chat.client.sendRefreshLogMessge = function (result) {
 
@@ -117,8 +139,8 @@
 
             loadDeviceList(false);
             loadLogList();
-
-
+            loadVideoEncderDeviceList(false);
+            loadCallerEncderDeviceList(false)
 
             function loadDeviceList(loadSync) {
 
@@ -132,6 +154,41 @@
                     success: function (data) {
 
                         $("#divForDevice").html(data);
+                    }
+                });
+
+            }
+
+            function loadVideoEncderDeviceList(loadSync) {
+
+                $.ajax({
+                    url: "VideoLogic.ashx",
+                    contentType: "text/plain",
+                    cache: false,
+                    async: loadSync,
+                    data: null,
+                    type: "GET",
+                    success: function (data) {
+
+                 
+                        $("#divVideoEncodeList").html(data);
+                    }
+                });
+
+            }
+           
+            function loadCallerEncderDeviceList(loadSync) {
+
+                $.ajax({
+                    url: "CallerLogic.ashx",
+                    contentType: "text/plain",
+                    cache: false,
+                    async: loadSync,
+                    data: null,
+                    type: "GET",
+                    success: function (data) {
+                   
+                        $("#divCallerEncodeList").html(data);
                     }
                 });
 
@@ -173,8 +230,10 @@
                 
             %>
 
-            <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-right: 5px" />
-            <videoEncodeList:VideoEncodeList ID="EncoderList" runat="server" />
+            <hr style="width: 100%; height: 1px; border: 0; background-color: #CDCDC1; margin-right: 5px" />
+
+            <div id="divVideoEncodeList" style="margin-left: 0px; padding-top: 10px"></div>
+            <%--<videoEncodeList:VideoEncodeList ID="EncoderList" runat="server" />--%>
 
             <% 
                  }
@@ -182,13 +241,16 @@
                  { 
             %>
 
-            <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-right: 5px" />
-            <audioEncoderList:AudioEncoderList ID="audioEncoderList1" runat="server" />
+            <hr style="width: 100%; height: 1px; border: 0; background-color: #CDCDC1; margin-right: 5px" />
+            <%--<audioEncoderList:AudioEncoderList ID="audioEncoderList1" runat="server" />--%>
+
+               <div id="divCallerEncodeList" style="margin-left: 0px; padding-top: 10px"></div>
+
             <%  } %>
         </div>
     </div>
 
-    <div style="margin-left: 336px; border-left: solid; margin-top: 0px; border-left-color: #4179b6; border-left-width: 1px; padding-right: 5px; padding-bottom: 15px">
+    <div style="margin-left: 336px; border-left: solid; margin-top: 0px; border-left-color: #CDCDC1; border-left-width: 1px; padding-right: 5px; padding-bottom: 15px">
 
 
         <div id="divForDevice" style="margin-left: 0px; padding-top: 10px"></div>

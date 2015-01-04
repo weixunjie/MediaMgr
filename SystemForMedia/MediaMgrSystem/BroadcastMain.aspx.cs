@@ -46,8 +46,9 @@ namespace MediaMgrSystem
         }
 
         [WebMethod]
-        public static string GetRunningSchedule()
+        public static string GetRunningPrograme()
         {
+            
             string str = "当前节目：";
 
             if (GlobalUtils.RunningSchudules != null && GlobalUtils.RunningSchudules.Count > 0)
@@ -74,17 +75,21 @@ namespace MediaMgrSystem
 
             if (GlobalUtils.ManualPlayItems != null && GlobalUtils.ManualPlayItems.Count > 0)
             {
+               
                 foreach (var mp in GlobalUtils.ManualPlayItems)
                 {
-                    List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(mp.PlayingPids[0]);
-
-                    string pName = string.Empty;
-                    if (pis != null && pis.Count > 0)
+                    if (mp.IsPlaying)
                     {
-                        pName = pis[0].ProgramName;
-                        str += pName;
+                        List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(mp.PlayingPids[0]);
 
-                        return str;
+                        string pName = string.Empty;
+                        if (pis != null && pis.Count > 0)
+                        {
+                            pName = pis[0].ProgramName;
+                            str += pName;
+
+                            return str;
+                        }
                     }
                 }
             }

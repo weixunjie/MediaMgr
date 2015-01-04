@@ -28,86 +28,107 @@
 
             showSecond: false
         });
+        
+        <% if (CheckIfCanDragGroups())
+           {
+               %>
+        $("#btnSingleGroupChooseChannel").attr("disabled", false);
+        $("#btnSingleGroupChooseEncoder").attr("disabled", false);
 
-        <%  
+        $("#btnBatchGroupOperation").attr("disabled", false);
+
+        <% } else {%> 
+
+        $("#btnSingleGroupChooseChannel").attr("disabled", true);
+        $("#btnSingleGroupChooseEncoder").attr("disabled", true);
+        $("#btnBatchGroupOperation").attr("disabled", true);
+        
+
+        <%}
 
     
-    List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroupsIncludeDefaultGroup();
-    List<MediaMgrSystem.DataModels.ChannelInfo> channels = GetAllChannels();
+        List<MediaMgrSystem.DataModels.GroupInfo> dGroups = GetAllGroupsIncludeDefaultGroup();
+        List<MediaMgrSystem.DataModels.ChannelInfo> channels = GetAllChannels();
 
-    List<MediaMgrSystem.DataModels.VideoEncoderInfo> encoders = GetAllEncoders();
+        List<MediaMgrSystem.DataModels.VideoEncoderInfo> encoders = GetAllEncoders();
 
-    GetAllEncoderRunning();
+        GetAllEncoderRunning();
 
-    string deviceIds = string.Empty;
-    string imgGroupShowIds = string.Empty;
+        string deviceIds = string.Empty;
+        string imgGroupShowIds = string.Empty;
 
-    string deviceBatchOperDeviceIds = string.Empty;
-    int tmpDeviceIndex = 0;
-    for (int i = 0; i < dGroups.Count; i++)
-    {
-        if (dGroups[i] != null && dGroups[i].Devices != null && dGroups[i].Devices.Count > 0)
+        string deviceBatchOperDeviceIds = string.Empty;
+        int tmpDeviceIndex = 0;
+        for (int i = 0; i < dGroups.Count; i++)
         {
-
-            foreach (var di in dGroups[i].Devices)
+            if (dGroups[i] != null && dGroups[i].Devices != null && dGroups[i].Devices.Count > 0)
             {
-                tmpDeviceIndex++;
-                deviceIds = deviceIds + "#deviceMenu" + di.DeviceId + ",";
+
+                foreach (var di in dGroups[i].Devices)
+                {
+                    tmpDeviceIndex++;
+                    deviceIds = deviceIds + "#deviceMenu" + di.DeviceId + ",";
+                }
             }
-        }
 
-        if (dGroups[i].GroupId == "-1") { continue; }
+            if (dGroups[i].GroupId == "-1") { continue; }
 
-        deviceBatchOperDeviceIds = deviceBatchOperDeviceIds + "#btnDeviceBatchOper" + dGroups[i].GroupId + ",";
+            deviceBatchOperDeviceIds = deviceBatchOperDeviceIds + "#btnDeviceBatchOper" + dGroups[i].GroupId + ",";
 
 
-        imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ",";
-    };
+            imgGroupShowIds = imgGroupShowIds + "#imgGroupShow" + dGroups[i].GroupId + ",";
+        };
 
-    deviceIds = deviceIds.TrimEnd(',');
-    imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
-    deviceBatchOperDeviceIds = deviceBatchOperDeviceIds.TrimEnd(',');
-    string btnMenuChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMenuChannelSelIds = btnMenuChannelSelIds + "#btnMenuChannelSel" + channels[i].ChannelId + ","; }; btnMenuChannelSelIds = btnMenuChannelSelIds.TrimEnd(',');
+        deviceIds = deviceIds.TrimEnd(',');
+        imgGroupShowIds = imgGroupShowIds.TrimEnd(',');
+        deviceBatchOperDeviceIds = deviceBatchOperDeviceIds.TrimEnd(',');
+        string btnMenuChannelSelIds = string.Empty; for (int i = 0; i < channels.Count; i++) { btnMenuChannelSelIds = btnMenuChannelSelIds + "#btnMenuChannelSel" + channels[i].ChannelId + ","; }; btnMenuChannelSelIds = btnMenuChannelSelIds.TrimEnd(',');
 
-    string btnMenuEncoderSelIds = string.Empty; for (int i = 0; i < encoders.Count; i++) { btnMenuEncoderSelIds = btnMenuEncoderSelIds + "#btnMenuEncoderSel" + encoders[i].EncoderId + ","; }; btnMenuEncoderSelIds = btnMenuEncoderSelIds.TrimEnd(',');
+        string btnMenuEncoderSelIds = string.Empty; for (int i = 0; i < encoders.Count; i++) { btnMenuEncoderSelIds = btnMenuEncoderSelIds + "#btnMenuEncoderSel" + encoders[i].EncoderId + ","; }; btnMenuEncoderSelIds = btnMenuEncoderSelIds.TrimEnd(',');
     
-             %>
+        %>
 
 
 
-        $("#btnConfirmedBatchGroupOperation").click(function (e) {
+   $("#btnConfirmedBatchGroupOperation").click(function (e) {
 
 
-            $("#dialogForBatchGrouplbAvaiableGroups option:selected").each(function () {
+       $("#dialogForBatchGrouplbAvaiableGroups option:selected").each(function () {
 
 
-                var selectedGroupId = $(this).val();
 
-                var selectedChannelId = $('#ddBatchSelectChannel option:selected').val();
+           var selectedGroupId = $(this).val();
 
-                var selectedEncoderId = $('#ddBatchSelectVideoSorce option:selected').val();
+           var selectedChannelId = $('#ddBatchSelectChannel option:selected').val();
 
-
-                $.ajax({
-                    type: "POST",
-                    async: false,
-                    url: "AudioBroadcastMain.aspx/SaveGroupChannelAndEncoder",
-                    data: "{'cid':'" + selectedChannelId + "',gid:'" + selectedGroupId + "','eid':'" + selectedEncoderId + "'}",
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (msg) {
+           var selectedEncoderId = $('#ddBatchSelectVideoSorce option:selected').val();
 
 
-                    }
-                });
+           $.ajax({
+               type: "POST",
+               async: false,
+               url: "BroadcastMain.aspx/SaveGroupChannelAndEncoder",
+               data: "{'cid':'" + selectedChannelId + "',gid:'" + selectedGroupId + "','eid':'" + selectedEncoderId + "'}",
+               dataType: "json",
+               contentType: "application/json; charset=utf-8",
+               success: function (msg) {
 
-            })
+
+               }
+           });
+
+       })
 
 
-            $('#dialogForBatchGroup').modal('hide');
-        });
+       $('#dialogForBatchGroup').modal('hide');
+   });
 
         $("#btnBatchGroupOperation").click(function (e) {
+
+            if ($("#btnBatchGroupOperation").attr("disabled") == "disabled") {
+                return;
+            }
+
 
             $('#dialogForBatchGroup').modal('show');
         });
@@ -115,6 +136,11 @@
 
 
         $("#btnSingleGroupChooseChannel").click(function (e) {
+
+            if ($("#btnSingleGroupChooseChannel").attr("disabled") == "disabled") {
+                return;
+            }
+
 
             $("#deviceListSingleGroupChooseEncoderMenu").hide();
 
@@ -133,13 +159,13 @@
                 success: function (msg) {
 
                     $("<% =btnMenuChannelSelIds%>").css("font-weight", "normal");
-                    $("#btnMenuChannelSel" + msg.d).css("font-weight", "bold");
+                $("#btnMenuChannelSel" + msg.d).css("font-weight", "bold");
 
-                }
-            });
-
-            $("#deviceListSingleGroupChooseChannelMenu").show().css("left", x).css("top", y);
+            }
         });
+
+        $("#deviceListSingleGroupChooseChannelMenu").show().css("left", x).css("top", y);
+    });
 
 
         $("<% =btnMenuChannelSelIds%>").click(function (e) {
@@ -173,6 +199,10 @@
         $("#btnSingleGroupChooseEncoder").click(function (e) {
 
 
+            if ($("#btnSingleGroupChooseEncoder").attr("disabled") == "disabled") {
+                return;
+            }
+
 
             $("#deviceListSingleGroupChooseChannelMenu").hide()
 
@@ -193,14 +223,14 @@
                 success: function (msg) {
 
                     $("<% =btnMenuEncoderSelIds%>").css("font-weight", "normal");
-                    $("#btnMenuEncoderSel" + msg.d).css("font-weight", "bold");
+                $("#btnMenuEncoderSel" + msg.d).css("font-weight", "bold");
 
-                }
-            });
-
-            $("#deviceListSingleGroupChooseEncoderMenu").show().css("left", x).css("top", y);
-
+            }
         });
+
+        $("#deviceListSingleGroupChooseEncoderMenu").show().css("left", x).css("top", y);
+
+    });
 
 
 
@@ -233,36 +263,40 @@
 
             $("<%= imgGroupShowIds %>").click(function (e) {
 
+            hideAllNenus();
+
+            currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
+
+            is_popup_1st_menu = true;
+
+            var x = $(this).offset().left;
+            var y = $(this).offset().top + $(this).height() + 2;
+
+
+
+
+            $("#deviceListSingleGroupClickMenuBox").show().css("left", x).css("top", y);
+
+
+
+       
+
+
+        });
+
+        $("<%= imgGroupShowIds %>").mouseout(function (e) {
+            is_popup_1st_menu = false;
+        });
+
+        $(document).click(function () {
+
+            if (!is_popup_1st_menu && !is_popup_2nd_menu) {
+
                 hideAllNenus();
+            }
+        });
 
-                currentOperGroup = e.currentTarget.id.replace("imgGroupShow", "");
-
-                is_popup_1st_menu = true;
-
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
-
-
-
-
-                $("#deviceListSingleGroupClickMenuBox").show().css("left", x).css("top", y);
-
-
-            });
-
-            $("<%= imgGroupShowIds %>").mouseout(function (e) {
-                is_popup_1st_menu = false;
-            });
-
-            $(document).click(function () {
-
-                if (!is_popup_1st_menu && !is_popup_2nd_menu) {
-
-                    hideAllNenus();
-                }
-            });
-
-        }
+    }
 
         function hideAllNenus() {
 
@@ -387,23 +421,23 @@
         $("<%= deviceBatchOperDeviceIds %>").click(function (e) {
 
 
-            hideAllNenus();
-            currentOperDevice = "";
+        hideAllNenus();
+        currentOperDevice = "";
 
-            currentOperDeviceGroupId = e.currentTarget.id.replace("btnDeviceBatchOper", "");
+        currentOperDeviceGroupId = e.currentTarget.id.replace("btnDeviceBatchOper", "");
 
-            currentOperDeviceIpAddress = "";
-            is_popup_1st_menu = true;
+        currentOperDeviceIpAddress = "";
+        is_popup_1st_menu = true;
 
-            var x = $(this).offset().left;
-            var y = $(this).offset().top + $(this).height() + 2;
+        var x = $(this).offset().left;
+        var y = $(this).offset().top + $(this).height() + 2;
 
 
-            $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
+        $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
 
-        });
+    });
 
-        $("<%= deviceBatchOperDeviceIds %>").mouseout(function (e) {
+    $("<%= deviceBatchOperDeviceIds %>").mouseout(function (e) {
             is_popup_1st_menu = false;
         });
 
@@ -412,36 +446,36 @@
 
             $("<%= deviceIds %>").click(function (e) {
 
-                is_popup_1st_menu = true;
+            is_popup_1st_menu = true;
 
 
+            hideAllNenus();
+            currentOperDeviceGroupId = "";
+            currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
+            currentOperDeviceIpAddress = e.currentTarget.name;
+
+
+            var x = $(this).offset().left;
+            var y = $(this).offset().top + $(this).height() + 2;
+
+
+            $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
+
+
+        });
+
+        $("<%= deviceIds %>").mouseout(function (e) {
+            is_popup_1st_menu = false;
+        });
+
+        $(document).click(function () {
+
+            if (!is_popup_1st_menu && !is_popup_2nd_menu) {
                 hideAllNenus();
-                currentOperDeviceGroupId = "";
-                currentOperDevice = e.currentTarget.id.replace("deviceMenu", "");
-                currentOperDeviceIpAddress = e.currentTarget.name;
+            }
+        });
 
-
-                var x = $(this).offset().left;
-                var y = $(this).offset().top + $(this).height() + 2;
-
-
-                $("#deviceListDeviceMenu").show().css("left", x).css("top", y);
-
-
-            });
-
-            $("<%= deviceIds %>").mouseout(function (e) {
-                is_popup_1st_menu = false;
-            });
-
-            $(document).click(function () {
-
-                if (!is_popup_1st_menu && !is_popup_2nd_menu) {
-                    hideAllNenus();
-                }
-            });
-
-        }
+    }
 
         $.showSingleDeviceClickMenu();
 
@@ -453,16 +487,18 @@
     string groupDeviceListIds = string.Empty; for (int i = 0; i < dGroups.Count; i++) { groupDeviceListIds = groupDeviceListIds + "#groupDeviceList" + dGroups[i].GroupId + ","; }; groupDeviceListIds = groupDeviceListIds.TrimEnd(','); %>
 
 
-        <% if (!CheckIfPlaying())
-           {
+        <%
+    if (CheckIsSupperUser())
+    {
+        if (CheckIfCanDragGroups())
+        {
 
-               if (CheckIsSupperUser())
-               { 
+              
                %>
 
         $("<%=groupDeviceListIds%>").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
          <% }
-           } %>
+    } %>
         function saveOrder() {
 
 
@@ -504,6 +540,76 @@
 
 
 <div>
+    <table class="table table-bordered table-striped; " border="0" style="overflow: auto; height: auto; margin-top: 0px; margin-bottom: 0px; margin-left: 0px;">
+
+        <thead>
+            <tr>
+
+                <th style="line-height: 30px">
+                    <div class="row" style="margin-left: 0px">
+
+                        <div class="pull-left">分组信息</div>
+                        <div class="pull-right"><a class="btn  btn-success" id="btnBatchGroupOperation" data-content="">批量操作</a></div>
+
+                    </div>
+
+                </th>
+
+            </tr>
+        </thead>
+
+        <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
+
+        <tbody>
+
+            <tr>
+                <td>
+                    <div style="height: 90px">
+                        <ul id="deviceGroupList" class="deviceULStyle">
+                            <%          
+         
+                                for (int k = 0; k < dGroups.Count; k++) %>
+                            <%    {
+                                      if (dGroups[k].GroupId == "-1")
+                                      {
+                                          continue;
+                                      }
+                            %>
+                            <li data-itemid="<%=dGroups[k].GroupId %>">
+
+                                <div class="row" style="margin-left: 0px">
+                                    <div class="col-md-4">
+                                        <p style="text-align: center">
+
+                                            <% string strImageName = GetGroupImageUrl(); %>
+
+                                            <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/<% =strImageName %>" style="width: 50px; height: 50px" />
+                                        </p>
+                                        <p id="ptext" style="text-align: center">
+                                            <% =dGroups[k].GroupName %>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </li>
+
+
+                            <%  }
+                            %>
+                        </ul>
+
+
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 1px; padding: 0px">
+                <td style="height: 1px; padding: 0px">
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #CDCDC1; margin: 0px" />
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
 
 
 
@@ -601,11 +707,11 @@
 
                     <% if (l == dGroups.Count - 1)
                        { %>
-                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #CDCDC1; margin: 0px" />
                     <% }
                        else
                        { %>
-                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin-top: 0px; margin-bottom: 0px; margin-left: 5px; margin-right: 5px" />
+                    <hr style="width: 100%; height: 1px; border: 0; background-color: #CDCDC1; margin-top: 0px; margin-bottom: 0px; margin-left: 5px; margin-right: 5px" />
                     <% } %>
                 </td>
             </tr>
@@ -617,76 +723,6 @@
         } %>
 
 
-    <table class="table table-bordered table-striped; " border="0" style="overflow: auto; height: auto; margin-top: 0px; margin-bottom: 0px; margin-left: 0px;">
-
-        <thead>
-            <tr>
-
-                <th style="line-height: 30px">
-                    <div class="row" style="margin-left: 0px">
-
-                        <div class="pull-left">分组信息</div>
-                        <div class="pull-right"><a class="btn  btn-success" id="btnBatchGroupOperation" data-content="">批量操作</a></div>
-
-                    </div>
-
-                </th>
-
-            </tr>
-        </thead>
-
-        <%--<div class="jumbotron"  style="overflow: auto; height: auto; margin-top: 5px;">--%>
-
-        <tbody>
-
-            <tr>
-                <td>
-                    <div style="height: 90px">
-                        <ul id="deviceGroupList" class="deviceULStyle">
-                            <%          
-         
-                                for (int k = 0; k < dGroups.Count; k++) %>
-                            <%    {
-                                      if (dGroups[k].GroupId == "-1")
-                                      {
-                                          continue;
-                                      }
-                            %>
-                            <li data-itemid="<%=dGroups[k].GroupId %>">
-
-                                <div class="row" style="margin-left: 0px">
-                                    <div class="col-md-4">
-                                        <p style="text-align: center">
-
-                                            <% string strImageName = GetGroupImageUrl(); %>
-
-                                            <img id="imgGroupShow<% =dGroups[k].GroupId %>" src="Images/<% =strImageName %>" style="width: 50px; height: 50px" />
-                                        </p>
-                                        <p id="ptext" style="text-align: center">
-                                            <% =dGroups[k].GroupName %>
-                                        </p>
-                                    </div>
-                                </div>
-
-                            </li>
-
-
-                            <%  }
-                            %>
-                        </ul>
-
-
-                    </div>
-                </td>
-            </tr>
-            <tr style="height: 1px; padding: 0px">
-                <td style="height: 1px; padding: 0px">
-                    <hr style="width: 100%; height: 1px; border: 0; background-color: #4179b6; margin: 0px" />
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
 
 
 
@@ -699,7 +735,7 @@
 
                 <h4 style="text-align: left; margin-top: 0px">可选组</h4>
 
-                <select size="4" multiple="multiple" style="height: 160px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
+                <select size="4" multiple="multiple" style="height: 136px; width: 150px;" id="dialogForBatchGrouplbAvaiableGroups">
 
                     <% foreach (var di in dGroups)
                        {
@@ -748,13 +784,7 @@
                     </select>
                 </div>
 
-                <div style="vertical-align: middle">
 
-                    <input type="checkbox" id="ckcBatchOpenVideoSource" style="float: left; vertical-align: middle" />
-                    <label for="ckcBatchOpenVideoSource" style="line-height: 21px">&nbsp;打开视频源</label>
-                    <br />
-
-                </div>
 
             </div>
 
@@ -846,6 +876,8 @@
             <a id="btnConfirmedDialogForDeviveSchdeduelGroup" class="btn primary">确认</a>
         </div>
     </div>
+
+
     <ul class="dropdown-menu" role="menu"
         aria-labelledby="dropdownMenu" id="deviceListSingleGroupClickMenuBox">
         <li><a class="btn" id="btnSingleGroupChooseChannel" data-backdrop="static" data-dismiss="modal" data-keyboard="false">通道选择</a></li>
@@ -884,7 +916,7 @@
 
         <li><a class="btn" id="deviceListSingleDeviceMenuBtnShutDownDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭设备</a></li>
 
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnScheduleDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">计划开关机</a></li>
+      <%--  <li><a class="btn" id="deviceListSingleDeviceMenuBtnScheduleDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">计划开关机</a></li>--%>
 
 
 

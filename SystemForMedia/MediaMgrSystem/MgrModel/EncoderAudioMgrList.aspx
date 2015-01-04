@@ -3,7 +3,7 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
-    <h3>视频源管理</h3>
+    <h3>呼叫台管理</h3>
 
 
     <section id="groupMgrSection">

@@ -35,13 +35,13 @@ namespace MediaMgrSystem
         void Application_Error(object sender, EventArgs e)
         {
             //捕获整个解决方案下的所有异常
-            try
-            {
-                HttpUnhandledException eHttp = this.Server.GetLastError() as HttpUnhandledException;
-                Exception eApp = eHttp.InnerException;
-                GlobalUtils.AddConnectionTestLogs("系统异常", eApp.Message);
-            }
-            catch { }
+            //try
+            //{
+            //    HttpUnhandledException eHttp = this.Server.GetLastError() as HttpUnhandledException;
+            //    Exception eApp = eHttp.InnerException;
+            //    GlobalUtils.AddConnectionTestLogs("系统异常", eApp.Message);
+            //}
+            //catch { }
         }
 
 

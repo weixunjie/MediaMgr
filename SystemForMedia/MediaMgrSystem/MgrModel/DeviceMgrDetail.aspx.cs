@@ -52,6 +52,8 @@ namespace MediaMgrSystem.MgrModel
                     this.TbName.Text = di.DeviceName;
                     this.TBIPAddress.Text = di.DeviceIpAddress;
 
+                    this.tbMacAddress.Text = di.MacAddress;
+
                     cbFunction.Items[0].Selected = di.UsedToAudioBroandcast;
 
                     cbFunction.Items[1].Selected = di.UsedToVideoOnline;

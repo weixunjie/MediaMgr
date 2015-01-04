@@ -99,12 +99,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
            // return GetAllClientList(sqlStr);
         }
 
-        public int DeleteSingalConnectedClientById(string connectionId)
+        public int DeleteSingalConnectedClientByConnectIds(string ind)
         {
 
             String sqlStr = "DELETE FROM SINGALCONNECTEDCLIENTS WHERE CONNECTIONID='{0}'";
 
-            sqlStr = String.Format(sqlStr, connectionId);
+            sqlStr = String.Format(sqlStr, ind);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 

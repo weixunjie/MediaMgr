@@ -35,6 +35,9 @@
 
                                     <asp:BoundField DataField="GroupId" HeaderText="所在分组" />
 
+                                       <asp:BoundField DataField="DeviceIPAddress" HeaderText="Ip地址" />
+
+                                       <asp:BoundField DataField="macAddress" HeaderText="Mac地址" />
                                     <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">
                                         <ItemTemplate>
                                             <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("DeviceId")%>' runat="server" />

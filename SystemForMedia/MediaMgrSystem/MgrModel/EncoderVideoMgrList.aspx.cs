@@ -54,7 +54,7 @@ namespace MediaMgrSystem.MgrModel
             }
             else if (e.CommandName == "Del")
             {
-                GlobalUtils.EncoderBLLInstance.RemoveEncoder(e.CommandArgument.ToString());
+                GlobalUtils.VideoEncoderBLLInstance.RemoveEncoder(e.CommandArgument.ToString());
                 BindListData();
             }
         }

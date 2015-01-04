@@ -85,6 +85,15 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.TextBox TbHiddenIdSchedule;
         
         /// <summary>
+        /// cbCheckAll control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox cbCheckAll;
+        
+        /// <summary>
         /// CbWeek control.
         /// </summary>
         /// <remarks>
@@ -200,5 +209,23 @@ namespace MediaMgrSystem.MgrModel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddPriority;
+        
+        /// <summary>
+        /// Button1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button1;
+        
+        /// <summary>
+        /// Button2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button2;
     }
 }

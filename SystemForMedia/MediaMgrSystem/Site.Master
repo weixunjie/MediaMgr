@@ -60,6 +60,8 @@
 
         <script type="text/javascript">
             $(document).ready(function () {
+
+
                 $('.dropdown-toggle').dropdown();
             });
         </script>
@@ -79,7 +81,7 @@
 
 
 
-                            <a style="padding-left: 0px; height: 20px; width: 220px; color: whitesmoke" class="navbar-brand" runat="server">杰讯智能播控系统</a>
+                            <a style="padding-left: 0px; height: 20px; width: 250px; color: whitesmoke" class="navbar-brand" runat="server">杰讯智能播控系统V1.2</a>
 
 
 
@@ -120,6 +122,8 @@
 
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/DeviceMgrList.aspx") %>">设备管理</a></li>
+
+                                                                <li><a href="<%=ResolveUrl("~/MgrModel/EncoderAudioMgrList.aspx") %>">呼叫台管理</a></li>
 
                                 <li><a href="<%=ResolveUrl("~/MgrModel/EncoderVideoMgrList.aspx") %>">视频源管理</a></li>
 
@@ -234,7 +238,7 @@
                     $.ajax({
                         async: false,
                         type: "POST",
-                        url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetRunningSchedule",
+                        url: "<%=ResolveUrl("~/BroadcastMain.aspx")%>/GetRunningPrograme",
                         data: null,
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -268,7 +272,7 @@
 
 
                 function runFunUpdateProgrameInfo() {
-                    var interval = setTimeout(funUpdateProgrameInfo, 5000);
+                    var interval = setTimeout(funUpdateProgrameInfo, 2000);
                 }
 
 

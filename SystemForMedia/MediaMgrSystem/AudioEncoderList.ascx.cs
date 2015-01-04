@@ -17,15 +17,15 @@ namespace MediaMgrSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         public List<EncoderAudioInfo> GetAllEncoders()
         {
             List<EncoderAudioInfo> datas = GlobalUtils.EncoderBLLInstance.GetAllEncoders();
 
-            return datas;         
-                
+            return datas;
+
         }
 
         public List<EncoderSyncGroupInfo> GetAllGroups()
@@ -36,14 +36,48 @@ namespace MediaMgrSystem
             {
                 foreach (var d in datas)
                 {
-                    reData.Add(new EncoderSyncGroupInfo { GroupId = d.GroupId, GroupName = d.GroupName });
- 
+                    reData.Add(new EncoderSyncGroupInfo { groupId = d.GroupId, groupName = d.GroupName });
+
                 }
             }
 
             return reData;
 
         }
+
+        public bool CheckDeviceIsOnline(string ipAddress)
+        {
+            List<string> ipReallySent = new List<string>();
+            return GlobalUtils.GetConnectionIdsByIdentify(new List<string> { ipAddress }, SingalRClientConnectionType.ENCODERAUDIODEVICE, out ipReallySent).Count > 0;
+
+        }
+
+
+        public string GetImageUrl(string ipAddress)
+        {
+
+
+            string srcName = "ic_image_audio_encoder_offline.png";
+
+
+            if (CheckDeviceIsOnline(ipAddress))
+            {
+                srcName = "ic_image_audio_encoder.png";
+            }
+
+            RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(ipAddress);
+
+            if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
+            {
+                srcName = "ic_image_audio_encoder_calling.png";
+            }
+
+
+
+            return srcName;
+
+        }
+
 
     }
 }

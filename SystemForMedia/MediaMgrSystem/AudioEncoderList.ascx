@@ -39,9 +39,25 @@
 
 
             chat.server.sendAudioEncoderOpenCommand(currentOperEncoderClientIdentify,groupIds)
-            $('#dialogForChooseProgram').modal('hide');
+            $('#dialogForChooseGroupId').modal('hide');
 
         });
+
+        $("#btnCallAll").click(function (e) {
+                     
+
+            var groupIds = "";
+            $("#lbAvaiableGroups option").each(function () {
+                groupIds = groupIds + $(this).val() + ",";
+            })
+
+
+            chat.server.sendAudioEncoderOpenCommand(currentOperEncoderClientIdentify, groupIds)
+            $('#dialogForChooseGroupId').modal('hide');
+
+        });
+
+        
 
         $("#btnOpenEncoder").click(function (e) {
 
@@ -90,13 +106,13 @@
                         if (msg != null && msg.d != null)
                         {
                             if (msg.d == "0") {
-                                $("#btnOpenEncoder").attr("disabled", true);
+                                $("#btnOpenEncoder").attr("disabled", false);
                                 $("#btnCloseEncoder").attr("disabled", false);
                             }
                             else {
 
                                 $("#btnOpenEncoder").attr("disabled", false);
-                                $("#btnCloseEncoder").attr("disabled", true);
+                                $("#btnCloseEncoder").attr("disabled", false);
                             }
                         }
 
@@ -138,42 +154,85 @@
 </ul>
 
 
-<% 
-    for (int i = 0; i < allEncoders.Count; i++)
-    {
+<div style="margin-bottom: 10px; margin-left: 0px; margin-top: 10px; text-align: left;">
+    <table class="table table-bordered table-striped;" cellspacing="0" cellpadding="5" border="0" style="width: 300px; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px;">
+        <%  
+        
+            int totalRow = allEncoders.Count / 3 + allEncoders.Count % 3;
 
-        if (i % 2 == 0)
-        {
-%>
+            if (allEncoders.Count < 3)
+            {
+                totalRow = 1;
+            }
+
+            for (int j = 0; j < totalRow; j++)
+            {
+            
+        %>
 
 
-<div style="float: left; height: 160px">
-    <% 
-        }
-        else
-        { 
-    %>
-    <div style="float: right; height: 160px">
-        <% }%>
-        <div id="encoderDiv<%=allEncoders[i].EncoderId %>" data-itemcid="<%=allEncoders[i].ClientIdentify %>" data-itemid="<%=allEncoders[i].EncoderName %>" style="width: 99px; margin: 0px 0px 0px 0px; height: 99px; line-height: 99px; vertical-align: central; text-align: center; float: left">
+        <tr>
 
-            <img src="Images/ic_image_encoder.png" width="90" height="99" />
-        </div>
 
-        <div style="clear: both;">
-        </div>
 
-        <div style="height: 10px; margin-top: 10px; text-align: center; font-size: 15pt">
-            <%=  allEncoders[i].EncoderName  %>
-        </div>
+            <% for (int k = 0; k < 3; k++)
+               {
 
-    </div>
-    <% } %>
+                   if ((j * 3 + k) > allEncoders.Count - 1)
+                   {
+            %>
+
+            <td style="text-align: left; padding: 0px; padding-right: 10px; padding-bottom: 5px">
+                <div style="margin: 0px 0px 0px 0px; height: 105px; line-height: 105px; vertical-align: central; text-align: center;">
+                </div>
+            </td>
+
+
+            <%
+                       continue;
+                   }                 
+
+                                  
+               
+            %>
+
+            <td style="text-align: left; width: 100px;padding: 0px; padding-right: 10px; padding-bottom: 5px">
+
+                <div style="width: 100px; margin: 0px 0px 0px 0px; height: 105px; line-height: 105px; vertical-align: central; text-align: center;">
+
+                    <div id="encoderDiv<%=allEncoders[j * 3 + k].EncoderId %>" data-itemcid="<%=allEncoders[j * 3 + k].ClientIdentify %>" data-itemid="<%=allEncoders[j * 3 + k].EncoderName %>"  style="height: 60px; line-height: 60px">
+
+
+                          <%                                                 
+                                      string srcName = GetImageUrl(allEncoders[j * 3 + k].ClientIdentify);
+
+                                      srcName = ResolveUrl("~/Images/" + srcName);
+                                            %>
+
+
+                        <img src="<% =srcName %>" style="width: 60px; height: 100%" />
+
+                      
+                    </div>
+
+
+                    <div style="text-align: center; line-height: 30px">
+                        <%=  allEncoders[j * 3 + k].EncoderName  %>
+                    </div>
+
+                </div>
+            </td>
+            <% } %>
+        </tr>
+
+        <% } %>
+    </table>
+</div>
 
 
     <div id="dialogForChooseGroupId" style="width: auto" class="modal hide">
         <div class="modal-header">
-            <a class="close" onclick=" $('#dialogForChooseProgram').modal('hide');" title="关闭">&times;</a><h3>分组选择</h3>
+            <a class="close" onclick=" $('#dialogForChooseGroupId').modal('hide');" title="关闭">&times;</a><h3>分组选择</h3>
         </div>
         <div class="modal-body">
             <div style="float: left; height: 190px; width: 250px;">
@@ -183,7 +242,7 @@
                     <%  foreach (var g in allGroups)
                         { %>
 
-                    <option value="<% =g.GroupId %>" ><% =g.GroupName %></option>
+                    <option value="<% =g.groupId %>" ><% =g.groupName %></option>
 
 
                     <%} %>
@@ -195,5 +254,6 @@
         </div>
         <div class="modal-footer">
             <a id="btnConfirmGroupSel" class="btn primary">确认</a>
+             <a id="btnCallAll" class="btn primary">全体呼叫</a>
         </div>
     </div>

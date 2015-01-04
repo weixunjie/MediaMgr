@@ -23,9 +23,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             dbUitls.ExecuteNonQuery(sqlStr);
 
-            sqlStr = "INSERT INTO  RUNNINGENCODER(CLIENTIDENTIFY,PRIORITY) VALUES ('{0}','{1}','{2}')";
+            sqlStr = "INSERT INTO  RUNNINGENCODER(CLIENTIDENTIFY,PRIORITY,GROUPIDS,DEVIDS) VALUES ('{0}','{1}','{2}','{3}')";
 
-            dbUitls.ExecuteNonQuery(string.Format(sqlStr, re.ClientIdentify, re.Priority, re.GroupIds));
+            dbUitls.ExecuteNonQuery(string.Format(sqlStr, re.ClientIdentify, re.Priority, re.GroupIds,re.DevIds));
 
 
         }
@@ -84,6 +84,8 @@ namespace MediaMgrSystem.BusinessLayerLogic
                     RunningEncoder re = new RunningEncoder();
                     re.ClientIdentify = dt.Rows[i]["ClientIdentify"].ToString();
                     re.Priority = dt.Rows[i]["Priority"].ToString();
+                    re.GroupIds = dt.Rows[i]["GroupIds"].ToString();
+                    re.DevIds=dt.Rows[i]["DevIds"].ToString();
                     res.Add(re);
                 }
             }
@@ -98,7 +100,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
             string sqlStr = "select * from RunningEncoder where clientIdentify='" + clientIdentify + "'";
 
             RunningEncoder re = new RunningEncoder();
-
+            
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
 
             if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
@@ -108,7 +110,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                     re.ClientIdentify = dt.Rows[i]["ClientIdentify"].ToString();
                     re.Priority = dt.Rows[i]["Priority"].ToString();
                     re.GroupIds = dt.Rows[i]["GroupIds"].ToString();
-
+                    re.DevIds = dt.Rows[i]["DevIds"].ToString();
 
                     break;
                 }

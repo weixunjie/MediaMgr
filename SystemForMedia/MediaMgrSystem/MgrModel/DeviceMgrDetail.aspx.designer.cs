@@ -85,6 +85,15 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.TextBox tbServerIpAddress;
         
         /// <summary>
+        /// tbMacAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbMacAddress;
+        
+        /// <summary>
         /// cbFunction control.
         /// </summary>
         /// <remarks>

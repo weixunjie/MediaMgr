@@ -21,10 +21,111 @@ namespace MediaMgrSystem
 
         }
 
+        //protected override void OnAfterReconnect(IHub hub)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("Reconnectining->" + hub.Context.ConnectionId);
+        //    lock (GlobalUtils.PublicObjectForLockConnected)
+        //    {
+
+
+        //        SingalConnectedClient sc = new SingalConnectedClient();
+        //        SingalRClientConnectionType singalRClientConnectionType = SingalRClientConnectionType.PC;
+        //        sc.ConnectionId = hub.Context.ConnectionId;
+
+        //        string type = string.Empty;
+
+        //        string strIdentify = string.Empty;
+
+
+        //        if (hub.Context.QueryString["clientIdentify"] != null)
+        //        {
+        //            strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
+        //        }
+
+        //        if (hub.Context.QueryString["clientType"] != null)
+        //        {
+        //            type = hub.Context.QueryString["clientType"].ToString().ToUpper();
+
+        //            if (type == "ANDROID")
+        //            {
+
+        //                singalRClientConnectionType = SingalRClientConnectionType.ANDROID;
+
+
+
+        //            }
+        //            else if (type == "VIDEOSERVER")
+        //            {
+        //                singalRClientConnectionType = SingalRClientConnectionType.VEDIOSERVER;
+        //                return;
+
+
+        //            }
+
+        //            else if (type == "ENCODERFORAUDIO")
+        //            {
+
+        //                singalRClientConnectionType = SingalRClientConnectionType.ENCODERAUDIODEVICE;
+
+
+        //            }
+
+        //            else if (type == "WINDOWSSERVICE")
+        //            {
+
+        //                singalRClientConnectionType = SingalRClientConnectionType.WINDOWSSERVICE;
+        //                return;
+
+        //            }
+        //            else if (type == "REMOTECONTORLDEVICE")
+        //            {
+        //                singalRClientConnectionType = SingalRClientConnectionType.REMOTECONTORLDEVICE;
+
+        //            }
+
+        //        }
+
+        //        sc.ConnectionType = singalRClientConnectionType;
+
+        //        sc.ConnectionId = hub.Context.ConnectionId;
+
+        //        sc.ConnectionIdentify = strIdentify;
+        //        string extingCid = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(strIdentify, sc.ConnectionType.ToString());
+
+        //        if (!string.IsNullOrEmpty(extingCid))
+        //        {
+        //            GlobalUtils.DeleteSingalConnectedClientByConnectIds(extingCid);
+        //        }
+
+        //        if (sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
+        //        {
+        //            SendRefreshRemoteControlDeviceNotice(hub);
+        //        }
+
+        //        if (sc.ConnectionType == SingalRClientConnectionType.ANDROID)
+        //        {
+        //            SendRefreshAudioDeviceNotice(hub);
+        //        }
+
+        //        if (!string.IsNullOrEmpty(sc.ConnectionId) && !string.IsNullOrEmpty(sc.ConnectionIdentify))
+        //        {
+
+
+        //            GlobalUtils.AddConnection(sc);
+        //        }
+        //    }
+
+        //}
 
         protected override void OnAfterConnect(IHub hub)
         {
-            try
+            System.Diagnostics.Debug.WriteLine("Connected->" + hub.Context.ConnectionId);
+            ProcessConnect(hub);
+        }
+
+        private void ProcessConnect(IHub hub)
+        {
+            lock (GlobalUtils.PublicObjectForLockConnected)
             {
 
                 SingalConnectedClient sc = new SingalConnectedClient();
@@ -36,10 +137,17 @@ namespace MediaMgrSystem
                 string strIdentify = string.Empty;
 
 
+                if (hub.Context.QueryString["clientIdentify"] != null)
+                {
+                    strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
+                }
 
+                String macAddress = string.Empty;
+                if (hub.Context.QueryString["macAddress"] != null)
+                {
+                    macAddress = hub.Context.QueryString["macAddress"];
 
-
-
+                }
 
                 if (hub.Context.QueryString["clientType"] != null)
                 {
@@ -74,14 +182,55 @@ namespace MediaMgrSystem
                         cmdSyncGrouOps.guidId = Guid.NewGuid().ToString();
                         cmdSyncGrouOps.groups = new List<EncoderSyncGroupInfo>();
 
-                        List<GroupInfo> gi = GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfo();
+                        EncoderAudioInfo ei = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(strIdentify);
+
+                        if (ei == null)
+                        {
+                            EncoderAudioInfo eif = new EncoderAudioInfo();
+                            eif.BaudRate = "1100";
+                            eif.ClientIdentify = strIdentify;
+                            eif.EncoderName = strIdentify;
+                            eif.Priority = "1";
+                            GlobalUtils.EncoderBLLInstance.AddEncoder(eif);
+
+                        }
+                        //  GlobalUtils.VideoEncoderQueues
+                        List<GroupInfo> gi = GlobalUtils.GroupBLLInstance.GetAllGroupsByBusinessType(BusinessType.AUDITBROADCAST);
 
                         foreach (var g in gi)
                         {
-                            cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { GroupId = g.GroupId, GroupName = g.GroupName });
+
+                            if (g.Devices != null && g.Devices.Count > 0)
+                            {
+                                cmdSyncGrouOps.groups.Add(new EncoderSyncGroupInfo { groupId = g.GroupId, groupName = g.GroupName });
+                            }
+
+
+
                         }
 
                         hub.Clients.Client(hub.Context.ConnectionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmdSyncGrouOps));
+
+
+
+                        EncoderAudioSendDevsInfoCommand cmdSyncDev = new EncoderAudioSendDevsInfoCommand();
+                        cmdSyncDev.commandType = CommandTypeEnum.ENCODERSENDDEVINFO;
+                        cmdSyncDev.guidId = Guid.NewGuid().ToString();
+                        cmdSyncDev.devs = new List<EncoderSyncDevInfo>();
+
+
+                        foreach (var g in gi)
+                        {
+                            if (g.Devices != null && g.Devices.Count > 0)
+                            {
+                                foreach (var di in g.Devices)
+                                {
+                                    cmdSyncDev.devs.Add(new EncoderSyncDevInfo { devId = di.DeviceId, devName = di.DeviceName });
+                                }
+                            }
+                        }
+
+                        hub.Clients.Client(hub.Context.ConnectionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmdSyncDev));
 
 
                     }
@@ -102,10 +251,7 @@ namespace MediaMgrSystem
 
                 }
 
-                if (hub.Context.QueryString["clientIdentify"] != null)
-                {
-                    strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
-                }
+
 
                 sc.ConnectionType = singalRClientConnectionType;
 
@@ -125,7 +271,7 @@ namespace MediaMgrSystem
 
                     if (!string.IsNullOrEmpty(extingViedoServerCid))
                     {
-                        GlobalUtils.RemoveConnectionByConnectionId(extingViedoServerCid);
+                        GlobalUtils.DeleteSingalConnectedClientByConnectIds(extingViedoServerCid);
 
                     }
 
@@ -141,7 +287,7 @@ namespace MediaMgrSystem
 
                     if (!string.IsNullOrEmpty(extingId))
                     {
-                        GlobalUtils.RemoveConnectionByConnectionId(extingId);
+                        GlobalUtils.DeleteSingalConnectedClientByConnectIds(extingId);
 
                     }
 
@@ -167,6 +313,7 @@ namespace MediaMgrSystem
                         di.DeviceIpAddress = sc.ConnectionIdentify;
                         di.DeviceName = sc.ConnectionIdentify;
                         di.GroupId = "-1";
+                        di.MacAddress = macAddress;
                         di.UsedToAudioBroandcast = true;
                         di.UsedToVideoOnline = false;
 
@@ -203,7 +350,7 @@ namespace MediaMgrSystem
 
                     if (!string.IsNullOrEmpty(extingCid))
                     {
-                        GlobalUtils.RemoveConnectionByConnectionId(extingCid);
+                        GlobalUtils.DeleteSingalConnectedClientByConnectIds(extingCid);
                     }
 
                     if (sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE)
@@ -215,6 +362,14 @@ namespace MediaMgrSystem
                     {
                         SendRefreshAudioDeviceNotice(hub);
                     }
+
+
+
+                }
+
+                if (sc.ConnectionType == SingalRClientConnectionType.ENCODERAUDIODEVICE)
+                {
+                    SendRefreshCallerEncoderDeviceMessge(hub);
                 }
 
 
@@ -241,13 +396,8 @@ namespace MediaMgrSystem
                     hub.Clients.Client(hub.Context.ConnectionId).sendRemoteControlToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cmd));
                 }
 
-            }
-            catch (Exception ex)
-            {
-                GlobalUtils.AddLogs(null, "系统异常", ex.Message);
-                GlobalUtils.AddConnectionTestLogs("系统异常", ex.Message);
-            }
 
+            }
         }
 
         private void SendSyncTimeAndVersionCheck(UpgradeInfo ui, IHub hub, SingalRClientConnectionType type)
@@ -280,6 +430,15 @@ namespace MediaMgrSystem
             hub.Clients.Clients(ids).sendRefreshAudioDeviceMessge();
         }
 
+        private void SendRefreshCallerEncoderDeviceMessge(IHub hub)
+        {
+
+            List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+            hub.Clients.Clients(ids).sendRefreshCallerEncoderDeviceMessge();
+        }
+
+
         private void SendRefreshRemoteControlDeviceNotice(IHub hub)
         {
 
@@ -291,61 +450,90 @@ namespace MediaMgrSystem
 
         protected override void OnAfterDisconnect(IHub hub)
         {
-            try
+
+            DateTime dt = DateTime.UtcNow;
+
+            SingalRClientConnectionType disConnectType = SingalRClientConnectionType.PC;
+
+            string str = "DISConnected: Connected Id" + hub.Context.ConnectionId;
+            System.Diagnostics.Debug.WriteLine(str);
+
+            GlobalUtils.WriteDebugLogs(str);
+            if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
             {
-                DateTime dt = DateTime.UtcNow;
+                disConnectType = SingalRClientConnectionType.VEDIOSERVER;
+                SendRefreshAudioDeviceNotice(hub);
+                GlobalUtils.AddLogs(hub.Clients, "系统异常", "视频服务器断开连接");
+                GlobalUtils.AddConnectionTestLogs("系统异常", "视频服务器断开连接");
 
-                SingalRClientConnectionType disConnectType = SingalRClientConnectionType.PC;
-
-                string str = "DISConnected: Connected Id" + hub.Context.ConnectionId;
-                System.Diagnostics.Debug.WriteLine(str);
-
-                GlobalUtils.WriteDebugLogs(str);
-                if (hub.Context.ConnectionId == GlobalUtils.VideoServerConnectionId)
-                {
-                    disConnectType = SingalRClientConnectionType.VEDIOSERVER;
-                    SendRefreshAudioDeviceNotice(hub);
-                    GlobalUtils.AddLogs(hub.Clients, "系统异常", "视频服务器断开连接");
-                    GlobalUtils.AddConnectionTestLogs("系统异常", "视频服务器断开连接");
-
-                }
-
-                if (hub.Context.ConnectionId == GlobalUtils.WindowsServiceConnectionId)
-                {
-                    disConnectType = SingalRClientConnectionType.WINDOWSSERVICE;
-                    SendRefreshAudioDeviceNotice(hub);
-                    GlobalUtils.AddLogs(hub.Clients, "系统异常", "后台计划服务断开连接");
-                    GlobalUtils.AddConnectionTestLogs("系统异常", "后台计划服务断开连接");
-                }
-
-                if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId))
-                {
-                    disConnectType = SingalRClientConnectionType.ANDROID;
-                    SendRefreshAudioDeviceNotice(hub);
-                }
-                if (GlobalUtils.CheckIfConnectionIdIsRemoteControlDevice(hub.Context.ConnectionId))
-                {
-                    disConnectType = SingalRClientConnectionType.REMOTECONTORLDEVICE;
-                    SendRefreshRemoteControlDeviceNotice(hub);
-                }
-
-
-                if (disConnectType != SingalRClientConnectionType.PC)
-                {
-
-                    String ci = GlobalUtils.GetIdentifyByConectionId(hub.Context.ConnectionId);
-
-                    GlobalUtils.AddConnectionTestLogs(disConnectType.ToString(), "设备：(" + ci + ")断开连接");
-                }
-
-
-                GlobalUtils.RemoveConnectionByConnectionId(hub.Context.ConnectionId);
             }
-            catch (Exception ex)
+
+            if (hub.Context.ConnectionId == GlobalUtils.WindowsServiceConnectionId)
             {
-                GlobalUtils.AddLogs(null, "系统异常", ex.Message);
-                GlobalUtils.AddConnectionTestLogs("系统异常", ex.Message);
+                disConnectType = SingalRClientConnectionType.WINDOWSSERVICE;
+                SendRefreshAudioDeviceNotice(hub);
+                GlobalUtils.AddLogs(hub.Clients, "系统异常", "后台计划服务断开连接");
+                GlobalUtils.AddConnectionTestLogs("系统异常", "后台计划服务断开连接");
             }
+
+            if (GlobalUtils.CheckIfConnectionIdIsAndriod(hub.Context.ConnectionId))
+            {
+                disConnectType = SingalRClientConnectionType.ANDROID;
+                SendRefreshAudioDeviceNotice(hub);
+
+
+            }
+
+            if (GlobalUtils.CheckIfConnectionIdIsAudioEncoder(hub.Context.ConnectionId))
+            {
+                disConnectType = SingalRClientConnectionType.ENCODERAUDIODEVICE;
+                SendRefreshAudioDeviceNotice(hub);
+
+
+            }
+
+            if (GlobalUtils.CheckIfConnectionIdIsRemoteControlDevice(hub.Context.ConnectionId))
+            {
+                disConnectType = SingalRClientConnectionType.REMOTECONTORLDEVICE;
+                SendRefreshRemoteControlDeviceNotice(hub);
+            }
+
+
+            if (GlobalUtils.CheckIfConnectionIdIsAudioEncoder(hub.Context.ConnectionId))
+            {
+                SendRefreshCallerEncoderDeviceMessge(hub);
+            }
+
+
+            String ci = GlobalUtils.GetIdentifyByConectionId(hub.Context.ConnectionId);
+
+
+            if (disConnectType == SingalRClientConnectionType.ENCODERAUDIODEVICE)
+            {
+                if (!string.IsNullOrEmpty(ci))
+                {
+                    RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(ci);
+                    if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
+                    {
+
+                        CallerEncoderControlLogic.SendEncoderAudioCloseCommand(hub.Clients, ci);
+                    }
+                }
+            }
+
+
+            if (disConnectType != SingalRClientConnectionType.PC)
+            {
+
+
+
+                GlobalUtils.AddConnectionTestLogs(disConnectType.ToString(), "设备：(" + ci + ")断开连接");
+            }
+
+
+            GlobalUtils.DeleteSingalConnectedClientByConnectIds(hub.Context.ConnectionId);
+
+
 
         }
 

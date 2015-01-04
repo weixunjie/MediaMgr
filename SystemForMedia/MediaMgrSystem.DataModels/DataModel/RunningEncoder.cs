@@ -12,5 +12,7 @@ namespace MediaMgrSystem.DataModels
         public string Priority { get; set; }
 
         public string GroupIds { get; set; }
+
+        public string DevIds { get; set; }
     }
 }

@@ -55,6 +55,13 @@ namespace MediaMgrSystem
 
         }
 
+        public bool CheckIfCanDragGroups()
+        {
+            return GlobalUtils.GlobalGroupBusinessStatus.Count <= 0;            
+            
+
+        }
+
         public bool CheckIsSupperUser()
         {
             if (HttpContext.Current != null &&
@@ -153,78 +160,32 @@ namespace MediaMgrSystem
         {
 
             string strPlaying = "(播放中)";
-            foreach (var mp in GlobalUtils.ManualPlayItems)
+            foreach (var grs in GlobalUtils.GlobalGroupBusinessStatus)
             {
-                if (mp.ChannelGroup != null)
+                if (grs != null)
                 {
-                    foreach (var gi in mp.ChannelGroup)
+                    if (grs.GroupId == groupId)
                     {
-                        if (gi.GroupId == groupId)
+
+                        if (grs.TypeRunning == BusinessTypeForGroup.AudioEncoder)
                         {
-                           // outPlayingType = "audio";
-                            return strPlaying;
+                            return "(呼叫台使用中)";
                         }
-                    }
-                }
+                        if (grs.TypeRunning == BusinessTypeForGroup.VideoEncoder)
+                        {
+                            return "(视频编码使用中)";
+                        }
+
+                        if (grs.TypeRunning == BusinessTypeForGroup.ManualScheduleTask)
+                        {
+                            return "(播放)";
+                        }
                     
-            }
-
-            foreach (var rs in GlobalUtils.RunningSchudules)
-            {
-                if (rs.ChannelGroup != null)
-                {
-                    foreach (var gi in rs.ChannelGroup)
-                    {
-                        if (gi.GroupId == groupId)
-                        {
-                           // outPlayingType = "audio";
-                            return strPlaying;
-                        }
                     }
                 }
-
-            }
-
-
-            foreach (var rs in GlobalUtils.RunningVideoEncoder)
-            {
-                if (rs.Groups != null)
-                {
-                    foreach (var gi in rs.Groups)
-                    {
-                        if (gi.GroupId == groupId)
-                        {
-                            // outPlayingType = "audio";
-                            return strPlaying;
-                        }
-                    }
-                }
-
-            }
-
-            List<RunningEncoder> runs = GlobalUtils.RunningEncoder; 
-
-            foreach (var rs in runs)
-            {
-                
-                if (rs.GroupIds != null)
-                {
-                    String[] strs=rs.GroupIds.Split(',');
-                    foreach (var gi in strs)
-                    {
-                        if (gi == groupId)
-                        {
-                            // outPlayingType = "audio";
-                            return strPlaying;
-                        }
-                    }
-                }
-
             }
 
             return "";
-
-
         }
 
 
@@ -233,8 +194,8 @@ namespace MediaMgrSystem
         {
             ChannelInfo ci = new ChannelInfo();
 
-            ci.ChannelName = "-1";
-            ci.ChannelId = "无";
+            ci.ChannelName = "无";
+            ci.ChannelId = "-1";
 
             List<ChannelInfo> res = GlobalUtils.ChannelBLLInstance.GetAllChannels();
 

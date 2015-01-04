@@ -241,8 +241,7 @@ namespace MediaMgrSystem
 
         private static void ProcessTimeOutRequest(object hub)
         {
-            try
-            {
+          
                 Thread.Sleep(4000);
 
                 lock (GlobalUtils.ObjectLockRemoteControlQueueItem)
@@ -285,12 +284,7 @@ namespace MediaMgrSystem
 
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                GlobalUtils.AddLogs(null, "系统异常", ex.Message);
-            }
-
+      
 
 
 

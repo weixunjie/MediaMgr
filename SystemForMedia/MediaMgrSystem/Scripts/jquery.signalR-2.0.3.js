@@ -774,12 +774,14 @@
                 // Connection hasn't been started yet
 
                 $(connection).triggerHandler(events.onError, null);
-                throw new Error("SignalR: Connection must be started before data can be sent. Call .start() before .send()");
+              //  throw new Error("SignalR: Connection must be started before data can be sent. Call .start() before .send()");
             }
 
             if (connection.state === signalR.connectionState.connecting) {
+
+                $(connection).triggerHandler(events.onError, null);
                 // Connection hasn't been started yet
-                throw new Error("SignalR: Connection has not been fully initialized. Use .start().done() or .start().fail() to run logic after the connection has started.");
+               // throw new Error("SignalR: Connection has not been fully initialized. Use .start().done() or .start().fail() to run logic after the connection has started.");
             }
 
             connection.transport.send(connection, data);

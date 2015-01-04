@@ -141,6 +141,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
+        public int RemoveScheduleTaskOnly(string id)
+        {
+ 
+
+            String sqlRemoveTaskStr = "DELETE FROM SCHEDULETASKINFO WHERE SCHEDULEID=" + id;
+
+            return dbUitls.ExecuteNonQuery(sqlRemoveTaskStr);
+
+        }
+
 
         public int RemoveSchedule(string id)
         {

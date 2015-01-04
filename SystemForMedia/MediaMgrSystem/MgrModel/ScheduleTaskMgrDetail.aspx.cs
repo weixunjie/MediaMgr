@@ -23,8 +23,7 @@ namespace MediaMgrSystem.MgrModel
 
 
                 lbMessage.Visible = false;
-                List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllProgram();
-
+                List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllAuditProgram();
 
 
                 this.ddProgram.DataSource = allProgram;
@@ -126,7 +125,7 @@ namespace MediaMgrSystem.MgrModel
 
         protected void Back_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
+           Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
         }
 
         protected void Add_Click(object sender, EventArgs e)
@@ -370,6 +369,7 @@ namespace MediaMgrSystem.MgrModel
                 }
 
                 CbWeek.Enabled = false;
+            
 
             }
             else
@@ -377,6 +377,7 @@ namespace MediaMgrSystem.MgrModel
                 CbWeek.Enabled = true;
 
             }
+            cbCheckAll.Enabled = CbWeek.Enabled;
         }
 
 
@@ -411,7 +412,7 @@ namespace MediaMgrSystem.MgrModel
 
                         string playMap3Page = ResolveUrl("~/MgrModel/PreviewMP3.aspx?FileUrl=" + fileUrl);
 
-                        ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
+                        ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,width=300,height=300,scrollbars=0');", true);
 
                         //    ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "openFileScript", "window.open('" + playMap3Page + "','','resizable=1,scrollbars=0');", true);
 
@@ -421,6 +422,147 @@ namespace MediaMgrSystem.MgrModel
                 }
             }
         }
+
+        protected void cbCheckAll_CheckedChanged(object sender, EventArgs e)
+        {
+
+
+            for (int i = 0; i < CbWeek.Items.Count; i++)
+            {
+
+                this.CbWeek.Items[i].Selected = cbCheckAll.Checked;
+
+            }
+
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            GlobalUtils.ScheduleBLLInstance.RemoveScheduleTaskOnly(TbHiddenIdSchedule.Text);
+
+
+            DateTime dtStart = DateTime.Parse(tbStartTime.Value);
+            DateTime dtEnd = DateTime.Parse(tbEndTime.Value);
+
+            DateTime currentTime = dtStart;
+            while (currentTime < dtEnd)
+            {
+
+                ScheduleTaskInfo si = new ScheduleTaskInfo();
+
+
+                si.ScheduleTaskSpecialDays = new List<string>();
+
+                si.ScheduleTaskspecialDaysToWeeks = new List<string>();
+
+
+
+                string sqlSpecDaysInSpecialDays = string.Empty;
+
+
+                string sqlWeekInScheduleWeek = string.Empty;
+
+
+                si.StrDays = "";
+                si.StrWeeks = "";
+                si.StrSpecialDaysToWeeks = "";
+
+                si.IsRepeat = cbIsRepeat.Checked ? "1" : "0";
+
+                foreach (ListItem lv in lbSelectedDate.Items)
+                {
+                    si.ScheduleTaskSpecialDays.Add(lv.Value);
+                    si.StrDays += lv.Value + ",";
+
+
+                    string strWeek = DateTime.Parse(lv.Value).DayOfWeek.ToString();
+                    string weekIndex = string.Empty;
+                    switch (strWeek)
+                    {
+                        case "Monday":
+                            weekIndex = "1";
+                            break;
+                        case "Tuesday":
+                            weekIndex = "2";
+                            break;
+                        case "Wednesday":
+                            weekIndex = "3";
+                            break;
+                        case "Thursday":
+                            weekIndex = "4";
+                            break;
+                        case "Friday":
+                            weekIndex = "5";
+                            break;
+                        case "Saturday":
+                            weekIndex = "6";
+                            break;
+                        case "Sunday":
+                            weekIndex = "7";
+                            break;
+                    }
+
+                    si.StrSpecialDaysToWeeks += weekIndex + ",";
+                    si.ScheduleTaskspecialDaysToWeeks.Add(weekIndex);
+                    sqlSpecDaysInSpecialDays = sqlSpecDaysInSpecialDays + " SCHEDULETASKSPECIALDAYS LIKE '%" + lv.Value + "%' OR";
+
+                }
+
+                si.ScheduleTaskWeeks = new List<string>();
+                foreach (ListItem lv in CbWeek.Items)
+                {
+                    if (lv.Selected)
+                    {
+                        si.ScheduleTaskWeeks.Add(lv.Value);
+                        si.StrWeeks += lv.Value + ",";
+
+                        sqlWeekInScheduleWeek = sqlWeekInScheduleWeek + " SCHEDULETASKWEEKS LIKE '%" + lv.Value + "%'  OR";
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(si.StrSpecialDaysToWeeks))
+                {
+                    si.StrSpecialDaysToWeeks = si.StrSpecialDaysToWeeks.TrimEnd(',');
+                }
+
+                if (!string.IsNullOrWhiteSpace(si.StrWeeks))
+                {
+                    si.StrWeeks = si.StrWeeks.TrimEnd(',');
+                }
+
+                if (!string.IsNullOrWhiteSpace(si.StrDays))
+                {
+
+                    si.StrDays = si.StrDays.TrimEnd(',');
+                }
+
+
+
+
+
+                si.ScheduleId = TbHiddenIdSchedule.Text;
+
+                si.ScheduleTaskName = TbName.Text;
+                si.ScheduleTaskPriority = ddPriority.SelectedValue;
+
+
+                si.ScheduleTaskProgarmId = ddProgram.SelectedValue;                
+    
+
+                si.ScheduleTaskEndTime = currentTime.AddMinutes(2).ToString("HH:mm:ss");
+                si.ScheduleTaskStartTime = currentTime.ToString("HH:mm:ss");
+
+                currentTime = currentTime.AddMinutes(3);
+
+
+                GlobalUtils.ScheduleBLLInstance.AddSchdeulTask(si);
+
+
+            }
+
+        }
+
+
     }
 
 }

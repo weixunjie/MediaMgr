@@ -22,18 +22,6 @@ namespace MediaMgrSystem
         MANAULLYREPEAT,
         SCHEDULEPLAY,
         SCHEDULESTOP,
-        DEVICE_OPER_CHANGE_IP_ADDRESS = 128,
-
-        DEVICE_OPER_OPENS_SCREEN = 122,
-        DEVICE_OPER_CLOSE_SCREEN = 123,
-
-        DEVICE_OPER_RESTART = 124,
-
-        DEVICE_OPER_SHUTDOWN = 125,
-
-        DEVICE_OPER_SCHEDULE_TURNON = 126,
-
-        DEVICE_OPER_SCHEDULE_SHUTDOWN = 127,
 
 
 
@@ -46,7 +34,21 @@ namespace MediaMgrSystem
         ENCODERAUDIOCLOSE,
 
         VIDEOENCODEOCLOSE,
-        VIDEOENCODEROPEN
+        VIDEOENCODEROPEN,
+
+            DEVICE_OPER_CHANGE_IP_ADDRESS = 128,
+
+        DEVICE_OPER_OPENS_SCREEN = 122,
+        DEVICE_OPER_CLOSE_SCREEN = 123,
+
+        DEVICE_OPER_RESTART = 124,
+        DEVICE_ADJUST_VOL=129,
+        DEVICE_OPER_SHUTDOWN = 125,
+
+        DEVICE_OPER_SCHEDULE_TURNON = 126,
+
+        DEVICE_OPER_SCHEDULE_SHUTDOWN = 127,
+
     }
 
 
@@ -81,6 +83,35 @@ namespace MediaMgrSystem
         }
 
     }
+
+    public class OtherBussinessRunning
+    {
+        public string ErrorText { get; set; }
+        public string GroupId { get; set; }
+
+    }
+
+    public class GroupBusinessRunning
+    {
+        public string GroupId { get; set; }
+        public BusinessTypeForGroup TypeRunning { get; set; }
+
+        public String channelId { get; set; }
+
+        public String channelName { get; set; }
+
+        public String encoderId { get; set; }
+            
+        public bool isSchedule { get; set; }
+
+        public string scheduleTime { get; set; }
+
+
+        public BusinessType bType { get; set; }
+        //public static void SendOutStopRepeatCommandToServerAndClient(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub,
+        //   bool isSchedule, string scheduleTime, BusinessType bType, bool isSendToVideoSvr = true, List<GroupInfo> stopGroups = null)
+    }
+
     public class QueueItem
     {
         public string IpAddressStr
@@ -141,8 +172,6 @@ namespace MediaMgrSystem
             set;
         }
     }
-
-
 
     public class VideoEncoderQueueItem
     {
@@ -279,12 +308,12 @@ namespace MediaMgrSystem
 
     }
 
-    public enum BusinessTypeChecking
+    public enum BusinessTypeForGroup
     {
         AudioEncoder = 0,
         VideoEncoder = 1,
-        ScheduleTask = 2,
-        ManualTask = 3,
+
+        ManualScheduleTask = 2,
 
 
 
@@ -305,6 +334,8 @@ namespace MediaMgrSystem
         public static object PublicObjectForLockRemoteControlRecievedMsg = new object();
         public static object PublicObjectForLockPlay = new object();
 
+        public static object PublicObjectForLockConnected = new object();
+
         public static object PublicObjectForLockStop = new object();
 
         public static object PublicObjectForLockClientMsg = new object();
@@ -313,17 +344,19 @@ namespace MediaMgrSystem
 
         public static List<PlayDevice> PlayingDevices = new List<PlayDevice>();
         public static List<RunningEncoder> RunningEncoder = new List<RunningEncoder>();
-       
+
 
         public static string StreamNameBase = "1234567890";
         public static object ObjectLockQueueItem = new object();
         public static object ObjectLockRemoteControlQueueItem = new object();
         public static object ObjectLockEncoderQueueItem = new object();
+        public static object ObjectLockEncoderOperationItemOpen = new object();
+        public static object ObjectLockEncoderOperationItemClose = new object();
         public static object ObjectLockVideoEncoderQueueItem = new object();
         private static object objForLock = new object();
 
         public static object ObjectLockForManualPlayItems = new object();
-
+        public static List<GroupBusinessRunning> GlobalGroupBusinessStatus = new List<GroupBusinessRunning>();
         public static DbUtils DbUtilsInstance = new DbUtils(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString());
 
 
@@ -390,112 +423,29 @@ namespace MediaMgrSystem
         public static List<VideoEncoderRunningItem> RunningVideoEncoder = new List<VideoEncoderRunningItem>();
 
 
-        public static string CheckRunningBusinessTypeDesp( BusinessTypeChecking bType)
+        public static string GetRunningBusinessTypeDesp(BusinessTypeForGroup bType)
         {
 
-            if (bType == BusinessTypeChecking.AudioEncoder)
+            if (bType == BusinessTypeForGroup.AudioEncoder)
             {
                 return "操作失败，呼叫台正在运行";
             }
-            if (bType == BusinessTypeChecking.VideoEncoder)
+            if (bType == BusinessTypeForGroup.VideoEncoder)
             {
                 return "操作失败，视频编码正在运行";
             }
 
-            if (bType == BusinessTypeChecking.ManualTask)
+            if (bType == BusinessTypeForGroup.ManualScheduleTask)
             {
-                return "操作失败，手工播放正在运行";
+                return "操作失败，手工/计划播放正在运行";
             }
 
-            if (bType == BusinessTypeChecking.ScheduleTask)
-            {
-                return "操作失败，计划正在运行";
-            }
+
 
             return string.Empty;
 
         }
-        public static bool CheckIsGroupsRunningBusiness(List<GroupInfo> gis, BusinessTypeChecking bType, out BusinessTypeChecking bTypeRunning)
-        {
 
-            if (bType != BusinessTypeChecking.VideoEncoder)
-            {
-                foreach (var rv in RunningVideoEncoder)
-                {
-                    foreach (var gi in gis)
-                    {
-                        if (rv.Groups.Where(a => a.GroupId == gi.GroupId).DefaultIfEmpty().Count() > 0)
-                        {
-                            bTypeRunning = BusinessTypeChecking.VideoEncoder;
-                            return false;
-                        }
-                    }
-                }
-
-            }
-
-            if (bType != BusinessTypeChecking.AudioEncoder)
-            {
-                List<RunningEncoder> runs = EncoderAudioRunningClientsBLLInstance.GetAllEncoderRunning();
-                foreach (var rv in runs)
-                {
-                    if (!string.IsNullOrEmpty(rv.GroupIds))
-                    {
-                        string[] gids = rv.GroupIds.Split(',');
-                        for (int j = 0; j < gids.Length; j++)
-                        {
-                            foreach (var gi in gis)
-                            {
-                                if (gids[j] == gi.GroupId)
-                                {
-
-                                    bTypeRunning = BusinessTypeChecking.AudioEncoder;
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            if (bType != BusinessTypeChecking.ScheduleTask && bType != BusinessTypeChecking.ManualTask)
-            {
-                foreach (var mp in ManualPlayItems)
-                {
-
-                    foreach (var gi in gis)
-                    {
-                        if (mp.ChannelGroup.Where(a => a.GroupId == gi.GroupId).DefaultIfEmpty().Count() > 0)
-                        {
-                            bTypeRunning = BusinessTypeChecking.ManualTask;
-                            return false;
-                        }
-                    }
-                }
-
-            }
-
-            if (bType != BusinessTypeChecking.ScheduleTask && bType != BusinessTypeChecking.ManualTask)
-            {
-                foreach (var st in RunningSchudules)
-                {
-                    //st.
-                    foreach (var gi in gis)
-                    {
-                        if (st.ChannelGroup.Where(a => a.GroupId == gi.GroupId).DefaultIfEmpty().Count() > 0)
-                        {
-                            bTypeRunning = BusinessTypeChecking.ScheduleTask;
-                            return false;
-                        }
-                    }
-                }
-
-            }
-
-            bTypeRunning = BusinessTypeChecking.ScheduleTask;
-            return true;
-        }
 
 
         public static bool CheckIfAudio(string fileName)
@@ -599,12 +549,12 @@ namespace MediaMgrSystem
 
 
 
-        public static bool RemoveConnectionByConnectionId(string connectionId)
+        public static bool DeleteSingalConnectedClientByConnectIds(string ind)
         {
             lock (objForLock)
             {
 
-                SingalConnectedClientsBLLIntance.DeleteSingalConnectedClientById(connectionId);
+                SingalConnectedClientsBLLIntance.DeleteSingalConnectedClientByConnectIds(ind);
 
             }
 
@@ -908,6 +858,30 @@ namespace MediaMgrSystem
 
         }
 
+        public static bool CheckIfConnectionIdIsAudioEncoder(string id)
+        {
+
+
+            List<string> results = new List<string>();
+
+            lock (objForLock)
+            {
+
+                SingalConnectedClient sc = SingalConnectedClientsBLLIntance.GetSingalConnectedClientsById(id);
+
+
+                if (sc != null)
+                {
+                    return sc.ConnectionType == SingalRClientConnectionType.ENCODERAUDIODEVICE;
+                }
+
+            }
+
+
+            return false;
+
+        }
+
         public static bool CheckIfConnectionIdIsRemoteControlDevice(string id)
         {
 
@@ -994,15 +968,15 @@ namespace MediaMgrSystem
         }
 
 
-        public static void AddConnectionTestLogs( string logName, string logDesp)
+        public static void AddConnectionTestLogs(string logName, string logDesp)
         {
 
             try
             {
 
                 LogSignalRConnectionBLLBLLInstance.AddLog(logName, logDesp);
-                
-               
+
+
             }
             catch (Exception ex)
             {
@@ -1078,6 +1052,9 @@ namespace MediaMgrSystem
 
                 case QueueCommandType.DEVICE_OPER_RESTART:
                     return "设备重起";
+
+                case QueueCommandType.DEVICE_ADJUST_VOL:
+                    return "设备调音量";
 
                 case QueueCommandType.DEVICE_OPER_SCHEDULE_SHUTDOWN:
                     return "设备定时关机";

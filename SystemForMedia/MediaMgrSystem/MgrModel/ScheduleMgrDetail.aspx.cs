@@ -76,11 +76,21 @@ namespace MediaMgrSystem.MgrModel
             Response.Redirect("~/MgrModel/ScheduleMgrList.aspx");
         }
 
+        protected void chkAll_CheckedChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < this.dvTaskList.Rows.Count; i++)
+            {
+                ((CheckBox)this.dvTaskList.Rows[i].FindControl("chkItem")).Checked =
+                    ((CheckBox)this.dvTaskList.HeaderRow.FindControl("chkAll")).Checked;
+            }
+        }
+
         private void BindTaskListData()
         {
             List<ScheduleTaskInfo> dis = GlobalUtils.ScheduleBLLInstance.GetAllScheduleTaksByScheduleId(TbHiddenId.Text);
 
             this.dvTaskList.DataSource = dis;
+
             dvTaskList.DataBind();
 
         }
@@ -155,6 +165,38 @@ namespace MediaMgrSystem.MgrModel
 
             }
 
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            bool isDelSomething = false;
+            for (int i = 0; i < this.dvTaskList.Rows.Count; i++)
+            {
+                if (((CheckBox)this.dvTaskList.Rows[i].FindControl("chkItem")).Checked)
+                {
+                    Label idLb = (Label)this.dvTaskList.Rows[i].FindControl("lbId");
+
+                    if (idLb!=null && !string.IsNullOrEmpty(idLb.Text))
+                    {
+                        if (GlobalUtils.ScheduleBLLInstance.CheckScheduleTaskIsRunning(idLb.Text))
+                        {
+
+                            ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForSheduleDetail", "alert('计划任务运行中，不能删除');", true);
+
+                            return;
+                        }
+
+                        GlobalUtils.ScheduleBLLInstance.RemoveSchdeulTask(idLb.Text);
+                        isDelSomething = true;
+                    }
+                }
+               
+            }
+
+            if (isDelSomething)
+            {
+                BindTaskListData();
+            }
         }
     }
 }

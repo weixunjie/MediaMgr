@@ -35,7 +35,7 @@
         </asp:PlaceHolder>
         <div class="form-group" style="margin-bottom: 10px">
 
-            <asp:Label runat="server" AssociatedControlID="TbName" CssClass="col-md-2 control-label" Width="107px">组名称:</asp:Label>
+            <asp:Label runat="server" AssociatedControlID="TbName" CssClass="col-md-2 control-label" Width="107px">设备名称:</asp:Label>
 
             <asp:TextBox runat="server" ID="TbName" CssClass="form-control" />
 
@@ -63,6 +63,15 @@
             <asp:Label runat="server" AssociatedControlID="tbServerIpAddress" CssClass="col-md-2 control-label" Width="107px">服务器地址:</asp:Label>
 
             <asp:TextBox runat="server" ID="tbServerIpAddress" CssClass="form-control" />
+          
+
+        </div>
+
+                  <div class="form-group" style="margin-bottom: 10px">
+
+            <asp:Label runat="server" AssociatedControlID="tbMacAddress" CssClass="col-md-2 control-label" Width="107px">Mac地址:</asp:Label>
+
+            <asp:TextBox runat="server" ID="tbMacAddress" CssClass="form-control" ReadOnly="true" />
           
 
         </div>

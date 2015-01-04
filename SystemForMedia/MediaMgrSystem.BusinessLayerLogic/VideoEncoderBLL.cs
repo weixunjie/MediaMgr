@@ -56,12 +56,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         public int AddEncoder(VideoEncoderInfo ei)
         {
 
-            //        CREATE TABLE [dbo].[VideoEncoderInfo](
-            //    [EncoderId] [bigint] IDENTITY(1,1) NOT NULL,
-            //    [EncoderName] [nvarchar](50) NULL,
-            //    [BaudRate] [nvarchar](50) NULL,
-            //    [UdpAddress] [nvarchar](50) NULL	
-            //) ON [PRIMARY]
+        
             String sqlStr = "INSERT INTO VIDEOENCODERINFO(ENCODERNAME,BAUDRATE,UDPADDRESS) VALUES ('{0}','{1}','{2}')";
 
             sqlStr = String.Format(sqlStr, ei.EncoderName,ei.BaudRate,ei.UdpAddress);

@@ -11,7 +11,7 @@ namespace MediaMgrSystem
     /// <summary>
     /// Summary description for AudioLogic
     /// </summary>
-    public class AudioLogic : IHttpHandler,System.Web.SessionState.IRequiresSessionState
+    public class AudioLogic : IHttpHandler, System.Web.SessionState.IRequiresSessionState
     {
                
         public void ProcessRequest(HttpContext context)

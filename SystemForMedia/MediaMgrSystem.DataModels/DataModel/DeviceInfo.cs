@@ -12,6 +12,8 @@ namespace MediaMgrSystem.DataModels
 
         public String DeviceName { get; set; }
 
+        public String MacAddress { get; set; }
+
         public String DeviceIpAddress { get; set; }
 
         public String GroupId { get; set; }

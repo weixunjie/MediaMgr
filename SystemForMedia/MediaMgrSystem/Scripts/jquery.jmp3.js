@@ -40,7 +40,7 @@ jQuery.fn.jmp3 = function(passedOptions){
 		"width": "25",										// width of player
 		"repeat": "no",										// repeat mp3?
 		"volume": "50",										// mp3 volume (0-100)
-		"autoplay": "false",								// play immediately on page load?
+		"autoplay": "true",								// play immediately on page load?
 		"showdownload": "true",								// show download button in player
 		"showfilename": "true"								// show .mp3 filename after player
 	};
