@@ -37,10 +37,75 @@ namespace MediaMgrSystem.MgrModel
         private void BindListData()
         {
             List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetAllDevices();
+            List<DeviceInfo> disOnline = new List<DeviceInfo>();
+            List<DeviceInfo> disOfflineline = new List<DeviceInfo>();
 
-            dvList.DataSource = dis;
+            List<DeviceInfo> all = new List<DeviceInfo>();
+            if (dis != null)
+            {
+                foreach (var di in dis)
+                {
+                    List<string> ipReallySent = new List<string>();
+                    if (GlobalUtils.GetConnectionIdsByIdentify(new List<string> { di.DeviceIpAddress }, SingalRClientConnectionType.ANDROID, out ipReallySent).Count > 0)
+                    {
+                        disOnline.Add(di);
+
+                    }
+                    else
+                    {
+                        disOfflineline.Add(di);
+                    }
+                }
+
+            }
+
+            all = disOnline;
+            all.AddRange(disOfflineline);
+
+            dvList.DataSource = all;
             dvList.DataBind();
 
+        }
+
+        protected void chkAll_CheckedChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < this.dvList.Rows.Count; i++)
+            {
+                ((CheckBox)this.dvList.Rows[i].FindControl("chkItem")).Checked =
+                    ((CheckBox)this.dvList.HeaderRow.FindControl("chkAll")).Checked;
+            }
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            bool isDelSomething = false;
+            for (int i = 0; i < this.dvList.Rows.Count; i++)
+            {
+                if (((CheckBox)this.dvList.Rows[i].FindControl("chkItem")).Checked)
+                {
+                    Label idLb = (Label)this.dvList.Rows[i].FindControl("lbId");
+
+                    if (idLb != null && !string.IsNullOrEmpty(idLb.Text))
+                    {
+                        if (GlobalUtils.CheckIfPlaying())
+                        {
+
+                            ScriptManager.RegisterStartupScript(this.UpdatePanel1, this.GetType(), "alertForSheduleDetail", "alert('设备正在使用，不能删除');", true);
+
+                            return;
+                        }
+
+                        GlobalUtils.DeviceBLLInstance.RemoveDevice(idLb.Text);
+                        isDelSomething = true;
+                    }
+                }
+
+            }
+
+            if (isDelSomething)
+            {
+                BindListData();
+            }
         }
 
         protected void dvGroupList_RowCommand(object sender, GridViewCommandEventArgs e)

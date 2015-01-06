@@ -56,6 +56,22 @@ namespace MediaMgrSystem
         }
 
 
+        public void RemoveDevice(string deviceIpAddress)
+        {
+
+            GlobalUtils.DeviceBLLInstance.RemoveDeviceByIpAddress(deviceIpAddress);
+
+            List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+            Clients.Clients(ids).sendRefreshAudioDeviceMessge();
+
+            //SendLogic.SendDeviceOperCommand(Clients, cmdStr, groupId, deviceIpAddress, scheduleTurnOnTime, scheduleShutDownTime, isEnabled ? 1 : 0, volValue);
+
+            // GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
+            // SendLogic.SendPlayCommand(channelId, channelName, programeIds, Clients, scheduleGuidId, "", isRepeat == "1", isAuditFun ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
+        }
+
+
         public void SendAudioEncoderOpenCommand(string clientIdentify, string groupIds)
         {
 
@@ -581,6 +597,13 @@ namespace MediaMgrSystem
 
                                 di.DeviceIpAddress = que.IpAddressStr;
                                 GlobalUtils.DeviceBLLInstance.UpdateDevice(di);
+
+                            }
+
+                            if (cb.errorCode == "0" && que.CommandType == QueueCommandType.DEVICE_ADJUST_VOL)
+                            {
+
+                                GlobalUtils.VolumnMappingBLLInstance.UpdateVolValueByIpAddress(que.IpAddressStr,que.CurrentVol);
 
                             }
 

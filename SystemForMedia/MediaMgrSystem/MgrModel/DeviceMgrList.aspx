@@ -23,21 +23,35 @@
                         <div class="col-md-10">
                             <asp:GridView ID="dvList" AllowPaging="true" runat="server" AutoGenerateColumns="False" Width="557px" OnRowCommand="dvGroupList_RowCommand" OnRowDataBound="dvList_RowDataBound" OnPageIndexChanging="dvList_PageIndexChanging">
                                 <Columns>
-                                    <asp:BoundField DataField="DeviceId"  Visible="false" HeaderText="编号" />
+                                    <asp:BoundField DataField="DeviceId" Visible="false" HeaderText="编号" />
 
-                                           <asp:TemplateField HeaderText="编号">
-                                <ItemTemplate>
-                                    <%#   Container.DataItemIndex + 1%>
-                                </ItemTemplate>
-                            </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="编号">
+                                        <ItemTemplate>
+                                            <%#   Container.DataItemIndex + 1%>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
                                     <asp:BoundField DataField="DeviceName" HeaderText="名称" />
 
                                     <asp:BoundField DataField="GroupId" HeaderText="所在分组" />
 
-                                       <asp:BoundField DataField="DeviceIPAddress" HeaderText="Ip地址" />
+                                    <asp:BoundField DataField="DeviceIPAddress" HeaderText="Ip地址" />
 
-                                       <asp:BoundField DataField="macAddress" HeaderText="Mac地址" />
+                                    <asp:BoundField DataField="macAddress" HeaderText="Mac地址" />
+
+
+                                    <asp:TemplateField>
+                                        <HeaderTemplate>
+                                            <asp:CheckBox ID="chkAll" runat="server" AutoPostBack="True"
+                                                OnCheckedChanged="chkAll_CheckedChanged" />
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <asp:CheckBox ID="chkItem" runat="server" />
+                                            <asp:Label runat="server" ID="lbId" Visible="false" Text='<%# Eval("DeviceId")%>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+
+
                                     <asp:TemplateField HeaderText="操作" ItemStyle-Width="120px">
                                         <ItemTemplate>
                                             <asp:Button ID="Button1" Text="编辑" CssClass="btn btn-default" CommandName="Edit" CommandArgument='<%# Eval("DeviceId")%>' runat="server" />
@@ -62,7 +76,8 @@
                 <div class="form-group" style="margin-top: 10px">
 
                     <asp:Button runat="server" Text="新增设备" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
-
+                     &nbsp;
+                        <asp:Button ID="Button3" runat="server" CssClass="btn btn-default" OnClick="Button3_Click" Text="批量删除 " Width="195px" />
                 </div>
 
 

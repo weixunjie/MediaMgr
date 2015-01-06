@@ -281,6 +281,14 @@ namespace MediaMgrSystem
 
 
 
+        [WebMethod]
+        public static string GetDeviceVol(string ipAddress)
+        {
+            return GlobalUtils.VolumnMappingBLLInstance.GetVolumnValueByIpAddress(ipAddress);
+
+        }
+
+
 
     }
 }

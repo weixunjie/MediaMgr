@@ -120,6 +120,7 @@ namespace MediaMgrSystem
         public string NewAddressStr
         { get; set; }
 
+        public string CurrentVol;
 
         public QueueCommandType CommandType
         { get; set; }
@@ -370,6 +371,10 @@ namespace MediaMgrSystem
 
         public static LogSignalRConnectionBLL LogSignalRConnectionBLLBLLInstance = new LogSignalRConnectionBLL(GlobalUtils.DbUtilsInstance);
 
+        public static VolumnMappingBLL VolumnMappingBLLInstance = new VolumnMappingBLL(GlobalUtils.DbUtilsInstance);
+
+
+        
 
 
         public static List<RemoteDeviceStatus> AllRemoteDeviceStatus = new List<RemoteDeviceStatus>();
@@ -1051,7 +1056,7 @@ namespace MediaMgrSystem
                     return "设备关机";
 
                 case QueueCommandType.DEVICE_OPER_RESTART:
-                    return "设备重起";
+                    return "设备重启";
 
                 case QueueCommandType.DEVICE_ADJUST_VOL:
                     return "设备调音量";

@@ -346,8 +346,30 @@
 
         $("#deviceListSingleDeviceMenuBtnAdjustVol").click(function (e) {
 
-            $('#dialogForDeviveAdjustVol').modal('show');
-            $("#tbVolValue").val("15");
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "BroadcastMain.aspx/GetDeviceVol",
+                data: "{'ipAddress':'" + currentOperDeviceIpAddress + "'}",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (msg) {
+                    $("#tbVolValue").val(msg.d);
+
+                    $('#dialogForDeviveAdjustVol').modal('show');
+                }
+            });
+
+
+
+
+
+
+
+
+
+         
         });
 
 
@@ -385,6 +407,16 @@
             hideAllNenus();
         });
 
+        $("#deviceListSingleDeviceMenuBtnDelDevice").click(function (e) {
+       
+
+            chat.server.removeDevice( currentOperDeviceIpAddress)
+
+
+            hideAllNenus();
+        });
+
+        
 
         $("#deviceListSingleDeviceMenuBtnScheduleDevice").click(function (e) {
 
@@ -912,10 +944,17 @@
         <li><a class="btn" id="deviceListSingleDeviceMenuBtnAdjustVol" data-backdrop="static" data-dismiss="modal" data-keyboard="false">音量调节</a></li>
 
 
-        <li><a class="btn" id="deviceListSingleDeviceMenuBtnRestartDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">重起设备</a></li>
+        <li><a class="btn" id="deviceListSingleDeviceMenuBtnRestartDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">重启设备</a></li>
 
         <li><a class="btn" id="deviceListSingleDeviceMenuBtnShutDownDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">关闭设备</a></li>
 
+             <%
+    if (CheckIsSupperUser())
+    {
+                 %>
+            <li><a class="btn" id="deviceListSingleDeviceMenuBtnDelDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">删除设备</a></li>
+
+        <% } %>
       <%--  <li><a class="btn" id="deviceListSingleDeviceMenuBtnScheduleDevice" style="margin-top: 3px" data-controls-modal="my_modal" data-backdrop="true" data-keyboard="false">计划开关机</a></li>--%>
 
 

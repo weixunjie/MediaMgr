@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModel\VolumnInfo.cs" />
     <Compile Include="DataModel\UpgradeInfo.cs" />
     <Compile Include="DataModel\VideoEncoderInfo.cs" />
     <Compile Include="DataModel\ParamConfig.cs" />

@@ -130,6 +130,14 @@ namespace MediaMgrSystem.BusinessLayerLogic
         }
 
 
+        public int RemoveDeviceByIpAddress(string ipAddress)
+        {
+            String sqlStr = "DELETE FROM DEVICEINFO WHERE DEVICEIPADDRESS='" + ipAddress+"'";
+
+            return dbUitls.ExecuteNonQuery(sqlStr);
+
+        }
+
 
         public int RemoveDevice(string deviceId)
         {
