@@ -33,13 +33,13 @@ namespace MediaMgrSystem
 
         }
 
-        public void SendChangeChannelSchedule(string cid,string channelName)
+        public void SendChangeChannelSchedule(string cid, string channelName)
         {
             SendLogic.SendChangeChannelSchedule(Clients, cid, channelName);
         }
 
 
-        
+
         public void SendPlayCommand(string[] programeIds, string channelId, string channelName, string scheduleGuidId, string isRepeat, bool isAuditFun)
         {
             GlobalUtils.SetManaulPlayItemRepeat(channelId, false);
@@ -168,7 +168,7 @@ namespace MediaMgrSystem
 
 
             ComuResponseBase cb = JsonConvert.DeserializeObject<ComuResponseBase>(data);
-            ProcessCallerQueu(cb, connectionId,true);
+            ProcessCallerQueu(cb, connectionId, true);
         }
 
         private void ProcessCallerQueu(ComuResponseBase cb, string connectionId, bool forCaller = true)
@@ -415,6 +415,11 @@ namespace MediaMgrSystem
             }
 
         }
+        public void SendDebugToMgrServer(string data, string connectionId)
+        {
+            Clients.Client(connectionId).sendDebugToClient(data);
+        }
+
         public void SendMessageToMgrServer(string data, string connectionId)
         {
 
@@ -444,7 +449,16 @@ namespace MediaMgrSystem
 
                                     SendLogic.SendStopRoRepeatCommand(channelId, mp.ChannelName, true, Clients, "", "", mp.PlayingFunction, false, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent(channelId));
 
-                                    GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024", mp);
+                                    if (mp.PlayingFunction == BusinessType.VIDEOONLINE)
+                                    {
+                                        Thread.Sleep(2000);
+                                        SendLogic.SendPlayCommand(channelId, mp.ChannelName, mp.PlayingPids, Clients, "", "", mp.IsRepeating, mp.PlayingFunction, "");
+
+                                    }
+                                    else
+                                    {
+                                        GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024", mp);
+                                    }
                                     // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
 
                                 }
@@ -603,7 +617,7 @@ namespace MediaMgrSystem
                             if (cb.errorCode == "0" && que.CommandType == QueueCommandType.DEVICE_ADJUST_VOL)
                             {
 
-                                GlobalUtils.VolumnMappingBLLInstance.UpdateVolValueByIpAddress(que.IpAddressStr,que.CurrentVol);
+                                GlobalUtils.VolumnMappingBLLInstance.UpdateVolValueByIpAddress(que.IpAddressStr, que.CurrentVol);
 
                             }
 
@@ -684,7 +698,7 @@ namespace MediaMgrSystem
 
             ComuResponseBase cb = ojbs[0] as ComuResponseBase;
             string connectionId = ojbs[1] as string;
-            ProcessCallerQueu(cb, connectionId,false);
+            ProcessCallerQueu(cb, connectionId, false);
 
         }
         private void ProcessVideoEncoderReponse(object cbObj)

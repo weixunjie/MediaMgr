@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR.Client;
+﻿using MediaMgrSystem.DataModels;
+using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +34,6 @@ namespace WpfApplication4
             get;
             set;
         }
-
-
     }
 
     public class ComuResponseBase
@@ -58,28 +57,6 @@ namespace WpfApplication4
 
     }
 
-    public class ReceiveCommand : ComunicationBase1
-    {
-
-        public ReceiveCommandBaseArg arg
-        {
-            get;
-            set;
-        }
-
-    }
-
-    public class ReceiveCommandBaseArg
-    {
-
-        public string streamName
-        {
-            get;
-            set;
-        }
-
-
-    }
 
 
     public class ComunicationBase
@@ -122,7 +99,7 @@ namespace WpfApplication4
         DispatcherTimer timer = new DispatcherTimer();
         HubConnection hubConnection;
         DateTime currentTime;
-
+        private string cdi;
         bool isSVR = false;
         public MainWindow()
         {
@@ -180,9 +157,10 @@ new Action(() =>
                 ComunicationBase a = Newtonsoft.Json.JsonConvert.DeserializeObject<ComunicationBase>(i);
 
                 ComuResponseBase cb = new ComuResponseBase();
+                
                 cb.errorCode = "0";
                 cb.guidId = a.guidId;
-
+                cdi = a.guidId;
 
                 Dispatcher.Invoke(
 new Action(() =>
@@ -326,5 +304,24 @@ new Action(() =>
 
 
         }
+
+        private void Button_Click_12(object sender, RoutedEventArgs e)
+        {
+            DOConnetion("ENCODERFORAUDIO", ss.Text);
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            ReceiveCommand rc=new ReceiveCommand();
+            
+    
+            rc.commandType = 114;
+            rc.arg=new ReceiveCommandBaseArg();
+            rc.arg.streamName = "12345678902";
+            rc.arg.errorCode = "0";
+            hubProxy.Invoke("SendMessageToMgrServer", Newtonsoft.Json.JsonConvert.SerializeObject(rc), hubConnection.ConnectionId);
+        }
     }
+
+   
 }
