@@ -141,7 +141,7 @@ namespace MediaMgrSystem
                         foreach (var c in gid)
                         {
 
-                            GlobalUtils.AddLogs(hub, "视频编码", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组播放成功");
+                            GlobalUtils.AddLogs(hub, "呼叫台", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组呼叫成功");
 
                         }
                     }
@@ -179,7 +179,7 @@ namespace MediaMgrSystem
                 foreach (var c in gid)
                 {
 
-                    GlobalUtils.AddLogs(hub, "视频编码", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组停止成功");
+                    GlobalUtils.AddLogs(hub, "呼叫台", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组停止呼叫成功");
 
                 }
             }

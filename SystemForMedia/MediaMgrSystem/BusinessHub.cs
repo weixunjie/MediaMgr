@@ -449,16 +449,9 @@ namespace MediaMgrSystem
 
                                     SendLogic.SendStopRoRepeatCommand(channelId, mp.ChannelName, true, Clients, "", "", mp.PlayingFunction, false, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent(channelId));
 
-                                    if (mp.PlayingFunction == BusinessType.VIDEOONLINE)
-                                    {
-                                        Thread.Sleep(2000);
-                                        SendLogic.SendPlayCommand(channelId, mp.ChannelName, mp.PlayingPids, Clients, "", "", mp.IsRepeating, mp.PlayingFunction, "");
 
-                                    }
-                                    else
-                                    {
-                                        GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024", mp);
-                                    }
+                                    GlobalUtils.SendManuallyClientNotice(Clients, "手工播放完毕停止", "1024", mp);
+
                                     // Clients.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("", "1024", channelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.ChannelManuallyPlayingFunction==BusinessType.AUDITBROADCAST?"1":"2");
 
                                 }

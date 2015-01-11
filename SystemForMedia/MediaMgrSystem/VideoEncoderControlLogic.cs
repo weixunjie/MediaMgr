@@ -168,7 +168,7 @@ namespace MediaMgrSystem
                                 if (isOpen)
                                 {
                                     GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c.GroupId, TypeRunning = BusinessTypeForGroup.VideoEncoder, encoderId = encoderId });
-                                    GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组播放成功");
+                                    GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组直播成功");
                                 }
                                 else
                                 {
@@ -187,7 +187,7 @@ namespace MediaMgrSystem
                                         GlobalUtils.GlobalGroupBusinessStatus.Remove(iv);
                                     }
 
-                                    GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组停止成功");
+                                    GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组停止直播成功");
                                 }
 
 

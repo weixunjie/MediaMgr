@@ -37,8 +37,6 @@ namespace MediaMgrSystem.MgrModel
 
                     TbHiddenId.Text = id;
 
-
-
                     EncoderAudioInfo ei = encoderBLL.GetEncoderById(id);
 
                     tbIpAddress.Text = ei.ClientIdentify;
@@ -69,6 +67,7 @@ namespace MediaMgrSystem.MgrModel
             ei.BaudRate = this.tbBoundRate.Text;
 
 
+            ei.Priority = this.ddPriority.SelectedItem.Value;
 
             if (!string.IsNullOrEmpty(TbHiddenId.Text))
             {
