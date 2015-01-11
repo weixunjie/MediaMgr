@@ -47,300 +47,321 @@ namespace MediaMgrSystem
         public static void SendEncoderAudioOpenCommand(IHubCallerConnectionContext hub, string clientIdentify, string priority, string groupIds, string devIds, bool isOperationFromDevice = false, string deviceReqeustGuiId = "")
         {
 
-            string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
-
-            lock (GlobalUtils.ObjectLockEncoderOperationItemOpen)
+            try
             {
-                if (string.IsNullOrWhiteSpace(connecionId))
-                {
-                    GlobalUtils.AddLogs(hub, "呼叫台", "呼叫台设备未开启");
-                    return;
-                }
+                string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
 
-                List<RunningEncoder> res = GlobalUtils.EncoderRunningClientsBLLInstance.GetAllEncoderRunning();
-
-                if (res != null)
+                lock (GlobalUtils.ObjectLockEncoderOperationItemOpen)
                 {
-                    foreach (var re in res)
+                    if (string.IsNullOrWhiteSpace(connecionId))
                     {
-                        if (re.ClientIdentify == clientIdentify)
-                        {
-
-                            string mesg = clientIdentify + " 打开失败，正在运行中";
-                            GlobalUtils.AddLogs(hub, "呼叫台操作", mesg);
-
-                            if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
-                            {
-                                ComuResponseBase cb = new ComuResponseBase();
-                                cb.guidId = deviceReqeustGuiId;
-                                cb.errorCode = "110";
-                                cb.message = mesg;
-                                hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
-                            }
-
-                            return;
-                        }
-
-                        if (int.Parse(re.Priority) > int.Parse(priority))
-                        {
-                            string msg = clientIdentify + " 打开失败，更高级别的呼叫台运行中";
-                            GlobalUtils.AddLogs(hub, "呼叫台操作", msg);
-                            if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
-                            {
-                                ComuResponseBase cb = new ComuResponseBase();
-                                cb.guidId = deviceReqeustGuiId;
-                                cb.errorCode = "110";
-                                cb.message = msg;
-
-
-                                hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
-                            }
-
-                            return;
-                        }
-                    }
-                }
-
-                EncoderAudioInfo ei = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(clientIdentify);
-
-
-
-                foreach (var r in res)
-                {
-                    StopEncoder(hub, r.ClientIdentify, r.GroupIds, r.DevIds);
-
-                }
-
-                EncoderAudioOpenCommand eor = new EncoderAudioOpenCommand();
-
-                eor.guidId = Guid.NewGuid().ToString();
-                eor.arg = new EncoderAudioOpenCommandeArg();
-                eor.arg.baudRate = ei.BaudRate;
-                eor.arg.streamName = "1234567890" + ei.EncoderId;
-                eor.arg.udpBroadcastAddress = "udp://229.0.0.1:300" + ei.EncoderId;
-                eor.commandType = CommandTypeEnum.ENCODERAUDIOTOPEN;
-
-                GlobalUtils.EncoderAudioRunningClientsBLLInstance.UpdateRunningEncoder(new RunningEncoder() { ClientIdentify = clientIdentify, GroupIds = groupIds, DevIds = devIds, Priority = priority });
-
-
-
-
-                if (!string.IsNullOrWhiteSpace(connecionId))
-                {
-
-
-                    //      hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
-
-                    EncoderAudioOpenReponse cb = new EncoderAudioOpenReponse();
-                    cb.guidId = deviceReqeustGuiId;
-                    cb.arg = new EncoderOpenReponseArg();
-
-                    cb.arg.baudRate = ei.BaudRate;
-
-                    cb.arg.streamName = eor.arg.streamName;
-
-                    cb.arg.udpBroadcastAddress = eor.arg.udpBroadcastAddress;
-
-                    string[] str = groupIds.Split(',');
-
-
-
-
-                    List<GroupInfo> gis = new List<GroupInfo>();
-
-
-                    if (str != null)
-                    {
-                        for (int i = 0; i < str.Length; i++)
-                        {
-                            gis.Add(GlobalUtils.GroupBLLInstance.GetGroupById(str[i])[0]);
-
-                        }
+                        GlobalUtils.AddLogs(hub, "呼叫台", "呼叫台设备未开启");
+                        return;
                     }
 
-                    List<GroupInfo> giToRemove = new List<GroupInfo>();
+                    List<RunningEncoder> res = GlobalUtils.EncoderRunningClientsBLLInstance.GetAllEncoderRunning();
 
-                    List<NeedStopVideoEncoderTask> needStopVideoEncoders = new List<NeedStopVideoEncoderTask>();
-
-
-                    List<NeedStopManuaScheduleTask> needStopManaulMedias = new List<NeedStopManuaScheduleTask>();
-
-
-                    if (groupIds != null)
+                    if (res != null)
                     {
-                        String[] gid = groupIds.Split(',');
-                        foreach (var c in gid)
+                        foreach (var re in res)
                         {
-                            GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c, TypeRunning = BusinessTypeForGroup.AudioEncoder });
-
-                            GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组播放成功");
-
-                        }
-                    }
-
-
-                    List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
-
-                    hub.Clients(ids).sendRefreshAudioDeviceMessge();
-
-                    hub.Clients(ids).sendRefreshCallerEncoderDeviceMessge();
-
-                    if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
-                    {
-                        foreach (var gi in gis)
-                        {
-
-                            foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
+                            if (re.ClientIdentify == clientIdentify)
                             {
-                                if (grr.GroupId == gi.GroupId)
+
+                                string mesg = clientIdentify + " 打开失败，正在运行中";
+                                GlobalUtils.AddLogs(hub, "呼叫台操作", mesg);
+
+                                if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
                                 {
-                                    if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask)
+                                    ComuResponseBase cb = new ComuResponseBase();
+                                    cb.guidId = deviceReqeustGuiId;
+                                    cb.errorCode = "110";
+                                    cb.message = mesg;
+                                    hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                                }
+
+                                return;
+                            }
+
+                            if (int.Parse(re.Priority) > int.Parse(priority))
+                            {
+                                string msg = clientIdentify + " 打开失败，更高级别的呼叫台运行中";
+                                GlobalUtils.AddLogs(hub, "呼叫台操作", msg);
+                                if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
+                                {
+                                    ComuResponseBase cb = new ComuResponseBase();
+                                    cb.guidId = deviceReqeustGuiId;
+                                    cb.errorCode = "110";
+                                    cb.message = msg;
+
+
+                                    hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                                }
+
+                                return;
+                            }
+                        }
+                    }
+
+                    EncoderAudioInfo ei = GlobalUtils.EncoderBLLInstance.GetEncoderByClientIdentify(clientIdentify);
+
+
+
+                    foreach (var r in res)
+                    {
+                        StopEncoder(hub, r.ClientIdentify, r.GroupIds, r.DevIds);
+
+                    }
+
+                    EncoderAudioOpenCommand eor = new EncoderAudioOpenCommand();
+
+                    eor.guidId = Guid.NewGuid().ToString();
+                    eor.arg = new EncoderAudioOpenCommandeArg();
+                    eor.arg.baudRate = ei.BaudRate;
+                    eor.arg.streamName = "1234567890" + ei.EncoderId;
+                    eor.arg.udpBroadcastAddress = "udp://229.0.0.1:300" + ei.EncoderId;
+                    eor.commandType = CommandTypeEnum.ENCODERAUDIOTOPEN;
+
+                    GlobalUtils.EncoderAudioRunningClientsBLLInstance.UpdateRunningEncoder(new RunningEncoder() { ClientIdentify = clientIdentify, GroupIds = groupIds, DevIds = devIds, Priority = priority });
+
+
+
+
+                    if (!string.IsNullOrWhiteSpace(connecionId))
+                    {
+
+
+                        //      hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+
+                        EncoderAudioOpenReponse cb = new EncoderAudioOpenReponse();
+                        cb.guidId = deviceReqeustGuiId;
+                        cb.arg = new EncoderOpenReponseArg();
+
+                        cb.arg.baudRate = ei.BaudRate;
+
+                        cb.arg.streamName = eor.arg.streamName;
+
+                        cb.arg.udpBroadcastAddress = eor.arg.udpBroadcastAddress;
+
+                        string[] str = groupIds.Split(',');
+
+
+
+
+                        List<GroupInfo> gis = new List<GroupInfo>();
+
+
+                        if (str != null)
+                        {
+                            for (int i = 0; i < str.Length; i++)
+                            {
+                                gis.Add(GlobalUtils.GroupBLLInstance.GetGroupById(str[i])[0]);
+
+                            }
+                        }
+
+                        List<GroupInfo> giToRemove = new List<GroupInfo>();
+
+                        List<NeedStopVideoEncoderTask> needStopVideoEncoders = new List<NeedStopVideoEncoderTask>();
+
+
+                        List<NeedStopManuaScheduleTask> needStopManaulMedias = new List<NeedStopManuaScheduleTask>();
+
+
+                        if (groupIds != null)
+                        {
+                            String[] gid = groupIds.Split(',');
+                            foreach (var c in gid)
+                            {
+                                GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c, TypeRunning = BusinessTypeForGroup.AudioEncoder });
+
+                                GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组播放成功");
+
+                            }
+                        }
+
+
+                        List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                        hub.Clients(ids).sendRefreshAudioDeviceMessge();
+
+                        hub.Clients(ids).sendRefreshCallerEncoderDeviceMessge();
+
+                        if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
+                        {
+                            foreach (var gi in gis)
+                            {
+
+                                foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
+                                {
+                                    if (grr.GroupId == gi.GroupId)
                                     {
-                                        //停止手工计划播放，
-
-
-                                        bool isCidExisting = false;
-                                        for (int i = 0; i < needStopManaulMedias.Count; i++)
+                                        if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask)
                                         {
-                                            if (needStopManaulMedias[i].channelId == grr.channelId)
+                                            //停止手工计划播放，
+
+
+                                            bool isCidExisting = false;
+                                            for (int i = 0; i < needStopManaulMedias.Count; i++)
                                             {
-                                                isCidExisting = true;
-                                                if (needStopManaulMedias[i].groups != null)
+                                                if (needStopManaulMedias[i].channelId == grr.channelId)
                                                 {
-                                                    if (!needStopManaulMedias[i].groups.Contains(gi))
+                                                    isCidExisting = true;
+                                                    if (needStopManaulMedias[i].groups != null)
                                                     {
-                                                        needStopManaulMedias[i].groups.Add(gi);
+                                                        if (!needStopManaulMedias[i].groups.Contains(gi))
+                                                        {
+                                                            needStopManaulMedias[i].groups.Add(gi);
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        if (!isCidExisting)
-                                        {
-
-                                            NeedStopManuaScheduleTask nst = new NeedStopManuaScheduleTask();
-                                            nst.bType = grr.bType;
-                                            nst.channelId = grr.channelId;
-                                            nst.channelName = grr.channelName;
-                                            nst.isSchedule = grr.isSchedule;
-                                            nst.scheduleTime = grr.scheduleTime;
-                                            nst.groups = new List<GroupInfo>();
-
-                                            nst.groups.Add(gi);
-                                            needStopManaulMedias.Add(nst);
-
-                                        }
-
-
-
-
-
-
-                                    }
-
-                                    else if (grr.TypeRunning == BusinessTypeForGroup.VideoEncoder)
-                                    {
-                                        //停止视频编码
-
-                                        bool isEncoderExsting = false;
-                                        for (int i = 0; i < needStopVideoEncoders.Count; i++)
-                                        {
-                                            if (needStopVideoEncoders[i].encoderId == grr.encoderId)
+                                            if (!isCidExisting)
                                             {
-                                                isEncoderExsting = true;
-                                                if (needStopVideoEncoders[i].groups != null)
+
+                                                NeedStopManuaScheduleTask nst = new NeedStopManuaScheduleTask();
+                                                nst.bType = grr.bType;
+                                                nst.channelId = grr.channelId;
+                                                nst.channelName = grr.channelName;
+                                                nst.isSchedule = grr.isSchedule;
+                                                nst.scheduleTime = grr.scheduleTime;
+                                                nst.groups = new List<GroupInfo>();
+
+                                                nst.groups.Add(gi);
+                                                needStopManaulMedias.Add(nst);
+
+                                            }
+
+
+
+
+
+
+                                        }
+
+                                        else if (grr.TypeRunning == BusinessTypeForGroup.VideoEncoder)
+                                        {
+                                            //停止视频编码
+
+                                            bool isEncoderExsting = false;
+                                            for (int i = 0; i < needStopVideoEncoders.Count; i++)
+                                            {
+                                                if (needStopVideoEncoders[i].encoderId == grr.encoderId)
                                                 {
-                                                    if (!needStopVideoEncoders[i].groups.Contains(gi))
+                                                    isEncoderExsting = true;
+                                                    if (needStopVideoEncoders[i].groups != null)
                                                     {
-                                                        needStopVideoEncoders[i].groups.Add(gi);
+                                                        if (!needStopVideoEncoders[i].groups.Contains(gi))
+                                                        {
+                                                            needStopVideoEncoders[i].groups.Add(gi);
+                                                        }
                                                     }
                                                 }
                                             }
+
+                                            if (!isEncoderExsting)
+                                            {
+
+                                                NeedStopVideoEncoderTask nst = new NeedStopVideoEncoderTask();
+                                                nst.encoderId = grr.encoderId;
+
+                                                nst.groups = new List<GroupInfo>();
+
+                                                nst.groups.Add(gi);
+                                                needStopVideoEncoders.Add(nst);
+
+                                            }
+
                                         }
-
-                                        if (!isEncoderExsting)
-                                        {
-
-                                            NeedStopVideoEncoderTask nst = new NeedStopVideoEncoderTask();
-                                            nst.encoderId = grr.encoderId;
-
-                                            nst.groups = new List<GroupInfo>();
-
-                                            nst.groups.Add(gi);
-                                            needStopVideoEncoders.Add(nst);
-
-                                        }
-
                                     }
+                                }
+
+
+                            }
+
+                            if (needStopVideoEncoders.Count > 0)
+                            {
+                                foreach (var task in needStopVideoEncoders)
+                                {
+                                    VideoEncoderControlLogic.SendVideoEncoderOperation(hub, task.encoderId, false, false, task.groups);
+                                }
+                                // VideoEncoderControlLogic.SendVideoEncoderOperation(hub, "", false, true, needStopVideoEncoders);
+                            }
+
+                            if (needStopManaulMedias.Count > 0)
+                            {
+                                foreach (var task in needStopManaulMedias)
+                                {
+                                    SendLogic.SendOutStopRepeatCommandToServerAndClient(task.channelId, task.channelName, true, hub, task.isSchedule, task.scheduleTime, task.bType, false, task.groups);
+                                }
+
+                            }
+                        }
+
+
+                        if (isOperationFromDevice)
+                        {
+
+                            if (str != null)
+                            {
+                                gis = new List<GroupInfo>();
+                                for (int i = 0; i < str.Length; i++)
+                                {
+                                    gis.Add(new GroupInfo { GroupId = str[i] });
+
                                 }
                             }
 
 
-                        }
 
-                        if (needStopVideoEncoders.Count > 0)
+                            cb.errorCode = "0";
+                            hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+
+
+
+                        }
+                        else
                         {
-                            foreach (var task in needStopVideoEncoders)
-                            {
-                                VideoEncoderControlLogic.SendVideoEncoderOperation(hub, task.encoderId, false, false, task.groups);
-                            }
-                            // VideoEncoderControlLogic.SendVideoEncoderOperation(hub, "", false, true, needStopVideoEncoders);
+                            GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
+                            hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
                         }
 
-                        if (needStopManaulMedias.Count > 0)
-                        {
-                            foreach (var task in needStopManaulMedias)
-                            {
-                                SendLogic.SendOutStopRepeatCommandToServerAndClient(task.channelId, task.channelName, true, hub, task.isSchedule, task.scheduleTime, task.bType, false, task.groups);
-                            }
-
-                        }
-                    }
-
-
-                    if (isOperationFromDevice)
-                    {
-
-                        if (str != null)
-                        {
-                            gis = new List<GroupInfo>();
-                            for (int i = 0; i < str.Length; i++)
-                            {
-                                gis.Add(new GroupInfo { GroupId = str[i] });
-
-                            }
-                        }
+                        //     ProcessTimeOutRequest(hub);
 
 
 
-                        cb.errorCode = "0";
-                        hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                        //  SendCommandToAudioToEncoder(hub, clientIdentify, CommandTypeEnum.ENCODEROPEN);
+
+                        Thread.Sleep(2000);
+
+                        SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, false);
+
+
 
 
 
                     }
-                    else
-                    {
-                        GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
-                        hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
-                    }
+                }
+            }
 
-                    //     ProcessTimeOutRequest(hub);
-
-
-
-                    //  SendCommandToAudioToEncoder(hub, clientIdentify, CommandTypeEnum.ENCODEROPEN);
-
-                    Thread.Sleep(2000);
-
-                    SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, false);
+            catch (Exception ex)
+            {
+                try
+                {
 
 
 
+                    GlobalUtils.AddLogs(null, "Exception", ex.StackTrace);
 
 
                 }
+                catch { }
+
+
+                // HttpContext.Current.Response.Write(ex.StackTrace);
             }
+
 
         }
 
@@ -426,59 +447,79 @@ namespace MediaMgrSystem
 
         public static void SendEncoderAudioCloseCommand(IHubCallerConnectionContext hub, string clientIdentify, bool isOperationFromDevice = false, string deviceReqeustGuiId = "")
         {
-
-            lock (GlobalUtils.ObjectLockEncoderOperationItemClose)
+            try
             {
-                string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
 
-
-                if (string.IsNullOrWhiteSpace(connecionId))
+                lock (GlobalUtils.ObjectLockEncoderOperationItemClose)
                 {
-                    GlobalUtils.AddLogs(hub, "呼叫台操作", "呼叫台未开启");
-                    return;
-                }
+                    string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
 
-                List<RunningEncoder> res = GlobalUtils.EncoderRunningClientsBLLInstance.GetAllEncoderRunning();
 
-                if (res != null)
-                {
-                    RunningEncoder isFound = null;
-                    foreach (var re in res)
+                    if (string.IsNullOrWhiteSpace(connecionId))
                     {
-
-                        if (re.ClientIdentify == clientIdentify)
-                        {
-                            isFound = re;
-                            break;
-                        }
-
-                    }
-
-                    if (isFound == null)
-                    {
-                        string msg = clientIdentify + " 打开失败，呼叫台不在运行中";
-                        GlobalUtils.AddLogs(hub, "呼叫台操作", msg);
-
-                        if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
-                        {
-                            ComuResponseBase cb = new ComuResponseBase();
-                            cb.guidId = deviceReqeustGuiId;
-                            cb.errorCode = "110";
-                            cb.message = msg;
-                            hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
-                        }
-
+                        GlobalUtils.AddLogs(hub, "呼叫台操作", "呼叫台未开启");
                         return;
-
                     }
-                    else
+
+                    List<RunningEncoder> res = GlobalUtils.EncoderRunningClientsBLLInstance.GetAllEncoderRunning();
+
+                    if (res != null)
                     {
-                        StopEncoder(hub, isFound.ClientIdentify, isFound.GroupIds, isFound.DevIds, isOperationFromDevice, deviceReqeustGuiId);
-                    }
+                        RunningEncoder isFound = null;
+                        foreach (var re in res)
+                        {
 
+                            if (re.ClientIdentify == clientIdentify)
+                            {
+                                isFound = re;
+                                break;
+                            }
+
+                        }
+
+                        if (isFound == null)
+                        {
+                            string msg = clientIdentify + " 打开失败，呼叫台不在运行中";
+                            GlobalUtils.AddLogs(hub, "呼叫台操作", msg);
+
+                            if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
+                            {
+                                ComuResponseBase cb = new ComuResponseBase();
+                                cb.guidId = deviceReqeustGuiId;
+                                cb.errorCode = "110";
+                                cb.message = msg;
+                                hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                            }
+
+                            return;
+
+                        }
+                        else
+                        {
+                            StopEncoder(hub, isFound.ClientIdentify, isFound.GroupIds, isFound.DevIds, isOperationFromDevice, deviceReqeustGuiId);
+                        }
+
+                    }
                 }
             }
 
+            catch (Exception ex)
+            {
+                try
+                {
+                    
+
+                    GlobalUtils.AddLogs(null, "Exception", ex.StackTrace);
+
+
+                }
+                catch { }
+
+
+                // HttpContext.Current.Response.Write(ex.StackTrace);
+
+
+            }
         }
 
 
@@ -498,7 +539,7 @@ namespace MediaMgrSystem
 
         private static void ProcessTimeOutRequest(object hub)
         {
-           
+
             Thread.Sleep(4000);
 
             lock (GlobalUtils.ObjectLockEncoderQueueItem)
@@ -539,7 +580,7 @@ namespace MediaMgrSystem
 
                 }
             }
-         
+
         }
 
 

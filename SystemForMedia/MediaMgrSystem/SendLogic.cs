@@ -351,7 +351,7 @@ namespace MediaMgrSystem
                         cmdToVideoSvr.arg.streamSrcs = new List<string>();
 
 
-                        int maxBitRate = 0;
+                        string bitArray = string.Empty;
 
                         int outBitRate = 0;
 
@@ -363,10 +363,16 @@ namespace MediaMgrSystem
                                 {
                                     if (!string.IsNullOrWhiteSpace(file.BitRate) && int.TryParse(file.BitRate, out outBitRate))
                                     {
-                                        maxBitRate = outBitRate > maxBitRate ? outBitRate : maxBitRate;
+                                        bitArray = bitArray + file.BitRate + ",";
                                     }
 
+
                                     cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(bitArray))
+                                {
+                                    bitArray = bitArray.TrimEnd(',');
                                 }
                             }
                         }
@@ -565,7 +571,7 @@ namespace MediaMgrSystem
 
                         List<GroupInfo> gOut = new List<GroupInfo>();
 
-                        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipReallySent, out clientsDatraToSend, maxBitRate, bType, out gOut, channelGroup);
+                        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipReallySent, out clientsDatraToSend, bitArray, bType, out gOut, channelGroup);
 
 
 
@@ -1314,7 +1320,7 @@ namespace MediaMgrSystem
 
 
         private static void CreatePlayCommandForAndriodClients(List<ProgramInfo> pids, VideoServerOperCommand cmdToVideoSvr, string channelId,
-            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, out VideoOperAndriodClientCommand dataToSend, int maxBitRate, BusinessType bType, out List<GroupInfo> groups, List<GroupInfo> specGroups = null)
+            out List<string> ipsNeedToSend, out List<string> idsNeedToSend, out List<string> ipReallySent, out VideoOperAndriodClientCommand dataToSend, string bitRates, BusinessType bType, out List<GroupInfo> groups, List<GroupInfo> specGroups = null)
         {
 
             VideoOperAndriodClientCommand dataSendToAndroidClient = new VideoOperAndriodClientCommand();
@@ -1331,7 +1337,7 @@ namespace MediaMgrSystem
 
             if (pids != null && pids.Count > 0)
             {
-                dataSendToAndroidClient.arg.bitRate = maxBitRate.ToString();
+                dataSendToAndroidClient.arg.bitRate = bitRates;
 
                 dataSendToAndroidClient.arg.mediaType = GlobalUtils.CheckIfAudio(pids[0].MappingFiles[0].FileName) ? 1 : 2;
 

@@ -27,7 +27,8 @@ namespace MediaMgrSystem
             GlobalHost.Configuration.ConnectionTimeout = new TimeSpan(0, 120, 0);
             GlobalHost.Configuration.DisconnectTimeout = new TimeSpan(0, 0, 6);
 
-         
+
+            GlobalUtils.EncoderAudioRunningClientsBLLInstance.RemoveAllRunningEncoder();
 
 
         }
