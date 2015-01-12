@@ -225,6 +225,7 @@ namespace MediaMgrWS
                         string strTimeToCheck = isCheckStart ? dt.Rows[i]["ScheduleTaskStartTime"].ToString() : dt.Rows[i]["ScheduleTaskEndTime"].ToString();
 
 
+                        string strIsForAudio = dt.Rows[i]["IsForAudio"].ToString();
 
                         string strScheduleId = dt.Rows[i]["ScheduleId"].ToString();
                         string strScheduleTaskId = dt.Rows[i]["ScheduleTaskId"].ToString();
@@ -271,7 +272,7 @@ namespace MediaMgrWS
 
                                     string[] strPids = new string[0];
 
-                                    hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
+                                    hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "2", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority, strIsForAudio);
 
                                     UpdateRunningStatus(false, strScheduleTaskId, cid, true);
                                     System.Diagnostics.Debug.WriteLine("Sending Stop Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
@@ -298,7 +299,7 @@ namespace MediaMgrWS
                                     if (!string.IsNullOrEmpty(cid) && strPids != null && strPids.Length > 0)
                                     {
 
-                                        hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority);
+                                        hubProxy.Invoke("sendScheduleTaskControl", cid, cName, strPids, "1", strScheduleTaskId, strTimeToCheck, strIsRepeat, strScheduleTaskPriority, strIsForAudio);
 
                                         UpdateRunningStatus(true, strScheduleTaskId, cid, true);
                                         System.Diagnostics.Debug.WriteLine("Sending Start Schedule At " + DateTime.Now.ToString("HH:mm:ss") + "Channel Id:" + cid + " Guid ID" + strScheduleTaskId);
