@@ -938,345 +938,371 @@ namespace MediaMgrSystem
              bool isSchedule, string scheduleTime, BusinessType bType, bool isSendToVideoSvr = true, List<GroupInfo> stopGroups = null)
         {
 
-            bool isStopClients = false;
-            string aa = "Stop before PublicObjectForLockStop viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
-            System.Diagnostics.Debug.WriteLine(aa);
-            GlobalUtils.WriteDebugLogs(aa);
-            lock (GlobalUtils.PublicObjectForLockStop)
+            try
             {
 
-                aa = "Stop after PublicObjectForLockStop viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+                bool isStopClients = false;
+                string aa = "Stop before PublicObjectForLockStop viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
                 System.Diagnostics.Debug.WriteLine(aa);
                 GlobalUtils.WriteDebugLogs(aa);
-
-                VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
-
-                cmdToVideoSvr.commandType = isWantToStop ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
-
-
-
-
-                cmdToVideoSvr.guidId = Guid.NewGuid().ToString();
-
-
-                cmdToVideoSvr.arg = new VideoServerOperArg();
-
-                cmdToVideoSvr.arg.streamName = GlobalUtils.StreamNameBase + channelId;
-
-
-                if (!isSchedule)
-                {
-                    bool isRepeat = GlobalUtils.SetManaulPlayItemRepeatOffset(channelId);
-
-                    cmdToVideoSvr.arg.isRepeat = isRepeat ? 1 : 0;
-                }
-
-                List<string> clientsIpToSend = new List<string>();
-
-                List<string> clientsConectionIdToSend = new List<string>();
-
-                List<string> ipRealySent = new List<string>();
-
-                VideoOperAndriodClientCommand clientsDataToSend = new VideoOperAndriodClientCommand();
-                List<GroupInfo> channelGroups = new List<GroupInfo>();
-                if (isWantToStop)
-                {
-                    channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId, bType);
-
-                    clientsDataToSend.arg = new VideoOperAndriodClientArg();
-
-                }
-
-
-                //only stp spec group
-                if (stopGroups != null && stopGroups.Count > 0)
-                {
-                    isSendToVideoSvr = false;
-
-                    int i = 0;
-                    if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
-                    {
-
-                        foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
-                        {
-                            if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId)
-                            {
-                                i++;
-                            }
-                        }
-
-                    }
-
-                    if (i == stopGroups.Count)
-                    {
-                        isSendToVideoSvr = true;
-                    }
-                    else
-                    {
-                        isStopClients = true;
-                    }
-
-
-                    List<GroupInfo> itemToAdd = new List<GroupInfo>();
-                    foreach (var cg in channelGroups)
-                    {
-                        foreach (var sp in stopGroups)
-                        {
-                            if (sp.GroupId == cg.GroupId)
-                            {
-                                if (!itemToAdd.Contains(cg))
-                                {
-                                    itemToAdd.Add(cg);
-                                }
-                            }
-                        }
-
-                    }
-
-
-                    channelGroups = itemToAdd;
-
-
-
-                }
-                else
-                {
-                    List<GroupInfo> itemToAdd = new List<GroupInfo>();
-                    if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
-                    {
-
-                        foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
-                        {
-                            if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId)
-                            {
-                                foreach (var cg in channelGroups)
-                                {
-                                    if (cg.GroupId == grr.GroupId)
-                                    {
-
-                                        if (!itemToAdd.Contains(cg))
-                                        {
-                                            itemToAdd.Add(cg);
-                                        }
-                                    }
-
-                                }
-
-                            }
-                        }
-
-                    }
-
-                    channelGroups = itemToAdd;
-                }
-
-                List<GroupInfo> giOut = new List<GroupInfo>();
-                CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipRealySent, out clientsDataToSend, bType, out giOut, channelGroups);
-
-
-                QueueCommandType cmdType = QueueCommandType.NONE;
-
-                if (isSchedule)
-                {
-                    cmdType = QueueCommandType.SCHEDULESTOP;
-
-                }
-                else
+                lock (GlobalUtils.PublicObjectForLockStop)
                 {
 
-                    cmdType = isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
-                }
+                    aa = "Stop after PublicObjectForLockStop viedo server " + DateTime.Now.ToString("HH:mm:ss fff");
+                    System.Diagnostics.Debug.WriteLine(aa);
+                    GlobalUtils.WriteDebugLogs(aa);
 
-                PushQueue(cmdType, clientsIpToSend, isSchedule, channelId, channelName, string.Empty, scheduleTime, cmdToVideoSvr.guidId, clientsDataToSend.guidId, isSendToVideoSvr);
+                    VideoServerOperCommand cmdToVideoSvr = new VideoServerOperCommand();
 
-
-                string str = "Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
-                System.Diagnostics.Debug.WriteLine(str);
-                GlobalUtils.WriteDebugLogs(str);
-
-                string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
-
-                if (!string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
-                {
-                    if (isSendToVideoSvr)
-                    {
-                        hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
-                        str = "STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss fff");
-                        System.Diagnostics.Debug.WriteLine(str);
-                        GlobalUtils.WriteDebugLogs(str);
-                    }
-                }
-                else
-                {
-                    GlobalUtils.AddLogs(hub, "系统异常", "视频服务器突然关闭");
-                    return;
-
-                }
-
-                if (isWantToStop)
-                {
-
-                    string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
-
-                    hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+                    cmdToVideoSvr.commandType = isWantToStop ? CommandTypeEnum.STOPVEDIO : CommandTypeEnum.REPEATPLAY;
 
 
 
-                    foreach (var css in ipRealySent)
-                    {
-                        PlayDevice itemToRemoved = null;
-                        foreach (var pd in GlobalUtils.PlayingDevices)
-                        {
 
-                            if (css == pd.IpAddress)
-                            {
-                                itemToRemoved = pd;
-                                break;
-                            }
-                        }
-
-                        if (itemToRemoved != null)
-                        {
-                            GlobalUtils.PlayingDevices.Remove(itemToRemoved);
-                        }
-                    }
-
-                    str = "STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff");
-                    System.Diagnostics.Debug.WriteLine(str);
-                    GlobalUtils.WriteDebugLogs(str);
-                }
+                    cmdToVideoSvr.guidId = Guid.NewGuid().ToString();
 
 
+                    cmdToVideoSvr.arg = new VideoServerOperArg();
 
-                str = "Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
-                System.Diagnostics.Debug.WriteLine(str);
-                System.Diagnostics.Debug.WriteLine(str);
-                new Thread(ProcessTimeOutRequest).Start(hub);
+                    cmdToVideoSvr.arg.streamName = GlobalUtils.StreamNameBase + channelId;
 
-                if (!isStopClients)
-                {
 
                     if (!isSchedule)
                     {
-                        if (isWantToStop)
+                        bool isRepeat = GlobalUtils.SetManaulPlayItemRepeatOffset(channelId);
+
+                        cmdToVideoSvr.arg.isRepeat = isRepeat ? 1 : 0;
+                    }
+
+                    List<string> clientsIpToSend = new List<string>();
+
+                    List<string> clientsConectionIdToSend = new List<string>();
+
+                    List<string> ipRealySent = new List<string>();
+
+                    VideoOperAndriodClientCommand clientsDataToSend = new VideoOperAndriodClientCommand();
+                    List<GroupInfo> channelGroups = new List<GroupInfo>();
+                    if (isWantToStop)
+                    {
+                        channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId, bType);
+
+                        clientsDataToSend.arg = new VideoOperAndriodClientArg();
+
+                    }
+
+
+                    //only stp spec group
+                    if (stopGroups != null && stopGroups.Count > 0)
+                    {
+                        isSendToVideoSvr = false;
+
+                        int i = 0;
+                        if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
                         {
 
-                            ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
-
-
-                            if (mp != null)
+                            foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
                             {
-                                //   GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
-                                //   GlobalUtils.ChannelManuallyPlayingPids = null;
-                                //  GlobalUtils.ChannelManuallyPlayingFunction = bType;
-
-
-                                //    GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
-                                mp.IsPlaying = false;
-
-                                mp.IsRepeating = false;
-
-
-
-
-                                //    hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("Stop", "0", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
-                                GlobalUtils.SendManuallyClientNotice(hub, "Stop", "0", mp);
-                                GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动停止成功");
-
+                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId)
+                                {
+                                    i++;
+                                }
                             }
+
                         }
+
+                        if (i == stopGroups.Count)
+                        {
+                            isSendToVideoSvr = true;
+                        }
+                        else
+                        {
+                            isStopClients = true;
+                        }
+
+
+                        List<GroupInfo> itemToAdd = new List<GroupInfo>();
+                        foreach (var cg in channelGroups)
+                        {
+                            foreach (var sp in stopGroups)
+                            {
+                                if (sp.GroupId == cg.GroupId)
+                                {
+                                    if (!itemToAdd.Contains(cg))
+                                    {
+                                        itemToAdd.Add(cg);
+                                    }
+                                }
+                            }
+
+                        }
+
+
+                        channelGroups = itemToAdd;
+
+
+
+                    }
+                    else
+                    {
+                        List<GroupInfo> itemToAdd = new List<GroupInfo>();
+                        if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
+                        {
+
+                            foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
+                            {
+                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId)
+                                {
+                                    foreach (var cg in channelGroups)
+                                    {
+                                        if (cg.GroupId == grr.GroupId)
+                                        {
+
+                                            if (!itemToAdd.Contains(cg))
+                                            {
+                                                itemToAdd.Add(cg);
+                                            }
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                        channelGroups = itemToAdd;
+                    }
+
+                    List<GroupInfo> giOut = new List<GroupInfo>();
+                    CreateCommandForStopRepeatToClients(cmdToVideoSvr.commandType, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipRealySent, out clientsDataToSend, bType, out giOut, channelGroups);
+
+
+                    QueueCommandType cmdType = QueueCommandType.NONE;
+
+                    if (isSchedule)
+                    {
+                        cmdType = QueueCommandType.SCHEDULESTOP;
+
                     }
                     else
                     {
 
-                        ///Remove schudle task
-                        ScheduleRunningItem itemToRemove = null;
-
-                        foreach (var sTask in GlobalUtils.RunningSchudules)
-                        {
-                            if (sTask.ChannelId == channelId)
-                            {
-                                itemToRemove = sTask;
-                            }
-                        }
-
-                        ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
-
-                        if (mp != null && mp.IsPlaying)
-                        {
-
-                            ComuResponseBase cr = new ComuResponseBase();
-
-                            cr.guidId = itemToRemove.GuidId + "," + itemToRemove.ChannelId;
-
-                            cr.errorCode = "200";
-
-                            cr.message = "计划停止失败，手工播放中";
-
-                            if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
-                            {
-
-                                GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划执行失败，手工播放中,运行时间：" + scheduleTime);
-                                hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
-                            }
-
-                            return;
-                        }
-
-                        if (itemToRemove != null)
-                        {
-
-                            ComuResponseBase cr = new ComuResponseBase();
-
-                            cr.guidId = itemToRemove.GuidId + "," + itemToRemove.ChannelId;
-
-                            cr.errorCode = "180";
-
-                            cr.message = "StopVideo";
-
-                            if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
-                            {
-
-                                hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
-                            }
-
-
-                            GlobalUtils.RunningSchudules.Remove(itemToRemove);
-
-                            GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划成功,运行时间：" + scheduleTime);
-
-                            System.Diagnostics.Debug.WriteLine("Removing Schedule Task " + itemToRemove.ChannelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
-                        }
-
+                        cmdType = isWantToStop ? QueueCommandType.MANAULLYSTOP : QueueCommandType.MANAULLYREPEAT;
                     }
-                }
 
-                if (channelGroups != null && channelGroups.Count > 0)
-                {
-                    foreach (var c in channelGroups)
+                    PushQueue(cmdType, clientsIpToSend, isSchedule, channelId, channelName, string.Empty, scheduleTime, cmdToVideoSvr.guidId, clientsDataToSend.guidId, isSendToVideoSvr);
+
+
+                    string str = "Stop Command Send BEFORE " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
+                    System.Diagnostics.Debug.WriteLine(str);
+                    GlobalUtils.WriteDebugLogs(str);
+
+                    string jsonDataToVideoSvr = Newtonsoft.Json.JsonConvert.SerializeObject(cmdToVideoSvr);
+
+                    if (!string.IsNullOrWhiteSpace(GlobalUtils.VideoServerConnectionId))
                     {
-                        List<GroupBusinessRunning> itemToRemoved = new List<GroupBusinessRunning>();
-
-                        foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
+                        if (isSendToVideoSvr)
                         {
-                            if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId && grr.GroupId == c.GroupId)
+                            hub.Client(GlobalUtils.VideoServerConnectionId).sendMessageToClient(jsonDataToVideoSvr);
+                            str = "STOP json To Video Sever: " + jsonDataToVideoSvr + DateTime.Now.ToString("HH:mm:ss fff");
+                            System.Diagnostics.Debug.WriteLine(str);
+                            GlobalUtils.WriteDebugLogs(str);
+                        }
+                    }
+                    else
+                    {
+                        GlobalUtils.AddLogs(hub, "系统异常", "视频服务器突然关闭");
+                        return;
+
+                    }
+
+                    if (isWantToStop)
+                    {
+
+                        string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(clientsDataToSend);
+
+                        hub.Clients(clientsConectionIdToSend).sendMessageToClient(jsonDataToClient);
+
+
+
+                        foreach (var css in ipRealySent)
+                        {
+                            PlayDevice itemToRemoved = null;
+                            foreach (var pd in GlobalUtils.PlayingDevices)
                             {
-                                itemToRemoved.Add(grr);
+
+                                if (css == pd.IpAddress)
+                                {
+                                    itemToRemoved = pd;
+                                    break;
+                                }
+                            }
+
+                            if (itemToRemoved != null)
+                            {
+                                GlobalUtils.PlayingDevices.Remove(itemToRemoved);
                             }
                         }
 
-                        foreach (var iv in itemToRemoved)
-                        {
-                            GlobalUtils.GlobalGroupBusinessStatus.Remove(iv);
-                        }
-
-                        GlobalUtils.AddLogs(hub, isSchedule ? "计划任务" : "手动操作", c.GroupName + "组停止成功");
+                        str = "STOP json To Adnriod Client: " + jsonDataToClient + DateTime.Now.ToString("HH:mm:ss fff");
+                        System.Diagnostics.Debug.WriteLine(str);
+                        GlobalUtils.WriteDebugLogs(str);
                     }
+
+
+
+                    str = "Stop Command Send AFTER " + DateTime.Now.ToString("HH:mm:ss fff") + " Channel Id:" + channelId;
+                    System.Diagnostics.Debug.WriteLine(str);
+                    System.Diagnostics.Debug.WriteLine(str);
+                    new Thread(ProcessTimeOutRequest).Start(hub);
+
+                    if (!isStopClients)
+                    {
+
+                        if (!isSchedule)
+                        {
+                            if (isWantToStop)
+                            {
+
+                                ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+
+
+                                if (mp != null)
+                                {
+                                    //   GlobalUtils.ChannelManuallyPlayingChannelId = string.Empty;
+                                    //   GlobalUtils.ChannelManuallyPlayingPids = null;
+                                    //  GlobalUtils.ChannelManuallyPlayingFunction = bType;
+
+
+                                    //    GlobalUtils.ChannelManuallyPlayingChannelName = string.Empty;
+                                    mp.IsPlaying = false;
+
+                                    mp.IsRepeating = false;
+
+
+
+
+                                    //    hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("Stop", "0", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
+                                    GlobalUtils.SendManuallyClientNotice(hub, "Stop", "0", mp);
+                                    GlobalUtils.AddLogs(hub, "手动操作", channelName + "手动停止成功");
+
+                                }
+                            }
+                        }
+                        else
+                        {
+
+                            ///Remove schudle task
+                            ScheduleRunningItem itemToRemove = null;
+
+                            foreach (var sTask in GlobalUtils.RunningSchudules)
+                            {
+                                if (sTask.ChannelId == channelId)
+                                {
+                                    itemToRemove = sTask;
+                                }
+                            }
+
+                            ManualPlayItem mp = GlobalUtils.GetManaulPlayItemByChannelId(channelId);
+
+                            if (mp != null && mp.IsPlaying)
+                            {
+
+                                ComuResponseBase cr = new ComuResponseBase();
+
+                                cr.guidId = itemToRemove.GuidId + "," + itemToRemove.ChannelId;
+
+                                cr.errorCode = "200";
+
+                                cr.message = "计划停止失败，手工播放中";
+
+                                if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                                {
+
+                                    GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划执行失败，手工播放中,运行时间：" + scheduleTime);
+                                    hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                                }
+
+                                return;
+                            }
+
+                            if (itemToRemove != null)
+                            {
+
+                                ComuResponseBase cr = new ComuResponseBase();
+
+                                cr.guidId = itemToRemove.GuidId + "," + itemToRemove.ChannelId;
+
+                                cr.errorCode = "180";
+
+                                cr.message = "StopVideo";
+
+                                if (!string.IsNullOrWhiteSpace(GlobalUtils.WindowsServiceConnectionId))
+                                {
+
+                                    hub.Client(GlobalUtils.WindowsServiceConnectionId).sendMessageToWindowService(Newtonsoft.Json.JsonConvert.SerializeObject(cr));
+                                }
+
+
+                                GlobalUtils.RunningSchudules.Remove(itemToRemove);
+
+                                GlobalUtils.AddLogs(hub, "计划任务", channelName + "结束播放计划成功,运行时间：" + scheduleTime);
+
+                                System.Diagnostics.Debug.WriteLine("Removing Schedule Task " + itemToRemove.ChannelId + " Now Count Is:" + GlobalUtils.RunningSchudules.Count);
+                            }
+
+                        }
+                    }
+
+                    if (channelGroups != null && channelGroups.Count > 0)
+                    {
+                        foreach (var c in channelGroups)
+                        {
+                            List<GroupBusinessRunning> itemToRemoved = new List<GroupBusinessRunning>();
+
+                            foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
+                            {
+                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId && grr.GroupId == c.GroupId)
+                                {
+                                    itemToRemoved.Add(grr);
+                                }
+                            }
+
+                            foreach (var iv in itemToRemoved)
+                            {
+                                GlobalUtils.GlobalGroupBusinessStatus.Remove(iv);
+                            }
+
+                            GlobalUtils.AddLogs(hub, isSchedule ? "计划任务" : "手动操作", c.GroupName + "组停止成功");
+                        }
+                    }
+
+                    List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                    hub.Clients(ids).sendRefreshAudioDeviceMessge();
                 }
 
-                List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+            }
 
-                hub.Clients(ids).sendRefreshAudioDeviceMessge();
+            catch (Exception ex)
+            {
+                try
+                {
+
+                    //StreamWriter sw = new StreamWriter(@"c:\bslog.txt", true, Encoding.Default);
+
+                    //sw.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss" + ex.StackTrace.ToString()));
+
+
+                    //sw.Close();
+
+                    GlobalUtils.AddLogs(null, "Exception", ex.StackTrace);
+
+                }
+                catch { }
+
+
+                // HttpContext.Current.Response.Write(ex.StackTrace);
             }
 
         }

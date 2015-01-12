@@ -143,7 +143,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int RemoveScheduleTaskOnly(string id)
         {
- 
+
 
             String sqlRemoveTaskStr = "DELETE FROM SCHEDULETASKINFO WHERE SCHEDULEID=" + id;
 
@@ -233,7 +233,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
         {
 
             string strWeek = DateTime.Now.DayOfWeek.ToString();
-            string weekIndex=string.Empty;
+            string weekIndex = string.Empty;
             switch (strWeek)
             {
                 case "Monday":
@@ -264,12 +264,12 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
             sqlStr = String.Format(sqlStr, DateTime.Now.ToString("HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd"), weekIndex);
 
-            List<ScheduleTaskInfo> result= GetTasksList(sqlStr);
+            List<ScheduleTaskInfo> result = GetTasksList(sqlStr);
 
-           if (result!=null && result.Count>0)
-           {
-               return result[0];
-           }
+            if (result != null && result.Count > 0)
+            {
+                return result[0];
+            }
 
             return null;
 
@@ -303,11 +303,11 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddSchdeulTask(ScheduleTaskInfo si)
         {
-            String sqlStr = "INSERT INTO SCHEDULETASKINFO(SCHEDULEID,SCHEDULETASKSTARTTIME,SCHEDULETASKENDTIME,SCHEDULETASKPROGARMID,SCHEDULETASKPRIORITY,SCHEDULETASKWEEKS,SCHEDULETASKSPECIALDAYS,SCHEDULETASKNAME,SCHEDULETASKSPECIALDAYSTOWEEKS,ISRUNNING,ISREPEAT) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',0,{9})";
+            String sqlStr = "INSERT INTO SCHEDULETASKINFO(SCHEDULEID,SCHEDULETASKSTARTTIME,SCHEDULETASKENDTIME,SCHEDULETASKPROGARMID,SCHEDULETASKPRIORITY,SCHEDULETASKWEEKS,SCHEDULETASKSPECIALDAYS,SCHEDULETASKNAME,SCHEDULETASKSPECIALDAYSTOWEEKS,ISRUNNING,ISREPEAT,IsForAudio) values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',0,{9},{10})";
 
 
 
-            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat);
+            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat, si.IsForAudio);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -315,9 +315,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int UpdateScheduleTask(ScheduleTaskInfo si)
         {
-            String sqlStr = "UPDATE SCHEDULETASKINFO SET SCHEDULEID='{0}',SCHEDULETASKSTARTTIME='{1}',SCHEDULETASKENDTIME='{2}',SCHEDULETASKPROGARMID='{3}',SCHEDULETASKPRIORITY='{4}',SCHEDULETASKWEEKS='{5}',SCHEDULETASKSPECIALDAYS='{6}',SCHEDULETASKNAME='{7}',SCHEDULETASKSPECIALDAYSTOWEEKS='{8}',ISREPEAT={9} WHERE SCHEDULETASKID={10}";
+            String sqlStr = "UPDATE SCHEDULETASKINFO SET SCHEDULEID='{0}',SCHEDULETASKSTARTTIME='{1}',SCHEDULETASKENDTIME='{2}',SCHEDULETASKPROGARMID='{3}',SCHEDULETASKPRIORITY='{4}',SCHEDULETASKWEEKS='{5}',SCHEDULETASKSPECIALDAYS='{6}',SCHEDULETASKNAME='{7}',SCHEDULETASKSPECIALDAYSTOWEEKS='{8}',ISREPEAT={9},IsForAudio={10} WHERE SCHEDULETASKID={11}";
 
-            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat, si.ScheduleTaskId);
+            sqlStr = String.Format(sqlStr, si.ScheduleId, si.ScheduleTaskStartTime, si.ScheduleTaskEndTime, si.ScheduleTaskProgarmId, si.ScheduleTaskPriority, si.StrWeeks, si.StrDays, si.ScheduleTaskName, si.StrSpecialDaysToWeeks, si.IsRepeat, si.IsForAudio, si.ScheduleTaskId);
 
             return dbUitls.ExecuteNonQuery(sqlStr);
 
@@ -349,6 +349,16 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         si.ScheduleTaskName = dt.Rows[i]["SCHEDULETASKNAME"].ToString();
 
                         si.IsRepeat = dt.Rows[i]["IsRepeat"].ToString();
+
+                        string strIsForAudio = dt.Rows[i]["IsForAudio"].ToString();
+
+                        si.IsForAudio = 0;
+                        
+                        int tmpIntForAuido;
+                        if (int.TryParse(strIsForAudio, out tmpIntForAuido))
+                        {
+                            si.IsForAudio = tmpIntForAuido;
+                        }
 
 
 

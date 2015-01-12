@@ -859,7 +859,7 @@ namespace MediaMgrSystem
         {
             RemoteControlLogic.SendRemoteControlBySingleDevice(Clients, strDeviceType, strClientIdentify, strNewDeviceStatus == "1", strACMode, strACTempature);
         }
-        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority)
+        public void SendScheduleTaskControl(string channelId, string channelName, string[] pid, string cmdType, string guid, string scheduleTime, string isRepeat, string priority,string strIsForAudio)
         {
 
             //object[] objs = new object[7];
@@ -870,6 +870,13 @@ namespace MediaMgrSystem
             //objs[4] = scheduleTime;
 
             //objs[6] = isRepeat;
+
+            BusinessType bt = BusinessType.AUDITBROADCAST;
+
+            if (!string.IsNullOrWhiteSpace(strIsForAudio) && strIsForAudio == "0")
+            {
+                bt = BusinessType.VIDEOONLINE;
+            }
 
             //Play
             if (cmdType == "1")
@@ -899,7 +906,8 @@ namespace MediaMgrSystem
                 GlobalUtils.WriteDebugLogs(aa);
 
                 //   SendLogic.SendPlayCommand(objs[0].ToString(), objs[1].ToString(), (string[])objs[2], Clients, objs[3].ToString(), objs[4].ToString(), (string)objs[6] == "1");
-                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1", BusinessType.AUDITBROADCAST, priority);
+            
+                SendLogic.SendPlayCommand(channelId, channelName, pid, Clients, guid, scheduleTime, isRepeat == "1", bt, priority);
                 // new Thread(ThreadToRunStartTask).Start(objs);
 
             }
@@ -928,7 +936,7 @@ namespace MediaMgrSystem
                 System.Diagnostics.Debug.WriteLine(aa);
                 GlobalUtils.WriteDebugLogs(aa);
 
-                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime, BusinessType.AUDITBROADCAST, true, priority);
+                SendLogic.SendStopRoRepeatCommand(channelId, channelName, true, Clients, guid, scheduleTime, bt, true, priority);
 
                 //  SendLogic.SendStopRoRepeatCommand(objs[0].ToString(), objs[1].ToString(), true, Clients, objs[3].ToString(), objs[4].ToString());
 

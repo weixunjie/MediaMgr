@@ -139,6 +139,15 @@ namespace MediaMgrSystem.MgrModel {
         protected global::System.Web.UI.WebControls.Button btnAddDate;
         
         /// <summary>
+        /// rdaidbType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rdaidbType;
+        
+        /// <summary>
         /// ddProgram control.
         /// </summary>
         /// <remarks>

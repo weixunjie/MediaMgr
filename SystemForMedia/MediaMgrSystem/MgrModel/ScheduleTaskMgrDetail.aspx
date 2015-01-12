@@ -60,12 +60,27 @@
         .cb input {
             float: left;
         }
+
+
+        .rb td {
+            width: 50px;
+            text-align: center;
+        }
+
+        .rb label {
+            float: left;
+            display: inline-block;
+        }
+
+        .rb input {
+            float: left;
+        }
     </style>
 
 
 
 
-    <asp:UpdatePanel ID="UpdatePanel1"  runat="server">
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
 
 
@@ -101,33 +116,33 @@
 
                 <div class="form-group" style="margin-bottom: 10px">
 
-                    <div style="float:left; width:85px">
-                    <asp:Label runat="server" AssociatedControlID="CbWeek" CssClass="col-md-2 control-label" Width="107px">星期:</asp:Label>
+                    <div style="float: left; width: 85px">
+                        <asp:Label runat="server" AssociatedControlID="CbWeek" CssClass="col-md-2 control-label" Width="107px">星期:</asp:Label>
 
-                                        
+
 
                     </div>
 
-                      <div style="clear:right">
-                           
-                           <asp:CheckBox ID="cbCheckAll" runat="server" AutoPostBack="true" OnCheckedChanged="cbCheckAll_CheckedChanged" TextAlign="Left" />
-                               全选    
+                    <div style="clear: right">
 
-                          </div>
+                        <asp:CheckBox ID="cbCheckAll" runat="server" AutoPostBack="true" OnCheckedChanged="cbCheckAll_CheckedChanged" TextAlign="Left" />
+                        全选    
 
-                    <div style="clear:left">
-                    <asp:CheckBoxList ID="CbWeek" runat="server"  Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="666px" CssClass="cb"  >
-                        <asp:ListItem Value="1">星期一</asp:ListItem>
-                        <asp:ListItem Value="2">星期二</asp:ListItem>
-                        <asp:ListItem Value="3">星期三</asp:ListItem>
-                        <asp:ListItem Value="4">星期四</asp:ListItem>
-                        <asp:ListItem Value="5">星期五</asp:ListItem>
-                        <asp:ListItem Value="6">星期六</asp:ListItem>
-                        <asp:ListItem Value="7">星期日</asp:ListItem>
-                
-                    </asp:CheckBoxList>
+                    </div>
 
-                  </div>
+                    <div style="clear: left">
+                        <asp:CheckBoxList ID="CbWeek" runat="server" Height="40px" RepeatColumns="8" RepeatDirection="Horizontal" Width="666px" CssClass="cb">
+                            <asp:ListItem Value="1">星期一</asp:ListItem>
+                            <asp:ListItem Value="2">星期二</asp:ListItem>
+                            <asp:ListItem Value="3">星期三</asp:ListItem>
+                            <asp:ListItem Value="4">星期四</asp:ListItem>
+                            <asp:ListItem Value="5">星期五</asp:ListItem>
+                            <asp:ListItem Value="6">星期六</asp:ListItem>
+                            <asp:ListItem Value="7">星期日</asp:ListItem>
+
+                        </asp:CheckBoxList>
+
+                    </div>
 
 
                 </div>
@@ -159,16 +174,33 @@
 
 
 
+
+                    <div class="form-group" style="margin-bottom: 10px">
+
+                        <asp:Label runat="server" AssociatedControlID="btnPreview" CssClass="col-md-2 control-label" Width="107px">类别:</asp:Label>
+
+                        <div style="height: 30px; line-height: 30px; overflow: hidden;">
+
+                            <asp:RadioButtonList AutoPostBack="true" CssClass="rb" RepeatDirection="Horizontal" runat="server" ID="rdaidbType" OnSelectedIndexChanged="rdaidbType_SelectedIndexChanged">
+                                <asp:ListItem Enabled="true" Text="音频" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="视频" Enabled="true" Value="2"></asp:ListItem>
+                            </asp:RadioButtonList>
+
+                        </div>
+
+                    </div>
+
                     <div class="form-group" style="margin-bottom: 10px">
 
                         <asp:Label runat="server" AssociatedControlID="btnPreview" CssClass="col-md-2 control-label" Width="107px">节目:</asp:Label>
 
                         <div style="height: 30px; line-height: 30px; overflow: hidden;">
-                            <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddProgram" CssClass="form-control" style="margin-right:5px" />
+                            <asp:DropDownList runat="server" Width="220px" Height="30px" ID="ddProgram" CssClass="form-control" Style="margin-right: 5px" />
 
-                         
 
-                            <asp:Button ID="btnPreview"  class="btn primary" Width="88px" Height="30px" Style="; margin-bottom: 10px;" Text=" 试听" runat="server" CssClass="btn primary" OnClick="btnPreview_Click"></asp:Button>
+
+                            <asp:Button ID="btnPreview" class="btn primary" Width="88px" Height="30px" Style="margin-bottom: 10px;" Text=" 试听" runat="server" CssClass="btn primary" OnClick="btnPreview_Click"></asp:Button>
+
 
                         </div>
 

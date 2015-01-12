@@ -11,6 +11,28 @@ namespace MediaMgrSystem.MgrModel
 {
     public partial class ScheduleTaskMgrDetail : System.Web.UI.Page
     {
+        private void BindProgrameList(bool isForAudio)
+        {
+            List<ProgramInfo> allProgram = null;
+
+            if (isForAudio)
+            {
+                allProgram = GlobalUtils.ProgramBLLInstance.GetAllAuditProgram();
+            }
+            else
+            {
+                allProgram = GlobalUtils.ProgramBLLInstance.GetAllVideoProgram();
+            }
+
+
+            this.ddProgram.DataSource = allProgram;
+
+            ddProgram.DataValueField = "ProgramId";
+
+            ddProgram.DataTextField = "ProgramName";
+
+            ddProgram.DataBind();
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UserId"] == null)
@@ -23,16 +45,9 @@ namespace MediaMgrSystem.MgrModel
 
 
                 lbMessage.Visible = false;
-                List<ProgramInfo> allProgram = GlobalUtils.ProgramBLLInstance.GetAllAuditProgram();
 
 
-                this.ddProgram.DataSource = allProgram;
 
-                ddProgram.DataValueField = "ProgramId";
-
-                ddProgram.DataTextField = "ProgramName";
-
-                ddProgram.DataBind();
 
 
                 ddPriority.Items.Clear();
@@ -59,8 +74,13 @@ namespace MediaMgrSystem.MgrModel
 
                     ScheduleTaskInfo si = GlobalUtils.ScheduleBLLInstance.GetAllScheduleTaskById(id);
 
+
+
+                    BindProgrameList(si.IsForAudio == 1);
+
                     this.TbName.Text = si.ScheduleTaskName;
 
+                    rdaidbType.SelectedIndex = si.IsForAudio == 1 ? 0 : 1;
                     this.tbStartTime.Value = si.ScheduleTaskStartTime;
 
 
@@ -125,7 +145,7 @@ namespace MediaMgrSystem.MgrModel
 
         protected void Back_Click(object sender, EventArgs e)
         {
-           Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
+            Response.Redirect("~/MgrModel/ScheduleMgrDetail.aspx?id=" + TbHiddenIdSchedule.Text);
         }
 
         protected void Add_Click(object sender, EventArgs e)
@@ -317,6 +337,7 @@ namespace MediaMgrSystem.MgrModel
             si.ScheduleId = TbHiddenIdSchedule.Text;
             si.ScheduleTaskStartTime = tbStartTime.Value;
             si.ScheduleTaskName = TbName.Text;
+            si.IsForAudio = rdaidbType.SelectedIndex == 0 ? 1 : 0;
             si.ScheduleTaskPriority = ddPriority.SelectedValue;
             si.ScheduleTaskEndTime = tbEndTime.Value;
 
@@ -369,7 +390,7 @@ namespace MediaMgrSystem.MgrModel
                 }
 
                 CbWeek.Enabled = false;
-            
+
 
             }
             else
@@ -545,9 +566,10 @@ namespace MediaMgrSystem.MgrModel
                 si.ScheduleTaskName = TbName.Text;
                 si.ScheduleTaskPriority = ddPriority.SelectedValue;
 
+                si.IsForAudio = rdaidbType.SelectedIndex == 0 ? 1 : 0;
 
-                si.ScheduleTaskProgarmId = ddProgram.SelectedValue;                
-    
+                si.ScheduleTaskProgarmId = ddProgram.SelectedValue;
+
 
                 si.ScheduleTaskEndTime = currentTime.AddMinutes(2).ToString("HH:mm:ss");
                 si.ScheduleTaskStartTime = currentTime.ToString("HH:mm:ss");
@@ -559,6 +581,13 @@ namespace MediaMgrSystem.MgrModel
 
 
             }
+
+        }
+
+        protected void rdaidbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            BindProgrameList(rdaidbType.SelectedIndex == 0);
 
         }
 

@@ -34,6 +34,8 @@ namespace MediaMgrSystem.DataModels
 
         public String IsRepeat { get; set; }
 
+        public int IsForAudio { get; set; }
+       
         public String StrSpecialDaysToWeeks { get; set; }
 
 
