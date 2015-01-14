@@ -23,6 +23,8 @@ namespace MediaMgrSystem
 
         private bool CheckUsbKey()
         {
+
+       
             HaspFeature feature = HaspFeature.FromFeature(1);
             // string Name = "aganar";
 

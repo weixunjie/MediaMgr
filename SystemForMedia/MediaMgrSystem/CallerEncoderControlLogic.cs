@@ -366,12 +366,12 @@ namespace MediaMgrSystem
         }
 
         private static void StopEncoder(IHubCallerConnectionContext hub, string clientIdentify, string groupIds, string devIds, bool isOperationFromDevice = false, string deviceReqeustGuiId = "")
-        {
-
+        {          
 
             if (groupIds != null)
             {
                 String[] gid = groupIds.Split(',');
+
 
                 List<GroupBusinessRunning> itemToRemoved = new List<GroupBusinessRunning>();
 

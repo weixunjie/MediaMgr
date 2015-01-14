@@ -19,7 +19,7 @@ namespace MediaMgrSystem
     public static class SendLogic
     {
 
-        public static void SendChangeChannelSchedule(IHubConnectionContext hub, string cid, string channelName)
+        public static void SendChangeChannelSchedule(IHubConnectionContext hub, string cid, string channelName, string currentFunction)
         {
             string channelId = string.Empty;
             string guidIdToStop = string.Empty;
@@ -40,7 +40,7 @@ namespace MediaMgrSystem
             if (!string.IsNullOrWhiteSpace(channelId))
             {
                 //SendStopRoRepeatCommand("1", hub, guidIdToStop, channelId);
-                SendStopRoRepeatCommand(channelId, channelName, true, hub, guidIdToStop, scheduleTimeToStop, BusinessType.AUDITBROADCAST);
+                SendStopRoRepeatCommand(channelId, channelName, true, hub, guidIdToStop, scheduleTimeToStop, currentFunction == "1" ? BusinessType.AUDITBROADCAST : BusinessType.VIDEOONLINE);
             }
         }
         public static void SendChangeIpAddressAndServerUrl(IHubConnectionContext hub, string oldIpAddress, string newIpAddress, string serverUrl)
@@ -1003,12 +1003,10 @@ namespace MediaMgrSystem
 
                     VideoOperAndriodClientCommand clientsDataToSend = new VideoOperAndriodClientCommand();
                     List<GroupInfo> channelGroups = new List<GroupInfo>();
-                    if (isWantToStop)
-                    {
+                    if (isWantToStop)                    {
                         channelGroups = GlobalUtils.GroupBLLInstance.GetGroupByChannelId(channelId, bType);
 
                         clientsDataToSend.arg = new VideoOperAndriodClientArg();
-
                     }
 
 

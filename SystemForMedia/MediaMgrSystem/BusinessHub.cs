@@ -33,9 +33,9 @@ namespace MediaMgrSystem
 
         }
 
-        public void SendChangeChannelSchedule(string cid, string channelName)
+        public void SendChangeChannelSchedule(string cid, string channelName, string currentFunction)
         {
-            SendLogic.SendChangeChannelSchedule(Clients, cid, channelName);
+            SendLogic.SendChangeChannelSchedule(Clients, cid, channelName, currentFunction);
         }
 
 

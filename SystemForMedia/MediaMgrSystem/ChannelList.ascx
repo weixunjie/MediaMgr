@@ -608,7 +608,7 @@
         
             if (currentSId != currentOperScheduel)
             {
-                chat.server.sendChangeChannelSchedule(currentOperChannelId, currentOperChannelName);
+                chat.server.sendChangeChannelSchedule(currentOperChannelId, currentOperChannelName, currentFunction);
 
             }
             is_popup_1st_menu = false;
