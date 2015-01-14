@@ -51,7 +51,7 @@
 
         <div class="form-group" style="margin-top: 10px">
 
-            <asp:Button runat="server" Text="新增视频源" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
+            <asp:Button runat="server" Text="新增呼叫台" CssClass="btn btn-default" OnClick="Add_Click" Width="195px" />
 
         </div>
 

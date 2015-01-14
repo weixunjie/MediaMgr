@@ -14,7 +14,7 @@
         </asp:PlaceHolder>
         <div class="form-group" style="margin-bottom: 10px">
 
-            <asp:Label runat="server" AssociatedControlID="TbName" CssClass="col-md-2 control-label" Width="107px">音频编码名称:</asp:Label>
+            <asp:Label runat="server" AssociatedControlID="TbName" CssClass="col-md-2 control-label" Width="107px">名称:</asp:Label>
 
             <asp:TextBox runat="server" ID="TbName" CssClass="form-control" />
 

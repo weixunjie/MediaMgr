@@ -144,7 +144,7 @@ namespace MediaMgrSystem
 
             QueueCommandType queueCommandType = (QueueCommandType)Enum.Parse(typeof(QueueCommandType), cmdStr);
 
-            PushQueue(queueCommandType, ipsNeedToSend, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, cmd.guidId, false,"",volValue);
+            PushQueue(queueCommandType, ipsNeedToSend, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, cmd.guidId, false, "", volValue);
 
 
             cmd.arg = new DeviceOperationCommandArg();
@@ -684,7 +684,7 @@ namespace MediaMgrSystem
                             mp.IsPlaying = true;
                             GlobalUtils.AddManualPlayItem(mp);
 
-                 
+
                             //  GlobalUtils.ChannelManuallyPlayingFunction = bType;
 
                             //   hub.Clients(GlobalUtils.GetAllPCDeviceConnectionIds()).sendManualPlayStatus("Play", "0", GlobalUtils.ChannelManuallyPlayingChannelId, GlobalUtils.ChannelManuallyPlayingChannelName, GlobalUtils.ChannelManuallyPlayingPids, GlobalUtils.CheckIfChannelManuallyPlayingFunctionIsCurrent());
@@ -779,66 +779,87 @@ namespace MediaMgrSystem
         private static void ProcessTimeOutRequest(object hub)
         {
 
-            Thread.Sleep(4000);
-
-            lock (GlobalUtils.ObjectLockQueueItem)
+            try
             {
-                IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
-                List<QueueItem> queueToRemoved = new List<QueueItem>();
-                foreach (var que in GlobalUtils.CommandQueues)
-                {
-                    TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
+                Thread.Sleep(5000);
 
-                    TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
-                    if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 4000)
+                lock (GlobalUtils.ObjectLockQueueItem)
+                {
+                    IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
+                    List<QueueItem> queueToRemoved = new List<QueueItem>();
+                    foreach (var que in GlobalUtils.CommandQueues)
                     {
-                        queueToRemoved.Add(que);
+                        TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
+
+                        TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
+                        if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 5000)
+                        {
+                            queueToRemoved.Add(que);
+
+                        }
+                    }
+
+                    if (queueToRemoved != null && queueToRemoved.Count > 0)
+                    {
+                        foreach (QueueItem item in queueToRemoved)
+                        {
+
+                            string ipToDisplay = string.Empty;
+                            if (item.IsVideoServer)
+                            {
+
+                                ipToDisplay = " 视频服务器";
+                            }
+                            else
+                            {
+                                ipToDisplay = " 终端:" + item.IpAddressStr;
+
+                            }
+
+                            string strCmdType = GlobalUtils.GetCommandTextGetByType(item.CommandType);
+                            if (item.IsScheduled)
+                            {
+
+                                GlobalUtils.AddLogs(hubContent, "计划任务", item.ChannelName + strCmdType + ipToDisplay + "操作超时, 计划时间:" + item.ScheduledTime);
+                            }
+                            else
+                            {
+                                GlobalUtils.AddLogs(hubContent, "手动操作", item.ChannelName + strCmdType + ipToDisplay + "操作超时");
+                            }
+
+                            if (item.CommandType == QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS)
+                            {
+                                DeviceInfo di = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(item.NewAddressStr)[0];
+
+                                di.DeviceIpAddress = item.IpAddressStr;
+                                GlobalUtils.DeviceBLLInstance.UpdateDevice(di);
+
+                            }
+
+                            GlobalUtils.CommandQueues.Remove(item);
+                            //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                        }
 
                     }
                 }
+            }
 
-                if (queueToRemoved != null && queueToRemoved.Count > 0)
+
+            catch (Exception ex)
+            {
+                try
                 {
-                    foreach (QueueItem item in queueToRemoved)
-                    {
 
-                        string ipToDisplay = string.Empty;
-                        if (item.IsVideoServer)
-                        {
 
-                            ipToDisplay = " 视频服务器";
-                        }
-                        else
-                        {
-                            ipToDisplay = " 终端:" + item.IpAddressStr;
 
-                        }
+                    GlobalUtils.AddLogs(null, "Exception", ex.StackTrace);
 
-                        string strCmdType = GlobalUtils.GetCommandTextGetByType(item.CommandType);
-                        if (item.IsScheduled)
-                        {
-
-                            GlobalUtils.AddLogs(hubContent, "计划任务", item.ChannelName + strCmdType + ipToDisplay + "操作超时, 计划时间:" + item.ScheduledTime);
-                        }
-                        else
-                        {
-                            GlobalUtils.AddLogs(hubContent, "手动操作", item.ChannelName + strCmdType + ipToDisplay + "操作超时");
-                        }
-
-                        if (item.CommandType == QueueCommandType.DEVICE_OPER_CHANGE_IP_ADDRESS)
-                        {
-                            DeviceInfo di = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(item.NewAddressStr)[0];
-
-                            di.DeviceIpAddress = item.IpAddressStr;
-                            GlobalUtils.DeviceBLLInstance.UpdateDevice(di);
-
-                        }
-
-                        GlobalUtils.CommandQueues.Remove(item);
-                        //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
-                    }
 
                 }
+                catch { }
+
+
+                // HttpContext.Current.Response.Write(ex.StackTrace);
             }
 
         }
@@ -1320,7 +1341,7 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelId, string channelName, string scheduleGuid, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true, string newIpAddres = "",string currentVol="")
+        private static void PushQueue(QueueCommandType cmdType, List<string> clientIps, bool isScheduled, string channelId, string channelName, string scheduleGuid, string scheduleTime, string severGuidId, string clientGuidId, bool isSendToVideoSvr = true, string newIpAddres = "", string currentVol = "")
         {
             lock (GlobalUtils.ObjectLockQueueItem)
             {
@@ -1330,7 +1351,7 @@ namespace MediaMgrSystem
                 if (isSendToVideoSvr)
                 {
 
-                    GlobalUtils.CommandQueues.Add(new QueueItem() { ChannelId = channelId, ScheduleGuid = severGuidId, IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.GetVideoServerConnectionIdentify(), GuidIdStr = severGuidId, CommandType = cmdType ,CurrentVol=currentVol});
+                    GlobalUtils.CommandQueues.Add(new QueueItem() { ChannelId = channelId, ScheduleGuid = severGuidId, IsVideoServer = true, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = GlobalUtils.GetVideoServerConnectionIdentify(), GuidIdStr = severGuidId, CommandType = cmdType, CurrentVol = currentVol });
                 }
 
                 //NO need send to client when is repeat operation.
@@ -1338,7 +1359,7 @@ namespace MediaMgrSystem
                 {
                     foreach (var ip in clientIps)
                     {
-                        GlobalUtils.CommandQueues.Add(new QueueItem() { NewAddressStr = newIpAddres, ChannelId = channelId, ScheduleGuid = severGuidId, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType,CurrentVol=currentVol });
+                        GlobalUtils.CommandQueues.Add(new QueueItem() { NewAddressStr = newIpAddres, ChannelId = channelId, ScheduleGuid = severGuidId, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType, CurrentVol = currentVol });
                     }
                 }
             }

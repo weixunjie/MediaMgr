@@ -2,7 +2,7 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
 
-    <h3 style="clip: rect(auto, auto, 10px, auto)">呼叫台明细管理</h3>
+    <h3 style="clip: rect(auto, auto, 10px, auto)">视频源明细管理</h3>
 
 
     <section id="groupMgrSection">

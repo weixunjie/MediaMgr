@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\Administrator\Desktop\BS0106</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\alvin.wei\Desktop\BS0112V2</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="Account/Login.aspx">
@@ -49,10 +49,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/05/2015 16:13:23</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.BusinessLayerLogic.dll">
-      <publishTime>01/06/2015 10:49:34</publishTime>
+      <publishTime>01/12/2015 09:58:18</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.BusinessLayerLogic.pdb">
-      <publishTime>01/06/2015 10:49:34</publishTime>
+      <publishTime>01/12/2015 09:58:18</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataAccessLayer.dll">
       <publishTime>01/06/2015 09:45:36</publishTime>
@@ -61,16 +61,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/06/2015 09:45:36</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.dll">
-      <publishTime>01/06/2015 10:49:34</publishTime>
+      <publishTime>01/12/2015 09:58:17</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.DataModels.pdb">
-      <publishTime>01/06/2015 10:49:34</publishTime>
+      <publishTime>01/12/2015 09:58:17</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>01/06/2015 16:33:12</publishTime>
+      <publishTime>01/13/2015 13:49:39</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>01/06/2015 16:33:12</publishTime>
+      <publishTime>01/13/2015 13:49:39</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
       <publishTime>01/05/2015 16:20:29</publishTime>
@@ -364,10 +364,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/06/2015 10:09:45</publishTime>
     </File>
     <File Include="MgrModel/EncoderAudioMgrDetail.aspx">
-      <publishTime>01/05/2015 16:17:24</publishTime>
+      <publishTime>01/13/2015 10:00:36</publishTime>
     </File>
     <File Include="MgrModel/EncoderAudioMgrList.aspx">
-      <publishTime>01/05/2015 16:17:24</publishTime>
+      <publishTime>01/13/2015 09:58:47</publishTime>
     </File>
     <File Include="MgrModel/EncoderMgrDetail.aspx">
       <publishTime>09/09/2014 10:06:39</publishTime>
@@ -376,10 +376,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/09/2014 10:06:39</publishTime>
     </File>
     <File Include="MgrModel/EncoderVideoMgrDetail.aspx">
-      <publishTime>01/05/2015 16:17:24</publishTime>
+      <publishTime>01/13/2015 09:59:36</publishTime>
     </File>
     <File Include="MgrModel/EncoderVideoMgrList.aspx">
-      <publishTime>01/05/2015 16:17:24</publishTime>
+      <publishTime>01/13/2015 10:00:34</publishTime>
     </File>
     <File Include="MgrModel/GroupMgrDetail.aspx">
       <publishTime>01/05/2015 16:17:24</publishTime>
@@ -406,7 +406,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/05/2015 16:17:24</publishTime>
     </File>
     <File Include="MgrModel/ScheduleTaskMgrDetail.aspx">
-      <publishTime>01/05/2015 16:17:24</publishTime>
+      <publishTime>01/12/2015 10:40:47</publishTime>
     </File>
     <File Include="MgrModel/singlemp3player.swf">
       <publishTime>01/05/2015 16:17:25</publishTime>
@@ -580,7 +580,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/24/2014 16:26:31</publishTime>
     </File>
     <File Include="Site.Master">
-      <publishTime>01/05/2015 16:17:39</publishTime>
+      <publishTime>01/13/2015 10:19:32</publishTime>
     </File>
     <File Include="Site.Mobile.Master">
       <publishTime>01/05/2015 16:17:39</publishTime>

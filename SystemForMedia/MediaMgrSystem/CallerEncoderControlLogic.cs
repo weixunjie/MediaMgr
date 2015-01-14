@@ -175,7 +175,7 @@ namespace MediaMgrSystem
                             {
                                 GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c, TypeRunning = BusinessTypeForGroup.AudioEncoder });
 
-                                GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组播放成功");
+                                GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组呼叫成功");
 
                             }
                         }
@@ -323,7 +323,7 @@ namespace MediaMgrSystem
                         }
                         else
                         {
-                            GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
+                           // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
                             hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
                         }
 
@@ -387,7 +387,7 @@ namespace MediaMgrSystem
                     }
 
 
-                    GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组停止成功");
+                    GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组停止呼叫成功");
 
                 }
 
@@ -414,14 +414,12 @@ namespace MediaMgrSystem
             GlobalUtils.EncoderAudioRunningClientsBLLInstance.RemoveRunningEncoder(clientIdentify);
 
 
-
-
+            
             if (isOperationFromDevice)
             {
                 EncoderAudioOpenReponse cb = new EncoderAudioOpenReponse();
                 cb.guidId = deviceReqeustGuiId;
                 cb.arg = new EncoderOpenReponseArg();
-
 
                 cb.errorCode = "0";
                 hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
@@ -429,7 +427,7 @@ namespace MediaMgrSystem
             }
             else
             {
-                GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = ec.guidId, CommandType = QueueCommandType.ENCODERAUDIOCLOSE, PushTicks = DateTime.Now.Ticks });
+               // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = ec.guidId, CommandType = QueueCommandType.ENCODERAUDIOCLOSE, PushTicks = DateTime.Now.Ticks });
                 hub.Client(connecionId).sendAudioEncoderCommandToClient(strToSend);
             }
 
@@ -523,7 +521,7 @@ namespace MediaMgrSystem
         }
 
 
-        private static void PushRemoteControlQueue(QueueCommandType cmdType, List<string> clientIps, string groupIds, string guidId)
+        private static void PushCallerControlQueue(QueueCommandType cmdType, List<string> clientIps, string groupIds, string guidId)
         {
             lock (GlobalUtils.ObjectLockEncoderQueueItem)
             {
@@ -539,46 +537,66 @@ namespace MediaMgrSystem
 
         private static void ProcessTimeOutRequest(object hub)
         {
-
-            Thread.Sleep(4000);
-
-            lock (GlobalUtils.ObjectLockEncoderQueueItem)
+            try
             {
-                IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
-                List<EncoderQueueItem> queueToRemoved = new List<EncoderQueueItem>();
-                foreach (var que in GlobalUtils.EncoderQueues)
-                {
-                    TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
 
-                    TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
-                    if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 4000)
+                Thread.Sleep(5000);
+
+                lock (GlobalUtils.ObjectLockEncoderQueueItem)
+                {
+                    IHubConnectionContext hubContent = hub as IHubCallerConnectionContext;
+                    List<EncoderQueueItem> queueToRemoved = new List<EncoderQueueItem>();
+                    foreach (var que in GlobalUtils.EncoderQueues)
                     {
-                        queueToRemoved.Add(que);
+                        TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
+
+                        TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
+                        if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 5000)
+                        {
+                            queueToRemoved.Add(que);
+
+                        }
+                    }
+
+                    if (queueToRemoved != null && queueToRemoved.Count > 0)
+                    {
+                        foreach (EncoderQueueItem item in queueToRemoved)
+                        {
+
+                            string ipToDisplay = string.Empty;
+
+                            ipToDisplay = " 终端:" + item.AndriodIpAddressStr;
+
+                            string strCmd = string.Empty;
+
+                            strCmd = item.CommandType == QueueCommandType.ENCODEAUDIOROPEN ? "打开呼叫台" : "关闭呼叫台";
+
+                            GlobalUtils.AddLogs(hubContent, "呼叫台操作", strCmd + "," + ipToDisplay + "操作超时");
+
+
+                            GlobalUtils.EncoderQueues.Remove(item);
+                            //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
+                        }
 
                     }
                 }
+            }
 
-                if (queueToRemoved != null && queueToRemoved.Count > 0)
+            catch (Exception ex)
+            {
+                try
                 {
-                    foreach (EncoderQueueItem item in queueToRemoved)
-                    {
-
-                        string ipToDisplay = string.Empty;
-
-                        ipToDisplay = " 终端:" + item.AndriodIpAddressStr;
-
-                        string strCmd = string.Empty;
-
-                        strCmd = item.CommandType == QueueCommandType.ENCODEAUDIOROPEN ? "打开呼叫台" : "关闭呼叫台";
-
-                        GlobalUtils.AddLogs(hubContent, "呼叫台操作", strCmd + "," + ipToDisplay + "操作超时");
 
 
-                        GlobalUtils.EncoderQueues.Remove(item);
-                        //  System.Diagnostics.Debug.WriteLine("Remove Command No Response: Now count is :" + GlobalUtils.CommandQueues.Count);
-                    }
+
+                    GlobalUtils.AddLogs(null, "Exception", ex.StackTrace);
+
 
                 }
+                catch { }
+
+
+                // HttpContext.Current.Response.Write(ex.StackTrace);
             }
 
         }
@@ -663,7 +681,7 @@ namespace MediaMgrSystem
 
 
 
-            PushRemoteControlQueue(isStop ? QueueCommandType.ENCODERAUDIOCLOSE : QueueCommandType.ENCODEAUDIOROPEN, ipsNeedToSend, groupIds, dopc.guidId);
+            PushCallerControlQueue(isStop ? QueueCommandType.ENCODERAUDIOCLOSE : QueueCommandType.ENCODEAUDIOROPEN, ipsNeedToSend, groupIds, dopc.guidId);
 
             ProcessTimeOutRequest(hub);
         }

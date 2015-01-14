@@ -242,7 +242,7 @@ namespace MediaMgrSystem
         private static void ProcessTimeOutRequest(object hub)
         {
           
-                Thread.Sleep(4000);
+                Thread.Sleep(5000);
 
                 lock (GlobalUtils.ObjectLockRemoteControlQueueItem)
                 {
@@ -253,7 +253,7 @@ namespace MediaMgrSystem
                         TimeSpan ts = new TimeSpan(DateTime.Now.Ticks);
 
                         TimeSpan tsSubmited = new TimeSpan(que.PushTicks);
-                        if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 4000)
+                        if (ts.Subtract(tsSubmited).Duration().TotalMilliseconds >= 5000)
                         {
                             queueToRemoved.Add(que);
 
