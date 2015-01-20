@@ -1,4 +1,4 @@
-﻿<%@ Page Title="杰讯智能播控系统" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true"
+﻿<%@ Page Title="杰讯智能播控系统V1.2" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true"
     CodeBehind="RemoteControlMain.aspx.cs" Inherits="MediaMgrSystem.RemoteControlMain" %>
 
 

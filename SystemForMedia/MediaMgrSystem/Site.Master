@@ -75,16 +75,16 @@
                 <div class='navbar-inner nav-collapse ' style="height: auto; padding-left: 2px">
 
                     <ul class="nav navbar-nav" style="padding-left: 0px; margin-left: 0px">
-                        <li style="padding-left: 0px; height: 20px; vertical-align: middle">
+                        <li style="padding-left: 3px; height: 20px; vertical-align: middle">
                     
 
        
-                              <a style="padding-left: 5px; float: left; height: 25px; width: 80px; color: white" class="navbar-brand">
+                          <a style="padding-left: 5px; float: left; height: 25px; width: 80px; color: white" class="navbar-brand">
                                 <img style="height: 20px; width: 80px;" src="<%=ResolveUrl("~/Images/ic_image_logo.png") %>" /></a>
 
 
 
-                            <a style="padding-left: 0px; height: 20px; width: 220px; color: whitesmoke" class="navbar-brand" runat="server">杰讯智能播控系统</a>
+                            <a style="padding-left: 0px; height: 20px; width: 261px; color: whitesmoke" class="navbar-brand" runat="server">杰讯智能播控系统V1.2</a>
 
 
 

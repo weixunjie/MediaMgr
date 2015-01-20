@@ -323,7 +323,7 @@ namespace MediaMgrSystem
                         }
                         else
                         {
-                           // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
+                            // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
                             hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
                         }
 
@@ -366,7 +366,7 @@ namespace MediaMgrSystem
         }
 
         private static void StopEncoder(IHubCallerConnectionContext hub, string clientIdentify, string groupIds, string devIds, bool isOperationFromDevice = false, string deviceReqeustGuiId = "")
-        {          
+        {
 
             if (groupIds != null)
             {
@@ -414,23 +414,27 @@ namespace MediaMgrSystem
             GlobalUtils.EncoderAudioRunningClientsBLLInstance.RemoveRunningEncoder(clientIdentify);
 
 
-            
-            if (isOperationFromDevice)
-            {
-                EncoderAudioOpenReponse cb = new EncoderAudioOpenReponse();
-                cb.guidId = deviceReqeustGuiId;
-                cb.arg = new EncoderOpenReponseArg();
 
-                cb.errorCode = "0";
-                hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+            if (!string.IsNullOrWhiteSpace(connecionId))
+            {
+                if (isOperationFromDevice)
+                {
+                    EncoderAudioOpenReponse cb = new EncoderAudioOpenReponse();
+                    cb.guidId = deviceReqeustGuiId;
+                    cb.arg = new EncoderOpenReponseArg();
+
+                    cb.errorCode = "0";
+
+                    hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+
+                }
+                else
+                {
+                    // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = ec.guidId, CommandType = QueueCommandType.ENCODERAUDIOCLOSE, PushTicks = DateTime.Now.Ticks });
+                    hub.Client(connecionId).sendAudioEncoderCommandToClient(strToSend);
+                }
 
             }
-            else
-            {
-               // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = ec.guidId, CommandType = QueueCommandType.ENCODERAUDIOCLOSE, PushTicks = DateTime.Now.Ticks });
-                hub.Client(connecionId).sendAudioEncoderCommandToClient(strToSend);
-            }
-
 
             SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, true);
 
@@ -453,7 +457,7 @@ namespace MediaMgrSystem
                     string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
 
 
-                    if (string.IsNullOrWhiteSpace(connecionId))
+                    if (string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
                     {
                         GlobalUtils.AddLogs(hub, "呼叫台操作", "呼叫台未开启");
                         return;
@@ -505,7 +509,7 @@ namespace MediaMgrSystem
             {
                 try
                 {
-                    
+
 
                     GlobalUtils.AddLogs(null, "Exception", ex.StackTrace);
 

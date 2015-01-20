@@ -351,29 +351,44 @@ namespace MediaMgrSystem
                         cmdToVideoSvr.arg.streamSrcs = new List<string>();
 
 
-                        string bitArray = string.Empty;
+                        int maxBitRate = 0;
 
                         int outBitRate = 0;
+
+                       // string bitArray = string.Empty;
+
+                       // int outBitRate = 0;
 
                         foreach (var pi in pids)
                         {
                             if (pi.MappingFiles != null && pi.MappingFiles.Count > 0)
                             {
+                                //foreach (var file in pi.MappingFiles)
+                                //{
+                                //    if (!string.IsNullOrWhiteSpace(file.BitRate) && int.TryParse(file.BitRate, out outBitRate))
+                                //    {
+                                //        bitArray = bitArray + file.BitRate + ",";
+                                //    }
+
+
+                                //    cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
+                                //}
+
+                                //if (!string.IsNullOrWhiteSpace(bitArray))
+                                //{
+                                //    bitArray = bitArray.TrimEnd(',');
+                                //}
+
                                 foreach (var file in pi.MappingFiles)
                                 {
                                     if (!string.IsNullOrWhiteSpace(file.BitRate) && int.TryParse(file.BitRate, out outBitRate))
                                     {
-                                        bitArray = bitArray + file.BitRate + ",";
+                                        maxBitRate = outBitRate > maxBitRate ? outBitRate : maxBitRate;
                                     }
-
 
                                     cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
                                 }
 
-                                if (!string.IsNullOrWhiteSpace(bitArray))
-                                {
-                                    bitArray = bitArray.TrimEnd(',');
-                                }
                             }
                         }
 
@@ -571,7 +586,7 @@ namespace MediaMgrSystem
 
                         List<GroupInfo> gOut = new List<GroupInfo>();
 
-                        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipReallySent, out clientsDatraToSend, bitArray, bType, out gOut, channelGroup);
+                        CreatePlayCommandForAndriodClients(pids, cmdToVideoSvr, channelId, out clientsIpToSend, out clientsConectionIdToSend, out ipReallySent, out clientsDatraToSend, maxBitRate.ToString(), bType, out gOut, channelGroup);
 
 
 

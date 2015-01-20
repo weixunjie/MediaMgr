@@ -510,15 +510,11 @@ namespace MediaMgrSystem
 
             if (disConnectType == SingalRClientConnectionType.ENCODERAUDIODEVICE)
             {
-                if (!string.IsNullOrEmpty(ci))
-                {
-                    RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(ci);
-                    if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
-                    {
 
-                        CallerEncoderControlLogic.SendEncoderAudioCloseCommand(hub.Clients, ci);
-                    }
-                }
+                object[] objes = new object[2];
+                objes[0] = ci;
+                objes[1] = hub.Clients;
+                new Thread(ProcesStopLogs).Start(objes);
             }
 
 
@@ -535,6 +531,24 @@ namespace MediaMgrSystem
 
 
 
+        }
+        private void ProcesStopLogs(object cbObj)
+        {
+            object[] ojbs = cbObj as object[];
+
+            string ci = ojbs[0].ToString();
+
+            IHubCallerConnectionContext clients = (IHubCallerConnectionContext)ojbs[1];
+
+            if (!string.IsNullOrEmpty(ci))
+            {
+                RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(ci);
+                if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
+                {
+
+                    CallerEncoderControlLogic.SendEncoderAudioCloseCommand(clients, ci);
+                }
+            }
         }
 
         protected override object OnAfterIncoming(object result, IHubIncomingInvokerContext context)
