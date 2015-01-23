@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\alvin.wei\Desktop\BS0113</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\alvin.wei\Desktop\BS0123V3</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="Account/Login.aspx">
@@ -67,10 +67,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/12/2015 09:58:17</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.dll">
-      <publishTime>01/14/2015 14:50:26</publishTime>
+      <publishTime>01/23/2015 15:40:24</publishTime>
     </File>
     <File Include="bin/MediaMgrSystem.pdb">
-      <publishTime>01/14/2015 14:50:26</publishTime>
+      <publishTime>01/23/2015 15:40:24</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.FriendlyUrls.dll">
       <publishTime>01/05/2015 16:20:29</publishTime>
@@ -151,7 +151,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/05/2015 16:22:52</publishTime>
     </File>
     <File Include="BroadcastMain.aspx">
-      <publishTime>01/05/2015 16:11:25</publishTime>
+      <publishTime>01/15/2015 15:21:18</publishTime>
     </File>
     <File Include="Bundle.config">
       <publishTime>01/05/2015 16:11:25</publishTime>
@@ -199,7 +199,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/28/2014 20:22:29</publishTime>
     </File>
     <File Include="DeviceList.ascx">
-      <publishTime>01/06/2015 10:49:27</publishTime>
+      <publishTime>01/23/2015 15:09:37</publishTime>
     </File>
     <File Include="Dlls/ffmpeg.exe">
       <publishTime>01/05/2015 16:13:23</publishTime>
@@ -424,10 +424,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/05/2015 16:17:39</publishTime>
     </File>
     <File Include="RemoteControlSys/RemoteControlDetailList.aspx">
-      <publishTime>01/05/2015 16:17:25</publishTime>
+      <publishTime>01/15/2015 15:21:18</publishTime>
     </File>
     <File Include="RemoteControlSys/RemoteControlMain.aspx">
-      <publishTime>01/05/2015 16:17:25</publishTime>
+      <publishTime>01/15/2015 15:21:18</publishTime>
     </File>
     <File Include="RemoteControlSys/RemoteDeviceList.ascx">
       <publishTime>01/05/2015 16:17:25</publishTime>
@@ -580,7 +580,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/24/2014 16:26:31</publishTime>
     </File>
     <File Include="Site.Master">
-      <publishTime>01/13/2015 10:19:32</publishTime>
+      <publishTime>01/15/2015 15:22:48</publishTime>
     </File>
     <File Include="Site.Mobile.Master">
       <publishTime>01/05/2015 16:17:39</publishTime>

@@ -607,12 +607,7 @@ namespace MediaMgrSystem
 
                             }
 
-                            if (cb.errorCode == "0" && que.CommandType == QueueCommandType.DEVICE_ADJUST_VOL)
-                            {
-
-                                GlobalUtils.VolumnMappingBLLInstance.UpdateVolValueByIpAddress(que.IpAddressStr, que.CurrentVol);
-
-                            }
+                          
 
                             List<String> alPCIds = GlobalUtils.GetAllPCDeviceConnectionIds();
 

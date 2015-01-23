@@ -1373,6 +1373,23 @@ namespace MediaMgrSystem
                     foreach (var ip in clientIps)
                     {
                         GlobalUtils.CommandQueues.Add(new QueueItem() { NewAddressStr = newIpAddres, ChannelId = channelId, ScheduleGuid = severGuidId, ScheduledTime = scheduleTime, ChannelName = channelName, IsScheduled = isScheduled, PushTicks = currentTicks, IpAddressStr = ip, GuidIdStr = clientGuidId, CommandType = cmdType, CurrentVol = currentVol });
+
+                        if (cmdType==QueueCommandType.DEVICE_ADJUST_VOL)
+                        {
+
+                            try
+                            {
+                                GlobalUtils.VolumnMappingBLLInstance.UpdateVolValueByIpAddress(ip, currentVol);
+                            }
+                            catch ( Exception ex)
+                            {
+                                try
+                                {
+                                    GlobalUtils.AddLogs(null, "Update Vol", ex.StackTrace);
+                                }
+                                catch { };
+                            }
+                        }
                     }
                 }
             }

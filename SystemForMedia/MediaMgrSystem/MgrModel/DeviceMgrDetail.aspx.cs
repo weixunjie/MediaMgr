@@ -131,14 +131,14 @@ namespace MediaMgrSystem.MgrModel
                 if (!string.IsNullOrEmpty(tbServerIpAddress.Text))
                 {
                  
-                    if (tbHiddenOldIpAddress.Text != di.DeviceIpAddress)
+                    if (!tbHiddenOldIpAddress.Text.Trim().Equals(di.DeviceIpAddress))
                     {
                         SendLogic.SendChangeIpAddressAndServerUrl(allClients, tbHiddenOldIpAddress.Text, di.DeviceIpAddress, tbServerIpAddress.Text);
 
                     }
                     else
                     {
-                        SendLogic.SendChangeIpAddressAndServerUrl(allClients, tbHiddenOldIpAddress.Text, string.Empty, tbServerIpAddress.Text);
+                        SendLogic.SendChangeIpAddressAndServerUrl(allClients, tbHiddenOldIpAddress.Text, tbHiddenOldIpAddress.Text, tbServerIpAddress.Text);
                     }
                 }
                 else

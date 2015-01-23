@@ -123,6 +123,11 @@ namespace MediaMgrSystem
             ProcessConnect(hub);
         }
 
+        protected override void OnAfterReconnect(IHub hub)
+        {
+
+        }
+
         private void ProcessConnect(IHub hub)
         {
             lock (GlobalUtils.PublicObjectForLockConnected)
@@ -141,6 +146,8 @@ namespace MediaMgrSystem
                 {
                     strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
                 }
+
+            
 
                 String macAddress = string.Empty;
                 if (hub.Context.QueryString["macAddress"] != null)
@@ -319,7 +326,13 @@ namespace MediaMgrSystem
 
                         di.UsedToRemoteControl = sc.ConnectionType == SingalRClientConnectionType.REMOTECONTORLDEVICE;
 
-                        int re = GlobalUtils.DeviceBLLInstance.AddDevice(di);
+                        int re = 1;
+                        if (!string.IsNullOrWhiteSpace(strIdentify))
+                        {
+
+                             re = GlobalUtils.DeviceBLLInstance.AddDevice(di);
+
+                        }
 
                         if (re < 0)
                         {
@@ -370,6 +383,13 @@ namespace MediaMgrSystem
                 if (sc.ConnectionType == SingalRClientConnectionType.ENCODERAUDIODEVICE)
                 {
                     SendRefreshCallerEncoderDeviceMessge(hub);
+
+                    //Connect again, if running, stop it.
+                    object[] objes = new object[2];
+                    objes[0] = strIdentify;
+                    objes[1] = hub.Clients;
+                    new Thread(ProcesStopLogs).Start(objes);
+
                 }
 
 
@@ -534,20 +554,32 @@ namespace MediaMgrSystem
         }
         private void ProcesStopLogs(object cbObj)
         {
-            object[] ojbs = cbObj as object[];
-
-            string ci = ojbs[0].ToString();
-
-            IHubCallerConnectionContext clients = (IHubCallerConnectionContext)ojbs[1];
-
-            if (!string.IsNullOrEmpty(ci))
+            try
             {
-                RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(ci);
-                if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
-                {
+                object[] ojbs = cbObj as object[];
 
-                    CallerEncoderControlLogic.SendEncoderAudioCloseCommand(clients, ci);
+                string ci = ojbs[0].ToString();
+
+                IHubCallerConnectionContext clients = (IHubCallerConnectionContext)ojbs[1];
+
+                if (!string.IsNullOrEmpty(ci))
+                {
+                    RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(ci);
+                    if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
+                    {
+
+                        CallerEncoderControlLogic.SendEncoderAudioCloseCommand(clients, ci);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    GlobalUtils.AddLogs(null, "Exception->Stop Cllaer", ex.StackTrace);
+                }
+                catch (Exception ex1)
+                { }
             }
         }
 
