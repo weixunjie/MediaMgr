@@ -126,6 +126,17 @@ namespace MediaMgrSystem
         protected override void OnAfterReconnect(IHub hub)
         {
 
+            //if (hub.Context.QueryString["clientIdentify"] != null)
+            //{
+            //    string strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
+
+            //    GlobalUtils.AddLogs(null, "Reconnect", strIdentify);
+            //}
+
+
+
+
+
         }
 
         private void ProcessConnect(IHub hub)
@@ -147,7 +158,7 @@ namespace MediaMgrSystem
                     strIdentify = hub.Context.QueryString["clientIdentify"].ToString();
                 }
 
-            
+
 
                 String macAddress = string.Empty;
                 if (hub.Context.QueryString["macAddress"] != null)
@@ -330,7 +341,7 @@ namespace MediaMgrSystem
                         if (!string.IsNullOrWhiteSpace(strIdentify))
                         {
 
-                             re = GlobalUtils.DeviceBLLInstance.AddDevice(di);
+                            re = GlobalUtils.DeviceBLLInstance.AddDevice(di);
 
                         }
 
@@ -383,6 +394,8 @@ namespace MediaMgrSystem
                 if (sc.ConnectionType == SingalRClientConnectionType.ENCODERAUDIODEVICE)
                 {
                     SendRefreshCallerEncoderDeviceMessge(hub);
+
+                  
 
                     //Connect again, if running, stop it.
                     object[] objes = new object[2];
@@ -556,10 +569,13 @@ namespace MediaMgrSystem
         {
             try
             {
+               // System.Diagnostics.Debug.WriteLine( "Process stop now" + DateTime.Now.ToString("HH:mm:ss"));
+
                 object[] ojbs = cbObj as object[];
 
                 string ci = ojbs[0].ToString();
 
+                System.Diagnostics.Debug.WriteLine("Process stop now" + ci+DateTime.Now.ToString("HH:mm:ss"));
                 IHubCallerConnectionContext clients = (IHubCallerConnectionContext)ojbs[1];
 
                 if (!string.IsNullOrEmpty(ci))

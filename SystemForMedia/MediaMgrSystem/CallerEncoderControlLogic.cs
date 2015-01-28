@@ -49,11 +49,11 @@ namespace MediaMgrSystem
 
             try
             {
-                string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
+                 List<string > connecionIds = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetifyAll(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
 
                 lock (GlobalUtils.ObjectLockEncoderOperationItemOpen)
                 {
-                    if (string.IsNullOrWhiteSpace(connecionId))
+                    if (connecionIds.Count<0)
                     {
                         GlobalUtils.AddLogs(hub, "呼叫台", "呼叫台设备未开启");
                         return;
@@ -71,13 +71,13 @@ namespace MediaMgrSystem
                                 string mesg = clientIdentify + " 打开失败，正在运行中";
                                 GlobalUtils.AddLogs(hub, "呼叫台操作", mesg);
 
-                                if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
+                                if (connecionIds.Count>0 && isOperationFromDevice)
                                 {
                                     ComuResponseBase cb = new ComuResponseBase();
                                     cb.guidId = deviceReqeustGuiId;
                                     cb.errorCode = "110";
                                     cb.message = mesg;
-                                    hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                                    hub.Clients(connecionIds).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
                                 }
 
                                 return;
@@ -87,7 +87,7 @@ namespace MediaMgrSystem
                             {
                                 string msg = clientIdentify + " 打开失败，更高级别的呼叫台运行中";
                                 GlobalUtils.AddLogs(hub, "呼叫台操作", msg);
-                                if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
+                                if (connecionIds.Count > 0 && isOperationFromDevice)
                                 {
                                     ComuResponseBase cb = new ComuResponseBase();
                                     cb.guidId = deviceReqeustGuiId;
@@ -95,7 +95,7 @@ namespace MediaMgrSystem
                                     cb.message = msg;
 
 
-                                    hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                                    hub.Clients(connecionIds).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
                                 }
 
                                 return;
@@ -127,7 +127,7 @@ namespace MediaMgrSystem
 
 
 
-                    if (!string.IsNullOrWhiteSpace(connecionId))
+                    if (connecionIds.Count>0)
                     {
 
 
@@ -316,7 +316,7 @@ namespace MediaMgrSystem
 
 
                             cb.errorCode = "0";
-                            hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                            hub.Clients(connecionIds).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
 
 
 
@@ -324,7 +324,7 @@ namespace MediaMgrSystem
                         else
                         {
                             // GlobalUtils.EncoderQueues.Add(new EncoderQueueItem { EncoderGroupIds = string.Empty, EncoderPriority = string.Empty, EncoderClientIdentify = clientIdentify, GuidIdStr = eor.guidId, CommandType = QueueCommandType.ENCODEAUDIOROPEN, PushTicks = DateTime.Now.Ticks });
-                            hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
+                            hub.Clients(connecionIds).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
                         }
 
                         //     ProcessTimeOutRequest(hub);
@@ -454,10 +454,10 @@ namespace MediaMgrSystem
 
                 lock (GlobalUtils.ObjectLockEncoderOperationItemClose)
                 {
-                    string connecionId = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetify(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
+                    List<string> connecionIds = GlobalUtils.SingalConnectedClientsBLLIntance.GetSingalConnectedClientsByIndetifyAll(clientIdentify, SingalRClientConnectionType.ENCODERAUDIODEVICE.ToString());
 
 
-                    if (string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
+                    if (connecionIds.Count<0&& isOperationFromDevice)
                     {
                         GlobalUtils.AddLogs(hub, "呼叫台操作", "呼叫台未开启");
                         return;
@@ -484,13 +484,13 @@ namespace MediaMgrSystem
                             string msg = clientIdentify + " 打开失败，呼叫台不在运行中";
                             GlobalUtils.AddLogs(hub, "呼叫台操作", msg);
 
-                            if (!string.IsNullOrWhiteSpace(connecionId) && isOperationFromDevice)
+                            if (connecionIds .Count>0&& isOperationFromDevice)
                             {
                                 ComuResponseBase cb = new ComuResponseBase();
                                 cb.guidId = deviceReqeustGuiId;
                                 cb.errorCode = "110";
                                 cb.message = msg;
-                                hub.Client(connecionId).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
+                                hub.Clients(connecionIds).sendAudioEncoderCommandToClient(Newtonsoft.Json.JsonConvert.SerializeObject(cb));
                             }
 
                             return;

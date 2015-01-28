@@ -404,15 +404,15 @@ namespace MediaMgrSystem
             }
 
 
-            if (!string.IsNullOrEmpty(lm.ipAddress))
-            {
-                RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(lm.ipAddress);
-                if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
-                {
+            //if (!string.IsNullOrEmpty(lm.ipAddress))
+            //{
+            //    RunningEncoder re = GlobalUtils.EncoderAudioRunningClientsBLLInstance.CheckIfEncoderRunning(lm.ipAddress);
+            //    if (re != null && !string.IsNullOrEmpty(re.ClientIdentify))
+            //    {
 
-                    CallerEncoderControlLogic.SendEncoderAudioCloseCommand(Clients, lm.ipAddress);
-                }
-            }
+            //        CallerEncoderControlLogic.SendEncoderAudioCloseCommand(Clients, lm.ipAddress);
+            //    }
+            //}
 
         }
         public void SendDebugToMgrServer(string data, string connectionId)

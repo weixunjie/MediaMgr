@@ -30,14 +30,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public void RemoveAllRunningEncoder()
-        {
-            string sqlStr = "DELETE FROM RUNNINGENCODER";
-
-            dbUitls.ExecuteNonQuery(sqlStr);
-
-        }
-
+     
         public void RemoveRunningEncoder(string clientIdentify)
         {
             string sqlStr = "DELETE FROM RUNNINGENCODER WHERE CLIENTIDENTIFY='" + clientIdentify + "'";
@@ -45,6 +38,15 @@ namespace MediaMgrSystem.BusinessLayerLogic
             dbUitls.ExecuteNonQuery(sqlStr);
 
         }
+
+        public void RemoveAllRunningEncoder()
+        {
+            string sqlStr = "DELETE FROM RUNNINGENCODER ";
+
+            dbUitls.ExecuteNonQuery(sqlStr);
+
+        }
+
 
         public EncoderAudioInfo GetEncoderList(string clientIdentify)
         {

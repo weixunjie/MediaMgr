@@ -70,6 +70,26 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return string.Empty;
         }
 
+        public List<string> GetSingalConnectedClientsByIndetifyAll(string strIndetify, string scType)
+        {
+            String sqlStr = "SELECT * FROM SINGALCONNECTEDCLIENTS WHERE ConnectionIdentify ='" + strIndetify + "' AND CONNECTIONTYPE='" + scType + "'";
+
+            List<SingalConnectedClient> scs = GetAllClientList(sqlStr);
+
+            List<string> r = new List<string>();
+            if (scs != null && scs.Count >= 1)
+            {
+                foreach(var sc in scs)
+                {
+                    r.Add(sc.ConnectionId);
+                }
+               
+            }
+
+            return r;
+        }
+
+
 
         public SingalConnectedClient GetSingalConnectedClientsById(string conntectId)
         {
