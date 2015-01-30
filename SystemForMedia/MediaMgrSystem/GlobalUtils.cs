@@ -96,18 +96,22 @@ namespace MediaMgrSystem
         public string GroupId { get; set; }
         public BusinessTypeForGroup TypeRunning { get; set; }
 
-        public String channelId { get; set; }
+        public String ChannelId { get; set; }
 
-        public String channelName { get; set; }
+        public String ChannelName { get; set; }
 
-        public String encoderId { get; set; }
+        public String EncoderId { get; set; }
             
-        public bool isSchedule { get; set; }
+        public bool IsSchedule { get; set; }
 
-        public string scheduleTime { get; set; }
+        public string ScheduleTime { get; set; }
 
+        public VideoOperAndriodClientCommand BaseOperAndriodClientCommandData { get; set; }
 
-        public BusinessType bType { get; set; }
+        public EncoderVideoOperCommand EncoderVideoOperCommandData { get; set; }
+
+        public EncoderAudioOpenCommand CallerCommandData { get; set; }
+        public BusinessType BusType { get; set; }
         //public static void SendOutStopRepeatCommandToServerAndClient(string channelId, string channelName, bool isWantToStop, IHubConnectionContext hub,
         //   bool isSchedule, string scheduleTime, BusinessType bType, bool isSendToVideoSvr = true, List<GroupInfo> stopGroups = null)
     }

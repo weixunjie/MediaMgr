@@ -35,7 +35,7 @@ namespace MediaMgrSystem
             {
                 if (st.TypeRunning == BusinessTypeForGroup.VideoEncoder)
                 {
-                    if (st.encoderId == encoderId)
+                    if (st.EncoderId == encoderId)
                     {
                       //  isFound = true;
                         return true;

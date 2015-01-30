@@ -160,6 +160,7 @@ namespace MediaMgrSystem
 
 
 
+
                 String macAddress = string.Empty;
                 if (hub.Context.QueryString["macAddress"] != null)
                 {
@@ -180,6 +181,8 @@ namespace MediaMgrSystem
 
                         SendSyncTimeAndVersionCheck(ui, hub, singalRClientConnectionType);
 
+
+                        SendDoingBusinessToClient(hub, strIdentify);
 
                     }
                     else if (type == "VIDEOSERVER")
@@ -395,7 +398,7 @@ namespace MediaMgrSystem
                 {
                     SendRefreshCallerEncoderDeviceMessge(hub);
 
-                  
+
 
                     //Connect again, if running, stop it.
                     object[] objes = new object[2];
@@ -455,6 +458,54 @@ namespace MediaMgrSystem
 
             }
         }
+
+        private void SendDoingBusinessToClient(IHub hub, string ipAddress)
+        {
+            List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(ipAddress);
+
+            if (dis != null && dis.Count > 0)
+            {
+                string groupId = dis[0].GroupId;
+                foreach (var g in GlobalUtils.GlobalGroupBusinessStatus)
+                {
+                    if (g.GroupId.Equals(groupId))
+                    {
+
+                        if (g.TypeRunning == BusinessTypeForGroup.ManualScheduleTask)
+                        {
+                            if ((g.BusType == BusinessType.AUDITBROADCAST && dis[0].UsedToAudioBroandcast) ||
+                                (g.BusType == BusinessType.VIDEOONLINE && dis[0].UsedToVideoOnline))
+                            {
+
+                                string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(g.BaseOperAndriodClientCommandData);
+                                hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(jsonDataToClient);
+                            }
+                        }
+
+                        else if (g.TypeRunning == BusinessTypeForGroup.VideoEncoder && dis[0].UsedToVideoOnline)
+                        {
+                            string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(g.EncoderVideoOperCommandData);
+
+                            hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(jsonDataToClient);
+                        }
+
+                        if (g.TypeRunning == BusinessTypeForGroup.AudioEncoder && dis[0].UsedToAudioBroandcast)
+                        {
+                            string jsonDataToClient = Newtonsoft.Json.JsonConvert.SerializeObject(g.CallerCommandData);
+
+                            hub.Clients.Client(hub.Context.ConnectionId).sendMessageToClient(jsonDataToClient);
+                        }
+
+                    }
+                }
+
+            }
+
+
+        }
+
+
+
         private void SendRefreshAudioDeviceNotice(IHub hub)
         {
 
@@ -569,13 +620,13 @@ namespace MediaMgrSystem
         {
             try
             {
-               // System.Diagnostics.Debug.WriteLine( "Process stop now" + DateTime.Now.ToString("HH:mm:ss"));
+                // System.Diagnostics.Debug.WriteLine( "Process stop now" + DateTime.Now.ToString("HH:mm:ss"));
 
                 object[] ojbs = cbObj as object[];
 
                 string ci = ojbs[0].ToString();
 
-                System.Diagnostics.Debug.WriteLine("Process stop now" + ci+DateTime.Now.ToString("HH:mm:ss"));
+                System.Diagnostics.Debug.WriteLine("Process stop now" + ci + DateTime.Now.ToString("HH:mm:ss"));
                 IHubCallerConnectionContext clients = (IHubCallerConnectionContext)ojbs[1];
 
                 if (!string.IsNullOrEmpty(ci))

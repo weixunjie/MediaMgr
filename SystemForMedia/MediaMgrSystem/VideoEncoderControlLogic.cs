@@ -81,7 +81,7 @@ namespace MediaMgrSystem
                                 {
                                     foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
                                     {
-                                        if (grr.TypeRunning == BusinessTypeForGroup.VideoEncoder && grr.encoderId == encoderId && grr.GroupId == gi.GroupId)
+                                        if (grr.TypeRunning == BusinessTypeForGroup.VideoEncoder && grr.EncoderId == encoderId && grr.GroupId == gi.GroupId)
                                         {
                                             giToRemoveToStop.Add(gi);
 
@@ -169,7 +169,7 @@ namespace MediaMgrSystem
                                 {
                                     if (isOpen)
                                     {
-                                        GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c.GroupId, TypeRunning = BusinessTypeForGroup.VideoEncoder, encoderId = encoderId });
+                                        GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c.GroupId, TypeRunning = BusinessTypeForGroup.VideoEncoder, EncoderId = encoderId, EncoderVideoOperCommandData = eor });
                                         GlobalUtils.AddLogs(hub, "视频编码", c.GroupName + "组直播成功");
                                     }
                                     else
@@ -178,7 +178,7 @@ namespace MediaMgrSystem
 
                                         foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
                                         {
-                                            if (grr.encoderId == encoderId && grr.TypeRunning == BusinessTypeForGroup.VideoEncoder && grr.GroupId == c.GroupId)
+                                            if (grr.EncoderId == encoderId && grr.TypeRunning == BusinessTypeForGroup.VideoEncoder && grr.GroupId == c.GroupId)
                                             {
                                                 itemToRemoved.Add(grr);
                                             }
@@ -201,7 +201,6 @@ namespace MediaMgrSystem
 
                             if (idsNeedToSend.Count > 0)
                             {
-
                                 hub.Clients(idsNeedToSend).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(eor));
 
                             }

@@ -168,24 +168,7 @@ namespace MediaMgrSystem
                         List<NeedStopManuaScheduleTask> needStopManaulMedias = new List<NeedStopManuaScheduleTask>();
 
 
-                        if (groupIds != null)
-                        {
-                            String[] gid = groupIds.Split(',');
-                            foreach (var c in gid)
-                            {
-                                GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { GroupId = c, TypeRunning = BusinessTypeForGroup.AudioEncoder });
-
-                                GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组呼叫成功");
-
-                            }
-                        }
-
-
-                        List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
-
-                        hub.Clients(ids).sendRefreshAudioDeviceMessge();
-
-                        hub.Clients(ids).sendRefreshCallerEncoderDeviceMessge();
+                   
 
                         if (GlobalUtils.GlobalGroupBusinessStatus.Count > 0)
                         {
@@ -204,7 +187,7 @@ namespace MediaMgrSystem
                                             bool isCidExisting = false;
                                             for (int i = 0; i < needStopManaulMedias.Count; i++)
                                             {
-                                                if (needStopManaulMedias[i].channelId == grr.channelId)
+                                                if (needStopManaulMedias[i].channelId == grr.ChannelId)
                                                 {
                                                     isCidExisting = true;
                                                     if (needStopManaulMedias[i].groups != null)
@@ -221,11 +204,11 @@ namespace MediaMgrSystem
                                             {
 
                                                 NeedStopManuaScheduleTask nst = new NeedStopManuaScheduleTask();
-                                                nst.bType = grr.bType;
-                                                nst.channelId = grr.channelId;
-                                                nst.channelName = grr.channelName;
-                                                nst.isSchedule = grr.isSchedule;
-                                                nst.scheduleTime = grr.scheduleTime;
+                                                nst.bType = grr.BusType;
+                                                nst.channelId = grr.ChannelId;
+                                                nst.channelName = grr.ChannelName;
+                                                nst.isSchedule = grr.IsSchedule;
+                                                nst.scheduleTime = grr.ScheduleTime;
                                                 nst.groups = new List<GroupInfo>();
 
                                                 nst.groups.Add(gi);
@@ -247,7 +230,7 @@ namespace MediaMgrSystem
                                             bool isEncoderExsting = false;
                                             for (int i = 0; i < needStopVideoEncoders.Count; i++)
                                             {
-                                                if (needStopVideoEncoders[i].encoderId == grr.encoderId)
+                                                if (needStopVideoEncoders[i].encoderId == grr.EncoderId)
                                                 {
                                                     isEncoderExsting = true;
                                                     if (needStopVideoEncoders[i].groups != null)
@@ -264,7 +247,7 @@ namespace MediaMgrSystem
                                             {
 
                                                 NeedStopVideoEncoderTask nst = new NeedStopVideoEncoderTask();
-                                                nst.encoderId = grr.encoderId;
+                                                nst.encoderId = grr.EncoderId;
 
                                                 nst.groups = new List<GroupInfo>();
 
@@ -335,7 +318,28 @@ namespace MediaMgrSystem
 
                         Thread.Sleep(2000);
 
-                        SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, false);
+                        EncoderAudioOpenCommand outData = null;
+
+                        SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, false, out outData);
+
+                        if (groupIds != null)
+                        {
+                            String[] gid = groupIds.Split(',');
+                            foreach (var c in gid)
+                            {
+                                GlobalUtils.GlobalGroupBusinessStatus.Add(new GroupBusinessRunning { CallerCommandData=outData, GroupId = c, TypeRunning = BusinessTypeForGroup.AudioEncoder });
+
+                                GlobalUtils.AddLogs(hub, "呼叫台操作", GlobalUtils.GroupBLLInstance.GetAllGroupsWithOutDeviceInfoByGroupId(c)[0].GroupName + "组呼叫成功");
+
+                            }
+                        }
+
+
+                        List<string> ids = GlobalUtils.GetAllPCDeviceConnectionIds();
+
+                        hub.Clients(ids).sendRefreshAudioDeviceMessge();
+
+                        hub.Clients(ids).sendRefreshCallerEncoderDeviceMessge();
 
 
 
@@ -436,7 +440,8 @@ namespace MediaMgrSystem
 
             }
 
-            SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, true);
+            EncoderAudioOpenCommand outData = null;
+            SendAudioEncoderCommandToAndroid(hub, clientIdentify, groupIds, devIds, true,out outData);
 
 
 
@@ -606,7 +611,7 @@ namespace MediaMgrSystem
         }
 
 
-        public static void SendAudioEncoderCommandToAndroid(IHubCallerConnectionContext hub, string clientIdentify, string groupIds, string devIds, bool isStop)
+        public static void SendAudioEncoderCommandToAndroid(IHubCallerConnectionContext hub, string clientIdentify, string groupIds, string devIds, bool isStop,out EncoderAudioOpenCommand outData)
         {
 
 
@@ -677,6 +682,8 @@ namespace MediaMgrSystem
 
             }
 
+
+            outData = dopc;
             if (idsNeedToSend.Count > 0)
             {
                 hub.Clients(idsNeedToSend).sendMessageToClient(Newtonsoft.Json.JsonConvert.SerializeObject(dopc));

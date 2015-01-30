@@ -465,7 +465,7 @@ namespace MediaMgrSystem
                                             bool isEncoderExsting = false;
                                             for (int i = 0; i < needStopVideoEncoders.Count; i++)
                                             {
-                                                if (needStopVideoEncoders[i].encoderId == grr.encoderId)
+                                                if (needStopVideoEncoders[i].encoderId == grr.EncoderId)
                                                 {
                                                     isEncoderExsting = true;
                                                     if (needStopVideoEncoders[i].groups != null)
@@ -482,7 +482,7 @@ namespace MediaMgrSystem
                                             {
 
                                                 MediaMgrSystem.CallerEncoderControlLogic.NeedStopVideoEncoderTask nst = new MediaMgrSystem.CallerEncoderControlLogic.NeedStopVideoEncoderTask();
-                                                nst.encoderId = grr.encoderId;
+                                                nst.encoderId = grr.EncoderId;
 
                                                 nst.groups = new List<GroupInfo>();
 
@@ -744,12 +744,13 @@ namespace MediaMgrSystem
                                 gbr.GroupId = c.GroupId;
                                 gbr.TypeRunning = BusinessTypeForGroup.ManualScheduleTask;
 
-                                gbr.bType = bType;
-                                gbr.channelId = channelId;
-                                gbr.channelName = channelName;
-                                gbr.isSchedule = isSchedule;
-                                gbr.scheduleTime = scheduleTime;
+                                gbr.BusType = bType;
+                                gbr.ChannelId = channelId;
+                                gbr.ChannelName = channelName;
+                                gbr.IsSchedule = isSchedule;
+                                gbr.ScheduleTime = scheduleTime;
 
+                                gbr.BaseOperAndriodClientCommandData = clientsDatraToSend;
                                 GlobalUtils.GlobalGroupBusinessStatus.Add(gbr);
 
                                 // { GroupId = c.GroupId, TypeRunning = BusinessTypeForGroup.ManualTask });
@@ -1036,7 +1037,7 @@ namespace MediaMgrSystem
 
                             foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
                             {
-                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId)
+                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.ChannelId == channelId)
                                 {
                                     i++;
                                 }
@@ -1084,7 +1085,7 @@ namespace MediaMgrSystem
 
                             foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
                             {
-                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId)
+                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.ChannelId == channelId)
                                 {
                                     foreach (var cg in channelGroups)
                                     {
@@ -1296,7 +1297,7 @@ namespace MediaMgrSystem
 
                             foreach (var grr in GlobalUtils.GlobalGroupBusinessStatus)
                             {
-                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.channelId == channelId && grr.GroupId == c.GroupId)
+                                if (grr.TypeRunning == BusinessTypeForGroup.ManualScheduleTask && grr.ChannelId == channelId && grr.GroupId == c.GroupId)
                                 {
                                     itemToRemoved.Add(grr);
                                 }
