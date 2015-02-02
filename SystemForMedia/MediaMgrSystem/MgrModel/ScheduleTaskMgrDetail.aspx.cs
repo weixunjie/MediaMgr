@@ -88,6 +88,8 @@ namespace MediaMgrSystem.MgrModel
 
                     cbIsRepeat.Checked = si.IsRepeat == "1";
 
+                    cbIsRing.Checked = si.IsRing == "1";
+
                     this.lbSelectedDate.Items.Clear();
 
                     if (si.ScheduleTaskSpecialDays != null && si.ScheduleTaskSpecialDays.Count > 0)
@@ -179,6 +181,24 @@ namespace MediaMgrSystem.MgrModel
                 return;
             }
 
+            if (cbIsRing.Checked)
+            {
+                string pid = ddProgram.SelectedValue;
+
+                List<ProgramInfo> pids = GlobalUtils.ProgramBLLInstance.GetProgramById(pid, true);
+
+                if (pids != null && pids.Count > 0)
+                {
+                    if (pids[0].MappingFiles.Count > 1)
+                    {
+                        lbMessage.Text = "打铃计划只能选择只带有一个文件的节目";
+                        lbMessage.Visible = true;
+                        return;
+                    }
+                }
+            }
+
+
 
             bool isEndTimeOk = false;
 
@@ -245,6 +265,7 @@ namespace MediaMgrSystem.MgrModel
 
             si.IsRepeat = cbIsRepeat.Checked ? "1" : "0";
 
+            si.IsRing = cbIsRing.Checked ? "1" : "0";
             foreach (ListItem lv in lbSelectedDate.Items)
             {
                 si.ScheduleTaskSpecialDays.Add(lv.Value);
@@ -489,7 +510,7 @@ namespace MediaMgrSystem.MgrModel
                 si.StrSpecialDaysToWeeks = "";
 
                 si.IsRepeat = cbIsRepeat.Checked ? "1" : "0";
-
+                si.IsRing = cbIsRing.Checked ? "1" : "0";
                 foreach (ListItem lv in lbSelectedDate.Items)
                 {
                     si.ScheduleTaskSpecialDays.Add(lv.Value);

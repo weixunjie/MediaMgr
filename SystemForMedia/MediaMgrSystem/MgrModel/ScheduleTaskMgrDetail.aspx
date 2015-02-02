@@ -255,6 +255,14 @@
                         <div style="clear: both" class="clear"></div>
                     </div>
 
+                          <div class="form-group" style="margin-bottom: 10px">
+
+                        <asp:Label runat="server" AssociatedControlID="cbIsRing" CssClass="col-md-2 control-label" Width="107px">是否为打铃:</asp:Label>
+
+
+                        <asp:CheckBox ID="cbIsRing" Text="" runat="server" />
+
+                    </div>
 
                     <div class="form-group">
 

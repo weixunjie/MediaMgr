@@ -458,7 +458,38 @@ namespace MediaMgrSystem
 
             }
         }
+        private void SyncRingShedule(object obj)
+        {
+            object[] objs=obj as object[];
 
+            IHub hub = objs[0] as IHub;
+            string ipAddress = objs[1].ToString();
+
+             List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(ipAddress);
+
+             if (dis != null && dis.Count > 0)
+             {
+                 string groupId = dis[0].GroupId;
+
+
+                 List<GroupInfo> groups=GlobalUtils.GroupBLLInstance.GetGroupById(groupId);
+                 {
+                     if (groups != null && groups.Count > 0)
+                     {
+                         string cid = groups[0].ChannelId;
+                         ChannelInfo channel = GlobalUtils.ChannelBLLInstance.GetChannelById(cid);
+
+                         if (channel != null)
+                         {
+ 
+                         }
+              
+                     }
+                 }
+             }
+
+
+        }
         private void SendDoingBusinessToClient(IHub hub, string ipAddress)
         {
             List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(ipAddress);
