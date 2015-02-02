@@ -1,0 +1,1 @@
+alter table dbo.ScheduleTaskInfo add IsRing bigint 
