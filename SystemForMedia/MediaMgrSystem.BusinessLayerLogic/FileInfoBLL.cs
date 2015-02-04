@@ -21,9 +21,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         }
 
-        public FileAttribute GetFileInfoByFile(string fileName)
+        public FileAttribute GetFileInfoByFilePath(string filePath)
         {
-            String sqlStr = "SELECT * FROM FILEINFO WHERE FILENAME='" + fileName.Replace("'", "''") + "'";
+            String sqlStr = "SELECT * FROM FILEINFO WHERE FILEPATH='" + filePath.Replace("'", "''") + "'";
 
             FileAttribute result = null;
             DataTable dt = dbUitls.ExecuteDataTable(sqlStr);
@@ -38,6 +38,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
                         FileAttribute fi = new FileAttribute();
                         fi.FileName = dt.Rows[i]["FILENAME"].ToString();
 
+                        fi.FileRelatePath = dt.Rows[i]["FILEPATH"].ToString();
                         fi.BitRate = dt.Rows[i]["BITRATE"].ToString();
 
                         result = fi;
@@ -48,55 +49,80 @@ namespace MediaMgrSystem.BusinessLayerLogic
             return result;
         }
 
+
+         List<FileInfo> fileList=new List<FileInfo>();
+
+       void GetAll(DirectoryInfo dir)//搜索文件夹中的文件
+        {
+        
+            FileInfo[] allFile = dir.GetFiles();
+            foreach (FileInfo fi in allFile)
+            {
+                fileList.Add(fi);
+            }
+
+            DirectoryInfo[] allDir = dir.GetDirectories();
+            foreach (DirectoryInfo d in allDir)
+            {
+                GetAll(d);
+            }       
+        }
+
+
         public List<FileAttribute> GetAllDiskFiles(string filePath, string mpegPath)
         {
             List<FileAttribute> result = new List<FileAttribute>();
 
             DirectoryInfo di = new DirectoryInfo(filePath);
 
-            if (di != null)
+            DirectoryInfo d = new DirectoryInfo(filePath);
+            fileList = new List<FileInfo>();
+            GetAll(d);
+
+
+
+            //  DirectoryInfo[] dirInfo = di.GetDirectories();
+
+            if (fileList != null && fileList.Count > 0)
             {
-                FileInfo[] fiArray = di.GetFiles();
-                if (fiArray != null && fiArray.Length > 0)
+
+                foreach (FileInfo nextFile in fileList)  //遍历文件
                 {
-
-
-                    foreach (var fi in fiArray)
+                    if (nextFile.Extension.ToUpper().EndsWith("META"))
                     {
-                        if (fi.Extension.ToUpper().EndsWith("META"))
-                        {
-                            continue;
-                        }
-
-                        if (!fi.Extension.ToUpper().EndsWith("MP4") && !fi.Extension.ToUpper().EndsWith("MP3") && !fi.Extension.ToUpper().EndsWith("FLV"))
-                        {
-                            continue;
-                        }
-
-
-                        FileAttribute fa = GetFileInfoByFile(fi.Name);
-                        if (fa != null)
-                        {
-                            result.Add(fa);
-                        }
-                        else
-                        {
-                            fa = new FileAttribute();
-
-                            fa.BitRate = GetBitRateByFileName(fi.FullName, mpegPath).ToString();
-                            fa.FileName = fi.Name;
-                            AddFileInfo(fa);
-                            result.Add(fa);
-                        }
+                        continue;
                     }
+
+                    if (!nextFile.Extension.ToUpper().EndsWith("MP4") && !nextFile.Extension.ToUpper().EndsWith("MP3") && !nextFile.Extension.ToUpper().EndsWith("FLV"))
+                    {
+                        continue;
+                    }
+
+                    string pathName = nextFile.FullName.Replace(filePath, "").TrimStart('\\');
+
+                    FileAttribute fa = GetFileInfoByFilePath(pathName);
+       
+                    if (fa != null)
+                    {
+                        result.Add(fa);
+                    }
+                    else
+                    {
+                        fa = new FileAttribute();
+
+                        fa.BitRate = GetBitRateByFileName(nextFile.FullName, mpegPath).ToString();
+                        fa.FileName = nextFile.Name;
+                        fa.FileRelatePath = pathName;
+                        AddFileInfo(fa);
+                        result.Add(fa);
+                    }
+
 
 
                 }
             }
 
             return result;
-
-
 
             //  string filePath = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["connString"].ToString();
 
@@ -162,10 +188,10 @@ namespace MediaMgrSystem.BusinessLayerLogic
 
         public int AddFileInfo(FileAttribute fa)
         {
-            String sqlStr = "INSERT INTO FILEINFO(FILENAME,BITRATE) values ('{0}','{1}')";
+            String sqlStr = "INSERT INTO FILEINFO(FILENAME,BITRATE,FILEPATH) values ('{0}','{1}','{2}')";
 
 
-            sqlStr = String.Format(sqlStr, fa.FileName.Replace("'", "''"), fa.BitRate);
+            sqlStr = String.Format(sqlStr, fa.FileName.Replace("'", "''"), fa.BitRate,fa.FileRelatePath.Replace("'", "''"));
 
 
             return dbUitls.ExecuteNonQuery(sqlStr);

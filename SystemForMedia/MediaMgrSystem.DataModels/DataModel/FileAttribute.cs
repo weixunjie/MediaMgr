@@ -12,6 +12,7 @@ namespace MediaMgrSystem.DataModels
 
         public String BitRate { get; set; }
 
+        public String FileRelatePath { get; set; }
 
     }
 }

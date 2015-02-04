@@ -36,7 +36,7 @@ namespace MediaMgrSystem.MgrModel
                 {
                     foreach (var fileInfo in pi.MappingFiles)
                     {
-                        this.lbSelectedFiles.Items.Add(new ListItem() { Text = fileInfo.FileName, Value = fileInfo.FileName });
+                        this.lbSelectedFiles.Items.Add(new ListItem() { Text = fileInfo.FileName, Value = fileInfo.FileRelatePath });
                     }
                 }
 
@@ -62,7 +62,7 @@ namespace MediaMgrSystem.MgrModel
                     bool isFound = false;
                     foreach (ListItem sel in lbSelectedFiles.Items)
                     {
-                        if (sel.Value == fa.FileName)
+                        if (sel.Value == fa.FileRelatePath)
                         {
                             isFound = true;
                             break;
@@ -72,7 +72,7 @@ namespace MediaMgrSystem.MgrModel
 
                     if (!isFound)
                     {
-                        this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileName, Value = fa.FileName });
+                        this.lbAvaibleFiles.Items.Add(new ListItem() { Text = fa.FileRelatePath, Value = fa.FileRelatePath });
 
                     }
 
@@ -288,7 +288,7 @@ namespace MediaMgrSystem.MgrModel
 
                     }
 
-                    pi.MappingFiles.Add(new FileAttribute() { FileName = item.Value });
+                    pi.MappingFiles.Add(new FileAttribute() { FileRelatePath = item.Value });
                 }
             }
 

@@ -448,7 +448,7 @@ namespace MediaMgrSystem.MgrModel
 
                         string baseUrl = Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.IndexOf(Request.RawUrl));
 
-                        string fileUrl = baseUrl + ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileName);
+                        string fileUrl = baseUrl + ResolveUrl("~/FileSource/" + pis[0].MappingFiles[0].FileRelatePath);
 
                         // string fileUrlPaly = baseUrl+ResolveUrl("~/FileSource/singlemp3player.swf");
 

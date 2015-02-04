@@ -460,33 +460,76 @@ namespace MediaMgrSystem
         }
         private void SyncRingShedule(object obj)
         {
-            object[] objs=obj as object[];
+            object[] objs = obj as object[];
 
             IHub hub = objs[0] as IHub;
             string ipAddress = objs[1].ToString();
 
-             List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(ipAddress);
+            List<DeviceInfo> dis = GlobalUtils.DeviceBLLInstance.GetADevicesByIPAddress(ipAddress);
 
-             if (dis != null && dis.Count > 0)
-             {
-                 string groupId = dis[0].GroupId;
+            if (dis != null && dis.Count > 0)
+            {
+                string groupId = dis[0].GroupId;
 
 
-                 List<GroupInfo> groups=GlobalUtils.GroupBLLInstance.GetGroupById(groupId);
-                 {
-                     if (groups != null && groups.Count > 0)
-                     {
-                         string cid = groups[0].ChannelId;
-                         ChannelInfo channel = GlobalUtils.ChannelBLLInstance.GetChannelById(cid);
+                List<GroupInfo> groups = GlobalUtils.GroupBLLInstance.GetGroupById(groupId);
+                {
+                    if (groups != null && groups.Count > 0)
+                    {
+                        string cid = groups[0].ChannelId;
+                        ChannelInfo channel = GlobalUtils.ChannelBLLInstance.GetChannelById(cid);
 
-                         if (channel != null)
-                         {
- 
-                         }
-              
-                     }
-                 }
-             }
+                        if (channel != null)
+                        {
+                            List<ScheduleTaskInfo> tasks = GlobalUtils.ScheduleBLLInstance.GetAllRingScheduleTaksByScheduleId(channel.ScheduelId);
+
+                            EncoderAudioSendScheduleTaskInfoCommand cmd = new EncoderAudioSendScheduleTaskInfoCommand();
+                            cmd.commandType = CommandTypeEnum.SYNCRINGSCHEDULE;
+
+                            cmd.guidId = Guid.NewGuid().ToString();
+
+                            cmd.tasks = new List<EncoderSyncScheduleTaskInfo>();
+
+                            string baseUrl = HttpContext.Current.Request.Url.AbsoluteUri.Substring(0, HttpContext.Current.Request.Url.AbsoluteUri.IndexOf(HttpContext.Current.Request.RawUrl));
+
+                            //string fileUrl = 
+
+                            foreach (var t in tasks)
+                            {
+
+                                if (t.IsRing == "1")
+                                {
+                                    EncoderSyncScheduleTaskInfo st = new EncoderSyncScheduleTaskInfo();
+                                    st.baseUrl = baseUrl + "/FileSource/";
+
+                                    if (!string.IsNullOrWhiteSpace(t.ScheduleTaskProgarmId))
+                                    {
+                                        List<ProgramInfo> pis = GlobalUtils.ProgramBLLInstance.GetProgramById(t.ScheduleTaskProgarmId);
+                                        if (pis != null && pis.Count > 0)
+                                        {
+                                            st.fileName = pis[0].MappingFiles[0].FileRelatePath;
+                                        }
+                                    }
+
+                                    st.startTime = t.ScheduleTaskStartTime;
+                                    st.endTime = t.ScheduleTaskName;
+                                    st.days = t.StrSpecialDaysToWeeks;
+                                    st.weeks = t.StrWeeks;
+
+                                    if (!string.IsNullOrWhiteSpace(st.fileName))
+                                    {
+                                        cmd.tasks.Add(st);
+                                    }
+                                }
+
+
+                            }
+
+                        }
+
+                    }
+                }
+            }
 
 
         }

@@ -57,7 +57,9 @@
     <Compile Include="DataModel\ChannelInfo.cs" />
     <Compile Include="DataModel\EncoderAudioInfo.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderAudioSendDevsInfoCommand.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderAudioSendScheduleTaskInfoCommand.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderSyncDevInfo.cs" />
+    <Compile Include="JsonModel\AudioEncoder\EncoderSyncScheduleTaskInfo.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderVideoOperationCommandeArg.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderVideoOperCommand.cs" />
     <Compile Include="JsonModel\AudioEncoder\EncoderAudioOpenReponse.cs" />

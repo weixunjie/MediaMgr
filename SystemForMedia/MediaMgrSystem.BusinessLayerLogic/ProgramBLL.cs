@@ -121,7 +121,7 @@ namespace MediaMgrSystem.BusinessLayerLogic
             {
                 foreach (var fa in pi.MappingFiles)
                 {
-                    mapFiles += fa.FileName + "|";
+                    mapFiles += fa.FileRelatePath + "|";
                 }
 
                 mapFiles = mapFiles.TrimEnd('|');
@@ -178,7 +178,9 @@ namespace MediaMgrSystem.BusinessLayerLogic
                                     FileAttribute fa = new FileAttribute();
                                     fa.FileName = tmpMfile[k];
 
-                                    FileAttribute tmp = fileInfoBLL.GetFileInfoByFile(fa.FileName);
+                                    FileAttribute tmp = fileInfoBLL.GetFileInfoByFilePath(tmpMfile[k]);
+
+                                    fa.FileRelatePath = tmp.FileRelatePath;
 
                                     if (tmp != null)
                                     {

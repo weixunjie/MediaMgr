@@ -386,7 +386,7 @@ namespace MediaMgrSystem
                                         maxBitRate = outBitRate > maxBitRate ? outBitRate : maxBitRate;
                                     }
 
-                                    cmdToVideoSvr.arg.streamSrcs.Add(file.FileName);
+                                    cmdToVideoSvr.arg.streamSrcs.Add(file.FileRelatePath);
                                 }
 
                             }
